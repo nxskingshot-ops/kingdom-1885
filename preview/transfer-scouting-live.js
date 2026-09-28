@@ -75,3 +75,4 @@ active=q.data.candidate_id;closeEditor();await load();
 finally{$('saveCandidate').disabled=false;}
 }
 check();
+setInterval(()=>{if(!$('private').hidden&&$('modal').hidden&&!document.hidden)load()},20000);
