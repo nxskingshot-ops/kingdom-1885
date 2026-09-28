@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Kingdom #1885 · Outpost Test for An</title>
+<title>Kingdom #1885 · Outpost Viewer for An</title>
 <style>
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#140e0a}
 iframe{border:0;width:100%;height:100%;display:block}
@@ -8,13 +8,13 @@ iframe{border:0;width:100%;height:100%;display:block}
 #loading[hidden]{display:none}
 </style></head><body>
 <div id="loading" role="status">Loading Kingdom #1885…</div>
-<iframe id="kingdom" src="../index.html?kingdom-preview=an-v1" title="Kingdom #1885 Outpost Map" allow="fullscreen"></iframe>
+<iframe id="kingdom" src="../index.html?kingdom-preview=an-viewer-v1" title="Kingdom #1885 Outpost Map" allow="fullscreen"></iframe>
 <script>
 const frame=document.getElementById('kingdom'),status=document.getElementById('loading');
 frame.addEventListener('load',()=>{try{
 const doc=frame.contentDocument;if(!doc||!doc.body)throw Error('map unavailable');
 const script=doc.createElement('script');
-script.src=new URL('./outpost-controls-an-v1.js',location.href).href;
+script.src=new URL('./outpost-viewer-an-v1.js',location.href).href;
 script.onload=()=>{status.hidden=true};
 script.onerror=()=>{status.textContent='Live controls unavailable · reload to retry'};
 doc.body.appendChild(script)
