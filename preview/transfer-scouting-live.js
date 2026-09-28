@@ -37,4 +37,22 @@ $('compare').onclick=()=>{const a=chosenPlayers();if(a.length<2){$('comparison')
 const rows=[['Kingdom',p=>p.kingdom],['Alliance',p=>p.alliance],['Castle',p=>p.castle_level],['Power',p=>p.power_m==null?'–':fmt(p.power_m)+'M'],['Status',p=>p.contact_status],['Transfer',p=>p.transfer_eligibility]];
 $('comparison').innerHTML='<h3>Selected candidates</h3><div class="scroll"><table><thead><tr><th>Metric</th>'+a.map(p=>'<th>'+esc(p.player_name)+'</th>').join('')+'</tr></thead><tbody>'+rows.map(([label,fn])=>'<tr><td>'+label+'</td>'+a.map(p=>'<td>'+esc(fn(p)||'–')+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>';};
 $('csv').onclick=()=>{const columns=['candidate_id','player_name','kingdom','alliance','power_m','castle_level','contact_status','transfer_eligibility','recruiter','notes','updated_at'];const csv=[columns.join(','),...filtered().map(p=>columns.map(k=>'"'+String(p[k]??'').replace(/"/g,'""')+'"').join(','))].join('\r\n');const url=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='nxs-real-transfer-records.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),4000);};
+
+let editingId=null;
+function openEditor(p){
+ if(!canEdit)return;
+ editingId=p?.candidate_id||null;
+ $('candidateForm').reset();$('editError').textContent='';
+ $('editTitle').textContent=p?'Edit '+p.player_name:'Add candidate';
+ for(const name of ['player_name','kingdom','alliance','power_m','castle_level','recruiter','contact_status','transfer_eligibility','notes']){
+  const input=$('candidateForm').elements.namedItem(name);if(p&&p[name]!=null)input.value=p[name];
+ }
+ $('candidateForm').elements.namedItem('role').value=p?.metadata?.role||'';
+ $('candidateForm').elements.namedItem('fit').value=p?.metadata?.fit??'';
+ $('modal').hidden=false;
+}
+$('newCandidate').onclick=()=>openEditor(null);
+$('editCandidate').onclick=()=>openEditor(players.find(p=>p.candidate_id===active));
+function closeEditor(){$('modal').hidden=true}
+$('cancelEdit').onclick=closeEditor;$('closeEdit').onclick=closeEditor;
 check();
