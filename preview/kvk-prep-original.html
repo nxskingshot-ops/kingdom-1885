@@ -93,6 +93,7 @@ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const number=v=>v===null||v===undefined?'–':Number(v).toLocaleString('en-US',{maximumFractionDigits:2});
 function showLogin(note=''){ $('private').hidden=true;$('login').hidden=false;$('signout').hidden=true;$('warn').textContent=note; }
 function showData(){ $('private').hidden=false;$('login').hidden=true;$('signout').hidden=false;$('warn').textContent='';}
+const withTimeout=(promise,label,ms=15000)=>Promise.race([promise,new Promise((_,reject)=>setTimeout(()=>reject(Error(label+' timed out after 15 seconds. Please check your connection and retry.')),ms))]);
 async function db(){if(!supabase){const mod=await import('https://esm.sh/@supabase/supabase-js@2');supabase=mod.createClient(API,KEY,{auth:{persistSession:true,autoRefreshToken:true}});}return supabase;}
 async function membership(client){const {data:{user},error}=await client.auth.getUser();if(error||!user)return false;const r=await client.from('nxs_memberships').select('role,active,expires_at').eq('user_id',user.id).maybeSingle();return !r.error&&r.data?.active===true&&['member','r4','admin'].includes(r.data.role)&&(!r.data.expires_at||Date.parse(r.data.expires_at)>Date.now());}
 function isCastle(r){return /CASTLE/i.test(String(r.alert||''))}
@@ -179,7 +180,7 @@ showData();render();overview();renderOperations();
 }catch(error){$('status').textContent='Could not load protected data: '+error.message;console.error(error);}
 finally{$('refresh').disabled=false;}
 }
-$('loginForm').onsubmit=async e=>{e.preventDefault();$('signin').disabled=true;$('warn').textContent='Signing in…';try{const c=await db();const {error}=await c.auth.signInWithPassword({email:$('email').value,password:$('password').value});$('password').value='';if(error)throw error;if(!await membership(c)){await c.auth.signOut();throw Error('Approved NXS membership required.');}await load();}catch(error){showLogin(error.message)}finally{$('signin').disabled=false}};
+$('loginForm').onsubmit=async e=>{e.preventDefault();$('signin').disabled=true;$('warn').textContent='Signing in…';try{const c=await withTimeout(db(),'Authentication service');const {error}=await withTimeout(c.auth.signInWithPassword({email:$('email').value,password:$('password').value}),'Sign-in request');$('password').value='';if(error)throw error;$('warn').textContent='Checking member access…';if(!await withTimeout(membership(c),'Membership verification')){await withTimeout(c.auth.signOut(),'Sign-out');throw Error('Approved NXS membership required.');}await load();}catch(error){showLogin(error.message)}finally{$('signin').disabled=false}};
 $('signout').onclick=async()=>{await(await db()).auth.signOut();rows=[];snapshots=[];pastChanges=[];rosterHistory=[];radar=[];unresolved=[];warningHistory=new Map();showLogin('Signed out.');};
 const copyMessage=text=>{try{navigator.clipboard.writeText(text).then(()=>$('copyNotice').textContent='Message copied.',()=>$('copyNotice').textContent='Copy unavailable in this browser.');}catch(e){$('copyNotice').textContent='Copy unavailable in this browser.'}};
 $('copyBrief').onclick=()=>copyMessage(briefText());
