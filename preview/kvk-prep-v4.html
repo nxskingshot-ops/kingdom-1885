@@ -1,0 +1,151 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Kingdom #1885 · KvK Prep Dashboard · v2</title>
+<style>
+:root{font-family:system-ui,-apple-system,sans-serif;color:#f9edcb;background:#171c18}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 40% 0%,#42533c 0%,#1c281f 38%,#151a15 100%)}header{padding:14px 18px;background:linear-gradient(90deg,#574025,#352719);border-bottom:2px solid #b99350;display:flex;align-items:center;justify-content:space-between;gap:12px}h1{font:700 25px Georgia,serif;margin:0}h2{font:700 20px Georgia,serif;margin:0 0 12px}small,.muted{color:#d4c5a3}main{max-width:1150px;margin:auto;padding:20px 15px 45px}.panel{background:#30271d;border:1px solid #a9874e;border-radius:12px;padding:17px;margin:12px 0;box-shadow:0 6px 25px #0004}.gold{color:#f1ce83}button,a.link{background:#f0d19a;color:#3a2816;border:1px solid #af813c;border-radius:8px;padding:9px 13px;font-weight:750;text-decoration:none;cursor:pointer;display:inline-block}button:disabled{opacity:.55}input,select{width:100%;border:1px solid #866d44;border-radius:7px;background:#172019;color:#fff8dd;padding:10px;margin:5px 0 13px}label{display:block;margin-top:8px}.metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px}.metric{background:#25251d;border:1px solid #79613d;border-radius:9px;padding:14px}.metric b{font:700 28px Georgia,serif;color:#f1ce83;display:block;margin-top:7px}.toolbar{display:flex;align-items:center;flex-wrap:wrap;justify-content:space-between;gap:10px}.toolbar input,.toolbar select{width:auto;margin:0}.tablewrap{overflow:auto;border-radius:8px;border:1px solid #715c3c}table{width:100%;border-collapse:collapse;min-width:690px;font-size:13px}th{position:sticky;top:0;background:#46331f;text-align:left;color:#f7d99d}td,th{border-bottom:1px solid #665338;padding:10px 11px}tr:nth-child(even){background:#ffffff09}.flag{border:1px solid #bc934e;border-radius:6px;padding:2px 6px}.high{background:#7f3030}.medium{background:#735120}.low{background:#37634d}#warn{white-space:pre-wrap;color:#ffd7ae}#private[hidden],#login[hidden]{display:none}.aside{font-size:12px;color:#d5c5a5;margin-top:12px}button.secondary{background:#342a20;color:#f9dcab}.notice{font-size:12px;padding:9px;border:1px solid #82643d;border-radius:8px}#login{max-width:410px;margin:22px auto}@media(max-width:560px){header{align-items:flex-start;flex-direction:column}h1{font-size:22px}.metric b{font-size:24px}}
+
+/* Beige/gold Kingdom dashboard; keep protected data logic unchanged. */
+:root{color:#4b351f;background:#e8d4ac}
+body{background:linear-gradient(140deg,#eee0c0,#dcc18d);color:#4b351f}
+header{background:linear-gradient(110deg,#b58b4d,#f2dba9,#b88c4a);color:#392714;border-bottom:3px solid #8d6731}
+header small{color:#51391e}
+.panel{background:#f7edda;color:#4d341d;border:2px solid #bc985f;box-shadow:0 4px 18px #5b3f1e30}
+h2{color:#764d20;border-bottom:2px solid #c49a5a;padding-bottom:10px}
+.muted,.aside,small{color:#785d3b}
+.metric{background:linear-gradient(#fff8e9,#f0dcb4);border:2px solid #c5a36e;color:#67441f;text-align:center}
+.metric b{color:#845722;font-size:35px}
+button,a.link{background:linear-gradient(#ffebb6,#e8c384);border:1px solid #9b7134;color:#442e17}
+button.secondary{background:#e6d7b9;color:#563b1c}
+input,select{background:#fffaf0;color:#49331b;border:1px solid #b09262}
+.tablewrap{background:#fff9ec;border:1px solid #c9a66d}
+table{color:#4b351f}
+th{background:#d4ae72;color:#462d15}
+td,th{border-bottom:1px solid #dac39c}
+tr:nth-child(even){background:#f0dfbf}
+tr:nth-child(odd){background:#fff8e8}
+.flag.high{background:#a74e40;color:#fff4ec}
+.flag.medium{background:#dab069;color:#4b3217}
+.flag.low{background:#b4cda8;color:#31512e}
+.notice{background:#f7e5c3;color:#674725;border:1px solid #c09a61}
+#warn{color:#9a423a}
+.dashboard-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:14px;align-items:start}
+.dashboard-grid>.panel{margin:0 0 14px}
+@media(max-width:740px){.dashboard-grid{grid-template-columns:1fr}.metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style></head><body>
+<header><div><small>♛ KINGDOM #1885 · INTERNAL OPERATIONS</small><h1>⚔ KvK Prep Dashboard</h1></div><div><a class="link" href="./kingdom-hub.html?view=map">← Outpost Map</a> <button id="signout" class="secondary" hidden>Sign out</button></div></header>
+<main><section class="panel" id="login"><h2>🔒 Member access</h2><p class="muted">Internal NXS planning data. Sign in with your approved Kingdom account. Do not share your password.</p><form id="loginForm"><label>Email<input id="email" type="email" autocomplete="username" required></label><label>Password<input id="password" type="password" autocomplete="current-password" required></label><button id="signin" type="submit">Sign in</button></form><p id="warn" role="status"></p></section>
+<section id="private" hidden><div class="toolbar"><span id="timeLabel" class="muted">Loading protected snapshot…</span><button id="refresh" type="button">↻ Refresh KvK Data</button></div><div id="status" class="notice" role="status">Loading…</div>
+<div class="metric-grid" style="margin-top:14px"><div class="metric">Tracked players<b id="tracked">–</b></div><div class="metric">Warnings<b id="warnings">–</b></div><div class="metric">Castle upgrades<b id="castles">–</b></div><div class="metric">Risk signal<b id="risk">–</b></div></div>
+<div class="dashboard-grid">
+<div>
+<section class="panel"><h2>👀 Players to Watch</h2><p class="muted">Castle upgrades first, then repeat warnings and power changes. Based on imported data, not live in-game activity.</p><div id="watchPlayers">Loading…</div></section>
+<section class="panel"><h2>📈 Power Change Trend</h2><div id="trendChart" style="display:flex;align-items:end;gap:16px;height:155px;border-bottom:2px solid #bd995e;padding:10px"></div><p class="aside">Sum of recorded power changes among alerted players (M) per imported period. Different periods and player populations; not a forecast.</p></section>
+<section class="panel"><h2>🏰 Castle Activity</h2><p id="castleWatch">Loading…</p></section>
+</div>
+<div>
+<section class="panel"><h2>📊 Warning Overview</h2><div id="warningOverview">Loading…</div></section>
+<section class="panel"><h2>⚠ Matchmaking Risk</h2><div id="matchRisk" style="background:#ead4a8;border:2px solid #bb904f;border-radius:8px;padding:18px;text-align:center;font:700 27px Georgia,serif">–</div><p class="aside">NXS planning score, not an official Kingshot matchmaking formula.</p></section>
+</div></div>
+<div class="dashboard-grid">
+<div>
+<section class="panel"><h2>📡 Growth Radar</h2><p class="muted">Sub-threshold movement from complete roster history. Latest period only; a castle change excludes a player.</p>
+<div class="metric-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))"><div class="metric">Radar candidates<b id="radarCount">–</b></div><div class="metric">Near +1.5M<b id="nearCount">–</b></div></div>
+<div class="tablewrap"><table style="min-width:550px"><thead><tr><th>Player</th><th>Change (M)</th><th>% of threshold</th><th>Castle</th><th>Status</th></tr></thead><tbody id="radarRows"></tbody></table></div>
+<p class="aside">Near threshold starts at 75% of +1.5M. This is an NXS tracking rule, not an official matchmaking threshold.</p></section>
+<section class="panel"><h2>🪪 Identity Reviews</h2><p class="muted">Names with unresolved identity remain separate until a human confirms a match.</p><div id="identityReviews">Loading…</div></section>
+</div><div>
+<section class="panel"><h2>♛ R4 / R5 Command Brief</h2><p id="briefStatus" class="muted">Snapshot-based planning summary · read-only</p><div id="briefBody"></div><button type="button" id="copyBrief">Copy English brief</button><p id="copyNotice" class="aside" role="status"></p></section>
+<section class="panel"><h2>📊 Matchmaking Risk Trend</h2><div id="riskTrend" class="tablewrap"></div><p class="aside">Historical NXS risk labels and scores only. Not a Kingshot formula or prediction.</p></section>
+</div></div>
+<div class="panel"><h2>⚠ Matchmaking Warnlist</h2><p class="muted">Historical NXS planning indicators, not a Kingshot matchmaking formula. Power values in millions (M).</p><div class="toolbar" style="margin-bottom:12px"><input id="filter" type="search" placeholder="Find player…"><select id="sortOrder" aria-label="Sort players"><option value="priority">Castle → Repeat → Power</option><option value="power">Highest power gain</option><option value="repeat">Most repeated warnings</option><option value="name">Player name</option></select><select id="severity"><option value="">All alerts</option><option value="High">High</option><option value="Medium">Medium</option><option value="Low">Low</option></select><span id="visibleCount" class="muted"></span></div><div class="tablewrap"><table><thead><tr><th>Player</th><th>Power (M)</th><th>Change (M)</th><th>Castle</th><th>Alert</th><th>Repeat</th><th>Severity</th></tr></thead><tbody id="players"></tbody></table></div><p class="aside">The list shows available records from the latest imported snapshot. Player identities and power changes are sourced from imported history; verify against current game data before making decisions.</p></div>
+<div class="panel"><h2>📈 Snapshot history</h2><div class="tablewrap"><table><thead><tr><th>Date</th><th>Tracked</th><th>Warnings</th><th>Castle changes</th><th>Risk label</th></tr></thead><tbody id="history"></tbody></table></div></div>
+<p class="aside">Read-only first integration · Powered by existing Supabase RLS and NXS KvK snapshot tables · No sheet or database edits from this screen.</p></section></main>
+<script type="module">
+const API='https://hcjrdofkdkasznywvcxo.supabase.co',KEY='sb_publishable_hkqBaMme70g2f3wcxvaTKg_FczqkpCh';
+const $=id=>document.getElementById(id);let supabase,rows=[],snapshots=[],pastChanges=[],warningHistory=new Map(),rosterHistory=[],radar=[],unresolved=[];
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const number=v=>v===null||v===undefined?'–':Number(v).toLocaleString('en-US',{maximumFractionDigits:2});
+function showLogin(note=''){ $('private').hidden=true;$('login').hidden=false;$('signout').hidden=true;$('warn').textContent=note; }
+function showData(){ $('private').hidden=false;$('login').hidden=true;$('signout').hidden=false;$('warn').textContent='';}
+async function db(){if(!supabase){const mod=await import('https://esm.sh/@supabase/supabase-js@2');supabase=mod.createClient(API,KEY,{auth:{persistSession:true,autoRefreshToken:true}});}return supabase;}
+async function membership(client){const {data:{user},error}=await client.auth.getUser();if(error||!user)return false;const r=await client.from('nxs_memberships').select('role,active').eq('user_id',user.id).maybeSingle();return !r.error&&r.data?.active===true&&['member','r4','r5','admin'].includes(r.data.role);}
+function isCastle(r){return /CASTLE/i.test(String(r.alert||''))}
+function repeatCount(r){return warningHistory.get(r.player_id)?.size||0}
+function importance(a,b){return Number(isCastle(b))-Number(isCastle(a))||repeatCount(b)-repeatCount(a)||Number(b.power_change_m||0)-Number(a.power_change_m||0)}
+function sorting(a,b){
+  const mode=$('sortOrder').value;
+  if(mode==='power')return Number(b.power_change_m||0)-Number(a.power_change_m||0)||importance(a,b);
+  if(mode==='repeat')return repeatCount(b)-repeatCount(a)||importance(a,b);
+  if(mode==='name')return String(a.player_name||'').localeCompare(String(b.player_name||''));
+  return importance(a,b);
+}
+function repeatLabel(r){const n=repeatCount(r);return n>1?'<span class="flag high">'+n+'×</span>':'–'}
+function overview(){
+ const castle=isCastle;
+ const counts=[rows.filter(r=>castle(r)&&/POWER/i.test(r.alert||'')).length,rows.filter(r=>castle(r)&&!/POWER/i.test(r.alert||'')).length,rows.filter(r=>!castle(r)&&/POWER/i.test(r.alert||'')).length];
+ const titles=['Castle + Power','Castle only','Power only'];
+ $('warningOverview').innerHTML=counts.map((n,i)=>'<div style="display:flex;justify-content:space-between;gap:12px;padding:11px;border-bottom:1px solid #d7be90"><span>'+titles[i]+'</span><b style="font-size:21px">'+n+'</b></div>').join('')+'<div style="display:flex;justify-content:space-between;gap:12px;padding:11px"><span>Repeat warnings (2+ snapshots)</span><b>'+rows.filter(r=>repeatCount(r)>1).length+'</b></div>';
+ $('matchRisk').textContent=snapshots[0]?.risk_label||'–';
+ const watch=[...rows].sort(importance).slice(0,8);
+ $('watchPlayers').innerHTML=watch.map(r=>'<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;border-bottom:1px solid #d7be90;padding:8px 0"><b>'+esc(r.player_name)+'</b><span>'+number(r.power_change_m)+'M</span><span>'+esc(r.castle_current||'–')+'</span>'+(repeatCount(r)>1?'<span class="flag high">'+repeatCount(r)+'× warning</span>':'')+'<span>'+esc(r.alert||'–')+'</span></div>').join('');
+ $('castleWatch').textContent=rows.filter(castle).map(r=>r.player_name+' '+(r.castle_current||'')).join(' · ')||'No castle events recorded.';
+ const periods=[...snapshots].reverse().map(snapshot=>({date:snapshot.snapshot_date,total:pastChanges.filter(r=>r.snapshot_id===snapshot.snapshot_id).reduce((sum,r)=>sum+Number(r.power_change_m||0),0)}));
+ const max=Math.max(1,...periods.map(p=>Math.max(0,p.total)));
+ $('trendChart').innerHTML=periods.map(p=>'<div style="text-align:center;flex:1;min-width:80px"><b>'+number(p.total)+'M</b><div style="margin:7px auto 0;max-width:125px;background:linear-gradient(#cda76b,#89602f);height:'+Math.max(8,Math.round(95*Math.max(0,p.total)/max))+'px"></div><small>'+esc(p.date)+'</small></div>').join('');
+}
+const briefText=()=>{
+ const latest=snapshots[0]||{};
+ const top=[...rows].sort(importance).filter(isCastle).slice(0,8).map(r=>r.player_name);
+ return ['KvK Prep Update – '+(latest.snapshot_date||'Unknown date'),'NXS planning signal: '+(latest.risk_label||'Unknown')+' (score '+number(latest.risk_score)+')','Tracked players: '+number(latest.tracked_players),'Warnings: '+number(latest.warning_count),'Castle upgrades: '+number(latest.castle_upgrades),'Repeat warnings: '+rows.filter(r=>repeatCount(r)>1).length,'Growth Radar candidates: '+radar.length+' (near +1.5M: '+radar.filter(r=>r.delta>=1.125).length+')','Open identity reviews: '+unresolved.length,'Castle follow-up: '+top.join(', '),'','Internal tracking only; verify against current in-game data.'].join('\n');
+};
+function renderOperations(){
+ const history=[...rosterHistory].sort((a,b)=>a.snapshot_date.localeCompare(b.snapshot_date));
+ const previous=new Map(),candidates=[];
+ for(const item of history){
+  const prior=previous.get(item.player_id);
+  if(prior && item.snapshot_id===snapshots[0]?.snapshot_id && item.is_warning===false && prior.castle===item.castle){
+    const delta=Math.round((Number(item.power_m)-Number(prior.power_m))*100)/100;
+    if(delta>0 && delta<=1.5)candidates.push({name:item.player_name,delta,castle:item.castle,identity:item.identity_status});
+  }
+  previous.set(item.player_id,item);
+ }
+ radar=candidates.sort((a,b)=>b.delta-a.delta||a.name.localeCompare(b.name));
+ unresolved=history.filter(r=>r.snapshot_id===snapshots[0]?.snapshot_id && /unresolved|review|unknown/i.test(String(r.identity_status||'')));
+ $('radarCount').textContent=radar.length;$('nearCount').textContent=radar.filter(r=>r.delta>=1.125).length;
+ $('radarRows').innerHTML=radar.map(r=>'<tr><td>'+esc(r.name)+'</td><td>'+number(r.delta)+'</td><td>'+number(100*r.delta/1.5)+'%</td><td>'+esc(r.castle||'–')+'</td><td><span class="flag '+(r.delta>=1.125?'medium':'low')+'">'+(r.delta>=1.125?'Near threshold':'Sub-threshold')+'</span></td></tr>').join('')||'<tr><td colspan="5">No candidates with comparable history.</td></tr>';
+ $('identityReviews').innerHTML=unresolved.map(r=>'<p><b>'+esc(r.player_name)+'</b> · '+esc(r.castle||'–')+' · '+number(r.power_m)+'M<br><span class="flag medium">'+esc(r.identity_status||'Review needed')+'</span></p>').join('')||'<p class="muted">No unresolved identities in the latest import.</p>';
+ $('briefBody').innerHTML=briefText().split('\n').map(line=>'<p style="margin:7px 0">'+esc(line)+'</p>').join('');
+ $('riskTrend').innerHTML='<table style="min-width:0"><thead><tr><th>Snapshot</th><th>NXS score</th><th>Signal</th></tr></thead><tbody>'+[...snapshots].reverse().map(r=>'<tr><td>'+esc(r.snapshot_date)+'</td><td>'+number(r.risk_score)+'</td><td>'+esc(r.risk_label)+'</td></tr>').join('')+'</tbody></table>';
+ $('briefStatus').textContent='As of '+(snapshots[0]?.snapshot_date||'–')+' · NXS planning model · read-only';
+}
+function render(){
+const q=$('filter').value.toLowerCase().trim(),severity=$('severity').value;
+const matches=rows.filter(r=>(!q||String(r.player_name??'').toLowerCase().includes(q))&&(!severity||String(r.severity??'').toLowerCase()===severity.toLowerCase())).sort(sorting);
+$('visibleCount').textContent=matches.length+' rows';
+$('players').innerHTML=matches.map(r=>'<tr><td>'+esc(r.player_name)+'</td><td>'+number(r.power_current_m)+'</td><td>'+number(r.power_change_m)+'</td><td>'+esc(r.castle_current||r.castle_previous||'–')+'</td><td>'+esc(r.alert||'–')+'</td><td>'+repeatLabel(r)+'</td><td><span class="flag '+(r.severity==='High'?'high':r.severity==='Medium'?'medium':'low')+'">'+esc(r.severity||'–')+'</span></td></tr>').join('')||'<tr><td colspan="7">No matching player records.</td></tr>';
+$('history').innerHTML=snapshots.map(s=>'<tr><td>'+esc(s.snapshot_date)+'</td><td>'+number(s.tracked_players)+'</td><td>'+number(s.warning_count)+'</td><td>'+number(s.castle_upgrades)+'</td><td>'+esc(s.risk_label||'–')+'</td></tr>').join('');
+}
+async function load(){
+$('refresh').disabled=true;$('status').textContent='Loading protected NXS data…';
+try{const client=await db();if(!await membership(client)){showLogin('Sign-in required or membership not approved.');return;}
+const summary=await client.from('kvk_snapshots').select('snapshot_id,snapshot_date,source_period,risk_label,risk_score,tracked_players,warning_count,castle_upgrades').order('snapshot_date',{ascending:false}).limit(30);
+if(summary.error)throw summary.error;snapshots=summary.data||[];const last=snapshots[0];
+if(!last)throw Error('No imported KvK snapshots found.');
+const players=await client.from('kvk_player_changes').select('player_id,player_name,power_previous_m,power_current_m,power_change_m,castle_previous,castle_current,alert,severity,identity_status').eq('snapshot_id',last.snapshot_id).limit(1000);
+if(players.error)throw players.error;rows=players.data||[];
+const all=await client.from('kvk_player_changes').select('snapshot_id,player_id,power_change_m').limit(1000);
+if(all.error)throw all.error;pastChanges=all.data||[];
+const rosterResponse=await client.from('kvk_roster_history').select('snapshot_id,snapshot_date,player_id,player_name,power_m,castle,is_warning,identity_status').order('snapshot_date',{ascending:true}).limit(1000);
+if(rosterResponse.error)throw rosterResponse.error;rosterHistory=rosterResponse.data||[];
+warningHistory=new Map();for(const item of pastChanges){if(!item.player_id)continue;if(!warningHistory.has(item.player_id))warningHistory.set(item.player_id,new Set());warningHistory.get(item.player_id).add(item.snapshot_id)}
+$('timeLabel').textContent='Latest imported snapshot: '+last.snapshot_date+' · '+last.source_period;
+$('tracked').textContent=number(last.tracked_players);$('warnings').textContent=number(last.warning_count);$('castles').textContent=number(last.castle_upgrades);$('risk').textContent=last.risk_label||'–';
+$('status').textContent='Protected data loaded · '+rows.length+' player-change rows in latest snapshot · Updated only when a new snapshot is imported.';
+showData();render();overview();renderOperations();
+}catch(error){$('status').textContent='Could not load protected data: '+error.message;console.error(error);}
+finally{$('refresh').disabled=false;}
+}
+$('loginForm').onsubmit=async e=>{e.preventDefault();$('signin').disabled=true;$('warn').textContent='Signing in…';try{const c=await db();const {error}=await c.auth.signInWithPassword({email:$('email').value,password:$('password').value});$('password').value='';if(error)throw error;if(!await membership(c)){await c.auth.signOut();throw Error('Approved NXS membership required.');}await load();}catch(error){showLogin(error.message)}finally{$('signin').disabled=false}};
+$('signout').onclick=async()=>{await(await db()).auth.signOut();rows=[];snapshots=[];pastChanges=[];rosterHistory=[];radar=[];unresolved=[];warningHistory=new Map();showLogin('Signed out.');};
+$('copyBrief').onclick=()=>{try{navigator.clipboard.writeText(briefText()).then(()=>$('copyNotice').textContent='Brief copied.',()=>$('copyNotice').textContent='Copy not available in this browser.');}catch(e){$('copyNotice').textContent='Copy not available in this browser.'}};
+$('refresh').onclick=load;$('filter').oninput=render;$('severity').onchange=render;$('sortOrder').onchange=render;
+try{const c=await db();if(await membership(c))await load();else showLogin();}catch(error){showLogin('Unable to check sign-in status: '+error.message);}
+</script></body></html>
