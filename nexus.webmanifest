@@ -1,0 +1,26 @@
+{
+  "id": "/kingdom-1885/nexus-nxs-pwa",
+  "name": "NEXUS · Kingdom #1885",
+  "short_name": "NEXUS NXS",
+  "description": "NEXUS Alliance Operations · Kingdom #1885",
+  "start_url": "./preview/kingdom-hub-scouting-v6.html?view=map",
+  "scope": "./",
+  "display": "fullscreen",
+  "background_color": "#17110c",
+  "theme_color": "#342313",
+  "orientation": "landscape",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
