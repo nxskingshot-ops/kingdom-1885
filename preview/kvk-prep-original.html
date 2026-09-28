@@ -81,11 +81,21 @@ header>div{min-width:0}
 <div class="metric-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))"><div class="metric">Radar candidates<b id="radarCount">–</b></div><div class="metric">Near +1.5M<b id="nearCount">–</b></div></div>
 <div class="tablewrap"><table style="min-width:550px"><thead><tr><th>Player</th><th>Change (M)</th><th>% of threshold</th><th>Castle</th><th>Status</th></tr></thead><tbody id="radarRows"></tbody></table></div>
 <p class="aside">Near threshold starts at 75% of +1.5M. This is an NXS tracking rule, not an official matchmaking threshold.</p></section><section class="panel"><h2>🪪 Identity Reviews</h2><p class="muted">Names with unresolved identity remain separate until a human confirms a match.</p><div id="identityReviews">Loading…</div></section></div><div><section class="panel"><h2>♛ R4 / R5 Command Brief</h2><p id="briefStatus" class="muted">Snapshot-based planning summary · read-only</p><div id="briefBody"></div><button type="button" id="copyBrief">Copy full brief</button> <button type="button" id="copyShortBrief">Copy short chat version</button><p id="copyNotice" class="aside" role="status"></p></section><section class="panel"><h2>📊 Matchmaking Risk Trend</h2><div id="riskTrend" class="tablewrap"></div><p class="aside">Historical NXS risk labels and scores only. Not a Kingshot formula or prediction.</p></section></div></div>
+<section class="panel" id="full-roster" aria-labelledby="rosterHeading">
+<h2 id="rosterHeading">👥 Full Player Roster</h2>
+<p class="muted">All players from the latest imported snapshot, including those without warnings. Historical NXS planning data, not live in-game information.</p>
+<div class="toolbar" style="margin:12px 0">
+<input id="rosterFilter" type="search" placeholder="Find player or ID…" aria-label="Search full roster">
+<select id="rosterStatus" aria-label="Filter full roster"><option value="all">All players</option><option value="warning">Warnings only</option><option value="clear">No warning</option><option value="review">Identity review</option></select>
+<select id="rosterSort" aria-label="Sort full roster"><option value="power">Power: high to low</option><option value="name">Player name</option><option value="change">Power change: high to low</option><option value="status">Warnings first</option></select>
+<span id="rosterCount" class="muted" role="status">Loading roster…</span></div>
+<div class="tablewrap"><table><thead><tr><th>Player</th><th>Player ID</th><th>Power (M)</th><th>Change (M)</th><th>Castle</th><th>Alert / identity</th></tr></thead><tbody id="rosterRows"><tr><td colspan="6">Loading…</td></tr></tbody></table></div>
+<p id="rosterSource" class="aside"></p></section>
 <div id="watchlist"><div class="panel"><h2>⚠ Matchmaking Warnlist</h2><p class="muted">Historical NXS planning indicators, not a Kingshot matchmaking formula. Power values in millions (M).</p><div class="toolbar" style="margin-bottom:12px"><input id="filter" type="search" placeholder="Find player…"><select id="sortOrder" aria-label="Sort players"><option value="priority">Castle → Repeat → Power</option><option value="power">Highest power gain</option><option value="repeat">Most repeated warnings</option><option value="name">Player name</option></select><select id="severity"><option value="">All alerts</option><option value="High">High</option><option value="Medium">Medium</option><option value="Low">Low</option></select><span id="visibleCount" class="muted"></span></div><div class="tablewrap"><table><thead><tr><th>Player</th><th>Power (M)</th><th>Change (M)</th><th>Castle</th><th>Alert</th><th>Repeat</th><th>Severity</th></tr></thead><tbody id="players"></tbody></table></div><p class="aside">The list shows available records from the latest imported snapshot. Player identities and power changes are sourced from imported history; verify against current game data before making decisions.</p></div>
 <div class="panel"><h2>📈 Snapshot history</h2><div class="tablewrap"><table><thead><tr><th>Date</th><th>Tracked</th><th>Warnings</th><th>Castle changes</th><th>Risk label</th></tr></thead><tbody id="history"></tbody></table></div></div>
 </div>
 <p class="aside">Read-only protected NXS integration · Historical imported snapshots · Not live Kingshot data.</p>
-<nav class="bottom-navigation" aria-label="Dashboard sections"><a href="#dashboard">Dashboard</a><a href="#watchlist">Watchlist</a><a href="#trends">Trends</a><a href="#castle-section">Castle Activity</a></nav>
+<nav class="bottom-navigation" aria-label="Dashboard sections"><a href="#dashboard">Dashboard</a><a href="#full-roster">Full Roster</a><a href="#watchlist">Watchlist</a><a href="#trends">Trends</a><a href="#castle-section">Castle Activity</a></nav>
 </section></main><script type="module">
 const API='https://hcjrdofkdkasznywvcxo.supabase.co',KEY='sb_publishable_hkqBaMme70g2f3wcxvaTKg_FczqkpCh';
 const $=id=>document.getElementById(id);let supabase,rows=[],snapshots=[],pastChanges=[],warningHistory=new Map(),rosterHistory=[],radar=[],unresolved=[];
@@ -169,6 +179,39 @@ function renderOperations(){
  $('riskTrend').innerHTML='<table style="min-width:0"><thead><tr><th>Snapshot</th><th>NXS score</th><th>Signal</th></tr></thead><tbody>'+[...snapshots].reverse().map(r=>'<tr><td>'+esc(r.snapshot_date)+'</td><td>'+number(r.risk_score)+'</td><td>'+esc(r.risk_label)+'</td></tr>').join('')+'</tbody></table>';
  $('briefStatus').textContent='As of '+(snapshots[0]?.snapshot_date||'–')+' · NXS planning model · read-only';
 }
+function renderFullRoster(){
+ const latest=snapshots[0],previous=snapshots[1];
+ const latestRows=rosterHistory.filter(r=>r.snapshot_id===latest?.snapshot_id);
+ const oldById=new Map(rosterHistory.filter(r=>r.snapshot_id===previous?.snapshot_id).map(r=>[String(r.player_id),r]));
+ const alertsById=new Map(rows.map(r=>[String(r.player_id),r]));
+ const q=$('rosterFilter').value.trim().toLowerCase(),status=$('rosterStatus').value,sort=$('rosterSort').value;
+ const roster=latestRows.map(r=>{
+  const prior=oldById.get(String(r.player_id));
+  const change=prior?Math.round((Number(r.power_m)-Number(prior.power_m))*100)/100:null;
+  return {...r,change,alert:alertsById.get(String(r.player_id))};
+ }).filter(r=>{
+  const review=/unresolved|review|unknown/i.test(String(r.identity_status||''));
+  return (!q||String(r.player_name||'').toLowerCase().includes(q)||String(r.player_id||'').toLowerCase().includes(q))&&
+   (status==='all'||status==='warning'&&r.is_warning===true||status==='clear'&&r.is_warning===false||status==='review'&&review);
+ });
+ roster.sort((a,b)=>{
+  if(sort==='name')return String(a.player_name).localeCompare(String(b.player_name));
+  if(sort==='change')return (b.change??-Infinity)-(a.change??-Infinity)||Number(b.power_m)-Number(a.power_m);
+  if(sort==='status')return Number(b.is_warning)-Number(a.is_warning)||Number(b.power_m)-Number(a.power_m);
+  return Number(b.power_m)-Number(a.power_m);
+ });
+ $('rosterCount').textContent=roster.length+' / '+latestRows.length+' players';
+ $('rosterRows').innerHTML=roster.map(r=>{
+  const review=/unresolved|review|unknown/i.test(String(r.identity_status||''));
+  const label=review?'Identity review':r.is_warning===true?(r.alert?.alert||'Warning'):'No warning';
+  const severity=review?'medium':r.is_warning===true?(r.alert?.severity==='High'?'high':r.alert?.severity==='Medium'?'medium':'low'):'low';
+  const delta=r.change===null?'–':(r.change>0?'+':'')+number(r.change);
+  return '<tr><td>'+esc(r.player_name)+'</td><td>'+esc(r.player_id)+'</td><td>'+number(r.power_m)+'</td><td>'+delta+'</td><td>'+esc(r.castle||'–')+'</td><td><span class="flag '+severity+'">'+esc(label)+'</span></td></tr>';
+ }).join('')||'<tr><td colspan="6">No players match the selected filters.</td></tr>';
+ $('rosterSource').textContent='Latest import: '+(latest?.snapshot_date||'–')+
+  ' · '+latestRows.length+' player records · Change compared with '+(previous?.snapshot_date||'no earlier snapshot')+
+  '. New or unmatched player IDs show –; no change is invented.';
+}
 function render(){
 const q=$('filter').value.toLowerCase().trim(),severity=$('severity').value;
 const matches=rows.filter(r=>(!q||String(r.player_name??'').toLowerCase().includes(q))&&(!severity||String(r.severity??'').toLowerCase()===severity.toLowerCase())).sort(sorting);
@@ -192,7 +235,7 @@ warningHistory=new Map();for(const item of pastChanges){if(!item.player_id)conti
 $('timeLabel').textContent='Latest imported snapshot: '+last.snapshot_date+' · '+last.source_period;
 $('tracked').textContent=number(last.tracked_players);$('warnings').textContent=number(last.warning_count);$('castles').textContent=number(last.castle_upgrades);$('risk').textContent=last.risk_label||'–';$('majorGains').textContent='+'+number(rows.filter(r=>Number(r.power_change_m)>1.5).reduce((sum,r)=>sum+Number(r.power_change_m||0),0))+'M';
 $('status').textContent='Protected data loaded · '+rows.length+' recorded player alerts · Snapshot '+last.snapshot_date+'. Refresh reloads the database only; a new game-data import is needed to update this snapshot.';
-showData();render();overview();renderOperations();
+showData();render();renderFullRoster();overview();renderOperations();
 }catch(error){$('status').textContent='Could not load protected data: '+error.message;console.error(error);}
 finally{$('refresh').disabled=false;}
 }
@@ -201,6 +244,7 @@ $('signout').onclick=async()=>{await(await db()).auth.signOut();rows=[];snapshot
 const copyMessage=text=>{try{navigator.clipboard.writeText(text).then(()=>$('copyNotice').textContent='Message copied.',()=>$('copyNotice').textContent='Copy unavailable in this browser.');}catch(e){$('copyNotice').textContent='Copy unavailable in this browser.'}};
 $('copyBrief').onclick=()=>copyMessage(briefText());
 $('copyShortBrief').onclick=()=>copyMessage(shortBrief());
+['rosterFilter','rosterStatus','rosterSort'].forEach(id=>$(id).addEventListener(id==='rosterFilter'?'input':'change',renderFullRoster));
 $('refresh').onclick=load;$('filter').oninput=render;$('severity').onchange=render;$('sortOrder').onchange=render;
 try{const c=await db();if(await membership(c))await load();else showLogin();}catch(error){showLogin('Unable to check sign-in status: '+error.message);}
 setInterval(()=>{if(!$('private').hidden&&!document.hidden&&(!window.frameElement||window.frameElement.getClientRects().length))load()},60000);
