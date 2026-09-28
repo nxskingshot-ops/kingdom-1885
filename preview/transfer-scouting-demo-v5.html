@@ -54,10 +54,10 @@ table{border-collapse:collapse;width:100%;min-width:680px;font-size:12px}th{text
 <div class="toolbar"><div class="search"><input id="search" type="search" aria-label="Search fictional candidates" placeholder="🔎 Search player, kingdom, alliance, role…"></div><select id="sort" aria-label="Sort candidates"><option value="fit">Highest fit</option><option value="power">Highest power</option><option value="name">Player name A–Z</option></select><button id="addCandidate" type="button">＋ Add Candidate</button></div>
 <div class="filters" role="group" aria-label="Filter fictional candidates"><button data-filter="all" aria-pressed="true" class="active">All Candidates</button><button data-filter="high" aria-pressed="false">High Fit</button><button data-filter="contact" aria-pressed="false">Contacted +</button><button data-filter="review" aria-pressed="false">Needs Review</button></div>
 <p id="rowCount" class="smallprint" role="status"></p>
-<div class="scroll"><table class="scouting-table"><thead><tr><th>✓</th><th>Player</th><th>KD</th><th>Alliance</th><th>Role</th><th>TG</th><th>Power</th><th>Fit</th><th>Transfer</th><th>Status</th></tr></thead><tbody id="boardRows"></tbody></table></div>
+<div class="scroll"><table class="scouting-table"><thead><tr><th>✓</th><th>Player</th><th>KD</th><th>Alliance</th><th>Role</th><th>TG</th><th>Power</th><th>Fit</th><th>Invitation</th><th>Transfer</th><th>Status</th></tr></thead><tbody id="boardRows"></tbody></table></div>
 <div class="actions"><button type="button" id="compareBtn">⚖ Compare selected (0/3)</button><button type="button" id="exportCsv">↓ Export visible CSV</button></div>
 <div id="comparison" aria-live="polite"></div></div></section>
-<section class="panel"><div class="panel-head"><h2>Scouting rules · Demo</h2></div><div class="panel-body"><div class="info">Role needs, transfer eligibility and fit scores are fictional examples. No contacts, approvals or transfers occur when you change demo status. Candidate details can be edited freely and are saved only on this device.</div><p id="storageNotice" class="smallprint">Demo edits are saved only in this browser.</p></div></section>
+<section class="panel"><div class="panel-head"><h2>Scouting rules · Demo</h2></div><div class="panel-body"><div class="info">Invitation categories use a provisional 170M ordinary-invite planning cap (up to 170M = Ordinary, above 170M = Special), with optional manual override; confirm official Kingshot rules for each window. Role needs, transfer eligibility and fit scores are fictional examples. No contacts, approvals or transfers occur when you change demo status. Candidate details can be edited freely and are saved only on this device.</div><p id="storageNotice" class="smallprint">Demo edits are saved only in this browser.</p></div></section>
 </div>
 <aside class="side-stack">
 <section class="panel"><div class="panel-head"><h2>NXS Needs</h2><small>4 planning categories</small></div><div class="panel-body needs-grid">
@@ -72,4 +72,4 @@ table{border-collapse:collapse;width:100%;min-width:680px;font-size:12px}th{text
 </div>
 </main>
 <div id="modal" role="dialog" aria-modal="true" aria-labelledby="editorTitle" hidden><div class="modal-body"><div class="modal-title"><h2 id="editorTitle">Demo candidate</h2><button id="closeModal" type="button" class="secondary" aria-label="Close">✕</button></div><p id="editorSub" class="smallprint"></p><p id="editorError" role="alert"></p><form id="candidateForm"></form></div></div>
-<script src="./transfer-scouting-demo-v5.js" defer></script></body></html>
+<script src="./transfer-scouting-demo-v5.js?build=invite-v1" defer></script></body></html>
