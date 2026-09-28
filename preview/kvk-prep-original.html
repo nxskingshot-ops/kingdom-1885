@@ -233,7 +233,7 @@ const rosterResponse=await client.from('kvk_roster_history').select('snapshot_id
 if(rosterResponse.error)throw rosterResponse.error;rosterHistory=rosterResponse.data||[];
 warningHistory=new Map();for(const item of pastChanges){if(!item.player_id)continue;if(!warningHistory.has(item.player_id))warningHistory.set(item.player_id,new Set());warningHistory.get(item.player_id).add(item.snapshot_id)}
 $('timeLabel').textContent='Latest imported snapshot: '+last.snapshot_date+' · '+last.source_period;
-$('tracked').textContent=number(last.tracked_players);$('warnings').textContent=number(last.warning_count);$('castles').textContent=number(last.castle_upgrades);$('risk').textContent=last.risk_label||'–';$('majorGains').textContent='+'+number(rows.filter(r=>Number(r.power_change_m)>1.5).reduce((sum,r)=>sum+Number(r.power_change_m||0),0))+'M';
+$('tracked').textContent=number(last.tracked_players);$('warnings').textContent=number(last.warning_count);$('castles').textContent=number(last.castle_upgrades);$('matchRisk').textContent=last.risk_label||'–';$('majorGains').textContent='+'+number(rows.filter(r=>Number(r.power_change_m)>1.5).reduce((sum,r)=>sum+Number(r.power_change_m||0),0))+'M';
 $('status').textContent='Protected data loaded · '+rows.length+' recorded player alerts · Snapshot '+last.snapshot_date+'. Refresh reloads the database only; a new game-data import is needed to update this snapshot.';
 showData();render();renderFullRoster();overview();renderOperations();
 }catch(error){$('status').textContent='Could not load protected data: '+error.message;console.error(error);}
