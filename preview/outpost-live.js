@@ -16,11 +16,11 @@ const styles=document.createElement('style');styles.textContent=`
 #livePanel button{margin:4px 3px 0 0;padding:8px 12px;background:#eac681;border:1px solid #936a2f;border-radius:7px;color:#28190a;font-weight:800}
 #livePanel .quiet{color:#cbb78d;font-size:11px}#liveMessage{min-height:22px;white-space:pre-wrap}#livePanel .panelHeader{display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:-12px;background:#282016;z-index:5;padding:8px 0;border-bottom:1px solid #ae843b}#livePanel .panelHeader h3{margin:0}#livePanel button#liveCloseTop{display:block;background:#efc87e;color:#241807;font-size:20px;min-width:46px;min-height:42px;line-height:20px;padding:7px 12px;border-radius:9px}#liveSyncStatus{display:inline-block;background:#2a2519;color:#fff1ce;border:1px solid #c19858;border-radius:7px;padding:7px;font-size:11px;min-width:88px;max-width:235px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 `;document.head.appendChild(styles);
-const controls=document.createElement('div');controls.id='liveControls';controls.innerHTML='<button type="button" id="liveRefresh">↻ Sync</button><small id="liveSyncStatus" role="status">Waiting…</small><button type="button" id="liveEditorBtn">🔒 Officer</button>';document.getElementById('app').appendChild(controls);
+const controls=document.createElement('div');controls.id='liveControls';controls.innerHTML='<button type="button" id="liveRefresh">↻ Refresh Map</button><small id="liveSyncStatus" role="status">Waiting…</small><button type="button" id="liveEditorBtn">🔒 Manage Outposts</button>';document.getElementById('app').appendChild(controls);
 const panel=document.createElement('section');panel.id='livePanel';panel.hidden=true;
-panel.innerHTML='<div class="panelHeader"><h3>♛ Outpost management</h3><button id="liveCloseTop" type="button" aria-label="Close officer panel">✕</button></div><div id="liveMessage" role="status"></div><div id="liveFields"></div><button type="button" id="liveClose">Close</button>';document.getElementById('app').appendChild(panel);
+panel.innerHTML='<div class="panelHeader"><h3>♛ Outpost Administration</h3><button id="liveCloseTop" type="button" aria-label="Close outpost administration">✕</button></div><div id="liveMessage" role="status"></div><div id="liveFields"></div><button type="button" id="liveClose">Close</button>';document.getElementById('app').appendChild(panel);
 function message(s){$('liveMessage').textContent=s}
-function setBadge(txt){notice.textContent=txt;const status=$('liveSyncStatus');if(status){status.textContent=txt;status.title=txt}const sync=$('liveRefresh');if(sync){sync.textContent=txt.length>33?txt.slice(0,33)+'…':txt;sync.title=txt}}
+function setBadge(txt){notice.textContent=txt;const status=$('liveSyncStatus');if(status){status.textContent=txt;status.title=txt}const sync=$('liveRefresh');if(sync){sync.textContent='↻ Refresh Map';sync.title=txt}}
 function escapeText(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function redraw(){render();if(sel){const o=DATA.find(v=>v.id===sel);if(o)showOutpostPopup(o)}}
 function updateData(rows){
@@ -59,19 +59,19 @@ async function isOfficer(db){
  return !error && data?.active===true && (data.role==='admin'||data.role==='r4');
 }
 function loginForm(){
- chosen=null;$('liveFields').innerHTML='<label>Email<input id="liveEmail" type="email" autocomplete="username"></label><label>Password<input id="livePass" type="password" autocomplete="current-password"></label><button id="liveSignIn" type="button">Sign in</button><p class="quiet">Only approved R4/admin members can edit. Do not use your GitHub password.</p>';
+ chosen=null;$('liveFields').innerHTML='<label>Email<input id="liveEmail" type="email" autocomplete="username"></label><label>Password<input id="livePass" type="password" autocomplete="current-password"></label><button id="liveSignIn" type="button">Administrator Login</button><p class="quiet">Only approved R4/admin members can edit. Do not use your GitHub password.</p>';
  $('liveSignIn').onclick=async()=>{
   const button=$('liveSignIn');button.disabled=true;
   try{const db=await client();const {error}=await db.auth.signInWithPassword({email:$('liveEmail').value,password:$('livePass').value});$('livePass').value='';if(error)throw error;
   officer=await isOfficer(db);if(!officer){await db.auth.signOut();throw Error('Active NXS R4/admin membership required.')}
-  chooseForm();message('Signed in as an officer.');
+  chooseForm();message('Administrator access confirmed.');
   }catch(e){message('Sign in failed: '+e.message)}finally{button.disabled=false}
  };
 }
 function chooseForm(){
  $('liveFields').innerHTML='<p class="quiet">Select an outpost on the map, then tap Edit selected. The original six conflicting entries are read-only.</p><button id="liveEditSelected" type="button">Edit selected</button><button id="liveSignOut" type="button">Sign out</button>';
  $('liveEditSelected').onclick=editSelected;
- $('liveSignOut').onclick=async()=>{(await client()).auth.signOut();officer=false;loginForm();message('Signed out.')};
+ $('liveSignOut').onclick=async()=>{(await client()).auth.signOut();officer=false;loginForm();message('Logged out.')};
 }
 function editSelected(){
  if(!officer)return loginForm();
