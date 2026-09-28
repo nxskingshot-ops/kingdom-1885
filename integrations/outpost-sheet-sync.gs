@@ -8,6 +8,7 @@ if(!secret)throw Error('Set NXS_OUTPOST_SYNC_SECRET in Script Properties');
 const rows=[];const data=sheet.getDataRange().getDisplayValues();
 for(let i=1;i<data.length;i++){
 const c=data[i],name=String(c[1]||'').trim();if(!name)continue;
+if(!String(c[3]||'').trim()||String(c[4]||'').trim()===''||String(c[5]||'').trim()==='')throw Error('Missing alliance or coordinate at row '+(i+1));
 rows.push({row:i+1,level:Number(String(c[0]).replace(/[^0-9]/g,'')),structure_type:name,alliance:c[3],coord_x:Number(c[4]),coord_y:Number(c[5])});
 }
 if(!rows.length)throw Error('Empty outpost input');
