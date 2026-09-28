@@ -1,0 +1,14 @@
+Kingdom #1885 — Outposts PWA test build
+
+On GitHub Upload files select these FIVE individual files from this folder (NOT the ZIP):
+index.html
+manifest.webmanifest
+sw.js
+icon-192.png
+icon-512.png
+
+README already exists and can remain unchanged. Commit the five files to the main branch.
+
+This is a static saved map snapshot, NOT a live Google Sheets synchronization.
+Authentication and editing are not connected yet.
+To publish: GitHub Pages needs a public repository on GitHub Free, or an appropriate paid plan for private repository hosting. Publishing a private repo via Pages can make the deployed site public; do not include secrets.

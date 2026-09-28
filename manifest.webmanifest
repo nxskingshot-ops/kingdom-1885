@@ -1,0 +1,25 @@
+{
+  "name": "Kingdom #1885 \u00b7 Outposts",
+  "short_name": "Kingdom 1885",
+  "description": "Kingshot Kingdom #1885 \u2014 Outposts test map",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#17110c",
+  "theme_color": "#5b3c22",
+  "orientation": "landscape",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
