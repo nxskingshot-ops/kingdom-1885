@@ -47,7 +47,8 @@
       for (const row of rows) {
         const id = /^outpost-sheet:(\d+)$/.exec(row.source_key || '');
         const marker = id ? original.get(Number(id[1]) - 1) : null;
-        if (!marker || marker.type !== row.structure_type) continue;
+        if (!marker) continue;
+        marker.type = row.structure_type;
         marker.alliance = row.alliance;
         marker.level = row.level;
         marker.x = row.coord_x;
