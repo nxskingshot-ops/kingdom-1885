@@ -14,13 +14,13 @@ const styles=document.createElement('style');styles.textContent=`
 #livePanel[hidden]{display:none}#livePanel h3{margin:0 0 10px;font:700 17px Georgia,serif}
 #livePanel label{display:block;margin:7px 0}#livePanel input,#livePanel select{display:block;width:100%;box-sizing:border-box;margin-top:3px;padding:8px;background:#191b16;border:1px solid #82623c;border-radius:6px;color:#fff;font:13px system-ui}
 #livePanel button{margin:4px 3px 0 0;padding:8px 12px;background:#eac681;border:1px solid #936a2f;border-radius:7px;color:#28190a;font-weight:800}
-#livePanel .quiet{color:#cbb78d;font-size:11px}#liveMessage{min-height:22px;white-space:pre-wrap}
+#livePanel .quiet{color:#cbb78d;font-size:11px}#liveMessage{min-height:22px;white-space:pre-wrap}#livePanel .panelHeader{display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:-12px;background:#282016;z-index:5;padding:8px 0;border-bottom:1px solid #ae843b}#livePanel .panelHeader h3{margin:0}#livePanel button#liveCloseTop{display:block;background:#efc87e;color:#241807;font-size:20px;min-width:46px;min-height:42px;line-height:20px;padding:7px 12px;border-radius:9px}#liveSyncStatus{display:inline-block;background:#2a2519;color:#fff1ce;border:1px solid #c19858;border-radius:7px;padding:7px;font-size:11px;min-width:88px;max-width:235px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 `;document.head.appendChild(styles);
-const controls=document.createElement('div');controls.id='liveControls';controls.innerHTML='<button type="button" id="liveRefresh">↻ Sync</button><button type="button" id="liveEditorBtn">🔒 Officer</button>';document.getElementById('app').appendChild(controls);
+const controls=document.createElement('div');controls.id='liveControls';controls.innerHTML='<button type="button" id="liveRefresh">↻ Sync</button><small id="liveSyncStatus" role="status">Waiting…</small><button type="button" id="liveEditorBtn">🔒 Officer</button>';document.getElementById('app').appendChild(controls);
 const panel=document.createElement('section');panel.id='livePanel';panel.hidden=true;
-panel.innerHTML='<h3>♛ Outpost management</h3><div id="liveMessage" role="status"></div><div id="liveFields"></div><button type="button" id="liveClose">Close</button>';document.getElementById('app').appendChild(panel);
+panel.innerHTML='<div class="panelHeader"><h3>♛ Outpost management</h3><button id="liveCloseTop" type="button" aria-label="Close officer panel">✕</button></div><div id="liveMessage" role="status"></div><div id="liveFields"></div><button type="button" id="liveClose">Close</button>';document.getElementById('app').appendChild(panel);
 function message(s){$('liveMessage').textContent=s}
-function setBadge(txt){notice.textContent=txt}
+function setBadge(txt){notice.textContent=txt;const status=$('liveSyncStatus');if(status){status.textContent=txt;status.title=txt}}
 function escapeText(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function redraw(){render();if(sel){const o=DATA.find(v=>v.id===sel);if(o)showOutpostPopup(o)}}
 function updateData(rows){
@@ -37,13 +37,13 @@ function updateData(rows){
  $('sourceNote').textContent='Supabase live: '+applied+' linked · '+(DATA.length-applied)+' snapshot-only · '+unmapped+' unmatched. Six conflicting sheet entries remain snapshot-only.';
 }
 async function refresh(){
- if(busy)return;busy=true;
+ if(busy)return;busy=true;setBadge('● Syncing…');
  try{
   const response=await fetch(URL+'/rest/v1/public_outposts?select=id,source_key,alliance,structure_type,level,coord_x,coord_y,updated_at&published=eq.true&order=id.asc',{headers:{apikey:KEY}});
-  if(!response.ok)throw Error('HTTP '+response.status);
+  if(!response.ok)throw Error('HTTP '+response.status+' from Supabase');
   const rows=await response.json();if(!Array.isArray(rows))throw Error('Bad response');
   updateData(rows);
- }catch(e){setBadge('● Saved map · offline');$('sourceNote').textContent='Live sync unavailable: original 74 marker snapshot retained.';console.error(e)}
+ }catch(e){setBadge('● Sync failed: '+e.message);$('sourceNote').textContent='Live sync unavailable: original 74 marker snapshot retained. '+e.message;console.error(e)}
  finally{busy=false}
 }
 async function client(){
@@ -98,8 +98,12 @@ async function save(){
   await refresh();chooseForm();message('Changes saved to Supabase and the map refreshed.');
  }catch(e){message('Save failed: '+e.message)}finally{btn.disabled=false}
 }
-$('liveRefresh').onclick=refresh;
-$('liveClose').onclick=()=>panel.hidden=true;
+$('liveRefresh').onclick=()=>{panel.hidden=true;refresh()};
+const closePanel=()=>{panel.hidden=true;message('')};
+$('liveClose').onclick=closePanel;
+$('liveCloseTop').onclick=closePanel;
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!panel.hidden)closePanel()});
+$('livePanel').addEventListener('click',e=>e.stopPropagation());
 $('liveEditorBtn').onclick=async()=>{
  panel.hidden=!panel.hidden;if(panel.hidden)return;
  try{const db=await client();officer=await isOfficer(db)}catch{officer=false}
