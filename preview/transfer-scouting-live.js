@@ -5,7 +5,7 @@ const db=createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true}}
 const $=id=>document.getElementById(id);
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=x=>x==null?'–':Number(x).toLocaleString('en-US',{maximumFractionDigits:1});
-let players=[],chosen=new Set(),active=null;
+let players=[],chosen=new Set(),active=null,canEdit=false;
 function showLogin(message=''){$('login').hidden=false;$('private').hidden=true;$('message').textContent=message;}
 function chosenPlayers(){return [...chosen].map(id=>players.find(p=>p.candidate_id===id)).filter(Boolean);}
 function filtered(){const q=$('search').value.trim().toLowerCase();const list=players.filter(p=>[p.player_name,p.kingdom,p.alliance,p.contact_status,p.metadata?.role].some(v=>String(v??'').toLowerCase().includes(q)));const s=$('sort').value;return list.sort((a,b)=>s==='name'?a.player_name.localeCompare(b.player_name):s==='power'?Number(b.power_m||0)-Number(a.power_m||0):Date.parse(b.updated_at)-Date.parse(a.updated_at));}
@@ -29,7 +29,7 @@ if(error){$('count').textContent='Access or database error: '+error.message;retu
 async function check(){try{const {data:{user},error}=await db.auth.getUser();if(error||!user){showLogin();return;}
 const {data:membership,error:merror}=await db.from('nxs_memberships').select('role,active,expires_at').eq('user_id',user.id).maybeSingle();
 if(merror||!membership?.active||!['member','r4','admin'].includes(membership.role)||(membership.expires_at&&Date.parse(membership.expires_at)<=Date.now())){showLogin('Approved NXS membership required.');return;}
-$('login').hidden=true;$('private').hidden=false;await load();
+canEdit=['r4','admin'].includes(membership.role);$('login').hidden=true;$('private').hidden=false;await load();
 }catch(e){showLogin('Unable to verify access: '+e.message)}}
 $('authForm').onsubmit=async e=>{e.preventDefault();$('message').textContent='Signing in…';const {error}=await db.auth.signInWithPassword({email:$('email').value,password:$('password').value});$('password').value='';if(error)showLogin(error.message);else check();};
 $('refresh').onclick=check;$('search').oninput=render;$('sort').onchange=render;
