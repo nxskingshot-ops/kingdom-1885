@@ -95,7 +95,24 @@ function showLogin(note=''){ $('private').hidden=true;$('login').hidden=false;$(
 function showData(){ $('private').hidden=false;$('login').hidden=true;$('signout').hidden=false;$('warn').textContent='';}
 const withTimeout=(promise,label,ms=15000)=>Promise.race([promise,new Promise((_,reject)=>setTimeout(()=>reject(Error(label+' timed out after 15 seconds. Please check your connection and retry.')),ms))]);
 async function db(){if(!supabase){const mod=await import('https://esm.sh/@supabase/supabase-js@2');supabase=mod.createClient(API,KEY,{auth:{persistSession:true,autoRefreshToken:true}});}return supabase;}
-async function membership(client){const {data:{session},error}=await withTimeout(client.auth.getSession(),'Session verification',10000);if(error||!session?.user)return false;const r=await withTimeout(client.from('nxs_memberships').select('role,active,expires_at').eq('user_id',session.user.id).maybeSingle(),'Membership database lookup',10000);if(r.error)throw Error('Membership lookup failed: '+r.error.message);return r.data?.active===true&&['member','r4','admin'].includes(r.data.role)&&(!r.data.expires_at||Date.parse(r.data.expires_at)>Date.now());}
+let signedInSession=null;
+async function membership(client,knownSession=null){
+ const session=knownSession||signedInSession||(await withTimeout(client.auth.getSession(),'Session verification',10000)).data?.session;
+ if(!session?.user?.id||!session?.access_token)return false;
+ const controller=new AbortController();
+ const timeout=setTimeout(()=>controller.abort(),10000);
+ try{
+  const response=await fetch(API+'/rest/v1/nxs_memberships?select=role,active,expires_at&user_id=eq.'+encodeURIComponent(session.user.id),{
+   headers:{apikey:KEY,Authorization:'Bearer '+session.access_token,Accept:'application/json'},
+   signal:controller.signal,cache:'no-store'
+  });
+  if(!response.ok)throw Error('Membership request failed (HTTP '+response.status+').');
+  const records=await response.json(),record=records?.[0];
+  if(!record)return false;
+  return record.active===true&&['member','r4','admin'].includes(record.role)&&(!record.expires_at||Date.parse(record.expires_at)>Date.now());
+ }catch(error){if(error.name==='AbortError')throw Error('Membership request timed out after 10 seconds.');throw error;}
+ finally{clearTimeout(timeout);}
+}
 function isCastle(r){return /CASTLE/i.test(String(r.alert||''))}
 function repeatCount(r){return warningHistory.get(r.player_id)?.size||0}
 function importance(a,b){return Number(isCastle(b))-Number(isCastle(a))||repeatCount(b)-repeatCount(a)||Number(b.power_change_m||0)-Number(a.power_change_m||0)}
@@ -180,7 +197,7 @@ showData();render();overview();renderOperations();
 }catch(error){$('status').textContent='Could not load protected data: '+error.message;console.error(error);}
 finally{$('refresh').disabled=false;}
 }
-$('loginForm').onsubmit=async e=>{e.preventDefault();$('signin').disabled=true;$('warn').textContent='Signing in…';try{const c=await withTimeout(db(),'Authentication service');const {error}=await withTimeout(c.auth.signInWithPassword({email:$('email').value,password:$('password').value}),'Sign-in request');$('password').value='';if(error)throw error;$('warn').textContent='Checking member access…';if(!await withTimeout(membership(c),'Membership verification',12000)){await withTimeout(c.auth.signOut(),'Sign-out',5000);throw Error('Approved NXS membership required.');}await load();}catch(error){showLogin(error.message)}finally{$('signin').disabled=false}};
+$('loginForm').onsubmit=async e=>{e.preventDefault();$('signin').disabled=true;$('warn').textContent='Signing in…';try{const c=await withTimeout(db(),'Authentication service');const {data,error}=await withTimeout(c.auth.signInWithPassword({email:$('email').value,password:$('password').value}),'Sign-in request');$('password').value='';if(error)throw error;signedInSession=data?.session||null;$('warn').textContent='Checking member access…';if(!await withTimeout(membership(c,signedInSession),'Membership verification',12000)){await withTimeout(c.auth.signOut(),'Sign-out',5000);throw Error('Approved NXS membership required.');}await load();}catch(error){showLogin(error.message)}finally{$('signin').disabled=false}};
 $('signout').onclick=async()=>{await(await db()).auth.signOut();rows=[];snapshots=[];pastChanges=[];rosterHistory=[];radar=[];unresolved=[];warningHistory=new Map();showLogin('Signed out.');};
 const copyMessage=text=>{try{navigator.clipboard.writeText(text).then(()=>$('copyNotice').textContent='Message copied.',()=>$('copyNotice').textContent='Copy unavailable in this browser.');}catch(e){$('copyNotice').textContent='Copy unavailable in this browser.'}};
 $('copyBrief').onclick=()=>copyMessage(briefText());
