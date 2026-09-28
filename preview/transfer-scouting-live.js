@@ -64,4 +64,14 @@ const old=players.find(x=>x.candidate_id===editingId);
 const data={player_name:v.player_name.trim(),kingdom:v.kingdom||null,alliance:v.alliance||null,power_m:v.power_m?Number(v.power_m):null,castle_level:v.castle_level||null,recruiter:v.recruiter||null,transfer_eligibility:v.transfer_eligibility||null,contact_status:v.contact_status,notes:v.notes||null,metadata:{...(old?.metadata||{}),role:v.role||null,fit:v.fit?Number(v.fit):null},updated_at:new Date().toISOString()};
 await saveCandidate(data);
 };
+
+async function saveCandidate(data){
+$('saveCandidate').disabled=true;$('editError').textContent='Saving…';
+try{
+const q=editingId?await db.from('transfer_candidates').update(data).eq('candidate_id',editingId).select('candidate_id').maybeSingle():await db.from('transfer_candidates').insert({...data,candidate_id:'NXS-'+crypto.randomUUID()}).select('candidate_id').maybeSingle();
+if(q.error)throw q.error;if(!q.data)throw Error('Save not authorized.');
+active=q.data.candidate_id;closeEditor();await load();
+}catch(err){$('editError').textContent='Save failed: '+err.message}
+finally{$('saveCandidate').disabled=false;}
+}
 check();
