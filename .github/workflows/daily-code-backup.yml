@@ -1,0 +1,37 @@
+name: Daily NEXUS source backup
+
+on:
+  schedule:
+    # Daily at 04:17 UTC (06:17 CEST / 05:17 CET); GitHub may delay scheduled runs.
+    - cron: "17 4 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nexus-daily-code-backup
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Save current main commit to a dated immutable backup tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          date_utc="$(date -u +%F)"
+          tag="backup/nexus-daily-${date_utc}"
+          sha="$(gh api "repos/${GH_REPO}/git/ref/heads/main" --jq '.object.sha')"
+          if gh api "repos/${GH_REPO}/git/ref/tags/${tag}" >/dev/null 2>&1; then
+            echo "Backup ${tag} already exists; not overwriting it."
+            exit 0
+          fi
+          gh api "repos/${GH_REPO}/git/refs" \
+            --method POST \
+            -f "ref=refs/tags/${tag}" \
+            -f "sha=${sha}"
+          echo "Saved main commit ${sha} as ${tag}"
