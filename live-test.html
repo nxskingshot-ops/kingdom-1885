@@ -1,0 +1,7 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Kingdom #1885 · Live Outpost Test</title><style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#140e0a}iframe{border:0;width:100%;height:100%;display:block}</style></head>
+<body><iframe id="kingdom" src="./index.html" title="Kingdom 1885 Outposts" allow="fullscreen"></iframe>
+<script>
+const frame=document.getElementById('kingdom');
+frame.addEventListener('load',()=>{const doc=frame.contentDocument;if(!doc)return;const script=doc.createElement('script');script.src='./outpost-live.js';script.onerror=()=>{const tip=doc.getElementById('healthBadge');if(tip)tip.textContent='● Live integration failed';};doc.body.appendChild(script)});
+</script></body></html>
