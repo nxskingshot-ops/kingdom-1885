@@ -122,8 +122,8 @@
 @media(max-height:400px){#outpostPopup{bottom:52px;max-height:calc(100% - 100px);font-size:11px}}
 </style><style id="kingdom-v2-layout">
 :root{--toolbar-h:40px;--nav-h:40px;--gold-glow:#e7b456}
-#app{inset:0!important;grid-template-columns:clamp(134px,18vw,280px) minmax(0,1fr) clamp(130px,17vw,260px)!important;grid-template-rows:minmax(0,1fr) var(--nav-h)!important;grid-template-areas:"left map right" "bottom bottom bottom"!important;background:#1a261e}
-#app>.top{display:none!important}
+#app{inset:0!important;grid-template-columns:clamp(134px,18vw,280px) minmax(0,1fr) clamp(130px,17vw,260px)!important;grid-template-rows:36px minmax(0,1fr) var(--nav-h)!important;grid-template-areas:"top top top" "left map right" "bottom bottom bottom"!important;background:#1a261e}
+#app>.top{display:flex!important;min-height:0!important;z-index:80!important}
 #app>.panel{position:relative!important;display:flex!important;min-height:0!important;width:auto!important;top:auto!important;bottom:auto!important;box-shadow:inset 0 0 15px #b47c2a2b,0 0 13px #d9a45042!important;border-color:#a67b43!important}
 #app>.left{grid-area:left!important;border-right:2px solid #c4954b!important}
 #app>.right{grid-area:right!important;border-left:2px solid #c4954b!important}
@@ -137,7 +137,7 @@
 #mapTools button{border:1px solid #92632e;border-radius:7px;padding:5px 7px;min-height:29px;background:linear-gradient(#fff1cf,#dbb982);font:900 10px Trebuchet MS,Arial;color:#4a301c;cursor:pointer;white-space:nowrap;box-shadow:0 0 7px #ffd78060}
 #mapTools button.active{background:linear-gradient(#ffe8aa,#e8b244);box-shadow:0 0 11px #ffe196}
 #outpostDrawerBtn,#filterDrawerBtn{display:none!important}
-#vp{inset:auto!important;left:50%!important;top:calc(var(--toolbar-h) + (100% - var(--toolbar-h))/2)!important;transform:translate(-50%,-50%)!important;width:min(100%,calc((100dvh - var(--toolbar-h) - var(--nav-h)) * 822 / 850))!important;height:auto!important;aspect-ratio:822 / 850!important;box-shadow:0 0 0 2px #d4a44b,0 0 19px #e3a7489e!important;touch-action:none!important;overflow:hidden!important}
+#vp{inset:auto!important;left:50%!important;top:calc(var(--toolbar-h) + (100% - var(--toolbar-h))/2)!important;transform:translate(-50%,-50%)!important;width:min(100%,calc((100dvh - var(--toolbar-h) - var(--nav-h) - 36px) * 822 / 850))!important;height:auto!important;aspect-ratio:822 / 850!important;box-shadow:0 0 0 2px #d4a44b,0 0 19px #e3a7489e!important;touch-action:none!important;overflow:hidden!important}
 #scene{width:100%!important;height:100%!important;inset:0!important}
 #bg{object-fit:fill!important}#ov{width:100%!important;height:100%!important}
 #app.cover-map #vp{width:100%!important;height:calc(100% - var(--toolbar-h))!important;aspect-ratio:auto!important}
