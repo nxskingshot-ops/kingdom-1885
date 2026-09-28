@@ -1,0 +1,130 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Nexus · NXS KvK Prep Dashboard</title>
+<style>
+:root{font-family:system-ui,-apple-system,sans-serif;color:#f9edcb;background:#171c18}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 40% 0%,#42533c 0%,#1c281f 38%,#151a15 100%)}header{padding:14px 18px;background:linear-gradient(90deg,#574025,#352719);border-bottom:2px solid #b99350;display:flex;align-items:center;justify-content:space-between;gap:12px}h1{font:700 25px Georgia,serif;margin:0}h2{font:700 20px Georgia,serif;margin:0 0 12px}small,.muted{color:#d4c5a3}main{max-width:1150px;margin:auto;padding:20px 15px 45px}.panel{background:#30271d;border:1px solid #a9874e;border-radius:12px;padding:17px;margin:12px 0;box-shadow:0 6px 25px #0004}.gold{color:#f1ce83}button,a.link{background:#f0d19a;color:#3a2816;border:1px solid #af813c;border-radius:8px;padding:9px 13px;font-weight:750;text-decoration:none;cursor:pointer;display:inline-block}button:disabled{opacity:.55}input,select{width:100%;border:1px solid #866d44;border-radius:7px;background:#172019;color:#fff8dd;padding:10px;margin:5px 0 13px}label{display:block;margin-top:8px}.metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px}.metric{background:#25251d;border:1px solid #79613d;border-radius:9px;padding:14px}.metric b{font:700 28px Georgia,serif;color:#f1ce83;display:block;margin-top:7px}.toolbar{display:flex;align-items:center;flex-wrap:wrap;justify-content:space-between;gap:10px}.toolbar input,.toolbar select{width:auto;margin:0}.tablewrap{overflow:auto;border-radius:8px;border:1px solid #715c3c}table{width:100%;border-collapse:collapse;min-width:690px;font-size:13px}th{position:sticky;top:0;background:#46331f;text-align:left;color:#f7d99d}td,th{border-bottom:1px solid #665338;padding:10px 11px}tr:nth-child(even){background:#ffffff09}.flag{border:1px solid #bc934e;border-radius:6px;padding:2px 6px}.high{background:#7f3030}.medium{background:#735120}.low{background:#37634d}#warn{white-space:pre-wrap;color:#ffd7ae}#private[hidden],#login[hidden]{display:none}.aside{font-size:12px;color:#d5c5a5;margin-top:12px}button.secondary{background:#342a20;color:#f9dcab}.notice{font-size:12px;padding:9px;border:1px solid #82643d;border-radius:8px}#login{max-width:410px;margin:22px auto}@media(max-width:560px){header{align-items:flex-start;flex-direction:column}h1{font-size:22px}.metric b{font-size:24px}}
+
+/* Beige/gold Kingdom dashboard; keep protected data logic unchanged. */
+:root{color:#4b351f;background:#e8d4ac}
+body{background:linear-gradient(140deg,#eee0c0,#dcc18d);color:#4b351f}
+header{background:linear-gradient(110deg,#b58b4d,#f2dba9,#b88c4a);color:#392714;border-bottom:3px solid #8d6731}
+header small{color:#51391e}
+.panel{background:#f7edda;color:#4d341d;border:2px solid #bc985f;box-shadow:0 4px 18px #5b3f1e30}
+h2{color:#764d20;border-bottom:2px solid #c49a5a;padding-bottom:10px}
+.muted,.aside,small{color:#785d3b}
+.metric{background:linear-gradient(#fff8e9,#f0dcb4);border:2px solid #c5a36e;color:#67441f;text-align:center}
+.metric b{color:#845722;font-size:35px}
+button,a.link{background:linear-gradient(#ffebb6,#e8c384);border:1px solid #9b7134;color:#442e17}
+button.secondary{background:#e6d7b9;color:#563b1c}
+input,select{background:#fffaf0;color:#49331b;border:1px solid #b09262}
+.tablewrap{background:#fff9ec;border:1px solid #c9a66d}
+table{color:#4b351f}
+th{background:#d4ae72;color:#462d15}
+td,th{border-bottom:1px solid #dac39c}
+tr:nth-child(even){background:#f0dfbf}
+tr:nth-child(odd){background:#fff8e8}
+.flag.high{background:#a74e40;color:#fff4ec}
+.flag.medium{background:#dab069;color:#4b3217}
+.flag.low{background:#b4cda8;color:#31512e}
+.notice{background:#f7e5c3;color:#674725;border:1px solid #c09a61}
+#warn{color:#9a423a}
+.dashboard-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:14px;align-items:start}
+.dashboard-grid>.panel{margin:0 0 14px}
+@media(max-width:740px){.dashboard-grid{grid-template-columns:1fr}.metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Keep page fixed horizontally; wide data tables scroll inside their cards. */
+html,body{width:100%;max-width:100%;overflow-x:hidden}
+body{overscroll-behavior-x:none}
+main,#private,.dashboard-grid,.dashboard-grid>div,.panel,.metric-grid,.metric{min-width:0;max-width:100%}
+.dashboard-grid{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)}
+.dashboard-grid>div{min-width:0}
+.panel{overflow-wrap:anywhere}
+.tablewrap{width:100%;max-width:100%;min-width:0;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y}
+.tablewrap table{width:100%;max-width:none}
+#trendChart{max-width:100%;min-width:0;overflow-x:auto;overscroll-behavior-x:contain}
+#watchPlayers,#warningOverview,#castleWatch,#identityReviews,#briefBody,#riskTrend{min-width:0;max-width:100%}
+header>div{min-width:0}
+@media(max-width:740px){.dashboard-grid{grid-template-columns:minmax(0,1fr)}}
+
+/* Original approved Nexus · NXS dashboard: parchment KPI strip, two-column hero, low-key navigation. */
+.nxs-header{background:linear-gradient(110deg,#392715,#664723 58%,#3b2816);border-bottom:3px solid #c89f58;color:#f9e2af;align-items:center;min-height:105px;box-shadow:0 5px 14px #3b261a50}
+.nxs-header small,.nxs-header h1,.nxs-header p{color:#f9e2af}
+.nxs-brand{display:flex;align-items:center;gap:16px;min-width:0}
+.nxs-crown{height:58px;width:58px;display:grid;place-items:center;background:#af8647;border:2px solid #edcf90;border-radius:12px;font-size:42px;color:#3d2814;flex-shrink:0}
+.nxs-brand h1{font:700 clamp(21px,2.3vw,32px) Georgia,serif}
+.nxs-subtitle{font-size:13px;margin:5px 0 0;color:#ead0a1}
+.header-actions{flex-shrink:0}
+.original-kpis{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:14px}
+.original-row{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);gap:14px;align-items:stretch}
+.original-row>div{min-width:0}
+.original-row .panel{margin:0 0 14px}
+.original-hero{margin-top:16px}
+.supplement-label{display:flex;justify-content:space-between;gap:10px;align-items:center;border-top:2px solid #bc985f;border-bottom:1px solid #cba46a;margin:14px 0 13px;padding:12px 2px;color:#68441f;font:700 17px Georgia,serif}
+.supplement-label span:last-child{font:12px system-ui,sans-serif;color:#785d3b}
+.secondary-row{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}
+.bottom-navigation{display:flex;flex-wrap:wrap;justify-content:center;gap:20px;padding:15px 0 4px;margin-top:16px;border-top:1px solid #c49a5a}
+.bottom-navigation a{color:#795329;font-weight:700;text-decoration:none}
+.original-row .panel,.original-kpis .metric{min-width:0}
+@media(max-width:740px){.original-row,.secondary-row{grid-template-columns:minmax(0,1fr)}.original-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.nxs-header{min-height:0}.nxs-crown{height:45px;width:45px;font-size:31px}.nxs-brand{gap:9px}.nxs-subtitle{font-size:11px}}
+</style></head><body>
+<header class="nxs-header"><div class="nxs-brand"><span class="nxs-crown" aria-hidden="true">♛</span><div><small> NEXUS · NXS &nbsp; / &nbsp; KINGDOM #1885</small><h1>Nexus · NXS KvK Prep Dashboard</h1><p class="nxs-subtitle">Matchmaking Preparation · Protected Kingdom Operations</p></div></div><div class="header-actions"><button id="signout" class="secondary" hidden>Sign out</button></div></header>
+<main><section id="private"><div class="notice" style="font-weight:700;margin-bottom:12px;background:#f0d1a7">🧪 PUBLIC DEMO — Fictitious players and figures. No Supabase connection. Never enter or share real private information here.</div><div class="toolbar"><span id="timeLabel" class="muted">Demo snapshot · fictional players</span><button id="refresh" type="button">↻ Reset demo filters</button></div><div id="status" class="notice" role="status">Loading…</div>
+<div class="metric-grid original-kpis" style="margin-top:14px">
+<div class="metric">Tracked players<b id="tracked">–</b></div>
+<div class="metric">Warnings<b id="warnings">–</b></div>
+<div class="metric">Castle upgrades<b id="castles">–</b></div>
+<div class="metric">Major power gains<b id="majorGains">–</b></div></div>
+<div class="original-row original-hero" id="dashboard"><div><section class="panel"><h2>👀 Players to Watch</h2><p class="muted">Castle upgrades first, then repeat warnings and power changes. Based on imported data, not live in-game activity.</p><div id="watchPlayers">Loading…</div></section></div><div><section class="panel"><h2>📊 Warning Overview</h2><div id="warningOverview">Loading…</div></section></div></div>
+<div class="original-row"><div id="trends"><section class="panel"><h2>📈 Power Change Trend</h2><div id="trendChart" style="display:flex;align-items:end;gap:16px;height:155px;border-bottom:2px solid #bd995e;padding:10px"></div><p class="aside">Recorded power changes among alerted players (M). Period lengths differ; compare daily averages, not the raw totals. This is not total kingdom power or a forecast.</p><p id="dailyGrowth" class="aside"></p></section></div><div><section class="panel"><h2>⚠ Matchmaking Risk</h2><div id="matchRisk" style="background:#ead4a8;border:2px solid #bb904f;border-radius:8px;padding:18px;text-align:center;font:700 27px Georgia,serif">–</div><p class="aside">NXS planning score, not an official Kingshot matchmaking formula.</p></section></div></div>
+<div id="castle-section"><section class="panel"><h2>🏰 Castle Activity</h2><p id="castleWatch">Loading…</p></section></div>
+<div class="supplement-label"><span>♛ NXS OPERATIONS</span><span>Extended planning tools</span></div>
+<div class="original-row secondary-row"><div><section class="panel"><h2>📡 Growth Radar</h2><p class="muted">Sub-threshold movement from complete roster history. Latest period only; a castle change excludes a player.</p>
+<div class="metric-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))"><div class="metric">Radar candidates<b id="radarCount">–</b></div><div class="metric">Near +1.5M<b id="nearCount">–</b></div></div>
+<div class="tablewrap"><table style="min-width:550px"><thead><tr><th>Player</th><th>Change (M)</th><th>% of threshold</th><th>Castle</th><th>Status</th></tr></thead><tbody id="radarRows"></tbody></table></div>
+<p class="aside">Near threshold starts at 75% of +1.5M. This is an NXS tracking rule, not an official matchmaking threshold.</p></section><section class="panel"><h2>🪪 Identity Reviews</h2><p class="muted">Names with unresolved identity remain separate until a human confirms a match.</p><div id="identityReviews">Loading…</div></section></div><div><section class="panel"><h2>♛ R4 / R5 Command Brief</h2><p id="briefStatus" class="muted">Snapshot-based planning summary · read-only</p><div id="briefBody"></div><button type="button" id="copyBrief">Copy full brief</button> <button type="button" id="copyShortBrief">Copy short chat version</button><p id="copyNotice" class="aside" role="status"></p></section><section class="panel"><h2>📊 Matchmaking Risk Trend</h2><div id="riskTrend" class="tablewrap"></div><p class="aside">Historical NXS risk labels and scores only. Not a Kingshot formula or prediction.</p></section></div></div>
+<div id="watchlist"><div class="panel"><h2>⚠ Matchmaking Warnlist</h2><p class="muted">Historical NXS planning indicators, not a Kingshot matchmaking formula. Power values in millions (M).</p><div class="toolbar" style="margin-bottom:12px"><input id="filter" type="search" placeholder="Find player…"><select id="sortOrder" aria-label="Sort players"><option value="priority">Castle → Repeat → Power</option><option value="power">Highest power gain</option><option value="repeat">Most repeated warnings</option><option value="name">Player name</option></select><select id="severity"><option value="">All alerts</option><option value="High">High</option><option value="Medium">Medium</option><option value="Low">Low</option></select><span id="visibleCount" class="muted"></span></div><div class="tablewrap"><table><thead><tr><th>Player</th><th>Power (M)</th><th>Change (M)</th><th>Castle</th><th>Alert</th><th>Repeat</th><th>Severity</th></tr></thead><tbody id="players"></tbody></table></div><p class="aside">The list shows available records from the latest imported snapshot. Player identities and power changes are sourced from imported history; verify against current game data before making decisions.</p></div>
+<div class="panel"><h2>📈 Snapshot history</h2><div class="tablewrap"><table><thead><tr><th>Date</th><th>Tracked</th><th>Warnings</th><th>Castle changes</th><th>Risk label</th></tr></thead><tbody id="history"></tbody></table></div></div>
+</div>
+<p class="aside">PUBLIC DEMO · FICTIONAL DATA · Real internal NXS information remains protected.</p>
+<nav class="bottom-navigation" aria-label="Dashboard sections"><a href="#dashboard">Dashboard</a><a href="#watchlist">Watchlist</a><a href="#trends">Trends</a><a href="#castle-section">Castle Activity</a></nav>
+</section></main>
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id);
+const data=[
+{player_name:'Sample A',power:198.2,change:2.30,castle:'TG4 → TG5',repeat:3,severity:'High'},
+{player_name:'Sample B',power:151.7,change:1.72,castle:'—',repeat:2,severity:'High'},
+{player_name:'Sample C',power:120.5,change:0.85,castle:'—',repeat:1,severity:'Low'},
+{player_name:'Sample D',power:175.3,change:1.22,castle:'TG3 → TG4',repeat:2,severity:'High'},
+{player_name:'Sample E',power:111.9,change:0.95,castle:'—',repeat:1,severity:'Medium'},
+{player_name:'Sample F',power:86.1,change:0.30,castle:'—',repeat:1,severity:'Low'}
+];
+const escape=s=>String(s).replace(/[&<>"']/g,v=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[v]));
+function rows(target,values){$(target).innerHTML=values.join('')}
+$('tracked').textContent=data.length;$('warnings').textContent=4;$('castles').textContent=2;$('majorGains').textContent=2;
+$('status').textContent='Interactive example only: all players and all figures are invented. Protected Kingdom records are not accessible from this page.';
+$('watchPlayers').innerHTML='<p>🏰 Sample A — castle upgrade; repeat 3×</p><p>🏰 Sample D — castle upgrade; repeat 2×</p><p>⚠ Sample B — power increase +1.72M</p>';
+$('warningOverview').innerHTML='<p>High: 3 · Medium: 1 · Low: 2</p><p>Example threshold: +1.5M power.</p>';
+const trend=[0.6,1.8,1.1,2.4];$('trendChart').innerHTML=trend.map((n,i)=>'<div style="flex:1;min-width:0;text-align:center;font-size:12px;color:#6d461c"><div style="background:#c69b57;height:'+Math.round(n*38)+'px;border:1px solid #846037;border-radius:4px 4px 0 0"></div>Week '+(i+1)+'</div>').join('');
+$('dailyGrowth').textContent='Illustrative weekly changes only. No real trend analysis.';
+$('matchRisk').textContent='DEMO · REVIEW';
+$('castleWatch').innerHTML='Sample A: TG4 → TG5<br>Sample D: TG3 → TG4';
+$('radarCount').textContent='2';$('nearCount').textContent='1';
+$('radarRows').innerHTML='<tr><td>Sample E</td><td>0.95</td><td>63%</td><td>None</td><td>Monitor</td></tr><tr><td>Sample C</td><td>0.85</td><td>57%</td><td>None</td><td>Monitor</td></tr>';
+$('identityReviews').textContent='No identity conflicts in the fictional example.';
+$('briefStatus').textContent='Fictional planning example · read-only';
+const brief='NXS DEMO BRIEF (FICTIONAL)\n6 sample players · 4 example warnings · 2 example castle upgrades. Not real Kingdom #1885 data.';
+$('briefBody').innerHTML='<p>Six fictional sample players. Two illustrative castle upgrades. Two illustrative power gains above +1.5M.</p>';
+$('riskTrend').innerHTML='<div style="padding:12px">Week 1: Low → Week 2: Medium → Week 3: High (example only)</div>';
+$('history').innerHTML='<tr><td>Demo W1</td><td>6</td><td>2</td><td>0</td><td>Low</td></tr><tr><td>Demo W2</td><td>6</td><td>4</td><td>2</td><td>Review</td></tr>';
+function render(){
+ let q=$('filter').value.trim().toLowerCase(),s=$('severity').value,sort=$('sortOrder').value;
+ let a=data.filter(r=>r.player_name.toLowerCase().includes(q)&&(!s||r.severity===s));
+ a.sort((x,y)=>sort==='name'?x.player_name.localeCompare(y.player_name):sort==='power'?y.change-x.change:sort==='repeat'?y.repeat-x.repeat:((y.castle!=='—')-(x.castle!=='—'))||y.repeat-x.repeat||y.change-x.change);
+ $('players').innerHTML=a.map(r=>'<tr><td>'+escape(r.player_name)+'</td><td>'+r.power.toFixed(1)+'</td><td>'+r.change.toFixed(2)+'</td><td>'+escape(r.castle)+'</td><td>'+((r.castle!=='—')?'Castle / power':'Power')+'</td><td>'+r.repeat+'×</td><td><span class="flag '+(r.severity==='High'?'high':r.severity==='Medium'?'medium':'low')+'">'+r.severity+'</span></td></tr>').join('')||'<tr><td colspan="7">No matching sample players</td></tr>';
+ $('visibleCount').textContent=a.length+' of '+data.length+' sample players';
+}
+$('filter').oninput=render;$('severity').onchange=render;$('sortOrder').onchange=render;
+$('refresh').onclick=()=>{$('filter').value='';$('severity').value='';$('sortOrder').value='priority';render()};
+for (const id of ['copyBrief','copyShortBrief'])$(id).onclick=()=>{navigator.clipboard?.writeText(id==='copyBrief'?brief:'NXS DEMO: 6 fictional players; 4 warnings; 2 castle upgrades.').then(()=>$('copyNotice').textContent='Demo message copied.',()=>{$('copyNotice').textContent='Copy unavailable.'})};
+render();
+})();
+</script></body></html>
