@@ -2,6 +2,19 @@
 (() => {
 "use strict";
 const KEY="nxs-transfer-demo-v1";
+const META_KEY="nxs-transfer-demo-schedule-v1";
+let transferMeta={group:"",date:""};
+try{const v=JSON.parse(localStorage.getItem(META_KEY)||"null");if(v&&typeof v==="object"){transferMeta.group=typeof v.group==="string"?v.group.slice(0,48):"";transferMeta.date=typeof v.date==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(v.date)?v.date:"";}}catch(e){}
+function storeMeta(){try{localStorage.setItem(META_KEY,JSON.stringify(transferMeta));}catch(e){}}
+function showMeta(){
+ $("groupValue").textContent=transferMeta.group||"Not set";
+ $("dateValue").textContent=transferMeta.date?transferMeta.date.split("-").reverse().join("."):"Not announced";
+}
+function toggleMeta(which,edit){
+ const view=$(which+"View"),editor=$(which+"Editor");
+ view.hidden=edit;editor.hidden=!edit;
+ if(edit){$(which+"Input").value=which==="group"?transferMeta.group:transferMeta.date;$(which+"Input").focus();}
+}
 const statuses=["Scouted","Contacted","Interested","Negotiating","Confirmed","Needs Review","Declined"];
 const roles=["Rally Lead","Fighter","Joiner","R4 / R5 Potential","Group Contact","Support"];
 const defaultPlayers=[
@@ -75,7 +88,14 @@ $("deleteCandidate").onclick=()=>{const p=getSelected();if(!p||!confirm("Delete 
 $("closeModal").onclick=closeEdit;
 $("modal").onclick=e=>{if(e.target===$("modal"))closeEdit();};
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&editing)closeEdit();});
-$("resetDemo").onclick=()=>{if(!confirm("Reset all fictional candidates and remove your local demo edits?"))return;players=clone();selected=players[0].id;filter="all";sort="fit";$("search").value="";save();render();};
+$("editGroup").onclick=()=>toggleMeta("group",true);
+$("cancelGroup").onclick=()=>toggleMeta("group",false);
+$("saveGroup").onclick=()=>{transferMeta.group=$("groupInput").value.trim().slice(0,48);storeMeta();showMeta();toggleMeta("group",false);};
+$("editDate").onclick=()=>toggleMeta("date",true);
+$("cancelDate").onclick=()=>toggleMeta("date",false);
+$("saveDate").onclick=()=>{const val=$("dateInput").value;if(val&&!/^\d{4}-\d{2}-\d{2}$/.test(val))return;transferMeta.date=val;storeMeta();showMeta();toggleMeta("date",false);};
+showMeta();
+$("resetDemo").onclick=()=>{if(!confirm("Reset all fictional candidates and remove your local demo edits?"))return;players=clone();selected=players[0].id;filter="all";sort="fit";transferMeta={group:"",date:""};storeMeta();showMeta();toggleMeta("group",false);toggleMeta("date",false);$("search").value="";save();render();};
 $("exportCsv").onclick=()=>{const cols=["id","name","kingdom","alliance","role","castle","power","fit","status","eligibility","activity","language","timezone","notes"];const csv=[cols.join(","),...filtered().map(p=>cols.map(k=>'"'+String(p[k]??"").replace(/"/g,'""')+'"').join(","))].join("\r\n");const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="nxs-transfer-scouting-fictional-demo.csv";a.click();setTimeout(()=>URL.revokeObjectURL(url),4000);};
 $("compareBtn").onclick=()=>{const ids=filtered().slice(0,3);if(ids.length<2){$("comparison").textContent="At least two visible candidates are needed for comparison.";return;}$("comparison").innerHTML='<div class="scroll"><table><thead><tr><th>Metric</th>'+ids.map(x=>'<th>'+esc(x.name)+'</th>').join("")+'</tr></thead><tbody>'+["kingdom","role","power","fit","status","activity","eligibility"].map(k=>'<tr><td>'+esc(k.toUpperCase())+'</td>'+ids.map(x=>'<td>'+esc(x[k])+(k==="power"?"M":k==="fit"?"%":"")+'</td>').join("")+'</tr>').join("")+'</tbody></table></div><p class="smallprint">The first three currently visible fictional profiles are compared. No real matchmaking or eligibility estimates.</p>';};
 render();
