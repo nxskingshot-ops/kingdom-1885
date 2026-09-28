@@ -36,7 +36,32 @@ table{border-collapse:collapse;width:100%;min-width:680px;font-size:12px}th{text
 .scouting-table td:nth-child(8){max-width:130px;white-space:normal}
 .scouting-table td:nth-child(9){max-width:130px;white-space:normal}
 @media(max-width:570px){.context-box b{font-size:14px}}
-.scouting-table{min-width:945px}.scouting-table th:first-child,.scouting-table td:first-child{width:40px;text-align:center}.scouting-table input[type="checkbox"]{width:18px;height:18px;accent-color:#815d2e;cursor:pointer}.comparison-help{font-size:12px;color:#72532f;margin:6px 0}</style></head><body>
+.scouting-table{min-width:945px}.scouting-table th:first-child,.scouting-table td:first-child{width:40px;text-align:center}.scouting-table input[type="checkbox"]{width:18px;height:18px;accent-color:#815d2e;cursor:pointer}.comparison-help{font-size:12px;color:#72532f;margin:6px 0}
+/* Compact, non-scrolling candidate board. Keep secondary candidate details in profiles. */
+.layout{grid-template-columns:minmax(0,1fr)}
+.layout>div,.layout>aside{min-width:0}
+.scouting-table{width:100%;min-width:0;table-layout:fixed;font-size:clamp(9px,1.1vw,12px)}
+.scouting-table th,.scouting-table td{padding:7px 3px;overflow-wrap:anywhere;word-break:normal;vertical-align:middle}
+.scouting-table th:first-child,.scouting-table td:first-child{width:32px}
+.scouting-table th:nth-child(2),.scouting-table td:nth-child(2){width:17%}
+.scouting-table th:nth-child(9),.scouting-table td:nth-child(9){width:12%}
+.scouting-table .chip{white-space:normal}
+.scouting-table td small{font-size:10px;overflow-wrap:anywhere}
+.scouting-table input[type="checkbox"]{width:15px;height:15px}
+/* Narrow phones: hide optional columns; all values remain accessible in profile. */
+@media(max-width:780px){
+ .scouting-table th:nth-child(4),.scouting-table td:nth-child(4),
+ .scouting-table th:nth-child(5),.scouting-table td:nth-child(5),
+ .scouting-table th:nth-child(6),.scouting-table td:nth-child(6),
+ .scouting-table th:nth-child(10),.scouting-table td:nth-child(10){display:none}
+ .scouting-table th:nth-child(2),.scouting-table td:nth-child(2){width:26%}
+ .scouting-table th:nth-child(9),.scouting-table td:nth-child(9){width:19%}
+}
+@media(max-width:430px){.scouting-table{font-size:9px}.scouting-table th,.scouting-table td{padding:6px 2px}.scouting-table td small{font-size:9px}}
+.transfer-cap-indicator{display:flex;align-items:center;flex-wrap:wrap;gap:7px 12px;margin:7px 0 11px;padding:9px 11px;border:1px solid #a6834c;border-radius:8px;background:#f4dfb4;color:#503417;font-size:12px}
+.transfer-cap-indicator strong{font:800 16px Georgia,serif;color:#543519}
+.transfer-cap-indicator small{color:#755634;font-size:11px}
+</style></head><body>
 <main>
 <section class="hero"><div><h1>Transfer Scouting <span class="tag">DEMO MODE</span></h1><p>Fictional profiles and illustrative fit scores only. Try all tools safely; this page has no live Kingshot or Supabase scouting connection.</p></div><button id="resetDemo" type="button" class="secondary">↺ Reset Demo</button></section>
 <section class="transfer-meta" aria-label="Transfer schedule demo">
@@ -54,7 +79,7 @@ table{border-collapse:collapse;width:100%;min-width:680px;font-size:12px}th{text
 <div class="toolbar"><div class="search"><input id="search" type="search" aria-label="Search fictional candidates" placeholder="🔎 Search player, kingdom, alliance, role…"></div><select id="sort" aria-label="Sort candidates"><option value="fit">Highest fit</option><option value="power">Highest power</option><option value="name">Player name A–Z</option></select><button id="addCandidate" type="button">＋ Add Candidate</button></div>
 <div class="filters" role="group" aria-label="Filter fictional candidates"><button data-filter="all" aria-pressed="true" class="active">All Candidates</button><button data-filter="high" aria-pressed="false">High Fit</button><button data-filter="contact" aria-pressed="false">Contacted +</button><button data-filter="review" aria-pressed="false">Needs Review</button></div>
 <p id="rowCount" class="smallprint" role="status"></p>
-<div class="scroll"><table class="scouting-table"><thead><tr><th>✓</th><th>Player</th><th>KD</th><th>Alliance</th><th>Role</th><th>TG</th><th>Power</th><th>Fit</th><th>Invitation</th><th>Transfer</th><th>Status</th></tr></thead><tbody id="boardRows"></tbody></table></div>
+<div class="transfer-cap-indicator" role="note"><span>⚖️ Invitation Power Cap</span><strong>170 M</strong><span>≤ 170 M Ordinary · &gt; 170 M Special</span><small>Demo planning value · Not official</small></div><div class="scroll"><table class="scouting-table"><thead><tr><th>✓</th><th>Player</th><th>KD</th><th>Alliance</th><th>Role</th><th>TG</th><th>Power</th><th>Fit</th><th>Invitation</th><th>Transfer</th><th>Status</th></tr></thead><tbody id="boardRows"></tbody></table></div>
 <div class="actions"><button type="button" id="compareBtn">⚖ Compare selected (0/3)</button><button type="button" id="exportCsv">↓ Export visible CSV</button></div>
 <div id="comparison" aria-live="polite"></div></div></section>
 <section class="panel"><div class="panel-head"><h2>Scouting rules · Demo</h2></div><div class="panel-body"><div class="info">Invitation categories use a provisional 170M ordinary-invite planning cap (up to 170M = Ordinary, above 170M = Special), with optional manual override; confirm official Kingshot rules for each window. Role needs, transfer eligibility and fit scores are fictional examples. No contacts, approvals or transfers occur when you change demo status. Candidate details can be edited freely and are saved only on this device.</div><p id="storageNotice" class="smallprint">Demo edits are saved only in this browser.</p></div></section>
