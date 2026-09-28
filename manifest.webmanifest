@@ -2,7 +2,7 @@
   "name": "Kingdom #1885 · Outposts",
   "short_name": "Kingdom 1885",
   "description": "Kingshot Kingdom #1885 — Outposts test map",
-  "start_url": "./index.html",
+  "start_url": "./preview/kingdom-hub-scouting-v6.html?view=map",
   "scope": "./",
   "display": "fullscreen",
   "background_color": "#17110c",
