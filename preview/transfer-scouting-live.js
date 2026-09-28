@@ -55,4 +55,13 @@ $('newCandidate').onclick=()=>openEditor(null);
 $('editCandidate').onclick=()=>openEditor(players.find(p=>p.candidate_id===active));
 function closeEditor(){$('modal').hidden=true}
 $('cancelEdit').onclick=closeEditor;$('closeEdit').onclick=closeEditor;
+
+$('candidateForm').onsubmit=async e=>{
+e.preventDefault();if(!canEdit)return;
+const v=Object.fromEntries(new FormData(e.currentTarget).entries());
+if(!v.player_name.trim()){$('editError').textContent='Player name required';return;}
+const old=players.find(x=>x.candidate_id===editingId);
+const data={player_name:v.player_name.trim(),kingdom:v.kingdom||null,alliance:v.alliance||null,power_m:v.power_m?Number(v.power_m):null,castle_level:v.castle_level||null,recruiter:v.recruiter||null,transfer_eligibility:v.transfer_eligibility||null,contact_status:v.contact_status,notes:v.notes||null,metadata:{...(old?.metadata||{}),role:v.role||null,fit:v.fit?Number(v.fit):null},updated_at:new Date().toISOString()};
+await saveCandidate(data);
+};
 check();
