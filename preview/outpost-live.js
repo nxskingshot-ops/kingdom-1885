@@ -20,7 +20,7 @@ const controls=document.createElement('div');controls.id='liveControls';controls
 const panel=document.createElement('section');panel.id='livePanel';panel.hidden=true;
 panel.innerHTML='<div class="panelHeader"><h3>♛ Outpost management</h3><button id="liveCloseTop" type="button" aria-label="Close officer panel">✕</button></div><div id="liveMessage" role="status"></div><div id="liveFields"></div><button type="button" id="liveClose">Close</button>';document.getElementById('app').appendChild(panel);
 function message(s){$('liveMessage').textContent=s}
-function setBadge(txt){notice.textContent=txt;const status=$('liveSyncStatus');if(status){status.textContent=txt;status.title=txt}}
+function setBadge(txt){notice.textContent=txt;const status=$('liveSyncStatus');if(status){status.textContent=txt;status.title=txt}const sync=$('liveRefresh');if(sync){sync.textContent=txt.length>33?txt.slice(0,33)+'…':txt;sync.title=txt}}
 function escapeText(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function redraw(){render();if(sel){const o=DATA.find(v=>v.id===sel);if(o)showOutpostPopup(o)}}
 function updateData(rows){
@@ -37,9 +37,9 @@ function updateData(rows){
  $('sourceNote').textContent='Supabase live: '+applied+' linked · '+(DATA.length-applied)+' snapshot-only · '+unmapped+' unmatched. Six conflicting sheet entries remain snapshot-only.';
 }
 async function refresh(){
- if(busy)return;busy=true;setBadge('● Syncing…');
+ if(busy){setBadge('● Sync already running');return;}busy=true;setBadge('↻ Syncing…');
  try{
-  const response=await fetch(URL+'/rest/v1/public_outposts?select=id,source_key,alliance,structure_type,level,coord_x,coord_y,updated_at&published=eq.true&order=id.asc',{headers:{apikey:KEY}});
+  const response=await fetch(URL+'/rest/v1/public_outposts?select=id,source_key,alliance,structure_type,level,coord_x,coord_y,updated_at&published=eq.true&order=id.asc',{headers:{apikey:KEY},signal:AbortSignal.timeout(15000)});
   if(!response.ok)throw Error('HTTP '+response.status+' from Supabase');
   const rows=await response.json();if(!Array.isArray(rows))throw Error('Bad response');
   updateData(rows);
@@ -98,7 +98,7 @@ async function save(){
   await refresh();chooseForm();message('Changes saved to Supabase and the map refreshed.');
  }catch(e){message('Save failed: '+e.message)}finally{btn.disabled=false}
 }
-$('liveRefresh').onclick=()=>{panel.hidden=true;refresh()};
+$('liveRefresh').onclick=async()=>{panel.hidden=true;await refresh();const txt=$('liveRefresh').title||$('liveRefresh').textContent;const box=$('liveMessage');if(box)box.textContent=txt; if(typeof toast==='function')toast(txt)};
 const closePanel=()=>{panel.hidden=true;message('')};
 $('liveClose').onclick=closePanel;
 $('liveCloseTop').onclick=closePanel;
