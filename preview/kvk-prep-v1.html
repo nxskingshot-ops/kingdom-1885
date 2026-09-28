@@ -1,6 +1,34 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Kingdom #1885 · KvK Prep</title>
 <style>
 :root{font-family:system-ui,-apple-system,sans-serif;color:#f9edcb;background:#171c18}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 40% 0%,#42533c 0%,#1c281f 38%,#151a15 100%)}header{padding:14px 18px;background:linear-gradient(90deg,#574025,#352719);border-bottom:2px solid #b99350;display:flex;align-items:center;justify-content:space-between;gap:12px}h1{font:700 25px Georgia,serif;margin:0}h2{font:700 20px Georgia,serif;margin:0 0 12px}small,.muted{color:#d4c5a3}main{max-width:1150px;margin:auto;padding:20px 15px 45px}.panel{background:#30271d;border:1px solid #a9874e;border-radius:12px;padding:17px;margin:12px 0;box-shadow:0 6px 25px #0004}.gold{color:#f1ce83}button,a.link{background:#f0d19a;color:#3a2816;border:1px solid #af813c;border-radius:8px;padding:9px 13px;font-weight:750;text-decoration:none;cursor:pointer;display:inline-block}button:disabled{opacity:.55}input,select{width:100%;border:1px solid #866d44;border-radius:7px;background:#172019;color:#fff8dd;padding:10px;margin:5px 0 13px}label{display:block;margin-top:8px}.metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px}.metric{background:#25251d;border:1px solid #79613d;border-radius:9px;padding:14px}.metric b{font:700 28px Georgia,serif;color:#f1ce83;display:block;margin-top:7px}.toolbar{display:flex;align-items:center;flex-wrap:wrap;justify-content:space-between;gap:10px}.toolbar input,.toolbar select{width:auto;margin:0}.tablewrap{overflow:auto;border-radius:8px;border:1px solid #715c3c}table{width:100%;border-collapse:collapse;min-width:690px;font-size:13px}th{position:sticky;top:0;background:#46331f;text-align:left;color:#f7d99d}td,th{border-bottom:1px solid #665338;padding:10px 11px}tr:nth-child(even){background:#ffffff09}.flag{border:1px solid #bc934e;border-radius:6px;padding:2px 6px}.high{background:#7f3030}.medium{background:#735120}.low{background:#37634d}#warn{white-space:pre-wrap;color:#ffd7ae}#private[hidden],#login[hidden]{display:none}.aside{font-size:12px;color:#d5c5a5;margin-top:12px}button.secondary{background:#342a20;color:#f9dcab}.notice{font-size:12px;padding:9px;border:1px solid #82643d;border-radius:8px}#login{max-width:410px;margin:22px auto}@media(max-width:560px){header{align-items:flex-start;flex-direction:column}h1{font-size:22px}.metric b{font-size:24px}}
+
+/* Beige/gold Kingdom dashboard; keep protected data logic unchanged. */
+:root{color:#4b351f;background:#e8d4ac}
+body{background:linear-gradient(140deg,#eee0c0,#dcc18d);color:#4b351f}
+header{background:linear-gradient(110deg,#b58b4d,#f2dba9,#b88c4a);color:#392714;border-bottom:3px solid #8d6731}
+header small{color:#51391e}
+.panel{background:#f7edda;color:#4d341d;border:2px solid #bc985f;box-shadow:0 4px 18px #5b3f1e30}
+h2{color:#764d20;border-bottom:2px solid #c49a5a;padding-bottom:10px}
+.muted,.aside,small{color:#785d3b}
+.metric{background:linear-gradient(#fff8e9,#f0dcb4);border:2px solid #c5a36e;color:#67441f;text-align:center}
+.metric b{color:#845722;font-size:35px}
+button,a.link{background:linear-gradient(#ffebb6,#e8c384);border:1px solid #9b7134;color:#442e17}
+button.secondary{background:#e6d7b9;color:#563b1c}
+input,select{background:#fffaf0;color:#49331b;border:1px solid #b09262}
+.tablewrap{background:#fff9ec;border:1px solid #c9a66d}
+table{color:#4b351f}
+th{background:#d4ae72;color:#462d15}
+td,th{border-bottom:1px solid #dac39c}
+tr:nth-child(even){background:#f0dfbf}
+tr:nth-child(odd){background:#fff8e8}
+.flag.high{background:#a74e40;color:#fff4ec}
+.flag.medium{background:#dab069;color:#4b3217}
+.flag.low{background:#b4cda8;color:#31512e}
+.notice{background:#f7e5c3;color:#674725;border:1px solid #c09a61}
+#warn{color:#9a423a}
+.dashboard-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:14px;align-items:start}
+.dashboard-grid>.panel{margin:0 0 14px}
+@media(max-width:740px){.dashboard-grid{grid-template-columns:1fr}.metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style></head><body>
 <header><div><small>♛ KINGDOM #1885 · INTERNAL OPERATIONS</small><h1>⚔ KvK Prep Dashboard</h1></div><div><a class="link" href="./kingdom-hub.html?view=map">← Outpost Map</a> <button id="signout" class="secondary" hidden>Sign out</button></div></header>
 <main><section class="panel" id="login"><h2>🔒 Member access</h2><p class="muted">Internal NXS planning data. Sign in with your approved Kingdom account. Do not share your password.</p><form id="loginForm"><label>Email<input id="email" type="email" autocomplete="username" required></label><label>Password<input id="password" type="password" autocomplete="current-password" required></label><button id="signin" type="submit">Sign in</button></form><p id="warn" role="status"></p></section>
