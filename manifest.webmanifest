@@ -1,7 +1,7 @@
 {
-  "name": "Kingdom #1885 \u00b7 Outposts",
+  "name": "Kingdom #1885 · Outposts",
   "short_name": "Kingdom 1885",
-  "description": "Kingshot Kingdom #1885 \u2014 Outposts test map",
+  "description": "Kingshot Kingdom #1885 — Outposts test map",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
