@@ -81,13 +81,15 @@ header>div{min-width:0}
 @media(max-width:650px){.nxs-header{min-height:100px;padding:8px;gap:7px}.nxs-brand{gap:7px}.nxs-brand-crest{width:54px;height:54px}.nxs-identity strong{font-size:19px}.nxs-identity small{font-size:8px;letter-spacing:0}.nxs-motto{font-size:10px;padding:4px;margin-top:3px}.header-actions>b{font-size:12px}.section-caption{font-size:8px}.nxs-back{font-size:11px;padding:7px 9px}}
 @media(max-width:400px){.section-caption,.header-actions>b{display:none}.nxs-motto{font-size:9px}.header-actions{max-width:140px}}
 
-/* Fifth KPI tile beneath the original four; preserve the responsive card layout. */
-.matchmaking-tile{margin:0 auto 14px;width:calc((100% - 36px)/4);min-width:0;max-width:270px;padding:14px 10px}
+/* All five KPI cards share one equal-width row, including on phone screens. */
+.original-kpis{grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(5px,1.2vw,12px);margin-bottom:14px}
+.original-kpis>.metric{min-width:0;max-width:none;margin:0;padding:clamp(6px,1.3vw,14px);font-size:clamp(10px,1.6vw,15px);overflow-wrap:anywhere}
+.original-kpis>.metric b{font-size:clamp(18px,3vw,35px);line-height:1.14}
+.original-kpis>.matchmaking-tile{width:auto;max-width:none;display:flex;flex-direction:column;align-items:stretch;justify-content:space-between}
 .matchmaking-tile>span{display:block}
-.matchmaking-tile .aside{display:block;margin-top:8px;font-size:11px}
-.risk-indicator{display:block;min-height:0;margin-top:8px;padding:10px 6px;text-align:center;border:2px solid;border-radius:9px;font:700 clamp(22px,3vw,29px) Georgia,serif;letter-spacing:.2px}
-@media(max-width:740px){.matchmaking-tile{width:calc((100% - 12px)/2);max-width:270px}}
-@media(max-width:360px){.matchmaking-tile{width:calc((100% - 12px)/2);padding:10px 6px}.risk-indicator{font-size:20px}}
+.original-kpis .risk-indicator{display:block;margin-top:8px;padding:6px 2px;text-align:center;border:2px solid;border-radius:8px;font:700 clamp(14px,2.3vw,29px) Georgia,serif;letter-spacing:0}
+@media(max-width:740px){.original-kpis{grid-template-columns:repeat(5,minmax(0,1fr))}}
+@media(max-width:390px){.original-kpis>.metric{font-size:9px;padding:5px 2px}.original-kpis>.metric b{font-size:16px}.original-kpis .risk-indicator{font-size:13px;padding:5px 1px}}
 .risk-critical{background:#a43131;border-color:#711a1a;color:#fff8f1;box-shadow:0 0 0 3px #f2c4a9 inset}
 .risk-high{background:#d87829;border-color:#984014;color:#261608}
 .risk-medium{background:#e8cb62;border-color:#a78426;color:#3f3212}
@@ -102,8 +104,8 @@ header>div{min-width:0}
 <div class="metric">Tracked players<b id="tracked">–</b></div>
 <div class="metric">Warnings<b id="warnings">–</b></div>
 <div class="metric">Castle upgrades<b id="castles">–</b></div>
-<div class="metric">Major power gains<b id="majorGains">–</b></div></div>
-<section class="metric matchmaking-tile" id="matchmaking-risk" aria-labelledby="matchmakingRiskHeading"><span id="matchmakingRiskHeading">⚠ Matchmaking Risk</span><b id="matchRisk" class="risk-indicator risk-unknown" role="status" aria-live="polite">–</b><small class="aside">NXS planning score · unofficial</small></section>
+<div class="metric">Major power gains<b id="majorGains">–</b></div>
+<section class="metric matchmaking-tile" id="matchmaking-risk" aria-labelledby="matchmakingRiskHeading"><span id="matchmakingRiskHeading">⚠ Matchmaking Risk</span><b id="matchRisk" class="risk-indicator risk-unknown" role="status" aria-live="polite">–</b></section></div>
 <div class="original-row original-hero" id="dashboard"><div><section class="panel"><h2>👀 Players to Watch</h2><p class="muted">Castle upgrades first, then repeat warnings and power changes. Based on imported data, not live in-game activity.</p><div id="watchPlayers">Loading…</div></section></div><div><section class="panel"><h2>📊 Warning Overview</h2><div id="warningOverview">Loading…</div></section></div></div>
 <div id="trends"><section class="panel"><h2>📈 Power Change Trend</h2><div id="trendChart" style="display:flex;align-items:end;gap:16px;height:155px;border-bottom:2px solid #bd995e;padding:10px"></div><p class="aside">Recorded power changes among alerted players (M). Period lengths differ; compare daily averages, not the raw totals. This is not total kingdom power or a forecast.</p><p id="dailyGrowth" class="aside"></p></section></div>
 <div id="castle-section"><section class="panel"><h2>🏰 Castle Activity</h2><p id="castleWatch">Loading…</p></section></div>
