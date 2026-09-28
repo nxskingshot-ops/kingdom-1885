@@ -34,6 +34,16 @@ tr:nth-child(odd){background:#fff8e8}
 <main><section class="panel" id="login"><h2>🔒 Member access</h2><p class="muted">Internal NXS planning data. Sign in with your approved Kingdom account. Do not share your password.</p><form id="loginForm"><label>Email<input id="email" type="email" autocomplete="username" required></label><label>Password<input id="password" type="password" autocomplete="current-password" required></label><button id="signin" type="submit">Sign in</button></form><p id="warn" role="status"></p></section>
 <section id="private" hidden><div class="toolbar"><span id="timeLabel" class="muted">Loading protected snapshot…</span><button id="refresh" type="button">↻ Refresh KvK Data</button></div><div id="status" class="notice" role="status">Loading…</div>
 <div class="metric-grid" style="margin-top:14px"><div class="metric">Tracked players<b id="tracked">–</b></div><div class="metric">Warnings<b id="warnings">–</b></div><div class="metric">Castle upgrades<b id="castles">–</b></div><div class="metric">Risk signal<b id="risk">–</b></div></div>
+<div class="dashboard-grid">
+<div>
+<section class="panel"><h2>👀 Players to Watch</h2><p class="muted">Castle upgrades and important power changes in the latest imported snapshot.</p><div id="watchPlayers">Loading…</div></section>
+<section class="panel"><h2>📈 Power Change Trend</h2><div id="trendChart" style="display:flex;align-items:end;gap:16px;height:155px;border-bottom:2px solid #bd995e;padding:10px"></div><p class="aside">Historical warning counts by snapshot. Not a forecast.</p></section>
+<section class="panel"><h2>🏰 Castle Activity</h2><p id="castleWatch">Loading…</p></section>
+</div>
+<div>
+<section class="panel"><h2>📊 Warning Overview</h2><div id="warningOverview">Loading…</div></section>
+<section class="panel"><h2>⚠ Matchmaking Risk</h2><div id="matchRisk" style="background:#ead4a8;border:2px solid #bb904f;border-radius:8px;padding:18px;text-align:center;font:700 27px Georgia,serif">–</div><p class="aside">NXS planning score, not an official Kingshot matchmaking formula.</p></section>
+</div></div>
 <div class="panel"><h2>⚠ Matchmaking Warnlist</h2><p class="muted">Historical NXS planning indicators, not a Kingshot matchmaking formula. Power values in millions (M).</p><div class="toolbar" style="margin-bottom:12px"><input id="filter" type="search" placeholder="Find player…"><select id="severity"><option value="">All alerts</option><option value="High">High</option><option value="Medium">Medium</option><option value="Low">Low</option></select><span id="visibleCount" class="muted"></span></div><div class="tablewrap"><table><thead><tr><th>Player</th><th>Power (M)</th><th>Change (M)</th><th>Castle</th><th>Alert</th><th>Severity</th></tr></thead><tbody id="players"></tbody></table></div><p class="aside">The list shows available records from the latest imported snapshot. Player identities and power changes are sourced from imported history; verify against current game data before making decisions.</p></div>
 <div class="panel"><h2>📈 Snapshot history</h2><div class="tablewrap"><table><thead><tr><th>Date</th><th>Tracked</th><th>Warnings</th><th>Castle changes</th><th>Risk label</th></tr></thead><tbody id="history"></tbody></table></div></div>
 <p class="aside">Read-only first integration · Powered by existing Supabase RLS and NXS KvK snapshot tables · No sheet or database edits from this screen.</p></section></main>
@@ -46,9 +56,21 @@ function showLogin(note=''){ $('private').hidden=true;$('login').hidden=false;$(
 function showData(){ $('private').hidden=false;$('login').hidden=true;$('signout').hidden=false;$('warn').textContent='';}
 async function db(){if(!supabase){const mod=await import('https://esm.sh/@supabase/supabase-js@2');supabase=mod.createClient(API,KEY,{auth:{persistSession:true,autoRefreshToken:true}});}return supabase;}
 async function membership(client){const {data:{user},error}=await client.auth.getUser();if(error||!user)return false;const r=await client.from('nxs_memberships').select('role,active').eq('user_id',user.id).maybeSingle();return !r.error&&r.data?.active===true&&['member','r4','r5','admin'].includes(r.data.role);}
+function overview(){
+const castle=r=>/CASTLE/i.test(String(r.alert||''));
+const counts=[rows.filter(r=>castle(r)&&/POWER/i.test(r.alert||'')).length,rows.filter(r=>castle(r)&&!/POWER/i.test(r.alert||'')).length,rows.filter(r=>!castle(r)&&/POWER/i.test(r.alert||'')).length];
+const titles=['Castle + Power','Castle only','Power only'];
+$('warningOverview').innerHTML=counts.map((n,i)=>'<div style="display:flex;justify-content:space-between;gap:12px;padding:11px;border-bottom:1px solid #d7be90"><span>'+titles[i]+'</span><b style="font-size:21px">'+n+'</b></div>').join('');
+$('matchRisk').textContent=snapshots[0]?.risk_label||'–';
+const watch=[...rows].sort((a,b)=>Number(castle(b))-Number(castle(a))||Number(b.power_change_m||0)-Number(a.power_change_m||0)).slice(0,8);
+$('watchPlayers').innerHTML=watch.map(r=>'<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;border-bottom:1px solid #d7be90;padding:8px 0"><b>'+esc(r.player_name)+'</b><span>'+number(r.power_change_m)+'M</span><span>'+esc(r.castle_current||'–')+'</span><span>'+esc(r.alert||'–')+'</span></div>').join('');
+$('castleWatch').textContent=rows.filter(castle).map(r=>r.player_name+' '+(r.castle_current||'')).join(' · ')||'No castle events recorded.';
+const periods=[...snapshots].reverse(),max=Math.max(1,...periods.map(x=>Number(x.warning_count)||0));
+$('trendChart').innerHTML=periods.map(x=>'<div style="text-align:center;flex:1"><b>'+number(x.warning_count)+'</b><div style="margin:7px auto 0;max-width:125px;background:linear-gradient(#cda76b,#89602f);height:'+Math.max(10,Math.round(95*Number(x.warning_count||0)/max))+'px"></div><small>'+esc(x.snapshot_date)+'</small></div>').join('');
+}
 function render(){
 const q=$('filter').value.toLowerCase().trim(),severity=$('severity').value;
-const matches=rows.filter(r=>(!q||String(r.player_name??'').toLowerCase().includes(q))&&(!severity||String(r.severity??'').toLowerCase()===severity.toLowerCase()));
+const matches=rows.filter(r=>(!q||String(r.player_name??'').toLowerCase().includes(q))&&(!severity||String(r.severity??'').toLowerCase()===severity.toLowerCase())).sort((a,b)=>Number(/CASTLE/i.test(b.alert||''))-Number(/CASTLE/i.test(a.alert||''))||Number(b.power_change_m||0)-Number(a.power_change_m||0));
 $('visibleCount').textContent=matches.length+' rows';
 $('players').innerHTML=matches.map(r=>'<tr><td>'+esc(r.player_name)+'</td><td>'+number(r.power_current_m)+'</td><td>'+number(r.power_change_m)+'</td><td>'+esc(r.castle_current||r.castle_previous||'–')+'</td><td>'+esc(r.alert||'–')+'</td><td><span class="flag '+(r.severity==='High'?'high':r.severity==='Medium'?'medium':'low')+'">'+esc(r.severity||'–')+'</span></td></tr>').join('')||'<tr><td colspan="6">No matching player records.</td></tr>';
 $('history').innerHTML=snapshots.map(s=>'<tr><td>'+esc(s.snapshot_date)+'</td><td>'+number(s.tracked_players)+'</td><td>'+number(s.warning_count)+'</td><td>'+number(s.castle_upgrades)+'</td><td>'+esc(s.risk_label||'–')+'</td></tr>').join('');
@@ -64,7 +86,7 @@ if(players.error)throw players.error;rows=players.data||[];
 $('timeLabel').textContent='Latest imported snapshot: '+last.snapshot_date+' · '+last.source_period;
 $('tracked').textContent=number(last.tracked_players);$('warnings').textContent=number(last.warning_count);$('castles').textContent=number(last.castle_upgrades);$('risk').textContent=last.risk_label||'–';
 $('status').textContent='Protected data loaded · '+rows.length+' player-change rows in latest snapshot · Updated only when a new snapshot is imported.';
-showData();render();
+showData();render();overview();
 }catch(error){$('status').textContent='Could not load protected data: '+error.message;console.error(error);}
 finally{$('refresh').disabled=false;}
 }
