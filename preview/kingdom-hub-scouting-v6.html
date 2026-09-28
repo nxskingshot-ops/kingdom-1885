@@ -29,7 +29,7 @@ function activate(section){
  kvkButton.setAttribute('aria-pressed',String(section==='kvk'));
  scoutButton.setAttribute('aria-pressed',String(section==='scouting'));
  liveScoutButton.setAttribute('aria-pressed',String(section==='liveScouting'));
- if(section==='kvk'&&!kvkLoaded){kvk.src='./kvk-prep-original.html?build=kvk-risk-tile-20260928-v8';kvkLoaded=true;}
+ if(section==='kvk'&&!kvkLoaded){kvk.src='./kvk-prep-original.html?build=kvk-5th-kpi-v9';kvkLoaded=true;}
  if(section==='scouting'&&!scoutLoaded){scouting.src='./transfer-scouting-demo-v5.html';scoutLoaded=true;}
  if(section==='liveScouting'&&!liveScoutLoaded){liveScouting.src='./transfer-scouting-live.html';liveScoutLoaded=true;}
  history.replaceState(null,'','?view='+section);
