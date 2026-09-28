@@ -94,7 +94,7 @@ const number=v=>v===null||v===undefined?'–':Number(v).toLocaleString('en-US',{
 function showLogin(note=''){ $('private').hidden=true;$('login').hidden=false;$('signout').hidden=true;$('warn').textContent=note; }
 function showData(){ $('private').hidden=false;$('login').hidden=true;$('signout').hidden=false;$('warn').textContent='';}
 async function db(){if(!supabase){const mod=await import('https://esm.sh/@supabase/supabase-js@2');supabase=mod.createClient(API,KEY,{auth:{persistSession:true,autoRefreshToken:true}});}return supabase;}
-async function membership(client){const {data:{user},error}=await client.auth.getUser();if(error||!user)return false;const r=await client.from('nxs_memberships').select('role,active').eq('user_id',user.id).maybeSingle();return !r.error&&r.data?.active===true&&['member','r4','r5','admin'].includes(r.data.role);}
+async function membership(client){const {data:{user},error}=await client.auth.getUser();if(error||!user)return false;const r=await client.from('nxs_memberships').select('role,active,expires_at').eq('user_id',user.id).maybeSingle();return !r.error&&r.data?.active===true&&['member','r4','admin'].includes(r.data.role)&&(!r.data.expires_at||Date.parse(r.data.expires_at)>Date.now());}
 function isCastle(r){return /CASTLE/i.test(String(r.alert||''))}
 function repeatCount(r){return warningHistory.get(r.player_id)?.size||0}
 function importance(a,b){return Number(isCastle(b))-Number(isCastle(a))||repeatCount(b)-repeatCount(a)||Number(b.power_change_m||0)-Number(a.power_change_m||0)}
