@@ -11,7 +11,7 @@ function locked(message=''){
 }
 function resetSelection(){const p=records.find(r=>r.id===selected);$('save').disabled=!p||!authorized;
  $('selectionInfo').textContent=p?'Outpost '+p.source_key+' · database ID '+p.id:'Select an outpost from the list.';
- const form=$('editForm');if(!p){HTMLFormElement.prototype.reset.call(form);return;}
+ const form=$('editForm');if(!p){form.reset();return;}
  for(const key of ['alliance','structure_type','level','coord_x','coord_y'])form.elements.namedItem(key).value=p[key];
  $('selectedLevel').textContent=p.level;
 }
@@ -60,5 +60,5 @@ $('editForm').onsubmit=async e=>{
  await refresh();$('status').textContent='✓ Saved. Public map will refresh shortly.';
  }catch(error){$('status').textContent='Save failed: '+error.message;$('save').disabled=false;}
 };
-$('search').oninput=render;$('reset').onclick=resetSelection;$('refresh').onclick=verify;$('reload').onclick=refresh;
+$('search').oninput=render;$('resetSelectionBtn').onclick=resetSelection;$('refresh').onclick=verify;$('reload').onclick=refresh;
 verify();
