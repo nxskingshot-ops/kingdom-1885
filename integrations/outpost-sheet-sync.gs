@@ -15,3 +15,14 @@ const resp=UrlFetchApp.fetch(NXS_SYNC_URL,{method:'post',contentType:'applicatio
 if(resp.getResponseCode()!==200)throw Error('Sync failed '+resp.getResponseCode());
 return JSON.parse(resp.getContentText());
 }
+
+function nxsOnOutpostEdit(e){
+ if(!e?.range||e.range.getSheet().getName()!=='Outpost Data')return;
+ const lock=LockService.getScriptLock();if(!lock.tryLock(10000))return;
+ try{nxsSyncOutposts();}finally{lock.releaseLock();}
+}
+function nxsInstallOutpostTrigger(){
+ const current=ScriptApp.getProjectTriggers().some(t=>t.getHandlerFunction()==='nxsOnOutpostEdit');
+ if(!current)ScriptApp.newTrigger('nxsOnOutpostEdit').forSpreadsheet(SpreadsheetApp.getActive()).onEdit().create();
+ nxsSyncOutposts();
+}
