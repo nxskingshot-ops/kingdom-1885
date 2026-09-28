@@ -30,8 +30,8 @@ function activate(section){
  scoutButton.setAttribute('aria-pressed',String(section==='scouting'));
  liveScoutButton.setAttribute('aria-pressed',String(section==='liveScouting'));
  if(section==='kvk'&&!kvkLoaded){kvk.src='./kvk-prep-five-contrast-v13.html';kvkLoaded=true;}
- if(section==='scouting'&&!scoutLoaded){scouting.src='./transfer-scouting-demo-v5.html?build=invite-170-v1';scoutLoaded=true;}
- if(section==='liveScouting'&&!liveScoutLoaded){liveScouting.src='./transfer-scouting-live.html?build=invite-170-v1';liveScoutLoaded=true;}
+ if(section==='scouting'&&!scoutLoaded){scouting.src='./transfer-scouting-demo-v5.html?build=compact-170-v2';scoutLoaded=true;}
+ if(section==='liveScouting'&&!liveScoutLoaded){liveScouting.src='./transfer-scouting-live.html?build=compact-170-v2';liveScoutLoaded=true;}
  history.replaceState(null,'','?view='+section);
  dismissKeyboard.hidden=true;
 }
