@@ -186,4 +186,5 @@ $('copyBrief').onclick=()=>copyMessage(briefText());
 $('copyShortBrief').onclick=()=>copyMessage(shortBrief());
 $('refresh').onclick=load;$('filter').oninput=render;$('severity').onchange=render;$('sortOrder').onchange=render;
 try{const c=await db();if(await membership(c))await load();else showLogin();}catch(error){showLogin('Unable to check sign-in status: '+error.message);}
+setInterval(()=>{if(!$('private').hidden&&!document.hidden&&(!window.frameElement||window.frameElement.getClientRects().length))load()},60000);
 </script></body></html>
