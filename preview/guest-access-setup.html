@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><title>NXS · 7-day guest access</title>
+<style>*{box-sizing:border-box}body{margin:0;min-height:100dvh;background:linear-gradient(130deg,#eedebe,#d9bb82);font:15px system-ui,sans-serif;color:#4b321c}header{background:linear-gradient(90deg,#302117,#644323,#302117);color:#ffe3aa;padding:22px;border-bottom:3px solid #b58c50}h1{font:700 28px Georgia,serif;margin:0}header small{color:#dec294}main{max-width:640px;margin:24px auto;padding:0 14px}.card{background:#f9eed9;border:2px solid #b89965;border-radius:13px;padding:21px;box-shadow:0 5px 18px #62451e25}h2{font:700 23px Georgia,serif;margin:0 0 12px}p{line-height:1.5}button,a.button{display:inline-block;background:linear-gradient(#ffe5ac,#e3bb77);color:#422c13;border:1px solid #906b38;border-radius:8px;padding:12px 16px;font:700 14px system-ui;text-decoration:none;cursor:pointer;margin:4px}button:disabled{opacity:.6;cursor:wait}.danger{background:#e9cbb9}code{overflow-wrap:anywhere}.credentials{background:#fff7e6;border:2px solid #ba985f;padding:13px;border-radius:9px;margin:12px 0;user-select:all}#status{white-space:pre-wrap;color:#664723}.hint{font-size:12px;color:#765e3a}input{width:100%;padding:10px;border:1px solid #967342;border-radius:6px;color:#422c13;background:#fff}label{font-weight:700;font-size:12px}a{color:#6b4619}</style></head><body>
+<header><small>KINGDOM #1885 · NEXUS OPERATIONS</small><h1>♛ NXS · Guest Access</h1></header>
+<main><div class="card">
+<h2>7-day alliance test account</h2>
+<p>Only an existing NXS administrator can activate this shared <b>read-only</b> account. The account receives real, protected KvK data for seven days. The original app layout is unchanged.</p>
+<p id="status" role="status">Checking your existing administrator session…</p>
+<div id="auth" hidden><p>Please sign in as an NXS administrator through the existing protected KvK Prep view first. Then return here.</p><a class="button" href="./kingdom-hub-scouting-v6.html?view=kvk">Open existing NXS sign-in</a><button id="recheck">Check login again</button></div>
+<div id="admin" hidden>
+<button id="create">Create 7-day guest account</button><button class="danger" id="disable">Revoke guest access</button>
+<p class="hint">Do not post credentials in a public channel. Guest credentials are only shown when the administrator creates the account. Each shared password can be passed on, so distribute it only to trusted testers.</p>
+<div id="created" hidden>
+<div class="credentials"><p><label>Guest e-mail</label><input id="guestEmail" readonly autocomplete="off"></p><p><label>Guest password</label><input id="guestPassword" readonly autocomplete="off"></p><p><label>Access expires</label><input id="guestExpires" readonly></p></div>
+<button id="copy">Copy guest invitation</button>
+<a class="button" href="./kingdom-hub-scouting-v6.html?view=kvk">Open KvK Prep</a>
+<p class="hint">Save or privately share these credentials now. The password is not retrievable from this page after closing it.</p>
+</div>
+</div>
+<p class="hint">The public Outpost Map and fictional Scouting demonstration require no guest account. Guest access never grants admin or editor privileges.</p>
+</div></main>
+<script type="module">
+const API='https://hcjrdofkdkasznywvcxo.supabase.co',KEY='sb_publishable_hkqBaMme70g2f3wcxvaTKg_FczqkpCh';
+const $=id=>document.getElementById(id);
+const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2');
+const client=createClient(API,KEY,{auth:{persistSession:true,autoRefreshToken:true}});
+let credentials=null;
+async function check(){
+ $('auth').hidden=true;$('admin').hidden=true;$('status').textContent='Checking your administrator session…';
+ try{
+  const {data:{user},error}=await client.auth.getUser();
+  if(error||!user){$('status').textContent='No active administrator sign-in found.';$('auth').hidden=false;return;}
+  const {data:membership,error:err}=await client.from('nxs_memberships').select('role,active,expires_at').eq('user_id',user.id).maybeSingle();
+  if(err||membership?.role!=='admin'||membership.active!==true||(membership.expires_at&&Date.parse(membership.expires_at)<=Date.now())){
+   $('status').textContent='This sign-in has no NXS administrator privileges.';return;
+  }
+  $('status').textContent='Administrator verified. You can activate or revoke the temporary guest account.';$('admin').hidden=false;
+ }catch(e){$('status').textContent='Could not check your session: '+String(e.message||e);}
+}
+async function action(type){
+ $('create').disabled=true;$('disable').disabled=true;$('status').textContent=type==='create'?'Creating guest account…':'Disabling guest access…';
+ try{
+  const {data:{session}}=await client.auth.getSession();
+  if(!session?.access_token)throw Error('Please sign in as an administrator.');
+  const response=await fetch(API+'/functions/v1/nxs-guest-setup',{method:'POST',mode:'cors',cache:'no-store',headers:{
+   'Content-Type':'application/json','Authorization':'Bearer '+session.access_token,'apikey':KEY
+  },body:JSON.stringify({action:type})});
+  const data=await response.json();if(!response.ok)throw Error(data.error||'Request failed: '+response.status);
+  if(type==='create'){
+   credentials={email:data.email,password:data.password,expires_at:data.expires_at};
+   $('guestEmail').value=data.email;$('guestPassword').value=data.password;
+   $('guestExpires').value=new Date(data.expires_at).toLocaleString();
+   $('created').hidden=false;
+   $('status').textContent='Guest account created. Share the credentials privately with your testers.';
+  }else{credentials=null;$('created').hidden=true;$('guestPassword').value='';$('status').textContent='Guest access revoked.';}
+ }catch(e){$('status').textContent=String(e.message||e);}
+ finally{$('create').disabled=false;$('disable').disabled=false;}
+}
+$('create').onclick=()=>action('create');
+$('disable').onclick=()=>action('disable');
+$('recheck').onclick=check;
+$('copy').onclick=async()=>{
+ if(!credentials)return;
+ const invite='Kingdom #1885 · 7-day guest access\nOpen: https://nxskingshot-ops.github.io/kingdom-1885/preview/kingdom-hub-scouting-v6.html?view=kvk\nEmail: '+credentials.email+'\nPassword: '+credentials.password+'\nExpires: '+new Date(credentials.expires_at).toLocaleString()+'\nRead-only: do not share these details outside our test group.';
+ try{await navigator.clipboard.writeText(invite);$('status').textContent='Invitation copied. Share it only in a private alliance message.';}
+ catch{$('status').textContent='Clipboard unavailable. Copy the shown values manually.';}
+};
+check();
+</script></body></html>
