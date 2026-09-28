@@ -11,7 +11,7 @@ frame.addEventListener('load',()=>{
   frame.contentWindow.addEventListener('error',e=>{diag.firstChild.textContent='Live script error: '+e.message+' ';});
   frame.contentWindow.addEventListener('unhandledrejection',e=>{diag.firstChild.textContent='Live request error: '+String(e.reason?.message||e.reason)+' ';});
   const script=doc.createElement('script');
-  const liveScriptUrl=new URL('outpost-live.js',window.location.href);liveScriptUrl.searchParams.set('v','4');script.src=liveScriptUrl.href;
+  const liveScriptUrl=new URL('outpost-live.js',window.location.href);liveScriptUrl.searchParams.set('v','5');script.src=liveScriptUrl.href;
   script.onload=()=>{diag.firstChild.textContent='Live script loaded; check Sync and Officer buttons. ';};
   script.onerror=()=>{diag.firstChild.textContent='Live script could not be downloaded. ';};
   doc.body.appendChild(script);
