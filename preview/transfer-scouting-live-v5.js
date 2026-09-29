@@ -90,7 +90,7 @@ const externalLabels={coliseum:'Heroes & Hero Gear',forest:'Pets',crystal:'Gover
 let internalPlayers=null,internalPowers=[],internalSnapshot='',internalLoading=false;
 let fictionalExampleActive=false;
 const fictionalExternalCandidate={
- player_name:'NEXUS Demo Recruit',kingdom:'1720',power_m:205.4,
+ player_name:'Astra Vale',kingdom:'1768',power_m:218.4,
  metadata:{mystic_trials:{coliseum:'35-2',forest:'28-7',crystal:'27-6',knowledge:'31-8',molten:'24-9',radiant:'36-4'},
  mystic_trial_source:'FICTIONAL SAMPLE · no screenshot',mystic_trial_snapshot:'2026-09-29'}
 };
@@ -257,14 +257,14 @@ document.querySelectorAll('[data-dossier-tab]').forEach(b=>b.onclick=()=>{dossie
 let demoDossierOpen=false,returnFromDemoComparison=false,demoFrameStarted=false;
 function appendFictionalBoardRow(){
  const query=$('search').value.trim().toLowerCase();
- if(query&&!['nexus demo recruit','1720','fictional','example alliance','demo'].some(t=>t.includes(query)||query.includes(t)))return;
+ if(query&&!['astra vale','astra','1768','fictional','aur','demo'].some(t=>t.includes(query)||query.includes(t)))return;
  const row=document.createElement('tr');row.className='fictional-board-row';
- const cells=['—','', '1720','Example Alliance','Fighter','TG5','205.4M','—','Special (demo)','Not verified','FICTIONAL'];
+ const cells=['—','', '1768','AUR','Rally Lead','TG5','218.4M','—','Special (demo)','Not verified','FICTIONAL'];
  for(let i=0;i<cells.length;i++){
   const td=document.createElement('td');
   if(i===1){
    const btn=document.createElement('button');btn.type='button';btn.className='scouting-name-button';
-   btn.textContent='NEXUS Demo Recruit';btn.setAttribute('aria-label','Open fictional demo player dossier');
+   btn.textContent='Astra Vale';btn.setAttribute('aria-label','Open fictional demo player dossier');
    btn.onclick=e=>{e.stopPropagation();openFictionalDossier()};
    const badge=document.createElement('span');badge.className='fictional-marker';badge.textContent='DEMO';
    td.append(btn,badge);
