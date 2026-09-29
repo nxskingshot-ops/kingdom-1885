@@ -1,0 +1,94 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NEXUS · Alliance Trends</title>
+<style>
+:root{--bg:#e9dcc1;--panel:#fff5df;--ink:#332619;--muted:#705a3d;--gold:#b18b51;--line:#c5a46b;--red:#a14b3d;--green:#417750;--blue:#5071a2;--purple:#86649b}*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,sans-serif}body{padding:15px}main{max-width:1320px;margin:auto}h1,h2{font-family:Georgia,serif;margin:0}h1{font-size:26px}h2{font-size:18px}p{margin:5px 0}.muted,small{color:var(--muted)}.heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}.heading small{text-align:right}.panel{background:linear-gradient(125deg,#fff9ea,var(--panel));border:1px solid var(--line);border-radius:12px;padding:15px;box-shadow:0 2px 12px #55402110}.tabs,.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}button,select{font:inherit;border:1px solid var(--line);color:var(--ink);background:#fbebcb;padding:9px 12px;border-radius:8px;cursor:pointer}button[aria-selected=true],button[aria-pressed=true]{background:#533b23;border-color:#533b23;color:#fff1d1}.controls label{font-weight:700;color:var(--muted);font-size:12px;margin-left:auto}.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:12px}.grid2{display:grid;grid-template-columns:1.35fr 1fr;gap:12px;margin-bottom:12px}.metric .label{color:var(--muted);font-size:12px;font-weight:700}.metric strong{font:700 28px Georgia,serif;display:block;margin:8px 0 2px}.metric .desc{color:var(--muted);font-size:12px}.plot{height:250px;position:relative;margin-top:12px;display:flex;align-items:center;justify-content:center;border:1px dashed #bba27c;border-radius:8px;background:#f2e6ce7a;color:var(--muted);text-align:center;padding:20px}.plot svg{height:100%;width:100%;overflow:visible}svg text{font:11px system-ui;fill:var(--muted)}.legend{display:flex;flex-wrap:wrap;gap:11px;margin-top:9px;color:var(--muted);font-size:12px}.legend b{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:4px}.scroll{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:12px;margin-top:12px}th,td{padding:10px 7px;border-bottom:1px solid #dfcca9;text-align:left;white-space:nowrap}th{font-size:10px;text-transform:uppercase;color:var(--muted)}tr:last-child td{border:0}.foot{font-size:12px;color:var(--muted);margin:8px 0 0}.risk{display:flex;gap:20px;align-items:center;justify-content:center;min-height:220px;flex-wrap:wrap}.donut{width:165px;height:165px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#ddd1b9 0 100%);position:relative}.donut:before{content:"";position:absolute;inset:36px;background:var(--panel);border-radius:50%}.donut span{z-index:1;text-align:center;font-weight:700}.risk ul{list-style:none;padding:0;margin:0}.risk li{padding:5px 0}.announce{background:#f3e3c2;border-left:4px solid #a27a38;padding:9px 12px;margin-bottom:12px;font-size:12px;border-radius:5px}.green{color:var(--green)}.red{color:var(--red)}@media(max-width:920px){.grid4{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}}@media(max-width:420px){body{padding:9px}.heading h1{font-size:21px}.panel{padding:11px}.metric strong{font-size:21px}.heading small{font-size:10px}.controls label{margin-left:0}} 
+</style></head><body><main>
+<div class="heading"><div><h1>Alliance Trends</h1><small>Kingdom #1885 · Outpost Alliance Analysis</small></div><small id="lastUpdate">Last update: No verified snapshots</small></div>
+<div class="tabs" role="tablist" aria-label="Analysis perspective"><button role="tab" id="kvk" aria-selected="true">🛡 KvK Controlling</button><button role="tab" id="competitive" aria-selected="false">🔭 Competitive Intelligence</button></div>
+<div class="controls" aria-label="Analysis filters"><button class="alliance" data-a="ALL" aria-pressed="true">All Alliances</button><button class="alliance" data-a="NXS" aria-pressed="false">NXS</button><button class="alliance" data-a="MYM" aria-pressed="false">MYM</button><button class="alliance" data-a="FRA" aria-pressed="false">FRA</button><button class="alliance" data-a="OoO" aria-pressed="false">OoO</button><label for="period">Time period</label><select id="period"><option value="7">7 days</option><option value="30" selected>30 days</option><option value="90">90 days</option><option value="all">All time</option></select></div>
+<div class="announce" id="info">No verified records have been connected yet. Example figures from the design image are deliberately not presented as real data.</div>
+<section class="grid4" aria-label="Key metrics"><div class="panel metric"><div class="label">TOTAL POWER</div><strong id="power">—</strong><div class="desc">Recorded alliance power</div></div><div class="panel metric"><div class="label">CASTLES ≥ LV 25</div><strong id="castles">—</strong><div class="desc">Count from available roster</div></div><div class="panel metric"><div class="label">POWER GROWTH</div><strong id="growth">—</strong><div class="desc" id="growthPeriod">Change over 30 days</div></div><div class="panel metric"><div class="label">MATCHMAKING RISK</div><strong id="risk">—</strong><div class="desc">Needs defined agreement thresholds</div></div></section>
+<section class="grid2"><div class="panel"><h2>Power Development</h2><small>Recorded power over time by alliance</small><div id="powerChart" class="plot">Waiting for dated power snapshots.</div><div class="legend"><span><b style="background:var(--green)"></b>NXS</span><span><b style="background:var(--blue)"></b>MYM</span><span><b style="background:var(--gold)"></b>FRA</span><span><b style="background:var(--purple)"></b>OoO</span></div></div><div class="panel"><h2>Castle Upgrades</h2><small>Recorded castle-level changes</small><div id="upgradeChart" class="plot">Waiting for repeated castle-level snapshots.</div></div></section>
+<section class="grid2"><div class="panel"><h2>Agreement Compliance</h2><small>Only documented deviations from the agreed KvK rules</small><div class="scroll"><table><thead><tr><th>Alliance</th><th>Power change</th><th>Castle upgrades</th><th>Confirmed deviations</th><th>Status</th></tr></thead><tbody id="compliance"></tbody></table></div><div class="foot">An increase is not automatically a violation. Exceptions and documented rules must be checked first.</div></div><div class="panel"><h2>Matchmaking Risk Contribution</h2><small>Share of documented risk indicators</small><div class="risk"><div class="donut"><span>Not<br>calculated</span></div><ul id="riskList"></ul></div><div class="foot">No risk shares are calculated without verified inputs and a documented calculation method.</div></div></section>
+<div class="foot">Analysis scope: four Outpost alliances only. This test view is read-only and does not expose internal player records or invent historical trends.</div>
+</main><script>
+/* Provisional aggregates only. Never expose individual member rows through this public preview. */
+(async function(){
+'use strict';
+const dataUrl='./data/alliance-trends-2026-09-29.json?rev=20260929-four-rosters-2';
+let snapshots;
+try{const response=await fetch(dataUrl,{cache:'no-store'});if(!response.ok)throw Error('Snapshot HTTP '+response.status);snapshots=await response.json();}
+catch(err){document.getElementById('info').textContent='Snapshot data currently unavailable. The dashboard is showing safe empty states.';console.warn('Alliance snapshot',err);return;}
+const names=['NXS','MYM','FRA','OoO'],display={NXS:'NXS',MYM:'MYM',FRA:'FRA',OoO:'OoO'};
+let selected='ALL',perspective='kvk';
+const $=id=>document.getElementById(id);
+const formatPower=x=>(x/1000).toLocaleString('en-US',{maximumFractionDigits:2,minimumFractionDigits:2})+'B';
+const count=x=>x.toLocaleString('en-US');
+const empty='Not yet collected';
+const formatPeriod=()=>($('period').value==='all'?'all recorded dates':$('period').value+' days');
+function getVisible(){const ids=selected==='ALL'?names:[selected];const rows=ids.filter(n=>snapshots.alliances[n]).map(n=>({...snapshots.alliances[n],name:n}));return {ids,rows};}
+function render(){
+ const {ids,rows}=getVisible(),missing=ids.filter(n=>!snapshots.alliances[n]),has=rows.length>0;
+ const totalPower=rows.reduce((a,b)=>a+(Number.isFinite(b.power_m)?b.power_m:0),0),totalCastles=rows.reduce((a,b)=>a+(Number.isFinite(b.castle_25_plus_count)?b.castle_25_plus_count:0),0);
+ const powerCoverage=rows.filter(r=>Number.isFinite(r.power_m)).length,castleCoverage=rows.filter(r=>Number.isFinite(r.castle_25_plus_count)).length;
+ const dates=[...new Set(rows.map(r=>r.snapshot_date||snapshots.snapshot_date))];const comparable=dates.length===1;
+ $('power').textContent=has&&comparable&&powerCoverage?formatPower(totalPower):'—';
+ $('castles').textContent=has&&comparable&&castleCoverage?count(totalCastles):'—';
+ $('growth').textContent='—';$('risk').textContent='—';
+ if(selected==='NXS'&&snapshots.alliances.NXS?.latest_change){const change=snapshots.alliances.NXS.latest_change;$('growth').textContent=(change.net_power_change_m>0?'+':'')+change.net_power_change_m.toLocaleString('en-US',{maximumFractionDigits:1})+'M';$('risk').textContent=change.risk_label+' ('+change.risk_score+')';}
+ $('growthPeriod').textContent=selected==='NXS'?'Net change 28–29 Sep · retained members +71.3M':'Awaiting a second dated snapshot ('+formatPeriod()+')';
+ $('lastUpdate').textContent='Baseline: '+snapshots.snapshot_date+' · '+rows.length+'/4 alliance rosters';
+ $('power').nextElementSibling.textContent=has?(powerCoverage===4?'4 alliance power totals · mixed source precision':'Power coverage: '+powerCoverage+'/4 alliances'):'Recorded alliance power';
+ $('castles').nextElementSibling.textContent=has?'Partial total · castle coverage '+castleCoverage+'/4 alliances':'Count from available roster';
+ let info=perspective==='kvk'
+  ?'KvK Controlling · A single roster snapshot cannot establish agreement violations, power growth, or castle upgrades.'
+  :'Competitive Intelligence · Current baseline comparisons are available for recorded alliances. Growth trends need another dated snapshot.';
+ if(missing.length)info+=' Missing: '+missing.map(x=>display[x]).join(', ')+'.';
+ if(selected==='ALL'&&castleCoverage<4)info+=' Castle figures cover '+castleCoverage+' of 4 alliances.';
+ if(selected==='OoO')info+=' OoO screenshot roster: 99 members, 66 Truegold castles. The alliance ranking power exceeds summed displayed player power by 5.022485M; discrepancy remains under review.';
+ if(dates.length>1)info+=' Snapshot dates differ ('+dates.join(' / ')+'); combined totals are deliberately hidden until we have contemporaneous data.';
+ if(selected==='NXS')info+=' Supabase 28–29 Sep: 97 → 96 members; net power −164.7M, retained member growth +71.3M; 6 castle upgrades. Internal NXS risk indicator is not a violation count.';
+ info+=' Player-level records are not exposed by this public preview.';
+ $('info').textContent=info;
+ const body=$('compliance');body.replaceChildren();
+ for(const name of ids){
+  const r=snapshots.alliances[name];
+  const tr=document.createElement('tr');
+  const vals=[display[name],name==='NXS'?'−164.7M net (28–29 Sep)':r?'Awaiting comparison':'—',name==='NXS'?'6 (28–29 Sep)':'—','Not assessed',r?'Snapshot '+(r.snapshot_date||snapshots.snapshot_date):'Awaiting data'];
+  for(const v of vals){const td=document.createElement('td');td.textContent=v;tr.appendChild(td);}body.appendChild(tr);
+ }
+ const powerChart=$('powerChart'),upgradeChart=$('upgradeChart');
+ function plotBars(container,entries,suffix,limit){
+   container.replaceChildren();
+   if(!entries.length){container.textContent='Waiting for verified roster snapshots.';return;}
+   const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 560 255');svg.setAttribute('role','img');svg.setAttribute('aria-label',entries.map(e=>e.label+': '+(Number.isFinite(e.value)?e.value+suffix:'No data')).join('; '));
+   const colors={NXS:'#417750',MYM:'#5071a2',FRA:'#b18b51',OoO:'#86649b'};
+   const max=Math.max(limit||0,...entries.map(e=>Number.isFinite(e.value)?e.value:0))*1.1||1,base=201,top=25,bw=Math.min(94,360/entries.length),step=480/entries.length;
+   for(let i=0;i<=4;i++){const y=base-(base-top)*i/4;const line=document.createElementNS(ns,'line');line.setAttribute('x1','38');line.setAttribute('y1',y);line.setAttribute('x2','550');line.setAttribute('y2',y);line.setAttribute('stroke','#c8b58f');line.setAttribute('stroke-width','.8');svg.appendChild(line);const tick=document.createElementNS(ns,'text');tick.setAttribute('x','31');tick.setAttribute('y',y+4);tick.setAttribute('text-anchor','end');tick.textContent=((max/4)*i).toLocaleString('en-US',{maximumFractionDigits:suffix==='B'?1:0});svg.appendChild(tick);}
+   entries.forEach((e,i)=>{const x=48+i*step+(step-bw)/2,h=Number.isFinite(e.value)?Math.max(2,e.value/max*(base-top)):2;const rect=document.createElementNS(ns,'rect');rect.setAttribute('x',x);rect.setAttribute('y',base-h);rect.setAttribute('width',bw);rect.setAttribute('height',h);rect.setAttribute('rx','5');rect.setAttribute('fill',colors[e.label]||'#aa8a5c');svg.appendChild(rect);
+     const v=document.createElementNS(ns,'text');v.setAttribute('x',x+bw/2);v.setAttribute('y',base-h-9);v.setAttribute('font-weight','bold');v.setAttribute('text-anchor','middle');v.textContent=Number.isFinite(e.value)?e.value.toLocaleString('en-US',{maximumFractionDigits:suffix==='B'?2:0})+suffix:'No data';svg.appendChild(v);
+     const t=document.createElementNS(ns,'text');t.setAttribute('x',x+bw/2);t.setAttribute('y','222');t.setAttribute('text-anchor','middle');t.textContent=e.label;svg.appendChild(t);
+   });container.appendChild(svg);
+ }
+ function plotNxsHistory(container){
+   const ns='http://www.w3.org/2000/svg';container.replaceChildren();const svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 560 255');svg.setAttribute('role','img');svg.setAttribute('aria-label','NXS power 24 September 11.478 billion; 28 September 11.5004 billion; 29 September 11.3357 billion');
+   const vals=[{d:'24 Sep',v:11478},{d:'28 Sep',v:11500.4},{d:'29 Sep',v:11335.7}];const min=11250,max=11600;
+   for(let k=0;k<=4;k++){const y=200-k*40,l=document.createElementNS(ns,'line');for(const [key,value] of Object.entries({x1:42,x2:550,y1:y,y2:y,stroke:'#c8b58f'}))l.setAttribute(key,value);svg.appendChild(l);const t=document.createElementNS(ns,'text');t.setAttribute('x','34');t.setAttribute('y',y+4);t.setAttribute('text-anchor','end');t.textContent=((min+(max-min)*k/4)/1000).toFixed(2)+'B';svg.appendChild(t);}
+   const coords=vals.map((e,i)=>[78+i*220,200-(e.v-min)/(max-min)*160]);const line=document.createElementNS(ns,'polyline');line.setAttribute('points',coords.map(p=>p.join(',')).join(' '));line.setAttribute('fill','none');line.setAttribute('stroke','#417750');line.setAttribute('stroke-width','4');svg.appendChild(line);
+   vals.forEach((e,i)=>{const [x,y]=coords[i],dot=document.createElementNS(ns,'circle');dot.setAttribute('cx',x);dot.setAttribute('cy',y);dot.setAttribute('r','6');dot.setAttribute('fill','#417750');svg.appendChild(dot);
+     const v=document.createElementNS(ns,'text');v.setAttribute('x',x);v.setAttribute('y',y-13);v.setAttribute('text-anchor','middle');v.textContent=(e.v/1000).toFixed(3)+'B';svg.appendChild(v);
+     const t=document.createElementNS(ns,'text');t.setAttribute('x',x);t.setAttribute('y','226');t.setAttribute('text-anchor','middle');t.textContent=e.d;svg.appendChild(t);});container.appendChild(svg);
+ }
+ const comparison=ids.map(name=>({label:name,value:Number.isFinite(snapshots.alliances[name]?.power_m)?snapshots.alliances[name].power_m/1000:null})),castleComparison=ids.map(name=>({label:name,value:Number.isFinite(snapshots.alliances[name]?.castle_tg_count)?snapshots.alliances[name].castle_tg_count:null}));
+ const chartHeading=powerChart.closest('.panel').querySelector('h2'),castleHeading=upgradeChart.closest('.panel').querySelector('h2');
+ if(selected==='NXS'){chartHeading.textContent='Power Development';plotNxsHistory(powerChart);castleHeading.textContent='Castle Upgrades';upgradeChart.textContent='NXS recorded 6 castle upgrades between 28 and 29 September 2026.';}
+ else{chartHeading.textContent='Current Power Comparison';plotBars(powerChart,comparison,'B');castleHeading.textContent='Truegold Castles · Current Baseline';plotBars(upgradeChart,castleComparison,'');}
+ powerChart.closest('.panel').querySelector('small').textContent=selected==='NXS'?'Historical NXS values (24, 28 and 29 Sep)':'Alliance power on 29 Sep · OoO from alliance overview, others from member rosters';
+ upgradeChart.closest('.panel').querySelector('small').textContent=selected==='NXS'?'Confirmed from Supabase snapshot comparison':'Current Truegold castle counts across all four rosters, not castle upgrades';
+ $('riskList').replaceChildren();for(const name of ids){const li=document.createElement('li');li.textContent=display[name]+': not calculated';$('riskList').appendChild(li);}
+}
+document.querySelectorAll('.alliance').forEach(b=>b.addEventListener('click',()=>{selected=b.dataset.a;render();}));
+for(const id of ['kvk','competitive'])$(id).addEventListener('click',()=>{perspective=id;render();});
+$('period').addEventListener('change',render);
+render();
+})();
+</script></body></html>
