@@ -1,0 +1,141 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Nexus · NXS Transfer Scouting · Demo</title>
+<style>
+:root{--bg:#dfcda8;--panel:#fff3d9;--paper:#f7e5c1;--brown:#4a301b;--gold:#bd9253;--muted:#795d3d;--line:#c3a06d;--green:#557342}*{box-sizing:border-box}
+html,body{margin:0;max-width:100%;overflow-x:hidden;background:linear-gradient(120deg,#e9d9b8,#d9bd88);color:var(--brown);font:14px system-ui,-apple-system,sans-serif}body{min-height:100vh}main{max-width:1200px;margin:auto;padding:15px 15px 40px}h1,h2,h3{font-family:Georgia,serif;margin:0}h1{font-size:25px}h2{font-size:18px}h3{font-size:16px}.muted,.smallprint{color:var(--muted)}.smallprint{font-size:12px;line-height:1.5}.empty{padding:20px;text-align:center;color:var(--muted)}
+.hero,.panel{background:var(--panel);border:2px solid var(--line);box-shadow:0 4px 16px #55351b29;border-radius:11px;min-width:0}
+.hero{padding:15px 18px;margin-bottom:13px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.hero p{margin:6px 0 0;color:var(--muted);font-size:12px;max-width:720px}.tag{display:inline-block;padding:5px 9px;border:1px solid #8b4d2b;background:#945a3c;color:#fff3d8;border-radius:16px;font-weight:800;font-size:11px;letter-spacing:.3px}
+.status-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:13px}.metric{border:2px solid var(--line);border-radius:9px;background:linear-gradient(#fff9e9,#efd9ae);padding:11px;text-align:center;font-weight:700;color:#684722}.metric b{font:700 28px Georgia,serif;display:block;color:#845722;margin-top:5px}
+.layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:12px;align-items:start}.panel{margin-bottom:12px;overflow:hidden}.panel-head{background:#dcb87f;border-bottom:2px solid #b18c52;padding:11px 13px;display:flex;justify-content:space-between;align-items:center;gap:8px}.panel-body{padding:12px}
+button,input,select,textarea{font:inherit}button{cursor:pointer;padding:8px 11px;color:#453018;border:1px solid #a57b43;border-radius:7px;background:linear-gradient(#ffefc6,#e7c080);font-weight:740}button:hover{filter:brightness(1.03)}button:disabled{opacity:.5;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #547aba;outline-offset:2px}button.secondary{background:#eee0c5}
+input,select,textarea{padding:8px;border:1px solid #b59664;background:#fffaf0;color:#392918;border-radius:7px;min-width:0}input[type="search"]{width:100%}
+.toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}.search{flex:1 1 170px;min-width:0}.filters{display:flex;flex-wrap:wrap;gap:5px;margin:9px 0}.filters button{font-size:12px;padding:6px 9px}.filters button.active{background:#6b4826;color:#fff1d1}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.scroll{overflow-x:auto;width:100%;max-width:100%;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;min-width:680px;font-size:12px}th{text-align:left;background:#d7b37b;color:#4c311b}th,td{padding:10px 9px;border-bottom:1px solid #d7bf95}tbody tr:nth-child(even){background:#f4e4c6}tbody tr:nth-child(odd){background:#fff9e9}tbody tr[data-id]{cursor:pointer}tbody tr[data-id]:hover,tbody tr.selected{background:#ead0a3}td small{display:block;color:#8c7252;margin-top:3px}.fit{color:#376333}.chip{display:inline-block;border:1px solid #b9945f;background:#f0dfbb;padding:3px 6px;border-radius:5px;white-space:nowrap}.chip.good{background:#c1d9ac}.chip.warn{background:#eac4a2}
+.profile-top{display:flex;align-items:center;gap:10px;margin-bottom:14px}.profile-top>div{min-width:0;flex:1}.profile-top>div>b{font:700 19px Georgia,serif}.monogram{width:47px;height:47px;border-radius:9px;background:#916839;color:#fff0cf;display:grid;place-items:center;font:700 27px Georgia,serif;flex:none}.score{background:#d1e1bc;border:1px solid #a7ba8c;padding:6px 8px;border-radius:8px;white-space:nowrap;font-weight:700}
+.detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:9px 0 16px}.detail{background:#f3e1be;border:1px solid #dbc299;border-radius:7px;padding:7px;min-width:0;overflow-wrap:anywhere}.detail span{display:block;font-size:10px;letter-spacing:.3px;text-transform:uppercase;color:#806543}.detail b{display:block;margin-top:4px;font-size:13px}.notes{border:1px solid #c6a673;background:#fff9eb;border-radius:8px;white-space:pre-wrap;overflow-wrap:anywhere;padding:11px;margin-top:9px}
+.info{background:#f9e8c3;border:1px solid #c09c62;border-radius:7px;padding:11px;font-size:12px;color:#694c28;margin:11px 0}
+#modal[hidden]{display:none!important}#modal{position:fixed;inset:0;z-index:9999;background:#170f09ba;display:flex;justify-content:center;align-items:center;padding:10px;overflow:auto}#modal .modal-body{width:min(650px,100%);max-height:calc(100vh - 20px);overflow:auto;background:#fff1d4;border:3px solid #b99459;border-radius:11px;padding:17px;box-shadow:0 14px 40px #130b0775}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.modal-body label{display:block;margin-top:9px;font-weight:700;font-size:12px}.modal-body input,.modal-body select,.modal-body textarea{display:block;width:100%;margin-top:5px}.modal-title{display:flex;justify-content:space-between;align-items:center;gap:8px}#editorError{color:#a63325}
+@media(max-width:840px){.layout{grid-template-columns:minmax(0,1fr)}.status-row{grid-template-columns:repeat(2,minmax(0,1fr))}.metric b{font-size:24px}}
+@media(max-width:450px){main{padding:9px}.panel-head{padding:9px}.hero{padding:10px}.form-grid{grid-template-columns:1fr}h1{font-size:22px}}
+.transfer-meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:13px}.transfer-meta .meta-card{background:linear-gradient(#fff8e8,#f4dfba);border:2px solid var(--line);border-radius:9px;padding:10px 12px;min-width:0}.meta-heading{font:700 13px Georgia,serif;color:#744d22;margin-bottom:6px}.meta-card label{font-size:12px;font-weight:700;display:block}.meta-card input{width:100%;margin-top:4px;min-height:36px}.meta-card .hint{font-size:11px;color:#795d3d;margin:5px 0 0;line-height:1.35}.meta-card .display-value{display:block;font:700 19px Georgia,serif;color:#6b471f;overflow-wrap:anywhere}.meta-card .status-note{font-size:10px;color:#80512b;font-weight:700;letter-spacing:.4px}.meta-card button{padding:5px 8px;font-size:11px}.meta-action{display:flex;gap:8px;align-items:center;justify-content:space-between}.meta-editor{display:flex;gap:6px;flex-wrap:wrap;align-items:end}.meta-editor label{flex:1 1 110px}.meta-editor button{flex:none;margin-bottom:0}@media(max-width:570px){.transfer-meta{grid-template-columns:1fr}}
+[hidden]{display:none!important}
+/* Original transfer board sections restored; approved shared header is in parent shell. */
+.transfer-context{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:13px}
+.context-box{background:linear-gradient(#fff8e8,#f4dfba);border:2px solid var(--line);border-radius:9px;padding:9px 12px}
+.context-box small{font-size:10px;letter-spacing:.8px;color:#765633;font-weight:700;display:block}
+.context-box b{font:700 17px Georgia,serif;color:#614021;display:block;margin-top:5px}
+.side-stack{min-width:0;display:flex;flex-direction:column;gap:0}
+.needs-grid,.intel-grid{display:grid;gap:8px}
+.needs-grid>div,.intel-grid>div{background:#fff8e8;border:1px solid var(--line);border-radius:8px;padding:8px;min-width:0}
+.needs-grid b,.intel-grid b{font:700 14px Georgia,serif;color:#5f401f;display:block}
+.needs-grid span,.intel-grid span{font-size:11px;color:#7a5c3c;display:block;margin-top:3px}
+.needs-grid strong{font:700 14px Georgia,serif;color:#53703e;display:block;margin-top:4px}
+.scouting-table{min-width:890px}
+.scouting-table td:nth-child(8){max-width:130px;white-space:normal}
+.scouting-table td:nth-child(9){max-width:130px;white-space:normal}
+@media(max-width:570px){.context-box b{font-size:14px}}
+.scouting-table{min-width:945px}.scouting-table th:first-child,.scouting-table td:first-child{width:40px;text-align:center}.scouting-table input[type="checkbox"]{width:18px;height:18px;accent-color:#815d2e;cursor:pointer}.comparison-help{font-size:12px;color:#72532f;margin:6px 0}
+/* Compact, non-scrolling candidate board. Keep secondary candidate details in profiles. */
+.layout{grid-template-columns:minmax(0,1fr)}
+.layout>div,.layout>aside{min-width:0}
+.scouting-table{width:100%;min-width:0;table-layout:fixed;font-size:clamp(9px,1.1vw,12px)}
+.scouting-table th,.scouting-table td{padding:7px 3px;overflow-wrap:anywhere;word-break:normal;vertical-align:middle}
+.scouting-table th:first-child,.scouting-table td:first-child{width:32px}
+.scouting-table th:nth-child(2),.scouting-table td:nth-child(2){width:17%}
+.scouting-table th:nth-child(9),.scouting-table td:nth-child(9){width:12%}
+.scouting-table .chip{white-space:normal}
+.scouting-table td small{font-size:10px;overflow-wrap:anywhere}
+.scouting-table input[type="checkbox"]{width:15px;height:15px}
+/* Narrow phones: hide optional columns; all values remain accessible in profile. */
+@media(max-width:780px){
+ .scouting-table th:nth-child(4),.scouting-table td:nth-child(4),
+ .scouting-table th:nth-child(5),.scouting-table td:nth-child(5),
+ .scouting-table th:nth-child(6),.scouting-table td:nth-child(6),
+ .scouting-table th:nth-child(10),.scouting-table td:nth-child(10){display:none}
+ .scouting-table th:nth-child(2),.scouting-table td:nth-child(2){width:26%}
+ .scouting-table th:nth-child(9),.scouting-table td:nth-child(9){width:19%}
+}
+@media(max-width:430px){.scouting-table{font-size:9px}.scouting-table th,.scouting-table td{padding:6px 2px}.scouting-table td small{font-size:9px}}
+.transfer-cap-indicator{display:flex;align-items:center;flex-wrap:wrap;gap:7px 12px;margin:7px 0 11px;padding:9px 11px;border:1px solid #a6834c;border-radius:8px;background:#f4dfb4;color:#503417;font-size:12px}
+.transfer-cap-indicator strong{font:800 16px Georgia,serif;color:#543519}
+.transfer-cap-indicator small{color:#755634;font-size:11px}
+
+/* Only the added, collapsed intelligence detail; all original layout classes remain untouched. */
+.scout-intelligence{margin:12px 0;border:1px solid #bd9b65;border-radius:7px;background:#fff9eb}
+.scout-intelligence summary{cursor:pointer;list-style-position:inside;padding:10px 11px;color:#67451f;font-weight:750}
+.scout-intelligence summary:focus-visible{outline:3px solid #547aba;outline-offset:2px}
+.scout-intelligence[open] #intelligenceContent{border-top:1px solid #d6ba8a;padding:10px 11px;font-size:12px;line-height:1.55}
+.scout-intelligence[open] #intelligenceContent h3{font-size:14px;margin:10px 0 5px}
+.scout-intelligence[open] #intelligenceContent h3:first-child{margin-top:0}
+.scout-intelligence[open] #intelligenceContent p{margin:5px 0}
+/* Trial bars exist only inside the already-approved Intelligence details. */
+.trial-grid{display:grid;gap:6px;margin:8px 0 6px}
+.trial-row{display:grid;grid-template-columns:minmax(100px,40%) minmax(0,1fr);align-items:center;gap:9px;padding:5px 7px;border:1px solid #dbc299;border-radius:6px;background:#fff8e8}
+.trial-row>span{font-weight:650}
+.trial-visual{display:flex;align-items:center;gap:8px;min-width:0}
+.trial-visual strong{min-width:24px;font-variant-numeric:tabular-nums;color:#614021}
+.trial-track{display:block;flex:1;min-width:30px;height:9px;border-radius:9px;background:#e9d6b5;overflow:hidden}
+.trial-fill{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#a67c3a,#5b7c41)}
+.trial-missing{color:#876f56;font-size:11px}
+#comparison .trial-visual{min-width:95px}
+@media(max-width:430px){.trial-row{grid-template-columns:minmax(85px,45%) minmax(0,1fr);gap:5px;padding:4px}}
+.assessment{padding:12px 14px;margin:13px 0 0;background:#fff9eb}
+.assessment h3{font-size:16px;margin:0 0 8px}
+.assessment p{margin:5px 0;line-height:1.42}
+.assessment-group{padding:9px 0;border-top:1px solid #d9bc8b}
+.assessment-group h4{font:700 14px Georgia,serif;color:#624220;margin:0 0 5px}
+.assessment-table-wrap{max-width:100%;overflow-x:auto;margin:8px 0 10px;overscroll-behavior-x:contain}
+.assessment-trials-table{width:100%;min-width:410px;border-collapse:collapse;font-size:12px;table-layout:auto}
+.assessment-trials-table th,.assessment-trials-table td{padding:8px 9px;border:1px solid #dcc397;vertical-align:middle;text-align:left}
+.assessment-trials-table thead th{background:#d9b77f;color:#49301b;font-weight:750}
+.assessment-trials-table tbody th{font-weight:700;min-width:115px}
+.assessment-trials-table tbody tr:nth-child(even){background:#f4e4c6}
+.assessment-trials-table td:last-child{font-weight:650;white-space:nowrap}
+.assessment-disclaimer{font-size:11px;color:#765b39;border-top:1px solid #d9bc8b;padding-top:9px}
+@media(max-width:430px){.assessment{padding:10px}.assessment-group{padding:7px 0}}
+</style></head><body>
+<main>
+<section class="hero"><div><h1>Transfer Scouting <span class="tag">DEMO MODE</span></h1><p>Fictional profiles and illustrative fit scores only. Try all tools safely; this page has no live Kingshot or Supabase scouting connection.</p></div><button id="resetDemo" type="button" class="secondary">↺ Reset Demo</button></section>
+<section class="transfer-meta" aria-label="Transfer schedule demo">
+<div class="meta-card"><div class="meta-heading">🧭 Transfer Group</div><div id="groupView" class="meta-action"><div><span class="display-value" id="groupValue">Not set</span><span class="status-note">PREDICTED · NOT OFFICIAL</span></div><button id="editGroup" type="button">✎ Edit</button></div><div id="groupEditor" class="meta-editor" hidden><label>Predicted group<input id="groupInput" type="text" maxlength="48" placeholder="e.g. Demo Group A"></label><button id="saveGroup" type="button">Save</button><button id="cancelGroup" type="button" class="secondary">Cancel</button></div><p class="hint">Previously shared projection; the actual transfer group must be verified in Kingshot.</p></div>
+<div class="meta-card"><div class="meta-heading">📅 Expected Transfer Date</div><div id="dateView" class="meta-action"><div><span class="display-value" id="dateValue">Not announced</span><span class="status-note">PREDICTED · NOT OFFICIAL</span></div><button id="editDate" type="button">✎ Edit</button></div><div id="dateEditor" class="meta-editor" hidden><label>Predicted transfer window<input id="dateInput" type="text" maxlength="70" placeholder="e.g. 8–14 Nov 2026" aria-label="Predicted transfer window"></label><button id="saveDate" type="button">Save</button><button id="cancelDate" type="button" class="secondary">Cancel</button></div><p class="hint">Expected window: 8–14 November 2026 (prediction, not an official announcement).</p></div>
+</section>
+<section class="transfer-context" aria-label="Transfer status and kingdom">
+<div class="context-box"><small>KINGDOM</small><b>#1885</b></div>
+<div class="context-box"><small>TRANSFER STATUS</small><b>Predicted · Not official</b></div>
+</section>
+<div class="status-row"><div class="metric">Demo Candidates<b id="candidateCount">–</b></div><div class="metric">High Fit (≥80%)<b id="highCount">–</b></div><div class="metric">Contacted +<b id="contactCount">–</b></div><div class="metric">Needs Review<b id="reviewCount">–</b></div></div>
+<div class="layout">
+<div>
+<section class="panel"><div class="panel-head"><h2>Candidate Board</h2><small>FICTIONAL PROFILES · PRESENTATION MODE</small></div><div class="panel-body">
+<div class="toolbar"><div class="search"><input id="search" type="search" aria-label="Search fictional candidates" placeholder="🔎 Search player, kingdom, alliance, role…"></div><select id="sort" aria-label="Sort candidates"><option value="fit">Highest fit</option><option value="power">Highest power</option><option value="name">Player name A–Z</option></select><button id="addCandidate" type="button">＋ Add Candidate</button></div>
+<div class="filters" role="group" aria-label="Filter fictional candidates"><button data-filter="all" aria-pressed="true" class="active">All Candidates</button><button data-filter="high" aria-pressed="false">High Fit</button><button data-filter="contact" aria-pressed="false">Contacted +</button><button data-filter="review" aria-pressed="false">Needs Review</button></div>
+<p id="rowCount" class="smallprint" role="status"></p>
+<div class="transfer-cap-indicator" role="note"><span>⚖️ Invitation Power Cap</span><strong>170 M</strong><span>≤ 170 M Ordinary · &gt; 170 M Special</span><small>Demo planning value · Not official</small></div><div class="scroll"><table class="scouting-table"><thead><tr><th>✓</th><th>Player</th><th>KD</th><th>Alliance</th><th>Role</th><th>TG</th><th>Power</th><th>Fit</th><th>Invitation</th><th>Transfer</th><th>Status</th></tr></thead><tbody id="boardRows"></tbody></table></div>
+<div class="actions"><button type="button" id="compareBtn">⚖ Compare selected (0/3)</button><button type="button" id="exportCsv">↓ Export visible CSV</button></div>
+<div id="comparison" aria-live="polite"></div></div></section>
+
+</div>
+<aside class="side-stack">
+<section class="panel"><div class="panel-head"><h2 id="profileTitle">Candidate profile</h2></div><div class="panel-body"><div id="profileBody" aria-live="polite"></div>
+<details id="intelligenceDetails" class="scout-intelligence">
+<summary>✦ Player Intelligence · More details</summary>
+<div id="intelligenceContent" role="region" aria-label="Optional player intelligence details"></div>
+</details>
+<div class="actions"><button id="editCandidate" type="button">✎ Edit Profile</button><button id="deleteCandidate" class="secondary" type="button">Delete Demo Player</button></div></div></section>
+<section class="panel"><div class="panel-head"><h2>NXS Needs</h2><small>4 planning categories</small></div><div class="panel-body needs-grid">
+<div><b>Rally Leads</b><span>Priority role</span><strong id="needRally">–</strong></div>
+<div><b>Active Fighters</b><span>Events and KvK</span><strong id="needFighters">–</strong></div>
+<div><b>Stable Joiners</b><span>Attendance &amp; team fit</span><strong id="needJoiners">–</strong></div>
+<div><b>R4 / R5 Potential</b><span>Coordination</span><strong id="needCommand">–</strong></div>
+</div><p class="smallprint" style="padding:0 12px 10px">Candidate counts are fictional illustrations, not staffing requirements.</p></section>
+<section class="panel"><div class="panel-head"><h2>Kingdom Notes</h2><small>fictional examples</small></div><div id="kingdomNotes" class="panel-body intel-grid"></div></section>
+
+<section class="panel"><div class="panel-head"><h2>Scouting rules · Demo</h2></div><div class="panel-body"><div class="info">Invitation categories use a provisional 170M ordinary-invite planning cap (up to 170M = Ordinary, above 170M = Special), with optional manual override; confirm official Kingshot rules for each window. Role needs, transfer eligibility and fit scores are fictional examples. No contacts, approvals or transfers occur when you change demo status. Candidate details can be edited freely and are saved only on this device.</div><p id="storageNotice" class="smallprint">Demo edits are saved only in this browser.</p></div></section>
+</aside>
+</div>
+</main>
+<div id="modal" role="dialog" aria-modal="true" aria-labelledby="editorTitle" hidden><div class="modal-body"><div class="modal-title"><h2 id="editorTitle">Demo candidate</h2><button id="closeModal" type="button" class="secondary" aria-label="Close">✕</button></div><p id="editorSub" class="smallprint"></p><p id="editorError" role="alert"></p><form id="candidateForm"></form></div></div>
+<script src="./transfer-scouting-intelligence-v7-check.js" defer></script></body></html>
