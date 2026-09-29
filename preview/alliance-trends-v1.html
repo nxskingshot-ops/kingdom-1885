@@ -54,25 +54,26 @@ function render(){
  $('power').textContent=has&&comparable?formatPower(totalPower):'—';
  $('castles').textContent=has&&comparable?count(totalCastles):'—';
  $('growth').textContent='—';$('risk').textContent='—';
- $('growthPeriod').textContent='Awaiting a second dated snapshot ('+formatPeriod()+')';
+ if(selected==='NXS'&&snapshots.alliances.NXS?.latest_change){const change=snapshots.alliances.NXS.latest_change;$('growth').textContent=(change.net_power_change_m>0?'+':'')+change.net_power_change_m.toLocaleString('en-US',{maximumFractionDigits:1})+'M';$('risk').textContent=change.risk_label+' ('+change.risk_score+')';}
+ $('growthPeriod').textContent=selected==='NXS'?'Net change 28–29 Sep · retained members +71.3M':'Awaiting a second dated snapshot ('+formatPeriod()+')';
  $('lastUpdate').textContent='Roster baseline: '+snapshots.snapshot_date+' · provisional';
  let info=perspective==='kvk'
   ?'KvK Controlling · A single roster snapshot cannot establish agreement violations, power growth, or castle upgrades.'
   :'Competitive Intelligence · Current baseline comparisons are available for recorded alliances. Growth trends need another dated snapshot.';
  if(missing.length)info+=' Missing: '+missing.map(x=>display[x]).join(', ')+'.';
  if(dates.length>1)info+=' Snapshot dates differ ('+dates.join(' / ')+'); combined totals are deliberately hidden until we have contemporaneous data.';
- if(selected==='NXS')info+=' Historical comparison 22–24 Sep: +163.5M power and 2 castle upgrades (source: NXS Member Comparison).';
+ if(selected==='NXS')info+=' Supabase 28–29 Sep: 97 → 96 members; net power −164.7M, retained member growth +71.3M; 6 castle upgrades. Internal NXS risk indicator is not a violation count.';
  info+=' Player-level records are not exposed by this public preview.';
  $('info').textContent=info;
  const body=$('compliance');body.replaceChildren();
  for(const name of ids){
   const r=snapshots.alliances[name];
   const tr=document.createElement('tr');
-  const vals=[display[name],r?'Awaiting comparison':'—','—','Not assessed',r?'Snapshot '+(r.snapshot_date||snapshots.snapshot_date):'Awaiting data'];
+  const vals=[display[name],name==='NXS'?'−164.7M net (28–29 Sep)':r?'Awaiting comparison':'—',name==='NXS'?'6 (28–29 Sep)':'—','Not assessed',r?'Snapshot '+(r.snapshot_date||snapshots.snapshot_date):'Awaiting data'];
   for(const v of vals){const td=document.createElement('td');td.textContent=v;tr.appendChild(td);}body.appendChild(tr);
  }
  const powerChart=$('powerChart');
- powerChart.textContent=has
+ powerChart.textContent=selected==='NXS'?'Recorded NXS power: 24 Sep 11.478B → 28 Sep 11.5004B → 29 Sep 11.3357B. Chart view needs a dated series.' :has
    ?'Baseline recorded on '+snapshots.snapshot_date+'. A second dated snapshot is required for the Power Development line chart.'
    :'Waiting for dated power snapshots.';
  const upgradeChart=$('upgradeChart');
