@@ -26,6 +26,36 @@ button:focus-visible,select:focus-visible{outline:2px solid #e8bf66;outline-offs
 .trial-top{display:flex;align-items:center;justify-content:space-between;gap:6px}
 .trial small{font-size:10px}.stage{font-size:18px;color:var(--pale);font-weight:750}
 .track{height:9px;background:#26364a;border:1px solid #4b5970;border-radius:20px;margin:8px 0 5px;overflow:hidden}.fill{height:100%;background:linear-gradient(90deg,#856130,#e8bc69);border-radius:20px}
+.trial.player-b .fill{background:linear-gradient(90deg,#32658b,#78c3fa)}
+.trial.player-b .stage{color:#9bd2ff}
+.trial.player-b .badge{border-color:#5385b3;background:#172a40;color:#c9e9ff}
+.player-a>.subject{border-top:3px solid #e1b968;padding-top:7px}
+.player-b>.subject{border-top:3px solid #6bb7f0;padding-top:7px}
+.trial-insight{display:block;font-size:10px;color:#b8c8d9;margin-top:4px}
+.legend{font-size:11px;color:var(--sub);display:flex;gap:15px;flex-wrap:wrap;padding:0 0 9px}
+.legend b{font-size:11px}.legend .gold{color:#eac476}.legend .blue{color:#8ecfff}
+.analysis{margin-top:16px;border:1px solid #6e5b3c;background:#142239;border-radius:12px;padding:12px 14px}
+.analysis h2{margin-bottom:9px}.analysis-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.analysis-item{padding:9px 11px;border:1px solid #354965;border-radius:9px;background:#0c182a;min-width:0}
+.analysis-item strong{color:var(--pale);font-size:12px}.analysis-item p{color:var(--sub);font-size:11px;margin-top:4px}
+@media(orientation:landscape) and (max-height:600px){
+ main{max-width:1500px;padding:8px 10px 20px}
+ .page-top{padding-bottom:6px}.page-top h1{font-size:22px}.page-top p{font-size:10px;margin-top:1px}
+ .controls{margin:8px 0;gap:9px}.controls label{font-size:10px;gap:2px}select{padding:5px 8px}
+ .panel{padding:10px}.compare-grid,.trials{gap:9px}
+ .subject{padding-bottom:6px}.name{font-size:15px}
+ .kpi-grid{gap:5px;margin-top:8px}.kpi{padding:6px 8px}.kpi .value{font-size:18px}
+ .kpi .caption,.kpi .help{font-size:9px}.composition{margin-top:7px}
+ .composition p{margin-bottom:2px}.composition-bar{height:7px}
+ .aux{margin-top:6px;gap:5px}.tag{padding:3px 6px;font-size:9px}
+ .section{margin-top:10px}.section-title{margin-bottom:6px}.section-title h2{font-size:16px}
+ .trials{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .trial{padding:7px 9px;margin-top:5px}.stage{font-size:17px}
+ .track{margin:5px 0 3px;height:7px}
+ .analysis{margin-top:10px;padding:10px}.analysis-item{padding:6px 8px}
+}
+@media(max-width:600px) and (orientation:portrait){.analysis-grid{grid-template-columns:1fr}}
+
 .aux{margin-top:12px;display:flex;flex-wrap:wrap;gap:9px;justify-content:space-between}.tag{border:1px solid #3f536d;border-radius:7px;padding:6px 9px;color:var(--sub);font-size:11px}
 .footnote{margin-top:16px;font-size:11px;color:var(--sub);line-height:1.6}.signin{padding:15px;border:1px solid #7a5837;border-radius:12px;background:#1f2530;margin:15px 0;display:none}.signin.visible{display:block}.muted{opacity:.85}
 @media(max-width:600px){main{padding:12px 10px 28px}.page-top{align-items:flex-start}.stamp{padding:6px;font-size:9px}.compare-grid,.trials{grid-template-columns:1fr}.controls{margin:12px 0}.kpi .value{font-size:20px}.page-top p{max-width:260px}}
@@ -39,7 +69,12 @@ button:focus-visible,select:focus-visible{outline:2px solid #e8bf66;outline-offs
 <label>PLAYER A<select id="playerA" aria-label="Choose first player"></select></label>
 <label>PLAYER B<select id="playerB" aria-label="Choose comparison player"></select></label>
 </section>
+<div class="legend"><span><b class="gold">● Player A · Gold</b></span><span><b class="blue">● Player B · Blue</b></span></div>
 <div class="compare-grid" id="cards"></div>
+<section class="analysis" aria-label="Observed player differences">
+<h2>Development comparison</h2>
+<div class="analysis-grid" id="insights"></div>
+</section>
 <section class="section"><div class="section-title"><h2>Five development trials</h2><small>Independent trial scales · stage and rank, not combat power</small></div><div class="trials" id="trials"></div></section>
 <section class="section"><div class="section-title"><h2>Additional mixed indicator</h2><small>Not included in the five specialized areas</small></div><div class="trials" id="radiant"></div></section>
 <div class="footnote" id="method">
@@ -69,8 +104,8 @@ function getPower(p){return power.find(x=>keyName(x.player_name)===keyName(p.pla
 function selectPlayer(id,preferred){const field=$(id);field.replaceChildren();for(const p of players){const opt=el('option','',p.player_name+(p.alliance_tag?' · '+p.alliance_tag:''));opt.value=p.player_name;field.appendChild(opt);}if(players.some(p=>p.player_name===preferred))field.value=preferred;}
 function current(id){return players.find(p=>p.player_name===$(id).value)||players[0];}
 function kpi(label,text,help){const outer=el('div','kpi');outer.append(el('span','caption',label),el('div','value',text),el('div','help',help||''));return outer;}
-function summary(p){
- const card=el('article','panel');
+function summary(p,slot){
+ const card=el('article','panel player-'+slot);
  const top=el('div','subject'),identity=el('div');
  identity.append(el('div','name',p.player_name),el('div','alliance',(p.alliance_tag||'Alliance not verified')+' · '+snapshot));
  top.append(identity,el('span','badge',p.overall_rank?'OVERALL #'+p.overall_rank:'NO OVERALL TOP-40 RANK'));
@@ -93,8 +128,8 @@ function summary(p){
  if(ref?.source_note&&/provisional/i.test(ref.source_note))card.append(el('p','msg','Power linkage is provisional: '+ref.source_note));
  return card;
 }
-function trialRow(p,c){
- const row=el('div','trial'),top=el('div','trial-top'),left=el('div');
+function trialRow(p,c,slot){
+ const row=el('div','trial player-'+slot),top=el('div','trial-top'),left=el('div');
  left.append(el('small','',c.name),el('div','stage',value(p[c.key+'_stage'])));
  const rank=p[c.key+'_rank'];
  top.append(left,el('span','badge',rank?'#'+rank:'NO TOP-40 RANK'));
@@ -106,14 +141,50 @@ function trialRow(p,c){
  row.append(el('small','',current!=null?'Stage / max observed in this trial':'No verified stage for this trial'));
  return row;
 }
+
+function renderInsights(a,b){
+ const target=$('insights');target.replaceChildren();
+ const same=keyName(a.player_name)===keyName(b.player_name);
+ if(same){
+  const item=el('div','analysis-item');
+  item.append(el('strong','','Same player selected'),el('p','','Choose two different governors to compare measured trial stages.'));
+  target.append(item);return;
+ }
+ const categoriesOnly=categories.slice(0,5);
+ const valid=categoriesOnly.map(c=>({c,left:stageNum(a[c.key+'_stage']),right:stageNum(b[c.key+'_stage'])}))
+  .filter(x=>x.left!==null&&x.right!==null);
+ for(const {c,left,right} of valid){
+  const item=el('div','analysis-item');
+  const leader=left===right?'Same recorded stage':left>right?a.player_name+' has the higher recorded stage':b.player_name+' has the higher recorded stage';
+  item.append(el('strong','',c.title),el('p','',leader+' · '+value(a[c.key+'_stage'])+' vs '+value(b[c.key+'_stage'])+'.'));
+  target.append(item);
+ }
+ const missing=5-valid.length;
+ if(missing){
+  const item=el('div','analysis-item');
+  item.append(el('strong','','Data completeness'),el('p','',missing+' of 5 specialty trials cannot be compared because at least one verified stage is absent.'));
+  target.append(item);
+ }
+ if(!missing&&!valid.length)target.append(el('p','muted','No comparable stage measurements yet.'));
+ const pA=getPower(a),pB=getPower(b);
+ if(pA&&pB){
+  const item=el('div','analysis-item');
+  const difference=Number(pA.power_m)-Number(pB.power_m);
+  item.append(el('strong','','Total power · roster snapshot'),
+    el('p','',a.player_name+' '+Number(pA.power_m).toFixed(1)+'M · '+b.player_name+' '+Number(pB.power_m).toFixed(1)+'M · absolute difference '+Math.abs(difference).toFixed(1)+'M. Does not identify troop or non-troop shares.'));
+  target.append(item);
+ }
+}
+
 function render(){
  if(!players.length)return;
- const a=current('playerA'),b=current('playerB');$('cards').replaceChildren(summary(a),summary(b));
+ const a=current('playerA'),b=current('playerB');$('cards').replaceChildren(summary(a,'a'),summary(b,'b'));
+ renderInsights(a,b);
  $('trials').replaceChildren();$('radiant').replaceChildren();
  for(const c of categories){
   const target=c.key==='radiant'?$('radiant'):$('trials'),panel=el('section','panel');
   panel.append(el('h3','',c.title));
-  panel.append(trialRow(a,c),trialRow(b,c));
+  panel.append(trialRow(a,c,'a'),trialRow(b,c,'b'))
   target.append(panel);
  }
 }
