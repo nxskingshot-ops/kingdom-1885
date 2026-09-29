@@ -21,7 +21,7 @@ try{const response=await fetch(dataUrl,{cache:'no-store'});if(!response.ok)throw
 catch(err){document.getElementById('info').textContent='Snapshot data currently unavailable. The dashboard is showing safe empty states.';console.warn('Alliance snapshot',err);return;}
 const names=['NXS','MYM','FRA','OoO'],display={NXS:'NXS',MYM:'MYM',FRA:'FRA',OoO:'OoO'};
 const sectionMode=new URLSearchParams(location.search).get('section');
-let selected='ALL',perspective=sectionMode==='comparison'?'competitive':'kvk';
+let selected=sectionMode==='trends'?'NXS':'ALL',perspective=sectionMode==='kvk'?'kvk':'competitive';
 if(sectionMode==='comparison'||sectionMode==='trends'||sectionMode==='kvk'){
  const heading=document.querySelector('.heading h1');
  heading.textContent=sectionMode==='comparison'?'Alliance Comparison':sectionMode==='kvk'?'KvK Controlling':'Alliance Trends';
@@ -37,6 +37,7 @@ function sortMetric(entries){return [...entries].sort((a,b)=>{const av=a.value,b
 const formatPeriod=()=>($('period').value==='all'?'all recorded dates':$('period').value+' days');
 function getVisible(){const ids=selected==='ALL'?names:[selected];const rows=ids.filter(n=>snapshots.alliances[n]).map(n=>({...snapshots.alliances[n],name:n}));return {ids,rows};}
 function render(){
+ document.querySelectorAll('.alliance').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.a===selected)));
  $('kvk').setAttribute('aria-selected',String(perspective==='kvk'));
  $('competitive').setAttribute('aria-selected',String(perspective==='competitive'));
  $('kvkPanel').hidden=perspective!=='kvk';
