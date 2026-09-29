@@ -44,6 +44,7 @@ function render(){
   :'Competitive Intelligence · Current baseline comparisons are available for recorded alliances. Growth trends need another dated snapshot.';
  if(missing.length)info+=' Missing: '+missing.map(x=>display[x]).join(', ')+'.';
  if(selected==='ALL'&&castleCoverage<4)info+=' OoO power total is available, but member-level and castle totals for OoO still need the individual roster. Current castle count only covers NXS, MYM and FRA.';
+ if(selected==='OoO')info+=' Only a dated alliance-wide power reading was recovered for OoO; no member count or Truegold distribution has been verified.';
  if(dates.length>1)info+=' Snapshot dates differ ('+dates.join(' / ')+'); combined totals are deliberately hidden until we have contemporaneous data.';
  if(selected==='NXS')info+=' Supabase 28–29 Sep: 97 → 96 members; net power −164.7M, retained member growth +71.3M; 6 castle upgrades. Internal NXS risk indicator is not a violation count.';
  info+=' Player-level records are not exposed by this public preview.';
