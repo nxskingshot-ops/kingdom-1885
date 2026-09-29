@@ -2,7 +2,7 @@
   "schema_version": 1,
   "snapshot_date": "2026-09-29",
   "status": "provisional_manual_transcription",
-  "notes": "Aggregates from user-supplied Kingshot roster screenshots. Displayed player power is rounded to 0.1M; totals are therefore approximate. Raw player-level records are not published in this public repository. No historical growth or KvK agreement violations have been computed. NXS baseline is dated 2026-09-24, five days earlier than MYM/FRA; cross-alliance values are not simultaneous.",
+  "notes": "Aggregates from user-supplied Kingshot roster screenshots. Displayed player power is rounded to 0.1M; totals are therefore approximate. Raw player-level records are not published in this public repository. No historical growth or KvK agreement violations have been computed. NXS baseline refreshed from dated 2026-09-29 Supabase snapshot. Power totals across alliances remain provisional and use rounded player readings.",
   "alliances": {
     "FRA": {
       "member_count": 98,
@@ -59,29 +59,15 @@
       "snapshot_date": "2026-09-29"
     },
     "NXS": {
-      "snapshot_date": "2026-09-24",
-      "source": "NXS – Member Comparison – 2026-09-24",
-      "source_url": "https://docs.google.com/spreadsheets/d/1gJQoujOR-zDBVnK9y0VuzhFSR1IaTwFBism79_ZJ0QU/edit",
-      "member_count": 99,
-      "power_m": 11478,
+      "snapshot_date": "2026-09-29",
+      "source": "Supabase kvk_roster_history / kvk_snapshots",
+      "source_url": null,
+      "member_count": 96,
+      "power_m": 11335.7,
       "castle_tg_count": 88,
-      "castle_25_plus_count": 99,
-      "ranks": {
-        "R5": 1,
-        "R4": 10,
-        "R3": 85,
-        "R2": 3,
-        "R1": 0
-      },
-      "castles": {
-        "29": 2,
-        "30": 9,
-        "TG5": 6,
-        "TG4": 6,
-        "TG3": 27,
-        "TG2": 36,
-        "TG1": 13
-      },
+      "castle_25_plus_count": 96,
+      "ranks": null,
+      "castles": null,
       "historical_comparison": {
         "from_date": "2026-09-22",
         "to_date": "2026-09-24",
@@ -92,6 +78,20 @@
         "previous_members": 98,
         "current_members": 99,
         "source": "NXS – Member Comparison – 2026-09-24"
+      },
+      "latest_change": {
+        "from_date": "2026-09-28",
+        "to_date": "2026-09-29",
+        "previous_member_count": 97,
+        "current_member_count": 96,
+        "previous_power_m": 11500.4,
+        "current_power_m": 11335.7,
+        "net_power_change_m": -164.7,
+        "retained_growth_m": 71.3,
+        "castle_upgrades": 6,
+        "risk_score": 109.13,
+        "risk_label": "Critical",
+        "risk_method": "Internal NXS risk indicator, not proven KvK agreement violations or a comparable inter-alliance score"
       }
     },
     "OoO": null
