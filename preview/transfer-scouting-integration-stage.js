@@ -40,6 +40,7 @@ const trialData=p=>p.mysticTrials||p.mystic_trials||{};
 const stageValue=(p,k)=>{const raw=trialData(p)[k];if(raw===null||raw===undefined||raw==="")return null;const n=Number(raw);return Number.isInteger(n)&&n>=0&&n<=999?n:null;};
 const stageCount=p=>TRIALS.filter(([,k])=>stageValue(p,k)!==null).length;
 const stageDisplay=(p,k)=>{const v=stageValue(p,k);return v===null?"Not recorded":String(v);};
+const trialBar=(p,key,scale)=>{const val=stageValue(p,key);if(val===null)return '<span class="trial-missing">Not recorded</span>';const width=scale>0?Math.max(0,Math.min(100,val/scale*100)):0;return '<div class="trial-visual"><strong>'+val+'</strong><span class="trial-track" aria-hidden="true"><span class="trial-fill" style="width:'+width.toFixed(2)+'%"></span></span></div>';};
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const clone=()=>defaultPlayers.map(x=>({...x}));
@@ -135,10 +136,10 @@ $("compareBtn").onclick=()=>{
  const ids=[...compareIds].map(id=>players.find(p=>p.id===id)).filter(Boolean);
  if(ids.length<2){$("comparison").textContent="Select two or three fictional candidates using the checkboxes in the board.";return;}
  const values=[["Kingdom",p=>"#"+p.kingdom],["Alliance",p=>p.alliance||"–"],["Role",p=>p.role||"–"],["Castle",p=>p.castle||"–"],["Power",p=>fmt(p.power)+"M"],["Demo fit",p=>fmt(p.fit)+"%"],["Activity",p=>p.activity||"–"],["Combat strength",p=>p.combatStrength||"Not provided"],["Availability",p=>p.availability||"Not provided"],["Language",p=>p.language||"–"],["Invitation (provisional)",p=>invitationType(p)],["Transfer",p=>p.eligibility||"Unknown"],["Contact",p=>p.status||"–"]];
- $("comparison").innerHTML='<h3 style="margin:14px 0 8px">Selected candidates · demo comparison</h3><div class="scroll"><table><thead><tr><th>Metric</th>'+ids.map(p=>'<th>'+esc(p.name)+'</th>').join("")+'</tr></thead><tbody>'+values.map(([label,get])=>'<tr><td>'+esc(label)+'</td>'+ids.map(p=>'<td>'+esc(get(p))+'</td>').join("")+'</tr>').join("")+'</tbody></table></div><p class="smallprint">Only fictional data. No transfer outcome is predicted.</p>'+
+ $("comparison").innerHTML='<h3 style="margin:14px 0 8px">Selected candidates · demo comparison</h3><div class="scroll"><table><thead><tr><th>Metric</th>'+ids.map(p=>'<th>'+esc(p.name)+'</th>').join("")+'</tr></thead><tbody>'+values.map(([label,get])=>'<tr><td>'+esc(label)+'</td>'+ids.map(p=>'<td>'+(/^(Research|Governor Gear|Governor Charms|Pets|Heroes & Hero Gear|Other \/ Mixed)$/.test(label)?get(p):esc(get(p)))+'</td>').join("")+'</tr>').join("")+'</tbody></table></div><p class="smallprint">Only fictional data. No transfer outcome is predicted.</p>'+
  '<details class="scout-intelligence"><summary>✦ Compare Mystic Trials · Recorded stages</summary><div class="scroll"><table><thead><tr><th>Trial / evidence</th>'+ids.map(p=>'<th>'+esc(p.name)+'</th>').join("")+'</tr></thead><tbody>'+
- [['Recorded stages',p=>stageCount(p)+"/6"],...TRIALS.map(([label,key])=>[label,p=>stageDisplay(p,key)]),['Evidence',p=>p.evidenceSource||p.evidence_source||"Not recorded"],['Observed on',p=>p.observedAt||p.observed_at||"Not recorded"]].map(([label,get])=>'<tr><td>'+esc(label)+'</td>'+ids.map(p=>'<td>'+esc(get(p))+'</td>').join("")+'</tr>').join("")+
- '</tbody></table></div><p class="smallprint">Compare only the same named trial across candidates. No combined strength score or inference from missing stages.</p></details>';
+ [['Recorded stages',p=>stageCount(p)+"/6"],...TRIALS.map(([label,key])=>[label,p=>trialBar(p,key,Math.max(1,...ids.map(candidate=>stageValue(candidate,key)??0)))]),['Evidence',p=>p.evidenceSource||p.evidence_source||"Not recorded"],['Observed on',p=>p.observedAt||p.observed_at||"Not recorded"]].map(([label,get])=>'<tr><td>'+esc(label)+'</td>'+ids.map(p=>'<td>'+esc(get(p))+'</td>').join("")+'</tr>').join("")+
+ '</tbody></table></div><p class="smallprint">Each bar is relative to the highest recorded value for that same trial among selected candidates. This is not completion or a combined strength score. Missing values remain unknown.</p></details>';
 };
 
 /* Optional player detail in existing profile; never changes candidate schema, editors or comparison calculations. */
@@ -153,7 +154,9 @@ function renderIntelligence(){
  if(stageCount(p)===0){
   add("p","No Mystic Trial stages recorded for this candidate. No development strength can be inferred.");
  }else{
-  for(const [name,key] of TRIALS)add("p",name+": "+stageDisplay(p,key));
+  const grid=document.createElement("div");grid.className="trial-grid";const scale=Math.max(1,...TRIALS.map(([,key])=>stageValue(p,key)??0));
+  for(const [name,key] of TRIALS){const row=document.createElement("div");row.className="trial-row";const title=document.createElement("span");title.textContent=name;row.append(title);const bar=document.createElement("div");bar.innerHTML=trialBar(p,key,scale);row.append(bar);grid.append(row);}el.append(grid);
+  add("p","Bar lengths are relative to this profile's highest recorded stage, not trial completion.");
   if(stageCount(p)<6)add("p","Incomplete profile: unrecorded stages remain unknown.");
   add("h3","Development observations · Limited to recorded data");
   add("p","These are observed trial stages, not verified combat attributes. Compare each trial only with the same named trial in another profile; stages from different trials cannot be added together as a strength score.");
