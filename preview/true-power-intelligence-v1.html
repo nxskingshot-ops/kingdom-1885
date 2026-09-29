@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0c1526"><title>NEXUS · True Power Intelligence</title>
+<style>
+:root{color-scheme:dark;--bg:#09121f;--surface:#101d30;--raised:#182841;--gold:#dbb874;--pale:#f6e4ba;--ink:#dce6f2;--sub:#a6b8cb;--line:#715b39;--blue:#63a8df;--green:#86cda4}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:radial-gradient(ellipse at 58% -20%,#263954 0%,#0b1728 53%,#07101c 100%);font:14px/1.5 system-ui,sans-serif;color:var(--ink)}
+body{overflow-x:hidden}button,select{font:inherit}button{cursor:pointer}main{max-width:1180px;margin:0 auto;padding:15px 15px 40px}
+h1,h2,h3,p{margin:0}h1{font:700 clamp(19px,4.3vw,30px)/1.12 Georgia,serif;letter-spacing:.015em;color:var(--pale)}h2{font:700 18px Georgia,serif;color:var(--pale)}h3{font-size:13px;color:var(--pale)}small,.sub{color:var(--sub)}.eyebrow{font-size:10px;font-weight:750;letter-spacing:.18em;color:var(--gold)}
+.page-top{display:flex;align-items:center;gap:14px;justify-content:space-between;border-bottom:1px solid #755a31;padding-bottom:14px}.page-top p{margin-top:5px;font-size:12px;color:var(--sub)}
+.stamp{border:1px solid #796039;border-radius:9px;padding:7px 12px;color:var(--gold);font-size:11px;flex:none}.panel{border:1px solid #394d66;background:linear-gradient(150deg,#13243c,#0d192b);box-shadow:0 5px 22px #0004;border-radius:14px;padding:15px;min-width:0}
+.controls{display:flex;flex-wrap:wrap;gap:12px;margin:17px 0}.controls label{display:flex;flex:1 1 200px;flex-direction:column;gap:5px;font-size:11px;color:var(--gold);font-weight:700;letter-spacing:.06em}
+select{background:#0a1525;color:var(--ink);border:1px solid #6d593e;padding:11px 12px;border-radius:9px;max-width:100%;min-width:0}
+button{background:#44351f;border:1px solid var(--gold);border-radius:9px;color:var(--pale);padding:9px 12px}button:hover{background:#5b4729}
+button:focus-visible,select:focus-visible{outline:2px solid #e8bf66;outline-offset:2px}
+.msg{font-size:12px;color:var(--sub);padding:10px 0}.msg.error{color:#ffb8b2}
+.compare-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.subject{display:flex;justify-content:space-between;gap:10px;align-items:center;padding-bottom:12px;border-bottom:1px solid #33445b}
+.name{font-weight:800;font-size:17px;overflow-wrap:anywhere}.alliance{color:#d8bd88;font-size:11px}.badge{font-size:10px;font-weight:750;border:1px solid #7b673b;background:#2b281f;padding:4px 7px;border-radius:40px;white-space:nowrap}
+.kpi-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+.kpi{padding:11px 12px;border-radius:9px;background:#0b1728;border:1px solid #334760;min-width:0}
+.kpi .value{font-size:21px;font-weight:750;color:var(--pale);letter-spacing:-.03em;overflow-wrap:anywhere}
+.kpi .caption{display:block;color:var(--sub);font-size:10px;letter-spacing:.04em}.kpi .help{font-size:10px;color:var(--sub)}
+.composition{margin-top:11px}.composition p{font-size:11px;color:var(--sub);margin-bottom:6px}.composition-bar{height:11px;border-radius:18px;border:1px solid #53637a;background:repeating-linear-gradient(110deg,#324258 0 12px,#18283f 12px 24px)}.composition .note{font-size:10px;color:#b6c4d6;margin-top:4px}
+.section{margin-top:17px}.section-title{display:flex;justify-content:space-between;gap:12px;align-items:flex-end;margin-bottom:11px}.section-title small{text-align:right;font-size:10px}.trials{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.trial{padding:11px 12px;border:1px solid #354964;background:#101e32;border-radius:10px;margin-top:8px}
+.trial-top{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.trial small{font-size:10px}.stage{font-size:18px;color:var(--pale);font-weight:750}
+.track{height:9px;background:#26364a;border:1px solid #4b5970;border-radius:20px;margin:8px 0 5px;overflow:hidden}.fill{height:100%;background:linear-gradient(90deg,#856130,#e8bc69);border-radius:20px}
+.aux{margin-top:12px;display:flex;flex-wrap:wrap;gap:9px;justify-content:space-between}.tag{border:1px solid #3f536d;border-radius:7px;padding:6px 9px;color:var(--sub);font-size:11px}
+.footnote{margin-top:16px;font-size:11px;color:var(--sub);line-height:1.6}.signin{padding:15px;border:1px solid #7a5837;border-radius:12px;background:#1f2530;margin:15px 0;display:none}.signin.visible{display:block}.muted{opacity:.85}
+@media(max-width:600px){main{padding:12px 10px 28px}.page-top{align-items:flex-start}.stamp{padding:6px;font-size:9px}.compare-grid,.trials{grid-template-columns:1fr}.controls{margin:12px 0}.kpi .value{font-size:20px}.page-top p{max-width:260px}}
+</style></head>
+<body><main>
+<header class="page-top"><div><div class="eyebrow">KINGDOM #1885 · PRIVATE INTELLIGENCE</div><h1>True Power Intelligence</h1><p>Account development signals · verified snapshot comparisons</p></div><span class="stamp" id="dateLabel">Snapshot pending</span></header>
+<section class="signin" id="signin"><h2>Member access</h2><p class="msg" id="signinText">Sign in using your approved NEXUS account.</p><button id="openLogin" type="button">Open KvK Prep sign-in</button></section>
+<p role="status" class="msg" id="status">Checking protected member access…</p>
+<div id="dashboard" hidden>
+<section class="controls" aria-label="Compare NEXUS players">
+<label>PLAYER A<select id="playerA" aria-label="Choose first player"></select></label>
+<label>PLAYER B<select id="playerB" aria-label="Choose comparison player"></select></label>
+</section>
+<div class="compare-grid" id="cards"></div>
+<section class="section"><div class="section-title"><h2>Five development trials</h2><small>Independent trial scales · stage and rank, not combat power</small></div><div class="trials" id="trials"></div></section>
+<section class="section"><div class="section-title"><h2>Additional mixed indicator</h2><small>Not included in the five specialized areas</small></div><div class="trials" id="radiant"></div></section>
+<div class="footnote" id="method">
+<b>Reading the chart:</b> Each bar measures stage progress relative to the highest observed stage in that same trial on 29 Sep 2026. Different trials have different scales; compare bars within the same trial only. Progress indicates account development, not a calculated share of combat power. Rankings cover only the in-game top 40, so an absent ranking does not mean no progress. Personal power components (troops vs. other sources) cannot be calculated from the trial results alone. Participation and login frequency are not recorded by these leaderboards.
+</div>
+</div>
+</main>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const API='https://hcjrdofkdkasznywvcxo.supabase.co';
+const KEY='sb_publishable_hkqBaMme70g2f3wcxvaTKg_FczqkpCh';
+const categories=[
+{key:'coliseum',title:'Heroes & Hero Gear',name:'Coliseum'},
+{key:'forest',title:'Pets',name:'Forest of Life'},
+{key:'crystal',title:'Governor Charms',name:'Crystal Cave'},
+{key:'knowledge',title:'Research',name:'Knowledge Nexus'},
+{key:'molten',title:'Governor Gear',name:'Molten Fort'},
+{key:'radiant',title:'Mixed / Own Troops',name:'Radiant Spire'}
+];
+let players=[],power=[],caps={};let snapshot='—';
+const keyName=x=>String(x||'').normalize('NFKC').trim().toLocaleLowerCase('en');
+function el(tag,cls,text){const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=String(text);return n;}
+function value(x){return x===null||x===undefined||x===''?'—':String(x);}
+function stageNum(v){if(!/^\d+-\d+$/.test(String(v||'')))return null;const [chapter,step]=v.split('-').map(Number);return (chapter-1)*10+step;}
+function getPower(p){return power.find(x=>keyName(x.player_name)===keyName(p.player_name));}
+function selectPlayer(id,preferred){const field=$(id);field.replaceChildren();for(const p of players){const opt=el('option','',p.player_name+(p.alliance_tag?' · '+p.alliance_tag:''));opt.value=p.player_name;field.appendChild(opt);}if(players.some(p=>p.player_name===preferred))field.value=preferred;}
+function current(id){return players.find(p=>p.player_name===$(id).value)||players[0];}
+function kpi(label,text,help){const outer=el('div','kpi');outer.append(el('span','caption',label),el('div','value',text),el('div','help',help||''));return outer;}
+function summary(p){
+ const card=el('article','panel');
+ const top=el('div','subject'),identity=el('div');
+ identity.append(el('div','name',p.player_name),el('div','alliance',(p.alliance_tag||'Alliance not verified')+' · '+snapshot));
+ top.append(identity,el('span','badge',p.overall_rank?'OVERALL #'+p.overall_rank:'NO OVERALL TOP-40 RANK'));
+ card.append(top);
+ const box=el('div','kpi-grid'),ref=getPower(p);
+ box.append(
+  kpi('TOTAL POWER',ref?Number(ref.power_m).toFixed(1)+'M':'—',ref?'Verified roster snapshot':'Not matched to a roster'),
+  kpi('MYSTIC LEVELS',value(p.overall_score),p.overall_rank?'Overall rank #'+p.overall_rank:'Overall total not shown'),
+  kpi('TROOP POWER','—','Not separately measured'),
+  kpi('NON-TROOP POWER','—','Not separately measured')
+ );
+ card.append(box);
+ const comp=el('div','composition');
+ comp.append(el('p','','Power composition · troops / non-troops'),el('div','composition-bar'),el('div','note','Breakdown unavailable · no estimated segments'));
+ card.append(comp);
+ const covered=categories.filter(c=>p[c.key+'_rank']!=null).length;
+ const tags=el('div','aux');
+ tags.append(el('span','tag','Trials recorded: '+covered+'/6'),el('span','tag','Snapshot: '+snapshot),el('span','tag','Participation: not measured'));
+ card.append(tags);
+ if(ref?.source_note&&/provisional/i.test(ref.source_note))card.append(el('p','msg','Power linkage is provisional: '+ref.source_note));
+ return card;
+}
+function trialRow(p,c){
+ const row=el('div','trial'),top=el('div','trial-top'),left=el('div');
+ left.append(el('small','',c.name),el('div','stage',value(p[c.key+'_stage'])));
+ const rank=p[c.key+'_rank'];
+ top.append(left,el('span','badge',rank?'#'+rank:'NO TOP-40 RANK'));
+ row.append(top);
+ const track=el('div','track'),fill=el('div','fill');
+ const current=stageNum(p[c.key+'_stage']),cap=caps[c.key];
+ fill.style.width=current!=null&&cap?Math.max(0,Math.min(100,current/cap*100))+'%':'0%';
+ track.append(fill);row.append(track);
+ row.append(el('small','',current!=null?'Stage / max observed in this trial':'No verified stage for this trial'));
+ return row;
+}
+function render(){
+ if(!players.length)return;
+ const a=current('playerA'),b=current('playerB');$('cards').replaceChildren(summary(a),summary(b));
+ $('trials').replaceChildren();$('radiant').replaceChildren();
+ for(const c of categories){
+  const target=c.key==='radiant'?$('radiant'):$('trials'),panel=el('section','panel');
+  panel.append(el('h3','',c.title));
+  panel.append(trialRow(a,c),trialRow(b,c));
+  target.append(panel);
+ }
+}
+$('playerA').addEventListener('change',render);$('playerB').addEventListener('change',render);
+$('openLogin').addEventListener('click',()=>{
+ try{window.parent.document.getElementById('kvkButton').click();}
+ catch(_){window.parent.location.href='./kingdom-hub-menu-test.html?view=kvk';}
+});
+async function init(){
+ try{
+  const mod=await import('https://esm.sh/@supabase/supabase-js@2');
+  const client=mod.createClient(API,KEY,{auth:{persistSession:true,autoRefreshToken:true}});
+  const {data:{session},error}=await client.auth.getSession();
+  if(error||!session?.access_token)throw new Error('Please sign in first. Your trial data is never public.');
+  const response=await fetch(API+'/functions/v1/nexus-true-power',{
+   method:'GET',headers:{apikey:KEY,Authorization:'Bearer '+session.access_token},cache:'no-store'
+  });
+  const data=await response.json();
+  if(!response.ok)throw new Error(data.error||'Intelligence data unavailable.');
+  players=Array.isArray(data.observations)?data.observations:[];
+  power=Array.isArray(data.power_references)?data.power_references:[];
+  snapshot=data.snapshot_date||'—';$('dateLabel').textContent='29 SEP 2026 · SNAPSHOT';
+  if(players.length===0)throw new Error('No verified player observations found.');
+  players.sort((a,b)=>(a.overall_rank??999)-(b.overall_rank??999)||a.player_name.localeCompare(b.player_name));
+  for(const c of categories)caps[c.key]=Math.max(0,...players.map(p=>stageNum(p[c.key+'_stage'])||0));
+  selectPlayer('playerA','FaQu');selectPlayer('playerB','Indy Tao');
+  $('dashboard').hidden=false;$('signin').classList.remove('visible');
+  $('status').textContent=players.length+' distinct profiles · seven complete top-40 rank sets · member-only snapshot';
+  render();
+ }catch(e){
+  $('status').textContent='Protected data not loaded.';$('status').classList.add('error');
+  $('signin').classList.add('visible');$('signinText').textContent=e instanceof Error?e.message:'Sign in to NEXUS first.';
+ }
+}
+init();
+</script></body></html>
