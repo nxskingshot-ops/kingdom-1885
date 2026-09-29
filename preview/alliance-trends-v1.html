@@ -28,21 +28,22 @@ const formatPeriod=()=>($('period').value==='all'?'all recorded dates':$('period
 function getVisible(){const ids=selected==='ALL'?names:[selected];const rows=ids.filter(n=>snapshots.alliances[n]).map(n=>({...snapshots.alliances[n],name:n}));return {ids,rows};}
 function render(){
  const {ids,rows}=getVisible(),missing=ids.filter(n=>!snapshots.alliances[n]),has=rows.length>0;
- const totalPower=rows.reduce((a,b)=>a+b.power_m,0),totalCastles=rows.reduce((a,b)=>a+b.castle_25_plus_count,0);
+ const totalPower=rows.reduce((a,b)=>a+(Number.isFinite(b.power_m)?b.power_m:0),0),totalCastles=rows.reduce((a,b)=>a+(Number.isFinite(b.castle_25_plus_count)?b.castle_25_plus_count:0),0);
+ const powerCoverage=rows.filter(r=>Number.isFinite(r.power_m)).length,castleCoverage=rows.filter(r=>Number.isFinite(r.castle_25_plus_count)).length;
  const dates=[...new Set(rows.map(r=>r.snapshot_date||snapshots.snapshot_date))];const comparable=dates.length===1;
- $('power').textContent=has&&comparable?formatPower(totalPower):'—';
- $('castles').textContent=has&&comparable?count(totalCastles):'—';
+ $('power').textContent=has&&comparable&&powerCoverage?formatPower(totalPower):'—';
+ $('castles').textContent=has&&comparable&&castleCoverage?count(totalCastles):'—';
  $('growth').textContent='—';$('risk').textContent='—';
  if(selected==='NXS'&&snapshots.alliances.NXS?.latest_change){const change=snapshots.alliances.NXS.latest_change;$('growth').textContent=(change.net_power_change_m>0?'+':'')+change.net_power_change_m.toLocaleString('en-US',{maximumFractionDigits:1})+'M';$('risk').textContent=change.risk_label+' ('+change.risk_score+')';}
  $('growthPeriod').textContent=selected==='NXS'?'Net change 28–29 Sep · retained members +71.3M':'Awaiting a second dated snapshot ('+formatPeriod()+')';
- $('lastUpdate').textContent='Roster baseline: '+snapshots.snapshot_date+' · 3 of 4 alliances · provisional';
- $('power').nextElementSibling.textContent=has?(missing.length?'Partial total · missing '+missing.join(', '):'Recorded alliance power'):'Recorded alliance power';
- $('castles').nextElementSibling.textContent=has?(missing.length?'Partial total · missing '+missing.join(', '):'Count from available rosters'):'Count from available roster';
+ $('lastUpdate').textContent='Baseline: '+snapshots.snapshot_date+' · Power 4/4 · rosters 3/4';
+ $('power').nextElementSibling.textContent=has?(powerCoverage===4?'4 alliance power totals · mixed source precision':'Power coverage: '+powerCoverage+'/4 alliances'):'Recorded alliance power';
+ $('castles').nextElementSibling.textContent=has?'Partial total · castle coverage '+castleCoverage+'/4 alliances':'Count from available roster';
  let info=perspective==='kvk'
   ?'KvK Controlling · A single roster snapshot cannot establish agreement violations, power growth, or castle upgrades.'
   :'Competitive Intelligence · Current baseline comparisons are available for recorded alliances. Growth trends need another dated snapshot.';
  if(missing.length)info+=' Missing: '+missing.map(x=>display[x]).join(', ')+'.';
- if(selected==='ALL'&&missing.length)info+=' The displayed totals cover only '+rows.length+' recorded alliances, not all four.';
+ if(selected==='ALL'&&castleCoverage<4)info+=' OoO power total is available, but member-level and castle totals for OoO still need the individual roster. Current castle count only covers NXS, MYM and FRA.';
  if(dates.length>1)info+=' Snapshot dates differ ('+dates.join(' / ')+'); combined totals are deliberately hidden until we have contemporaneous data.';
  if(selected==='NXS')info+=' Supabase 28–29 Sep: 97 → 96 members; net power −164.7M, retained member growth +71.3M; 6 castle upgrades. Internal NXS risk indicator is not a violation count.';
  info+=' Player-level records are not exposed by this public preview.';
@@ -76,12 +77,12 @@ function render(){
      const v=document.createElementNS(ns,'text');v.setAttribute('x',x);v.setAttribute('y',y-13);v.setAttribute('text-anchor','middle');v.textContent=(e.v/1000).toFixed(3)+'B';svg.appendChild(v);
      const t=document.createElementNS(ns,'text');t.setAttribute('x',x);t.setAttribute('y','226');t.setAttribute('text-anchor','middle');t.textContent=e.d;svg.appendChild(t);});container.appendChild(svg);
  }
- const comparison=rows.map(r=>({label:r.name,value:r.power_m/1000})),castleComparison=rows.map(r=>({label:r.name,value:r.castle_tg_count}));
+ const comparison=rows.filter(r=>Number.isFinite(r.power_m)).map(r=>({label:r.name,value:r.power_m/1000})),castleComparison=rows.filter(r=>Number.isFinite(r.castle_tg_count)).map(r=>({label:r.name,value:r.castle_tg_count}));
  const chartHeading=powerChart.closest('.panel').querySelector('h2'),castleHeading=upgradeChart.closest('.panel').querySelector('h2');
  if(selected==='NXS'){chartHeading.textContent='Power Development';plotNxsHistory(powerChart);castleHeading.textContent='Castle Upgrades';upgradeChart.textContent='NXS recorded 6 castle upgrades between 28 and 29 September 2026.';}
  else{chartHeading.textContent='Current Power Comparison';plotBars(powerChart,comparison,'B');castleHeading.textContent='Truegold Castles · Current Baseline';plotBars(upgradeChart,castleComparison,'');}
- powerChart.closest('.panel').querySelector('small').textContent=selected==='NXS'?'Historical NXS values (24, 28 and 29 Sep)':'Recorded power from the 29 Sep baseline; OoO awaiting data';
- upgradeChart.closest('.panel').querySelector('small').textContent=selected==='NXS'?'Confirmed from Supabase snapshot comparison':'Current Truegold castle counts, not castle upgrades';
+ powerChart.closest('.panel').querySelector('small').textContent=selected==='NXS'?'Historical NXS values (24, 28 and 29 Sep)':'Alliance power on 29 Sep · OoO from alliance overview, others from member rosters';
+ upgradeChart.closest('.panel').querySelector('small').textContent=selected==='NXS'?'Confirmed from Supabase snapshot comparison':'Current Truegold castle counts (OoO roster not available), not castle upgrades';
  $('riskList').replaceChildren();for(const name of ids){const li=document.createElement('li');li.textContent=display[name]+': not calculated';$('riskList').appendChild(li);}
 }
 document.querySelectorAll('.alliance').forEach(b=>b.addEventListener('click',()=>{selected=b.dataset.a;render();}));
