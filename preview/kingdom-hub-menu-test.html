@@ -79,7 +79,7 @@ body:has(#nexusFeedback:not([hidden])) #dismissKeyboard:not([hidden]){z-index:21
 /* Fill the letterbox space with the SAME approved artwork, softly blurred.
    The sharp foreground poster remains completely visible and never scrolls. */
 #nexusAbout.poster-ready #nexusAboutCard{isolation:isolate}
-#nexusAbout.poster-ready #nexusAboutCard::before{content:"";position:absolute;inset:-24px;z-index:0;background:linear-gradient(#100c0877,#100c0877),url("../assets/file_00000000be7082109ed1f253b4cecf26.png?build=approved-landscape-v1") center/cover no-repeat;filter:blur(22px) brightness(.70);pointer-events:none}
+#nexusAbout.poster-ready #nexusAboutCard::before{content:"";position:absolute;inset:-24px;z-index:0;background:linear-gradient(#100c0877,#100c0877),url("../assets/nexus_banner_des_goldenen_k%C3%B6nigreichs-2.png?build=approved-1885-wide-v2") center/cover no-repeat;filter:blur(22px) brightness(.70);pointer-events:none}
 #nexusAbout.poster-ready #nexusAboutPoster{display:block;position:relative;z-index:1;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain;object-position:center;margin:0;flex:0 0 auto;background:transparent}
 /* Landscape artwork fits naturally inside the available viewport; no rotation or crop. */
 #nexusAbout.poster-ready #nexusAboutCard > :not(#nexusAboutPoster):not(#nexusAboutClose){display:none!important}
@@ -308,7 +308,7 @@ document.getElementById('nexusAboutCrest').src=document.querySelector('.shared >
 const nexusAboutPoster=document.getElementById('nexusAboutPoster');
 nexusAboutPoster.addEventListener('load',()=>{nexusAboutPoster.hidden=false;nexusAbout.classList.add('poster-ready');});
 nexusAboutPoster.addEventListener('error',()=>{nexusAboutPoster.hidden=true;nexusAbout.classList.remove('poster-ready');});
-nexusAboutPoster.src='../assets/file_00000000be7082109ed1f253b4cecf26.png?build=approved-landscape-v1';
+nexusAboutPoster.src='../assets/nexus_banner_des_goldenen_k%C3%B6nigreichs-2.png?build=approved-1885-wide-v2';
 document.getElementById('nexusAboutLaunch').addEventListener('click',()=>{
  closeNexusMenu();nexusAbout.hidden=false;nexusAboutClose.focus();
 });
