@@ -19,7 +19,31 @@ script.src=new URL('./outpost-viewer-an-v1.js',location.href).href;
 const nestedStyle=doc.createElement('style');
 nestedStyle.textContent='.shared{display:none!important}body:has(>.shared) #bar{display:none!important}body:has(>.shared)>iframe{height:100%!important;flex:1 1 auto!important}';
 doc.head.appendChild(nestedStyle);
-script.onload=()=>{status.hidden=true};
+// Use the existing in-map Fill screen action when NEXUS first opens the map.
+// Keep the approved map graphics, marker positions, and manual zoom controls intact.
+let lastAutoSize='';
+function fitAvailableSpace(force=false){
+  const viewport=frame.getBoundingClientRect();
+  if(viewport.width<120||viewport.height<120)return;
+  const key=Math.round(viewport.width)+'x'+Math.round(viewport.height);
+  if(!force&&key===lastAutoSize)return;
+  const mapDoc=frame.contentDocument;
+  const fillButton=Array.from(mapDoc?.querySelectorAll('button')||[]).find(button=>
+    /^(?:fill screen|fill map)$/i.test((button.textContent||'').trim()) ||
+    /^(?:fill screen|fill map)$/i.test((button.getAttribute('aria-label')||'').trim())
+  );
+  if(!fillButton)return;
+  lastAutoSize=key;
+  fillButton.click();
+}
+let sizeCheck;
+function requestAutoFit(force=false){
+  clearTimeout(sizeCheck);
+  sizeCheck=setTimeout(()=>{try{fitAvailableSpace(force)}catch(error){console.warn('Map auto-fit deferred',error)}},260);
+}
+new ResizeObserver(()=>requestAutoFit()).observe(frame);
+window.addEventListener('orientationchange',()=>requestAutoFit(true));
+script.onload=()=>{status.hidden=true;requestAutoFit(true);setTimeout(()=>requestAutoFit(true),900)};
 script.onerror=()=>{status.textContent='Live controls unavailable · reload to retry'};
 doc.body.appendChild(script);
 setTimeout(()=>{if(!status.hidden&&status.textContent==='Loading Kingdom #1885…')status.textContent='Still loading map…';},12000)
