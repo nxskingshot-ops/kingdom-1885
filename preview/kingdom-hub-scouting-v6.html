@@ -54,11 +54,17 @@ html:fullscreen body{padding:env(safe-area-inset-top) env(safe-area-inset-right)
 #nexusMenu button{display:block;width:100%;text-align:left;margin:3px 0;padding:12px 10px;background:#ecd4a7;color:#352513}
 #nexusMenu button:disabled{opacity:.48;cursor:not-allowed}
 #nexusFeedback{position:fixed;z-index:2147483500;inset:0;background:#000b;display:flex;align-items:center;justify-content:center;padding:12px}
-#nexusFeedbackCard{background:#30251a;border:2px solid #cba564;border-radius:14px;padding:18px;color:#ffe5b3;width:min(460px,100%);max-height:calc(100dvh - 24px);overflow:auto;box-shadow:0 15px 50px #0009}
+#nexusFeedbackCard{background:#30251a;border:2px solid #cba564;border-radius:14px;padding:18px;color:#ffe5b3;width:min(460px,100%);max-height:calc(100dvh - 24px);overflow:hidden;display:flex;flex-direction:column;box-shadow:0 15px 50px #0009}
 #nexusFeedbackCard h2{margin:0 0 12px;font:700 21px Georgia,serif}
 #nexusFeedbackCard label{display:block;margin:10px 0 5px;font-weight:700}
 #nexusFeedbackCard select,#nexusFeedbackCard textarea{width:100%;padding:10px;border:1px solid #c39e63;border-radius:8px;background:#fff1d4;color:#302012;font:14px system-ui}
-#nexusFeedbackCard textarea{min-height:115px;resize:vertical}
+#nexusFeedbackCard textarea{min-height:55px;height:clamp(55px,19dvh,145px);resize:none;overflow-y:auto;overscroll-behavior:contain}
+#nexusFeedbackCard .nexus-actions{flex-shrink:0}
+#nexusFeedbackCard h2,#nexusFeedbackCard label,#nexusFeedbackCard select,#nexusFeedbackCard p{flex-shrink:0}
+#nexusFeedback:focus-within #nexusFeedbackCard{max-height:calc(100dvh - 16px)}
+#nexusFeedback:not([hidden])~#dismissKeyboard{z-index:2147483600}
+body:has(#nexusFeedback:not([hidden])) #dismissKeyboard:not([hidden]){z-index:2147483600;bottom:auto;top:max(5px,env(safe-area-inset-top));right:max(6px,env(safe-area-inset-right));padding:7px 10px;font-size:12px}
+@media(max-height:420px){#nexusFeedback{padding:6px}#nexusFeedbackCard{padding:9px 12px;max-height:calc(100dvh - 12px)}#nexusFeedbackCard h2{font-size:16px;margin-bottom:2px}#nexusFeedbackCard>p:first-of-type{margin:2px 0}#nexusFeedbackCard label{margin:4px 0 2px}#nexusFeedbackCard textarea{height:55px;min-height:40px}#nexusFeedbackCard select{padding:5px}#nexusFeedbackStatus{min-height:14px;margin:3px 0;font-size:11px}.nexus-actions{margin-top:4px}}
 .nexus-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
 #nexusFeedbackStatus{min-height:18px;line-height:1.4}
 @media(max-height:420px){#nexusMenuButton{min-height:32px;padding:4px 8px}}
@@ -184,9 +190,9 @@ nexusMenuButton.addEventListener('click',event=>{
 document.addEventListener('click',event=>{if(!event.target.closest('.nexus-tools'))closeNexusMenu();});
 document.getElementById('nexusContact').addEventListener('click',()=>{
  closeNexusMenu();nexusFeedback.hidden=false;nexusFeedbackStatus.textContent='';
- document.getElementById('nexusMessage').focus();
+ /* Keep the keyboard closed until the user taps a field. */
 });
-function closeNexusFeedback(){nexusFeedback.hidden=true;nexusMenuButton.focus();}
+function closeNexusFeedback(){const active=focusedInput();if(active)active.blur();nexusFeedback.hidden=true;dismissKeyboard.hidden=true;nexusMenuButton.focus();}
 document.getElementById('nexusFeedbackCancel').addEventListener('click',closeNexusFeedback);
 nexusFeedback.addEventListener('click',event=>{if(event.target===nexusFeedback)closeNexusFeedback();});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'){if(!nexusFeedback.hidden)closeNexusFeedback();else closeNexusMenu();}});
