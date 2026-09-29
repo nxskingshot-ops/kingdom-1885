@@ -4,16 +4,16 @@
 </style></head><body><main>
 <div class="heading"><div><h1>Alliance Trends</h1><small>Kingdom #1885 · Outpost Alliance Analysis</small></div><small id="lastUpdate">Last update: No verified snapshots</small></div>
 <div class="tabs" role="tablist" aria-label="Analysis perspective"><button role="tab" id="kvk" aria-selected="true">🛡 KvK Controlling</button><button role="tab" id="competitive" aria-selected="false">🔭 Competitive Intelligence</button></div>
-<div class="controls" aria-label="Analysis filters"><button class="alliance" data-a="ALL" aria-pressed="true">All Alliances</button><button class="alliance" data-a="NXS" aria-pressed="false">NXS</button><button class="alliance" data-a="MYM" aria-pressed="false">MYM</button><button class="alliance" data-a="FRA" aria-pressed="false">FRA</button><button class="alliance" data-a="FOURTH" aria-pressed="false">Alliance 4</button><label for="period">Time period</label><select id="period"><option value="7">7 days</option><option value="30" selected>30 days</option><option value="90">90 days</option><option value="all">All time</option></select></div>
+<div class="controls" aria-label="Analysis filters"><button class="alliance" data-a="ALL" aria-pressed="true">All Alliances</button><button class="alliance" data-a="NXS" aria-pressed="false">NXS</button><button class="alliance" data-a="MYM" aria-pressed="false">MYM</button><button class="alliance" data-a="FRA" aria-pressed="false">FRA</button><button class="alliance" data-a="OoO" aria-pressed="false">OoO</button><label for="period">Time period</label><select id="period"><option value="7">7 days</option><option value="30" selected>30 days</option><option value="90">90 days</option><option value="all">All time</option></select></div>
 <div class="announce" id="info">No verified records have been connected yet. Example figures from the design image are deliberately not presented as real data.</div>
 <section class="grid4" aria-label="Key metrics"><div class="panel metric"><div class="label">TOTAL POWER</div><strong id="power">—</strong><div class="desc">Recorded alliance power</div></div><div class="panel metric"><div class="label">CASTLES ≥ LV 25</div><strong id="castles">—</strong><div class="desc">Count from available roster</div></div><div class="panel metric"><div class="label">POWER GROWTH</div><strong id="growth">—</strong><div class="desc" id="growthPeriod">Change over 30 days</div></div><div class="panel metric"><div class="label">MATCHMAKING RISK</div><strong id="risk">—</strong><div class="desc">Needs defined agreement thresholds</div></div></section>
-<section class="grid2"><div class="panel"><h2>Power Development</h2><small>Recorded power over time by alliance</small><div id="powerChart" class="plot">Waiting for dated power snapshots.</div><div class="legend"><span><b style="background:var(--green)"></b>NXS</span><span><b style="background:var(--blue)"></b>MYM</span><span><b style="background:var(--gold)"></b>FRA</span><span><b style="background:var(--purple)"></b>Alliance 4</span></div></div><div class="panel"><h2>Castle Upgrades</h2><small>Recorded castle-level changes</small><div id="upgradeChart" class="plot">Waiting for repeated castle-level snapshots.</div></div></section>
+<section class="grid2"><div class="panel"><h2>Power Development</h2><small>Recorded power over time by alliance</small><div id="powerChart" class="plot">Waiting for dated power snapshots.</div><div class="legend"><span><b style="background:var(--green)"></b>NXS</span><span><b style="background:var(--blue)"></b>MYM</span><span><b style="background:var(--gold)"></b>FRA</span><span><b style="background:var(--purple)"></b>OoO</span></div></div><div class="panel"><h2>Castle Upgrades</h2><small>Recorded castle-level changes</small><div id="upgradeChart" class="plot">Waiting for repeated castle-level snapshots.</div></div></section>
 <section class="grid2"><div class="panel"><h2>Agreement Compliance</h2><small>Only documented deviations from the agreed KvK rules</small><div class="scroll"><table><thead><tr><th>Alliance</th><th>Power change</th><th>Castle upgrades</th><th>Confirmed deviations</th><th>Status</th></tr></thead><tbody id="compliance"></tbody></table></div><div class="foot">An increase is not automatically a violation. Exceptions and documented rules must be checked first.</div></div><div class="panel"><h2>Matchmaking Risk Contribution</h2><small>Share of documented risk indicators</small><div class="risk"><div class="donut"><span>Not<br>calculated</span></div><ul id="riskList"></ul></div><div class="foot">No risk shares are calculated without verified inputs and a documented calculation method.</div></div></section>
 <div class="foot">Analysis scope: four Outpost alliances only. This test view is read-only and does not expose internal player records or invent historical trends.</div>
 </main><script>
 (function(){
 'use strict';
-const names=['NXS','MYM','FRA','FOURTH'],labels={NXS:'NXS',MYM:'MYM',FRA:'FRA',FOURTH:'Alliance 4'};
+const names=['NXS','MYM','FRA','OoO'],labels={NXS:'NXS',MYM:'MYM',FRA:'FRA',OoO:'OoO'};
 let selected='ALL',view='kvk';
 const el=id=>document.getElementById(id);
 function render(){
@@ -39,7 +39,7 @@ const dataUrl='./data/alliance-trends-2026-09-29.json';
 let snapshots;
 try{const response=await fetch(dataUrl,{cache:'no-store'});if(!response.ok)throw Error('Snapshot HTTP '+response.status);snapshots=await response.json();}
 catch(err){document.getElementById('info').textContent='Snapshot data currently unavailable. The dashboard is showing safe empty states.';console.warn('Alliance snapshot',err);return;}
-const names=['NXS','MYM','FRA','FOURTH'],display={NXS:'NXS',MYM:'MYM',FRA:'FRA',FOURTH:'Alliance 4'};
+const names=['NXS','MYM','FRA','OoO'],display={NXS:'NXS',MYM:'MYM',FRA:'FRA',OoO:'OoO'};
 let selected='ALL',perspective='kvk';
 const $=id=>document.getElementById(id);
 const formatPower=x=>(x/1000).toLocaleString('en-US',{maximumFractionDigits:2,minimumFractionDigits:2})+'B';
@@ -50,8 +50,9 @@ function getVisible(){const ids=selected==='ALL'?names:[selected];const rows=ids
 function render(){
  const {ids,rows}=getVisible(),missing=ids.filter(n=>!snapshots.alliances[n]),has=rows.length>0;
  const totalPower=rows.reduce((a,b)=>a+b.power_m,0),totalCastles=rows.reduce((a,b)=>a+b.castle_25_plus_count,0);
- $('power').textContent=has?formatPower(totalPower):'—';
- $('castles').textContent=has?count(totalCastles):'—';
+ const dates=[...new Set(rows.map(r=>r.snapshot_date||snapshots.snapshot_date))];const comparable=dates.length===1&&missing.length===0;
+ $('power').textContent=has&&comparable?formatPower(totalPower):'—';
+ $('castles').textContent=has&&comparable?count(totalCastles):'—';
  $('growth').textContent='—';$('risk').textContent='—';
  $('growthPeriod').textContent='Awaiting a second dated snapshot ('+formatPeriod()+')';
  $('lastUpdate').textContent='Roster baseline: '+snapshots.snapshot_date+' · provisional';
@@ -59,13 +60,15 @@ function render(){
   ?'KvK Controlling · A single roster snapshot cannot establish agreement violations, power growth, or castle upgrades.'
   :'Competitive Intelligence · Current baseline comparisons are available for recorded alliances. Growth trends need another dated snapshot.';
  if(missing.length)info+=' Missing: '+missing.map(x=>display[x]).join(', ')+'.';
+ if(dates.length>1)info+=' Snapshot dates differ ('+dates.join(' / ')+'); combined totals are deliberately hidden until we have contemporaneous data.';
+ if(selected==='NXS')info+=' Historical comparison 22–24 Sep: +163.5M power and 2 castle upgrades (source: NXS Member Comparison).';
  info+=' Player-level records are not exposed by this public preview.';
  $('info').textContent=info;
  const body=$('compliance');body.replaceChildren();
  for(const name of ids){
   const r=snapshots.alliances[name];
   const tr=document.createElement('tr');
-  const vals=[display[name],r?'Awaiting comparison':'—','—','Not assessed',r?'Baseline recorded':'Awaiting data'];
+  const vals=[display[name],r?'Awaiting comparison':'—','—','Not assessed',r?'Snapshot '+(r.snapshot_date||snapshots.snapshot_date):'Awaiting data'];
   for(const v of vals){const td=document.createElement('td');td.textContent=v;tr.appendChild(td);}body.appendChild(tr);
  }
  const powerChart=$('powerChart');
@@ -75,7 +78,7 @@ function render(){
  const upgradeChart=$('upgradeChart');
  if(has){
   const tg=rows.reduce((a,b)=>a+b.castle_tg_count,0);
-  upgradeChart.textContent='Current baseline: '+count(tg)+' Truegold castles out of '+count(rows.reduce((a,b)=>a+b.member_count,0))+' recorded members. Upgrade counts require a second snapshot.';
+  upgradeChart.textContent='Current baseline: '+count(tg)+' Truegold castles out of '+count(rows.reduce((a,b)=>a+b.member_count,0))+' recorded members. Upgrades across all alliances need comparable successive snapshots.';
  }else upgradeChart.textContent='Waiting for repeated castle-level snapshots.';
  $('riskList').replaceChildren();for(const name of ids){const li=document.createElement('li');li.textContent=display[name]+': not calculated';$('riskList').appendChild(li);}
 }
