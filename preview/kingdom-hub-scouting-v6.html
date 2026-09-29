@@ -65,7 +65,9 @@ html:fullscreen body{padding:env(safe-area-inset-top) env(safe-area-inset-right)
 #nexusFeedback:not([hidden])~#dismissKeyboard{z-index:2147483600}
 body:has(#nexusFeedback:not([hidden])) #dismissKeyboard:not([hidden]){z-index:2147483600;bottom:auto;top:max(5px,env(safe-area-inset-top));right:max(6px,env(safe-area-inset-right));padding:7px 10px;font-size:12px}
 @media(max-height:420px){#nexusFeedback{padding:6px}#nexusFeedbackCard{padding:9px 12px;max-height:calc(100dvh - 12px)}#nexusFeedbackCard h2{font-size:16px;margin-bottom:2px}#nexusFeedbackCard>p:first-of-type{margin:2px 0}#nexusFeedbackCard label{margin:4px 0 2px}#nexusFeedbackCard textarea{height:55px;min-height:40px}#nexusFeedbackCard select{padding:5px}#nexusFeedbackStatus{min-height:14px;margin:3px 0;font-size:11px}.nexus-actions{margin-top:4px}}
-.nexus-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
+.nexus-actions{display:flex;gap:7px;justify-content:flex-end;align-items:center;margin-top:14px;flex-wrap:wrap}
+#nexusFeedbackHideKeyboard{margin-right:auto;white-space:nowrap;font-size:12px;padding:8px 9px}
+@media(max-height:420px){#nexusFeedbackHideKeyboard{padding:5px 7px;font-size:11px}}
 #nexusFeedbackStatus{min-height:18px;line-height:1.4}
 @media(max-height:420px){#nexusMenuButton{min-height:32px;padding:4px 8px}}
 </style></head><body>
@@ -73,7 +75,7 @@ body:has(#nexusFeedback:not([hidden])) #dismissKeyboard:not([hidden]){z-index:21
 <iframe id="kvk" title="Protected KvK Prep dashboard with original NXS data" loading="lazy"></iframe><iframe id="scouting" title="Fictional Transfer Scouting Demo" loading="lazy"></iframe><iframe id="liveScouting" title="Protected live Transfer Scouting records" loading="lazy"></iframe>
 <button id="exitMapFocus" type="button" aria-label="Return to NEXUS header and navigation">⤡ Show NEXUS header</button>
 <button id="dismissKeyboard" type="button" hidden aria-label="Hide on-screen keyboard">⌨ Tastatur schließen</button>
-<div id="nexusFeedback" hidden role="dialog" aria-modal="true" aria-labelledby="nexusFeedbackHeading"><form id="nexusFeedbackCard"><h2 id="nexusFeedbackHeading">✉ Contact &amp; Feedback</h2><p>Send a message to our NEXUS team on Discord.</p><label for="nexusCategory">Category</label><select id="nexusCategory"><option>General</option><option>Bug report</option><option>Suggestion</option><option>Question</option></select><label for="nexusMessage">Message</label><textarea id="nexusMessage" maxlength="1400" required placeholder="Your feedback..." ></textarea><p id="nexusFeedbackStatus" role="status" aria-live="polite"></p><div class="nexus-actions"><button type="button" id="nexusFeedbackCancel">Cancel</button><button type="submit" id="nexusFeedbackSend">Send feedback</button></div></form></div>
+<div id="nexusFeedback" hidden role="dialog" aria-modal="true" aria-labelledby="nexusFeedbackHeading"><form id="nexusFeedbackCard"><h2 id="nexusFeedbackHeading">✉ Contact &amp; Feedback</h2><p>Send a message to our NEXUS team on Discord.</p><label for="nexusCategory">Category</label><select id="nexusCategory"><option>General</option><option>Bug report</option><option>Suggestion</option><option>Question</option></select><label for="nexusMessage">Message</label><textarea id="nexusMessage" maxlength="1400" required placeholder="Your feedback..." ></textarea><p id="nexusFeedbackStatus" role="status" aria-live="polite"></p><div class="nexus-actions"><button type="button" id="nexusFeedbackHideKeyboard" aria-label="Hide on-screen keyboard">⌨ Tastatur schließen</button><button type="button" id="nexusFeedbackCancel">Cancel</button><button type="submit" id="nexusFeedbackSend">Send feedback</button></div></form></div>
 <script>
 const mapButton=document.getElementById('mapButton'),kvkButton=document.getElementById('kvkButton'),scoutButton=document.getElementById('scoutButton'),liveScoutButton=document.getElementById('liveScoutButton');
 const map=document.getElementById('map'),kvk=document.getElementById('kvk'),scouting=document.getElementById('scouting'),liveScouting=document.getElementById('liveScouting');
@@ -193,6 +195,8 @@ document.getElementById('nexusContact').addEventListener('click',()=>{
  /* Keep the keyboard closed until the user taps a field. */
 });
 function closeNexusFeedback(){const active=focusedInput();if(active)active.blur();nexusFeedback.hidden=true;dismissKeyboard.hidden=true;nexusMenuButton.focus();}
+document.getElementById('nexusFeedbackHideKeyboard').addEventListener('pointerdown',event=>event.preventDefault());
+document.getElementById('nexusFeedbackHideKeyboard').addEventListener('click',()=>{const active=focusedInput();if(active)active.blur();document.getElementById('nexusMessage').blur();document.getElementById('nexusCategory').blur();dismissKeyboard.hidden=true;});
 document.getElementById('nexusFeedbackCancel').addEventListener('click',closeNexusFeedback);
 nexusFeedback.addEventListener('click',event=>{if(event.target===nexusFeedback)closeNexusFeedback();});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'){if(!nexusFeedback.hidden)closeNexusFeedback();else closeNexusMenu();}});
