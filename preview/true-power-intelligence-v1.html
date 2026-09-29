@@ -83,6 +83,7 @@ button:focus-visible,select:focus-visible{outline:2px solid #e8bf66;outline-offs
 @media(orientation:landscape) and (max-height:600px){.rank-panel{padding:9px;margin-top:10px}.rank-heading{font-size:16px}.rank-fields{margin:6px 0}.rank-fields select{padding:5px 8px}.rank-scroll{max-height:240px}.rank-table th,.rank-table td{padding:6px}}
 @media(max-width:550px){.rank-table{font-size:11px}.rank-table td,.rank-table th{padding:6px 4px}.rank-table .rank-button{padding:5px}/* Column widths remain shared with the full-size ranking; narrow screens scroll horizontally. */}
 .radiant-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(270px,1fr);gap:13px;align-items:start}.radiant-layout .trials{grid-template-columns:1fr}.radiant-intel h3{color:var(--pale);font-size:15px;margin-bottom:9px}.rci-names{font-size:11px;color:var(--sub);overflow-wrap:anywhere;margin-bottom:10px}.rci-row{margin:8px 0 12px}.rci-head{display:flex;justify-content:space-between;gap:8px;font-size:11px}.rci-head b{color:var(--pale)}.rci-track{height:9px;border-radius:9px;background:#26364a;border:1px solid #4b5970;margin-top:5px;overflow:hidden}.rci-fill{height:100%;border-radius:9px;background:linear-gradient(90deg,#856130,#e8bc69)}.rci-row.blue .rci-fill{background:linear-gradient(90deg,#32658b,#78c3fa)}.rci-note{padding:9px;border:1px solid #354965;background:#0c182a;border-radius:8px;color:var(--sub);font-size:11px;line-height:1.5;margin-top:8px}.rci-note strong{color:var(--pale)}@media(max-width:740px) and (orientation:portrait){.radiant-layout{grid-template-columns:1fr}}@media(orientation:landscape) and (max-height:600px){.radiant-layout{gap:9px}.radiant-intel{padding:10px}.rci-row{margin:6px 0 9px}}
+.written-interpretation{margin-top:12px;padding:12px 14px;background:#0c182a;border:1px solid #736044;border-radius:10px}.written-interpretation h3{font-size:13px;color:var(--pale);margin-bottom:7px}.written-interpretation p{color:var(--ink);font-size:12px;line-height:1.65;margin:7px 0}.written-interpretation .wi-caution{color:var(--sub);font-size:10px;border-top:1px solid #354965;padding-top:8px;margin-top:11px}
 </style></head>
 <body><main>
 <header class="page-top"><div><div class="eyebrow">KINGDOM #1885 · PRIVATE INTELLIGENCE</div><h1>True Power Intelligence</h1><p>Account development signals · verified snapshot comparisons</p></div><span class="stamp" id="dateLabel">Snapshot pending</span></header>
@@ -98,6 +99,7 @@ button:focus-visible,select:focus-visible{outline:2px solid #e8bf66;outline-offs
 <section class="analysis" aria-label="Observed player differences">
 <h2>Development comparison</h2>
 <div class="analysis-grid" id="insights"></div>
+<div class="written-interpretation" aria-label="Written player comparison"><h3>✦ NEXUS · Written Interpretation</h3><div id="writtenInterpretation" aria-live="polite"></div></div>
 </section>
 <section class="section"><div class="section-title"><h2>Five development trials</h2><small>Independent trial scales · stage and rank, not combat power</small></div><div class="trials" id="trials"></div></section>
 <section class="section"><div class="section-title"><h2>Additional mixed indicator</h2><small>Not included in the five specialized areas</small></div><div class="radiant-layout"><div class="trials" id="radiant"></div><aside class="panel radiant-intel" aria-label="Radiant Spire comparison"><h3>Radiant Spire · Comparison</h3><div id="radiantComparison" aria-live="polite"></div></aside></div></section>
@@ -213,6 +215,43 @@ function renderRadiantComparison(a,b){
  note.append(el('p','',message));target.append(note);
  target.append(el('div','rci-note','Bars use the highest observed Radiant Spire stage as reference. Radiant Spire mixes multiple factors including troops; its stages cannot be treated as pure troop-free power.'));
 }
+function renderWrittenInterpretation(a,b){
+ const target=$('writtenInterpretation');target.replaceChildren();
+ const add=(message,cls='')=>target.append(el('p',cls,message));
+ if(keyName(a.player_name)===keyName(b.player_name)){
+  add('Select two different players to generate a written comparison.');return;
+ }
+ const specialist=categories.slice(0,5);
+ const comparisons=specialist.map(c=>({category:c,stageA:stageNum(a[c.key+'_stage']),stageB:stageNum(b[c.key+'_stage'])}))
+  .filter(x=>x.stageA!==null&&x.stageB!==null);
+ const aAhead=comparisons.filter(x=>x.stageA>x.stageB),bAhead=comparisons.filter(x=>x.stageB>x.stageA);
+ const equal=comparisons.filter(x=>x.stageA===x.stageB);
+ const missing=5-comparisons.length;
+ const clause=(items,player)=>player+' has reached a later recorded stage in '+items.map(x=>x.category.title+' ('+a[x.category.key+'_stage']+' vs '+b[x.category.key+'_stage']+')').join(', ')+'.';
+ add('Comparing '+a.player_name+' ('+(a.alliance_tag||'alliance unverified')+') with '+b.player_name+' ('+(b.alliance_tag||'alliance unverified')+'), using the '+snapshot+' Mystic Trials snapshot.');
+ if(comparisons.length){
+  add('Across '+comparisons.length+' directly comparable specialty trials, '+a.player_name+' has a later recorded stage in '+aAhead.length+', '+b.player_name+' in '+bAhead.length+', and '+equal.length+' show the same recorded stage. These are per-trial development differences, not a combat-power ranking.');
+  if(aAhead.length)add(clause(aAhead,a.player_name));
+  if(bAhead.length)add(clause(bAhead,b.player_name));
+  if(equal.length)add('Both players have the same recorded stage in '+equal.map(x=>x.category.title).join(', ')+'.');
+ }else add('No specialty trial has a verified stage for both players, so no development comparison can be drawn.');
+ if(missing)add('For '+missing+' of the five specialty trials, at least one player has no verified stage. Those areas are not counted as zero or used to infer a disadvantage.');
+ const ra=stageNum(a.radiant_stage),rb=stageNum(b.radiant_stage);
+ if(ra!==null&&rb!==null){
+  if(ra===rb)add('Radiant Spire: both players have reached '+a.radiant_stage+'.');
+  else add('Radiant Spire: '+(ra>rb?a.player_name:b.player_name)+' has reached a later recorded stage ('+a.radiant_stage+' vs '+b.radiant_stage+'). This mixed trial is kept separate from the five specialty areas.');
+ }else add('Radiant Spire cannot be directly compared because at least one stage is unavailable.');
+ const pa=measuredPower(a),pb=measuredPower(b);
+ if(pa.total!==null&&pb.total!==null){
+  const higher=pa.total===pb.total?'Both players have the same recorded Total Power.':(pa.total>pb.total?a.player_name:b.player_name)+' has higher recorded Total Power.';
+  add('Recorded Total Power: '+a.player_name+' '+pa.total.toFixed(1)+'M, '+b.player_name+' '+pb.total.toFixed(1)+'M. '+higher);
+ }else add('Total Power cannot be directly compared for both players because a verified roster value is missing.');
+ if(pa.troops!==null&&pb.troops!==null){
+  const trueA=pa.total-pa.troops,trueB=pb.total-pb.troops;
+  add('Measured non-troop power (Total Power minus Troop Power): '+a.player_name+' '+trueA.toFixed(1)+'M versus '+b.player_name+' '+trueB.toFixed(1)+'M. This is a power component, not a predicted battle outcome.');
+ }else add('A numerical True Power comparison is unavailable: separately measured Troop Power is missing for one or both players.');
+ add('Interpretation limits: Trial stages reflect recorded progression within each individual trial. Different trials have different scales. Neither the number of later stages nor Total Power proves which governor would win a fight.','wi-caution');
+}
 function renderInsights(a,b){
  const target=$('insights');target.replaceChildren();
  const same=keyName(a.player_name)===keyName(b.player_name);
@@ -327,6 +366,7 @@ function render(){
  const a=current('playerA'),b=current('playerB');$('cards').replaceChildren(summary(a,'a'),summary(b,'b'));
  renderRanking();
  renderInsights(a,b);
+ renderWrittenInterpretation(a,b);
  renderRadiantComparison(a,b);
  $('trials').replaceChildren();$('radiant').replaceChildren();
  for(const c of categories){
