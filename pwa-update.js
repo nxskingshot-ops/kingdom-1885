@@ -11,7 +11,7 @@ let notification=false, checking=false, dirty=false, workerChanged=false;
 const banner=document.createElement('aside');
 banner.id='nexus-update-banner';
 banner.setAttribute('role','status');
-banner.style.cssText='position:fixed;z-index:2147483646;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));padding:12px 16px;background:#392716;color:#ffe9b6;border:2px solid #d4aa62;border-radius:12px;box-shadow:0 4px 28px #0009;font:600 13px system-ui;display:none;align-items:center;gap:12px;flex-wrap:wrap';
+banner.style.cssText='position:fixed;z-index:2147483646;left:50%;top:50%;transform:translate(-50%,-50%);width:min(420px,calc(100vw - 32px));max-height:calc(100dvh - 32px);overflow-y:auto;box-sizing:border-box;padding:12px 16px;background:#392716;color:#ffe9b6;border:2px solid #d4aa62;border-radius:12px;box-shadow:0 4px 28px #0009;font:600 13px system-ui;display:none;align-items:center;gap:12px;flex-wrap:wrap';
 const message=document.createElement('span');
 message.textContent='A new NEXUS version is available.';
 message.style.flex='1';
