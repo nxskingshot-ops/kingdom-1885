@@ -34,7 +34,7 @@ const defaultPlayers=[
 ["Oak Sentinel","1697","OAK","Support","TG3",96.3,68,"Declined","Unknown","Medium","German","UTC+2"],
 ["Dawnward","1932","DAW","Fighter","TG4",141,77,"Negotiating","Likely Eligible","High","English","UTC+1"],
 ["Vesper Node","1782","VSP","R4 / R5 Potential","TG4",153.4,86,"Confirmed","Needs Invite","High","English","UTC+0"]
-].map((v,i)=>({id:"DEMO-"+String(i+1).padStart(3,"0"),name:v[0],kingdom:v[1],alliance:v[2],role:v[3],castle:v[4],power:v[5],fit:v[6],status:v[7],eligibility:v[8],activity:v[9],language:v[10],timezone:v[11],notes:"Fictional example for interface testing. Not a real candidate.",lastUpdated:"Demo seed"}));
+].map((v,i)=>({id:"DEMO-"+String(i+1).padStart(3,"0"),name:v[0],kingdom:v[1],alliance:v[2],role:v[3],castle:v[4],power:v[5],fit:v[6],status:v[7],eligibility:v[8],activity:v[9],language:v[10],timezone:v[11],notes:"Fictional example for interface testing. Not a real candidate.",lastUpdated:"Demo seed",...(i===0?{mysticTrials:{knowledge:47,molten:39,crystal:43,forest:52,coliseum:45,radiant:38},evidenceSource:"FICTIONAL TEST DATA · Six illustrative Mystic Trial stages",observedAt:"2026-09-29 (demo)"}:{})}));
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const clone=()=>defaultPlayers.map(x=>({...x}));
@@ -105,7 +105,7 @@ function editForm(p){
  $("cancelEdit").onclick=closeEdit;$("candidateForm").querySelector('input[name="name"]').focus();
 }
 function closeEdit(){$("modal").hidden=true;editing=false;}
-$("candidateForm").onsubmit=e=>{e.preventDefault();const v=Object.fromEntries(new FormData(e.currentTarget).entries()),id=e.currentTarget.dataset.editId||"DEMO-"+Date.now().toString(36);const fit=Number(v.fit),power=Number(v.power);if(!v.name.trim()||!v.kingdom.trim()||!Number.isFinite(fit)||fit<0||fit>100||!Number.isFinite(power)||power<0){$("editorError").textContent="Please enter a name, kingdom number, valid power and fit score (0–100).";return;}const item={...v,id,fit,power,lastUpdated:"Local demo edit"};if(e.currentTarget.dataset.editId){const idx=players.findIndex(p=>p.id===id);if(idx>=0)players[idx]=item;}else players.unshift(item);selected=id;closeEdit();save();render();};
+$("candidateForm").onsubmit=e=>{e.preventDefault();const v=Object.fromEntries(new FormData(e.currentTarget).entries()),id=e.currentTarget.dataset.editId||"DEMO-"+Date.now().toString(36);const fit=Number(v.fit),power=Number(v.power);if(!v.name.trim()||!v.kingdom.trim()||!Number.isFinite(fit)||fit<0||fit>100||!Number.isFinite(power)||power<0){$("editorError").textContent="Please enter a name, kingdom number, valid power and fit score (0–100).";return;}const previous=players.find(p=>p.id===id);const item={...(previous||{}),...v,id,fit,power,lastUpdated:"Local demo edit"};if(e.currentTarget.dataset.editId){const idx=players.findIndex(p=>p.id===id);if(idx>=0)players[idx]=item;}else players.unshift(item);selected=id;closeEdit();save();render();};
 $("search").oninput=render;
 $("sort").onchange=e=>{sort=e.target.value;render();};
 document.querySelectorAll("[data-filter]").forEach(b=>b.onclick=()=>{filter=b.dataset.filter;render();});
