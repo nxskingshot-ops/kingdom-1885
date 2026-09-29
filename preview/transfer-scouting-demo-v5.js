@@ -40,7 +40,7 @@ const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&
 const clone=()=>defaultPlayers.map(x=>({...x}));
 let players=clone(),selected=players[0].id,filter="all",sort="fit",editing=false;
 let compareIds=new Set();
-try{const data=JSON.parse(localStorage.getItem(KEY)||"null");if(Array.isArray(data))players=data;}catch(e){$("storageNotice").textContent="Local storage is unavailable; edits last for this visit only.";}
+try{const data=JSON.parse(localStorage.getItem(KEY)||"null");if(Array.isArray(data)){players=data;const astra=defaultPlayers.find(p=>p.player_name==="Astra Vale");if(astra&&!players.some(p=>String(p.player_name||"").toLowerCase()==="astra vale"))players.unshift({...astra});}}catch(e){$("storageNotice").textContent="Local storage is unavailable; edits last for this visit only.";}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(players));$("storageNotice").textContent="Demo edits are saved only in this browser.";}catch(e){$("storageNotice").textContent="Browser storage blocked: changes will be lost when this page reloads.";}}
 function getSelected(){return players.find(x=>x.id===selected);}
 function filtered(){const q=$("search").value.toLowerCase().trim();return players.filter(p=>(!q||[p.name,p.kingdom,p.alliance,p.role,p.status,p.id].some(x=>String(x||"").toLowerCase().includes(q)))&&(filter==="all"||(filter==="high"&&p.fit>=80)||(filter==="contact"&&["Contacted","Interested","Negotiating","Confirmed"].includes(p.status))||(filter==="review"&&["Needs Review","Unknown"].includes(p.status)||p.fit<70))).sort((a,b)=>sort==="power"?b.power-a.power:sort==="name"?a.name.localeCompare(b.name):b.fit-a.fit||b.power-a.power);}
