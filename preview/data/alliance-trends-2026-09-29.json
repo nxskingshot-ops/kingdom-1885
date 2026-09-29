@@ -2,7 +2,7 @@
   "schema_version": 1,
   "snapshot_date": "2026-09-29",
   "status": "provisional_manual_transcription",
-  "notes": "Aggregates from user-supplied Kingshot roster screenshots. Displayed player power is rounded to 0.1M; totals are therefore approximate. Raw player-level records are not published in this public repository. No historical growth or KvK agreement violations have been computed. NXS baseline refreshed from dated 2026-09-29 Supabase snapshot. Power totals across alliances remain provisional and use rounded player readings. OoO alliance total power is sourced from an earlier alliance overview record on 2026-09-29; this is not a member-by-member roster, so no individual records, member count or castle-level statistics are inferred.",
+  "notes": "Aggregates from user-supplied Kingshot roster screenshots. Displayed player power is rounded to 0.1M; totals are therefore approximate. Raw player-level records are not published in this public repository. No historical growth or KvK agreement violations have been computed. NXS baseline refreshed from dated 2026-09-29 Supabase snapshot. Power totals across alliances remain provisional and use rounded player readings. OoO roster aggregates are sourced from the dated 2026-09-29 screenshot import. Ranking total power 9711.322485M differs from the rounded displayed player-power sum 9706.3M by 5.022485M; retain discrepancy and do not imply reconciliation.",
   "alliances": {
     "FRA": {
       "member_count": 98,
@@ -96,15 +96,43 @@
     },
     "OoO": {
       "snapshot_date": "2026-09-29",
-      "source": "Previously recorded Kingshot alliance overview screenshot (alliance total power only)",
-      "source_quality": "alliance_power_only; individual OoO roster screenshots not currently available for verification",
-      "member_count": null,
+      "source": "OoO roster aggregate: data/imports/ooo_roster_2026-09-29.json",
+      "source_quality": "Aggregated from screenshots; ranking and displayed member-power sum differ by 5.022485M",
+      "member_count": 99,
       "power_m": 9711.322485,
-      "castle_tg_count": null,
-      "castle_25_plus_count": null,
-      "ranks": null,
-      "castles": null
+      "displayed_member_power_sum_m": 9706.3,
+      "ranking_to_displayed_sum_difference_m": 5.022485,
+      "castle_tg_count": 66,
+      "castle_25_plus_count": 99,
+      "ranks": {
+        "R1": 5,
+        "R2": 14,
+        "R3": 66,
+        "R4": 13,
+        "R5": 1
+      },
+      "castles": {
+        "27": 3,
+        "28": 3,
+        "29": 8,
+        "30": 19,
+        "TG1": 12,
+        "TG2": 28,
+        "TG3": 17,
+        "TG4": 8,
+        "TG5": 1
+      },
+      "data_quality": {
+        "duplicate_visible_player_names": 0,
+        "rank_header_counts_match": true,
+        "partial_unreadable_names": 1,
+        "unreadable_individual_power_values": 0,
+        "power_difference_unresolved": true,
+        "power_note": "Individual powers are displayed rounded to 0.1M. The remaining 5.022485M difference exceeds the maximum 4.95M discrepancy explained by rounding 99 numbers alone. Possible capture timing or transcription discrepancy; do not assume agreement.",
+        "castle_note": "Where TG1–TG5 is shown, underlying numeric castle level is not visible and has not been inferred.",
+        "completeness_note": "99 visible unique player entries matching the counts shown for R1 through R5."
+      }
     }
   },
-  "comparison_policy": "Do not calculate cross-alliance trend rates from different-date baselines. Null alliance data means not available. Violation counts require verified agreements and exception rules. Sum castle/member data only where numeric fields exist, and mark partial coverage."
+  "comparison_policy": "Do not calculate cross-alliance trend rates from different-date baselines. Null alliance data means not available. Violation counts require verified agreements and exception rules. Sum castle/member data only where numeric fields exist, and mark partial coverage. OoO power uses alliance ranking power, other roster-derived power totals may use rounded member figures."
 }
