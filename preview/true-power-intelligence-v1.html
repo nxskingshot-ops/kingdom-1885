@@ -78,10 +78,10 @@ button:focus-visible,select:focus-visible{outline:2px solid #e8bf66;outline-offs
 .rank-table .rank-num{font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums}
 .rank-table .rank-value{font-weight:800;color:var(--pale);font-variant-numeric:tabular-nums}
 .rank-table .rank-button{padding:4px 7px;font-size:11px}
-.rank-table th:nth-child(1){width:11%}.rank-table th:nth-child(2){width:34%}.rank-table th:nth-child(3){width:12%}.rank-table th:nth-child(4){width:15%}.rank-table th:nth-child(5){width:28%}
+.rank-table{min-width:720px}.rank-table th:nth-child(1){width:7%}.rank-table th:nth-child(2){width:19%}.rank-table th:nth-child(3){width:9%}.rank-table th:nth-child(4){width:12%}.rank-table th:nth-child(5){width:12%}.rank-table th:nth-child(6){width:12%}.rank-table th:nth-child(7){width:13%}.rank-table th:nth-child(8){width:16%}
 .rank-table td:nth-child(4){white-space:nowrap}
 @media(orientation:landscape) and (max-height:600px){.rank-panel{padding:9px;margin-top:10px}.rank-heading{font-size:16px}.rank-fields{margin:6px 0}.rank-fields select{padding:5px 8px}.rank-scroll{max-height:240px}.rank-table th,.rank-table td{padding:6px}}
-@media(max-width:550px){.rank-table{font-size:11px}.rank-table td,.rank-table th{padding:6px 4px}.rank-table .rank-button{padding:5px}.rank-table th:nth-child(1){width:11%}.rank-table th:nth-child(2){width:33%}.rank-table th:nth-child(3){width:13%}.rank-table th:nth-child(4){width:15%}.rank-table th:nth-child(5){width:28%}}
+@media(max-width:550px){.rank-table{font-size:11px}.rank-table td,.rank-table th{padding:6px 4px}.rank-table .rank-button{padding:5px}/* Column widths remain shared with the full-size ranking; narrow screens scroll horizontally. */}
 </style></head>
 <body><main>
 <header class="page-top"><div><div class="eyebrow">KINGDOM #1885 · PRIVATE INTELLIGENCE</div><h1>True Power Intelligence</h1><p>Account development signals · verified snapshot comparisons</p></div><span class="stamp" id="dateLabel">Snapshot pending</span></header>
@@ -101,6 +101,8 @@ button:focus-visible,select:focus-visible{outline:2px solid #e8bf66;outline-offs
 <option value="development">True Power · Development Index (model)</option>
 <option value="overall">Mystic total levels</option>
 <option value="power">Total roster power (matched only)</option>
+<option value="troops">Troop power (measured only)</option>
+<option value="true">True Power · total minus troops (measured only)</option>
 <option value="coliseum">Heroes · Coliseum</option>
 <option value="forest">Pets · Forest of Life</option>
 <option value="crystal">Charms · Crystal Cave</option>
@@ -112,7 +114,7 @@ button:focus-visible,select:focus-visible{outline:2px solid #e8bf66;outline-offs
 </div>
 <p class="rank-note" id="rankNote"></p>
 <div class="rank-scroll" tabindex="0" aria-label="Scrollable ranked player list">
-<table class="rank-table"><thead><tr><th>RANK</th><th>GOVERNOR</th><th>TAG</th><th>VALUE</th><th>COMPARE</th></tr></thead><tbody id="rankRows"></tbody></table>
+<table class="rank-table"><thead><tr><th>RANK</th><th>GOVERNOR</th><th>TAG</th><th>VALUE</th><th>TOTAL POWER</th><th>TROOPS</th><th>TRUE POWER</th><th>COMPARE</th></tr></thead><tbody id="rankRows"></tbody></table>
 </div>
 </section>
 <section class="analysis" aria-label="Observed player differences">
@@ -122,7 +124,7 @@ button:focus-visible,select:focus-visible{outline:2px solid #e8bf66;outline-offs
 <section class="section"><div class="section-title"><h2>Five development trials</h2><small>Independent trial scales · stage and rank, not combat power</small></div><div class="trials" id="trials"></div></section>
 <section class="section"><div class="section-title"><h2>Additional mixed indicator</h2><small>Not included in the five specialized areas</small></div><div class="trials" id="radiant"></div></section>
 <div class="footnote" id="method">
-<b>Reading the chart:</b> Each bar measures stage progress relative to the highest observed stage in that same trial on 29 Sep 2026. Different trials have different scales; compare bars within the same trial only. Progress indicates account development, not a calculated share of combat power. Rankings cover only the in-game top 40, so an absent ranking does not mean no progress. Personal power components (troops vs. other sources) cannot be calculated from the trial results alone. Participation and login frequency are not recorded by these leaderboards.
+<b>Reading the chart:</b> Each bar measures stage progress relative to the highest observed stage in that same trial on 29 Sep 2026. Different trials have different scales; compare bars within the same trial only. Progress indicates account development, not a calculated share of combat power. Rankings cover only the in-game top 40, so an absent ranking does not mean no progress. Personal power components (troops vs. other sources) cannot be calculated from the trial results alone. Where separately measured troop power is provided, True Power is total roster power minus troop power; otherwise it is unknown. Participation and login frequency are not recorded by these leaderboards.
 </div>
 </div>
 </main>
@@ -154,16 +156,17 @@ function summary(p,slot){
  identity.append(el('div','name',p.player_name),el('div','alliance',(p.alliance_tag||'Alliance not verified')+' · '+snapshot));
  top.append(identity,el('span','badge',p.overall_rank?'OVERALL #'+p.overall_rank:'NO OVERALL TOP-40 RANK'));
  card.append(top);
- const box=el('div','kpi-grid'),ref=getPower(p);
+ const box=el('div','kpi-grid'),ref=getPower(p),m=measuredPower(p);
+ const formatted=v=>v===null?'—':v.toFixed(1)+'M';
  box.append(
   kpi('TOTAL POWER',ref?Number(ref.power_m).toFixed(1)+'M':'—',ref?'Verified roster snapshot':'Not matched to a roster'),
   kpi('MYSTIC LEVELS',value(p.overall_score),p.overall_rank?'Overall rank #'+p.overall_rank:'Overall total not shown'),
-  kpi('TROOP POWER','—','Not separately measured'),
-  kpi('NON-TROOP POWER','—','Not separately measured')
+  kpi('TROOP POWER',formatted(m.troops),m.troops===null?'Not separately measured':'Measured power component'),
+  kpi('NON-TROOP POWER',formatted(m.total!==null&&m.troops!==null?m.total-m.troops:null),m.troops===null?'Not separately measured':'Total minus troop power')
  );
  card.append(box);
  const comp=el('div','composition');
- comp.append(el('p','','Power composition · troops / non-troops'),el('div','composition-bar'),el('div','note','Breakdown unavailable · no estimated segments'));
+ comp.append(el('p','','Power composition · troops / non-troops'),el('div','composition-bar'),el('div','note',m.troops===null?'Breakdown unavailable · no estimated segments':'Measured troop share '+(m.troops/m.total*100).toFixed(1)+'%'));
  card.append(comp);
  const covered=categories.filter(c=>p[c.key+'_rank']!=null).length;
  const tags=el('div','aux');
@@ -224,6 +227,8 @@ const rankDefinitions={
  development:{label:"True Power Development Index",kind:"development"},
  overall:{rank:'overall_rank',score:'overall_score',label:'Mystic total levels',kind:'overall'},
  power:{label:'Total roster power',kind:'power'},
+ troops:{label:'Measured troop power',kind:'troops'},
+ true:{label:'Measured troop-free power',kind:'true'},
  coliseum:{rank:'coliseum_rank',score:'coliseum_stage',label:'Heroes · Coliseum',kind:'stage'},
  forest:{rank:'forest_rank',score:'forest_stage',label:'Pets · Forest of Life',kind:'stage'},
  crystal:{rank:'crystal_rank',score:'crystal_stage',label:'Charms · Crystal Cave',kind:'stage'},
@@ -231,6 +236,15 @@ const rankDefinitions={
  molten:{rank:'molten_rank',score:'molten_stage',label:'Governor Gear · Molten Fort',kind:'stage'},
  radiant:{rank:'radiant_rank',score:'radiant_stage',label:'Mixed · Radiant Spire',kind:'stage'}
 };
+function measuredPower(p){
+ const ref=getPower(p);
+ const total=ref?.power_m==null?null:Number(ref.power_m);
+ // An unpopulated troop-power field is unknown, never zero.
+ const raw=ref?.troop_power_m;
+ const troops=raw===null||raw===undefined||raw===''?null:Number(raw);
+ return {total:Number.isFinite(total)&&total>=0?total:null,
+  troops:Number.isFinite(troops)&&troops>=0&&Number.isFinite(total)&&troops<=total?troops:null};
+}
 function rankMeasurement(p,def){
  if(def.kind==='development'){
   const specialist=categories.filter(c=>c.key!=='radiant');
@@ -240,7 +254,11 @@ function rankMeasurement(p,def){
   return {number:score,label:score.toFixed(1)+' / 100'};
  }
 
- if(def.kind==='power'){const ref=getPower(p);const v=ref?.power_m==null?null:Number(ref.power_m);return Number.isFinite(v)?{number:v,label:v.toFixed(1)+'M'}:null;}
+ if(['power','troops','true'].includes(def.kind)){
+  const m=measuredPower(p);
+  const v=def.kind==='power'?m.total:def.kind==='troops'?m.troops:m.total!==null&&m.troops!==null?m.total-m.troops:null;
+  return v===null?null:{number:v,label:v.toFixed(1)+'M'};
+ }
  if(def.kind==='overall')return Number.isFinite(Number(p.overall_score))&&p.overall_score!=null?{number:Number(p.overall_score),label:Number(p.overall_score).toLocaleString('en-US')}:null;
  const v=stageNum(p[def.score]);return v===null?null:{number:v,label:String(p[def.score])};
 }
@@ -255,25 +273,29 @@ function renderRanking(){
  const ranked=eligible.map((x,i)=>{const reported=definition.rank?Number(x.p[definition.rank]):null;
   const derived=x.measure.number===lastValue?lastRank:i+1;
   lastValue=x.measure.number;lastRank=derived;
-  return {...x,position:metric!=='power'&&metric!=='development'&&Number.isInteger(reported)&&reported>0?reported:derived};
+  return {...x,position:!['power','troops','true','development'].includes(metric)&&Number.isInteger(reported)&&reported>0?reported:derived};
  });
  const visible=ranked.filter(x=>alliance==='ALL'||x.p.alliance_tag===alliance);
  const target=$('rankRows');target.replaceChildren();
  for(const {p,measure,position} of visible){
   const tr=el('tr');if(keyName(p.player_name)==='faqu')tr.className='self';
+  const m=measuredPower(p),fmt=v=>v===null?'—':v.toFixed(1)+'M';
   tr.append(el('td','rank-num','#'+position),el('td','',p.player_name),
-    el('td','',p.alliance_tag||'—'),el('td','rank-value',measure.label));
+    el('td','',p.alliance_tag||'—'),el('td','rank-value',measure.label),
+    el('td','',fmt(m.total)),el('td','',fmt(m.troops)),
+    el('td','rank-value',fmt(m.total!==null&&m.troops!==null?m.total-m.troops:null)));
+
   const actions=el('td');
   const btn=el('button','rank-button','Compare ↗');btn.type='button';
   btn.setAttribute('aria-label','Compare '+p.player_name+' as player B');
   btn.addEventListener('click',()=>{$('playerB').value=p.player_name;render();$('playerB').focus();$('playerB').scrollIntoView({behavior:'smooth',block:'nearest'});});
   actions.append(btn);tr.append(actions);target.append(tr);
  }
- if(!visible.length){const tr=el('tr'),cell=el('td','', 'No verified measurements available for this filter.');cell.colSpan=5;tr.append(cell);target.append(tr);}
+ if(!visible.length){const tr=el('tr'),cell=el('td','', 'No verified measurements available for this filter.');cell.colSpan=8;tr.append(cell);target.append(tr);}
  $('rankNote').textContent=metric==='development'
   ?'Experimental development index · '+eligible.length+' of '+players.length+' profiles have all five specialist trial stages. The index is the equal-weighted average (20% each) of stages divided by the highest observed stage in each specialist trial. The troop-influenced Radiant Spire is excluded. Scores are relative indicators, not actual troop-free power or combat ratings. Missing data are excluded.'
-  :metric==='power'
-  ?'Only '+eligible.length+' of '+players.length+' player profiles have an explicitly linked power measurement. Positions are calculated within this matched sample, not a kingdom-wide true-power rank. Troop and non-troop power remain unknown.'
+  :['power','troops','true'].includes(metric)
+  ?'Only '+eligible.length+' of '+players.length+' player profiles have measurements for '+definition.label+'. Rankings cover this measured sample only, not the whole kingdom. Total minus troops is a troop-free power proxy, not a combat performance score. Unrecorded troop power is shown as —, never assumed to be zero.'
   :definition.label+' · '+eligible.length+' recorded stages / scores · '+visible.length+' displayed. '+(alliance==='ALL'?'Kingdom-wide in-game ranks shown when supplied.':'Original kingdom positions retained despite alliance filter.')+' Missing measurements are excluded; never treated as zero. Rankings do not measure troop-free or actual combat power.';
 }
 function render(){
