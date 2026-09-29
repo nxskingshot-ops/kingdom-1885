@@ -144,6 +144,7 @@ const API='https://hcjrdofkdkasznywvcxo.supabase.co',KEY='sb_publishable_hkqBaMm
 const $=id=>document.getElementById(id);let supabase,rows=[],snapshots=[],pastChanges=[],warningHistory=new Map(),rosterHistory=[],radar=[],unresolved=[];
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const number=v=>v===null||v===undefined?'–':Number(v).toLocaleString('en-US',{maximumFractionDigits:2});
+const riskNumber=v=>v===null||v===undefined||v===''?'–':Math.round(Number(v)).toLocaleString('en-US');
 function showLogin(note=''){ $('private').hidden=true;$('login').hidden=false;$('signout').hidden=true;$('warn').textContent=note; }
 function showData(){ $('private').hidden=false;$('login').hidden=true;$('signout').hidden=false;$('warn').textContent='';}
 const withTimeout=(promise,label,ms=15000)=>Promise.race([promise,new Promise((_,reject)=>setTimeout(()=>reject(Error(label+' timed out after '+Math.ceil(ms/1000)+' seconds. Please retry.')),ms))]);
@@ -203,11 +204,11 @@ function overview(){
  $('trendChart').innerHTML=periods.map(p=>'<div style="text-align:center;flex:1;min-width:80px"><b>'+number(p.total)+'M</b><div style="margin:7px auto 0;max-width:125px;background:linear-gradient(#cda76b,#89602f);height:'+Math.max(8,Math.round(95*Math.max(0,p.total)/max))+'px"></div><small>'+esc(p.date)+'</small></div>').join('');
 $('dailyGrowth').textContent='Daily average (alerted players): '+periods.map(p=>p.date+' → '+(p.days?number(p.total/p.days)+'M/day':'period unavailable')).join(' · ');
 }
-const shortBrief=()=>{const a=snapshots[0]||{};return 'KvK Prep ('+(a.snapshot_date||'–')+'): cumulative activity '+number(a.metadata?.cumulative_risk_score)+' | interval NXS model '+(a.risk_label||'–')+' ('+number(a.risk_score)+') | '+number(a.warning_count)+' warnings | '+number(a.castle_upgrades)+' castle upgrades | '+rows.filter(r=>repeatCount(r)>1).length+' repeat warnings | '+radar.length+' Growth Radar candidates. Historical internal estimates; check current game data.';};
+const shortBrief=()=>{const a=snapshots[0]||{};return 'KvK Prep ('+(a.snapshot_date||'–')+'): cumulative activity '+riskNumber(a.metadata?.cumulative_risk_score)+' | interval NXS model '+(a.risk_label||'–')+' ('+riskNumber(a.risk_score)+') | '+number(a.warning_count)+' warnings | '+number(a.castle_upgrades)+' castle upgrades | '+rows.filter(r=>repeatCount(r)>1).length+' repeat warnings | '+radar.length+' Growth Radar candidates. Historical internal estimates; check current game data.';};
 const briefText=()=>{
  const latest=snapshots[0]||{};
  const top=[...rows].sort(importance).filter(isCastle).slice(0,8).map(r=>r.player_name);
- return ['KvK Prep Update – '+(latest.snapshot_date||'Unknown date'),'NXS cumulative activity since 22 Sep: '+number(latest.metadata?.cumulative_risk_score)+' (not a probability)','Interval planning signal: '+(latest.risk_label||'Unknown')+' (score '+number(latest.risk_score)+')','Tracked players: '+number(latest.tracked_players),'Warnings: '+number(latest.warning_count),'Castle upgrades: '+number(latest.castle_upgrades),'Repeat warnings: '+rows.filter(r=>repeatCount(r)>1).length,'Growth Radar candidates: '+radar.length+' (near +1.5M: '+radar.filter(r=>r.delta>=1.125).length+')','Open identity reviews: '+unresolved.length,'Castle follow-up: '+top.join(', '),'','Internal tracking only; verify against current in-game data.'].join('\n');
+ return ['KvK Prep Update – '+(latest.snapshot_date||'Unknown date'),'NXS cumulative activity since 22 Sep: '+riskNumber(latest.metadata?.cumulative_risk_score)+' (not a probability)','Interval planning signal: '+(latest.risk_label||'Unknown')+' (score '+riskNumber(latest.risk_score)+')','Tracked players: '+number(latest.tracked_players),'Warnings: '+number(latest.warning_count),'Castle upgrades: '+number(latest.castle_upgrades),'Repeat warnings: '+rows.filter(r=>repeatCount(r)>1).length,'Growth Radar candidates: '+radar.length+' (near +1.5M: '+radar.filter(r=>r.delta>=1.125).length+')','Open identity reviews: '+unresolved.length,'Castle follow-up: '+top.join(', '),'','Internal tracking only; verify against current in-game data.'].join('\n');
 };
 function renderOperations(){
  const history=[...rosterHistory].sort((a,b)=>a.snapshot_date.localeCompare(b.snapshot_date));
@@ -226,7 +227,7 @@ function renderOperations(){
  $('radarRows').innerHTML=radar.map(r=>'<tr><td>'+esc(r.name)+'</td><td>'+number(r.delta)+'</td><td>'+number(100*r.delta/1.5)+'%</td><td>'+esc(r.castle||'–')+'</td><td><span class="flag '+(r.delta>=1.125?'medium':'low')+'">'+(r.delta>=1.125?'Near threshold':'Sub-threshold')+'</span></td></tr>').join('')||'<tr><td colspan="5">No candidates with comparable history.</td></tr>';
  $('identityReviews').innerHTML=unresolved.map(r=>'<p><b>'+esc(r.player_name)+'</b> · '+esc(r.castle||'–')+' · '+number(r.power_m)+'M<br><span class="flag medium">'+esc(r.identity_status||'Review needed')+'</span></p>').join('')||'<p class="muted">No unresolved identities in the latest import.</p>';
  $('briefBody').innerHTML=briefText().split('\n').map(line=>'<p style="margin:7px 0">'+esc(line)+'</p>').join('');
- $('riskTrend').innerHTML='<table style="min-width:0"><thead><tr><th>Snapshot</th><th>Interval score</th><th>Cumulative activity</th><th>Interval signal</th></tr></thead><tbody>'+[...snapshots].reverse().map(r=>'<tr><td>'+esc(r.snapshot_date)+'</td><td>'+number(r.risk_score)+'</td><td>'+number(r.metadata?.cumulative_risk_score)+'</td><td>'+esc(r.risk_label)+'</td></tr>').join('')+'</tbody></table>';
+ $('riskTrend').innerHTML='<table style="min-width:0"><thead><tr><th>Snapshot</th><th>Interval score</th><th>Cumulative activity</th><th>Interval signal</th></tr></thead><tbody>'+[...snapshots].reverse().map(r=>'<tr><td>'+esc(r.snapshot_date)+'</td><td>'+riskNumber(r.risk_score)+'</td><td>'+riskNumber(r.metadata?.cumulative_risk_score)+'</td><td>'+esc(r.risk_label)+'</td></tr>').join('')+'</tbody></table>';
  $('briefStatus').textContent='As of '+(snapshots[0]?.snapshot_date||'–')+' · NXS planning model · read-only';
 }
 function renderFullRoster(){
@@ -284,8 +285,8 @@ if(rosterResponse.error)throw rosterResponse.error;rosterHistory=rosterResponse.
 warningHistory=new Map();for(const item of pastChanges){if(!item.player_id)continue;if(!warningHistory.has(item.player_id))warningHistory.set(item.player_id,new Set());warningHistory.get(item.player_id).add(item.snapshot_id)}
 $('timeLabel').textContent='Latest imported snapshot: '+last.snapshot_date+' · '+last.source_period;
 $('tracked').textContent=number(last.tracked_players);$('warnings').textContent=number(last.warning_count);$('castles').textContent=number(last.castle_upgrades);setMatchmakingRisk(last.risk_label);
-$('intervalRiskScore').textContent='Interval score: '+number(last.risk_score);
-$('cumulativeRiskScore').textContent=number(last.metadata?.cumulative_risk_score);
+$('intervalRiskScore').textContent='Interval score: '+riskNumber(last.risk_score);
+$('cumulativeRiskScore').textContent=riskNumber(last.metadata?.cumulative_risk_score);
 $('cumulativeCastles').textContent=number(last.metadata?.cumulative_castle_events);
 $('cumulativePowerAlerts').textContent=number(last.metadata?.cumulative_power_alert_events);$('majorGains').textContent='+'+number(rows.filter(r=>Number(r.power_change_m)>1.5).reduce((sum,r)=>sum+Number(r.power_change_m||0),0))+'M';
 $('status').textContent='Protected data loaded · '+rows.length+' recorded player alerts · Snapshot '+last.snapshot_date+'. Refresh reloads the database only; a new game-data import is needed to update this snapshot.';
