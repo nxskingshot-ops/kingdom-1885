@@ -70,6 +70,17 @@ table{border-collapse:collapse;width:100%;min-width:680px;font-size:12px}th{text
 .scout-intelligence[open] #intelligenceContent h3{font-size:14px;margin:10px 0 5px}
 .scout-intelligence[open] #intelligenceContent h3:first-child{margin-top:0}
 .scout-intelligence[open] #intelligenceContent p{margin:5px 0}
+/* Trial bars exist only inside the already-approved Intelligence details. */
+.trial-grid{display:grid;gap:6px;margin:8px 0 6px}
+.trial-row{display:grid;grid-template-columns:minmax(100px,40%) minmax(0,1fr);align-items:center;gap:9px;padding:5px 7px;border:1px solid #dbc299;border-radius:6px;background:#fff8e8}
+.trial-row>span{font-weight:650}
+.trial-visual{display:flex;align-items:center;gap:8px;min-width:0}
+.trial-visual strong{min-width:24px;font-variant-numeric:tabular-nums;color:#614021}
+.trial-track{display:block;flex:1;min-width:30px;height:9px;border-radius:9px;background:#e9d6b5;overflow:hidden}
+.trial-fill{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#a67c3a,#5b7c41)}
+.trial-missing{color:#876f56;font-size:11px}
+#comparison .trial-visual{min-width:95px}
+@media(max-width:430px){.trial-row{grid-template-columns:minmax(85px,45%) minmax(0,1fr);gap:5px;padding:4px}}
 </style></head><body>
 <main>
 <section class="hero"><div><h1>Transfer Scouting <span class="tag">DEMO MODE</span></h1><p>Fictional profiles and illustrative fit scores only. Try all tools safely; this page has no live Kingshot or Supabase scouting connection.</p></div><button id="resetDemo" type="button" class="secondary">↺ Reset Demo</button></section>
@@ -113,4 +124,4 @@ table{border-collapse:collapse;width:100%;min-width:680px;font-size:12px}th{text
 </div>
 </main>
 <div id="modal" role="dialog" aria-modal="true" aria-labelledby="editorTitle" hidden><div class="modal-body"><div class="modal-title"><h2 id="editorTitle">Demo candidate</h2><button id="closeModal" type="button" class="secondary" aria-label="Close">✕</button></div><p id="editorSub" class="smallprint"></p><p id="editorError" role="alert"></p><form id="candidateForm"></form></div></div>
-<script src="./transfer-scouting-integration-stage.js?build=profile-intelligence-stage-v3" defer></script></body></html>
+<script src="./transfer-scouting-integration-stage.js?build=profile-intelligence-stage-v4" defer></script></body></html>
