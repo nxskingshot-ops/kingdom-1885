@@ -177,6 +177,22 @@ document.getElementById('editorLaunch').onclick=()=>{location.href='./outpost-ed
 kvkButton.onclick=()=>activate('kvk');
 scoutButton.onclick=()=>activate('scouting');
 liveScoutButton.onclick=()=>activate('liveScouting');
+/* Test-only shortcut from protected live scouting to the existing fictional demo tab. */
+liveScouting.addEventListener('load',()=>{
+ try{
+  const doc=liveScouting.contentDocument;
+  const heading=doc?.querySelector('.hero');
+  if(!heading||doc.getElementById('nexusOpenDemoBoard'))return;
+  const button=doc.createElement('button');
+  button.type='button';
+  button.id='nexusOpenDemoBoard';
+  button.textContent='🎭 Open Demo Board';
+  button.title='Switch to fictional demo candidates (not live records)';
+  button.addEventListener('click',()=>activate('scouting'));
+  heading.appendChild(button);
+ }catch(err){console.warn('NEXUS demo switch unavailable',err);}
+});
+
 activate(new URLSearchParams(location.search).get('view')||'map');
 // Root-scoped service worker allows the installed NEXUS PWA to use its manifest start URL.
 if ('serviceWorker' in navigator) {
