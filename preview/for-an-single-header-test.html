@@ -8,7 +8,7 @@ iframe{border:0;width:100%;height:100%;display:block}
 #loading[hidden]{display:none}
 </style></head><body>
 <div id="loading" role="status">Loading Kingdom #1885…</div>
-<iframe id="kingdom" src="../index.html?kingdom-preview=an-viewer-v1" title="Kingdom #1885 Outpost Map" allow="fullscreen"></iframe>
+<iframe id="kingdom" src="../index.html?kingdom-preview=an-viewer-v1&single-header=3" title="Kingdom #1885 Outpost Map" allow="fullscreen"></iframe>
 <script>
 const frame=document.getElementById('kingdom'),status=document.getElementById('loading');
 frame.addEventListener('load',()=>{try{
@@ -40,7 +40,22 @@ function fillOnStartup(){
   setTimeout(()=>{if(!selectNativeCover())setTimeout(selectNativeCover,800)},350);
 }
 // Wait until the nested map has fully loaded before choosing its display mode.
-script.onload=()=>{status.hidden=true;requestAnimationFrame(fillOnStartup);setTimeout(selectNativeCover,1200)};
+function enforceSingleHeader(){
+ const root=frame.contentDocument;
+ const app=root?.getElementById('app');
+ const top=app?.querySelector(':scope > .top');
+ const tools=app?.querySelector('#mapTools');
+ if(!app||!tools)return;
+ app.style.setProperty('grid-template-rows','0px minmax(0,1fr) 42px','important');
+ app.style.setProperty('--toolbar-h','0px','important');
+ if(top)top.style.setProperty('display','none','important');
+ const brand=tools.querySelector('.mapbrand');
+ if(brand)brand.style.setProperty('display','none','important');
+ const badge=tools.querySelector('#healthBadge');
+ if(badge)badge.style.setProperty('display','none','important');
+ for(const [key,val] of Object.entries({position:'absolute',left:'auto',right:'6px',top:'6px',width:'auto',height:'auto',background:'transparent',border:'0',boxShadow:'none'}))tools.style.setProperty(key.replace(/[A-Z]/g,m=>'-'+m.toLowerCase()),val,'important');
+}
+script.onload=()=>{status.hidden=true;enforceSingleHeader();requestAnimationFrame(()=>{enforceSingleHeader();fillOnStartup()});setTimeout(()=>{enforceSingleHeader();selectNativeCover()},1200)};
 script.onerror=()=>{status.textContent='Live controls unavailable · reload to retry'};
 doc.body.appendChild(script);
 setTimeout(()=>{if(!status.hidden&&status.textContent==='Loading Kingdom #1885…')status.textContent='Still loading map…';},12000)
