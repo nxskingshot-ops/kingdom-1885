@@ -2,7 +2,7 @@
   "schema_version": 1,
   "snapshot_date": "2026-09-29",
   "status": "provisional_manual_transcription",
-  "notes": "Aggregates from user-supplied Kingshot roster screenshots. Displayed player power is rounded to 0.1M; totals are therefore approximate. Raw player-level records are not published in this public repository. No historical growth or KvK agreement violations have been computed.",
+  "notes": "Aggregates from user-supplied Kingshot roster screenshots. Displayed player power is rounded to 0.1M; totals are therefore approximate. Raw player-level records are not published in this public repository. No historical growth or KvK agreement violations have been computed. NXS baseline is dated 2026-09-24, five days earlier than MYM/FRA; cross-alliance values are not simultaneous.",
   "alliances": {
     "FRA": {
       "member_count": 98,
@@ -28,7 +28,8 @@
         "TG3": 6,
         "TG2": 16,
         "TG1": 16
-      }
+      },
+      "snapshot_date": "2026-09-29"
     },
     "MYM": {
       "member_count": 100,
@@ -54,7 +55,46 @@
         "TG3": 14,
         "TG2": 25,
         "TG1": 16
+      },
+      "snapshot_date": "2026-09-29"
+    },
+    "NXS": {
+      "snapshot_date": "2026-09-24",
+      "source": "NXS – Member Comparison – 2026-09-24",
+      "source_url": "https://docs.google.com/spreadsheets/d/1gJQoujOR-zDBVnK9y0VuzhFSR1IaTwFBism79_ZJ0QU/edit",
+      "member_count": 99,
+      "power_m": 11478,
+      "castle_tg_count": 88,
+      "castle_25_plus_count": 99,
+      "ranks": {
+        "R5": 1,
+        "R4": 10,
+        "R3": 85,
+        "R2": 3,
+        "R1": 0
+      },
+      "castles": {
+        "29": 2,
+        "30": 9,
+        "TG5": 6,
+        "TG4": 6,
+        "TG3": 27,
+        "TG2": 36,
+        "TG1": 13
+      },
+      "historical_comparison": {
+        "from_date": "2026-09-22",
+        "to_date": "2026-09-24",
+        "previous_power_m": 11314.5,
+        "latest_power_m": 11478,
+        "power_growth_m": 163.5,
+        "castle_upgrades": 2,
+        "previous_members": 98,
+        "current_members": 99,
+        "source": "NXS – Member Comparison – 2026-09-24"
       }
-    }
-  }
+    },
+    "OoO": null
+  },
+  "comparison_policy": "Do not calculate cross-alliance trend rates from different-date baselines. Null alliance data means not available. Violation counts require verified agreements and exception rules."
 }
