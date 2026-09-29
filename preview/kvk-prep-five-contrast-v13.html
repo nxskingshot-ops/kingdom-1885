@@ -119,6 +119,12 @@ header>div{min-width:0}
 <h3 style="margin:18px 0 8px;font:700 clamp(17px,3vw,23px) Georgia,serif;color:#67441f">Matchmaking Risk Development</h3>
 <div id="riskDevelopmentChart" role="img" aria-label="Gold bars show the interval NXS risk score. A green line shows the cumulative activity score since September 22. Both share one numerical scale." style="width:100%;overflow:hidden;background:#fff8ea;border:1px solid #c9a66d;border-radius:10px;padding:8px 5px">Waiting for protected data…</div>
 <div style="display:flex;gap:15px;flex-wrap:wrap;align-items:center;margin-top:10px;font-size:13px;color:#573b1c"><span><i aria-hidden="true" style="display:inline-block;width:14px;height:14px;margin-right:6px;background:#cba04f;border:1px solid #9a722f;vertical-align:-2px"></i><strong>Gold:</strong> Since last update</span><span><i aria-hidden="true" style="display:inline-block;width:14px;height:4px;margin-right:6px;background:#285c48;vertical-align:3px"></i><strong>Green:</strong> Total activity since Sep 22</span></div>
+<section aria-labelledby="dailyRiskHeading" style="margin-top:20px;border-top:2px solid #c49a5a;padding-top:16px">
+<h3 id="dailyRiskHeading" style="margin:0 0 7px;font:700 clamp(17px,3vw,23px) Georgia,serif;color:#67441f">Daily Activity Rate · Comparable Intervals</h3>
+<div id="dailyRiskStatus" role="status" style="padding:10px 12px;border:1px solid #c9a66d;border-radius:9px;background:#fff6e2;font-weight:700;color:#63441f">Checking daily activity…</div>
+<div id="dailyRiskChart" role="img" aria-label="Daily average NXS activity scores across snapshots, with a provisional 100 points per day reference line" style="width:100%;overflow:hidden;background:#fff8ea;border:1px solid #c9a66d;border-radius:10px;padding:8px 5px;margin-top:10px">Loading…</div>
+<p class="aside"><strong>Dashed line = 100 points/day:</strong> a provisional visual reference, <em>not</em> an established NXS safe limit. Our existing 20 / 40 / 70 / 100 score bands apply to full update intervals and cannot be transferred unchanged to daily rates. Only three snapshots exist: a reliable “normal” range is not yet established.</p>
+</section>
 <details style="margin-top:12px;font-size:13px"><summary style="cursor:pointer;color:#69471f;font-weight:700;padding:7px 0">ⓘ How is the score calculated?</summary><p style="margin:8px 0">Internal NXS model: 15 points per recorded castle upgrade, +10 for castle and power in the same interval, 1.5 per power alert, plus 1 point per 10M retained-member growth. The cumulative score adds the recorded interval scores once each. Repeated power alerts across different intervals remain separate observations.</p><p style="margin:8px 0">The first historical periods are aggregated and their lengths differ. This activity index is not a percentage, winning probability, or the official Kingshot matchmaking formula.</p></details></section>
 <div class="original-row original-hero" id="dashboard"><div><section class="panel"><h2>👀 Players to Watch</h2><p class="muted">Castle upgrades first, then repeat warnings and power changes. Based on imported data, not live in-game activity.</p><div id="watchPlayers">Loading…</div></section></div><div><section class="panel"><h2>📊 Warning Overview</h2><div id="warningOverview">Loading…</div></section></div></div>
 <div id="trends"><section class="panel"><h2>📈 Power Change Trend</h2><div id="trendChart" style="display:flex;align-items:end;gap:16px;height:155px;border-bottom:2px solid #bd995e;padding:10px"></div><p class="aside">Recorded power changes among alerted players (M). Period lengths differ; compare daily averages, not the raw totals. This is not total kingdom power or a forecast.</p><p id="dailyGrowth" class="aside"></p></section></div>
@@ -206,6 +212,31 @@ function renderRiskDevelopment(){
  const dates=data.map((s,i)=>'<text x="'+x(i)+'" y="'+(H-B+23)+'" font-size="14" text-anchor="middle" fill="#584029">'+esc(String(s.snapshot_date).slice(8,10)+'.'+String(s.snapshot_date).slice(5,7)+'.')+'</text>').join('');
  host.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block;max-height:325px" role="img" aria-label="Gold bars: interval score; green line: cumulative activity score. One shared scale from zero to '+top+'.">'+tick+bars+'<polyline points="'+points+'" fill="none" stroke="#285c48" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>'+dots+dates+'</svg>';
 }
+function renderDailyRisk(){
+ const target=$('dailyRiskChart'),status=$('dailyRiskStatus');
+ if(!target||!status)return;
+ const history=[...snapshots].reverse().map(s=>{
+  const parts=String(s.source_period||'').split('→').map(x=>x.trim());
+  const start=parts[0]?Date.parse(parts[0]):NaN,end=parts[1]?Date.parse(parts[1]):NaN;
+  const days=(end-start)/86400000,score=Number(s.risk_score);
+  return {date:String(s.snapshot_date||''),days,score,daily:score/days};
+ }).filter(x=>Number.isFinite(x.daily)&&x.days>=1&&Number.isFinite(x.score)&&x.score>=0);
+ if(!history.length){target.textContent='Not enough valid snapshot periods to calculate a daily rate.';status.textContent='Daily trend unavailable.';return;}
+ const current=history[history.length-1],previous=history[history.length-2];
+ const difference=previous&&previous.daily>0?(current.daily/previous.daily-1)*100:null;
+ const trend=difference===null?'No previous comparable interval':Math.abs(difference)<1?'Almost unchanged':difference>0?'Activity rate increased':'Activity rate decreased';
+ const delta=difference===null?'':', '+(difference>0?'+':'')+Math.round(difference)+'% vs prior period';
+ status.textContent=trend+' · '+riskNumber(current.daily)+' points/day'+delta+'. '+(current.daily>=100?'Above':'Below')+' provisional 100/day reference. Normal range not established.';
+ status.style.borderColor=current.daily>=100?'#b77743':'#a0a78a';
+ const W=690,H=276,L=49,R=24,T=39,B=48,ref=100;
+ const maximum=Math.max(ref,...history.map(x=>x.daily)),step=Math.max(10,Math.ceil(maximum/4/10)*10),top=step*4;
+ const iw=W-L-R,ih=H-T-B,x=i=>L+iw*(i+.5)/history.length,y=v=>T+ih-ih*v/top;
+ const guidelines=Array.from({length:5},(_,i)=>{const v=i*step,yy=y(v);return '<line x1="'+L+'" x2="'+(W-R)+'" y1="'+yy+'" y2="'+yy+'" stroke="#ddcbaa" stroke-dasharray="4 5"/><text x="'+(L-9)+'" y="'+(yy+4)+'" text-anchor="end" font-size="12" fill="#765b39">'+v+'</text>';}).join('');
+ const refY=y(ref),guide='<line x1="'+L+'" y1="'+refY+'" x2="'+(W-R)+'" y2="'+refY+'" stroke="#b06a37" stroke-width="2" stroke-dasharray="8 5"/><text x="'+(W-R-2)+'" y="'+Math.max(13,refY-8)+'" text-anchor="end" font-size="12" font-weight="700" fill="#925328">100/day · provisional reference</text>';
+ const poly=history.map((d,i)=>x(i)+','+y(d.daily)).join(' ');
+ const markers=history.map((d,i)=>{const xx=x(i),yy=y(d.daily),label=esc(d.date.slice(8,10)+'.'+d.date.slice(5,7)+'.');return '<circle cx="'+xx+'" cy="'+yy+'" r="7" fill="#285c48" stroke="#fff8ea" stroke-width="2"/><text x="'+xx+'" y="'+Math.max(16,yy-17)+'" text-anchor="middle" font-size="16" font-weight="800" fill="#174331">'+riskNumber(d.daily)+'</text><text x="'+xx+'" y="'+(H-B+25)+'" text-anchor="middle" font-size="14" fill="#584029">'+label+'</text><text x="'+xx+'" y="'+(H-B+40)+'" text-anchor="middle" font-size="11" fill="#806849">'+d.days+'d interval</text>';}).join('');
+ target.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block;max-height:325px" role="img" aria-label="NXS daily score over '+history.length+' snapshot periods; dashed guide at 100 points/day, provisional only.">'+guidelines+guide+'<polyline points="'+poly+'" fill="none" stroke="#285c48" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>'+markers+'</svg>';
+}
 function overview(){
  const castle=isCastle;
  const counts=[rows.filter(r=>castle(r)&&/POWER/i.test(r.alert||'')).length,rows.filter(r=>castle(r)&&!/POWER/i.test(r.alert||'')).length,rows.filter(r=>!castle(r)&&/POWER/i.test(r.alert||'')).length];
@@ -213,6 +244,7 @@ function overview(){
  $('warningOverview').innerHTML=counts.map((n,i)=>'<div style="display:flex;justify-content:space-between;gap:12px;padding:11px;border-bottom:1px solid #d7be90"><span>'+titles[i]+'</span><b style="font-size:21px">'+n+'</b></div>').join('')+'<div style="display:flex;justify-content:space-between;gap:12px;padding:11px"><span>Repeat warnings (2+ snapshots)</span><b>'+rows.filter(r=>repeatCount(r)>1).length+'</b></div>';
  setMatchmakingRisk(snapshots[0]?.risk_label);
  renderRiskDevelopment();
+ renderDailyRisk();
  const watch=[...rows].sort(importance).slice(0,8);
  $('watchPlayers').innerHTML=watch.map(r=>'<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;border-bottom:1px solid #d7be90;padding:8px 0"><b>'+esc(r.player_name)+'</b><span>'+number(r.power_change_m)+'M</span><span>'+esc(r.castle_current||'–')+'</span>'+(repeatCount(r)>1?'<span class="flag high">'+repeatCount(r)+'× warning</span>':'')+'<span>'+esc(r.alert||'–')+'</span></div>').join('');
  $('castleWatch').textContent=rows.filter(castle).map(r=>r.player_name+' '+(r.castle_current||'')).join(' · ')||'No castle events recorded.';
