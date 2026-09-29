@@ -34,7 +34,12 @@ const defaultPlayers=[
 ["Oak Sentinel","1697","OAK","Support","TG3",96.3,68,"Declined","Unknown","Medium","German","UTC+2"],
 ["Dawnward","1932","DAW","Fighter","TG4",141,77,"Negotiating","Likely Eligible","High","English","UTC+1"],
 ["Vesper Node","1782","VSP","R4 / R5 Potential","TG4",153.4,86,"Confirmed","Needs Invite","High","English","UTC+0"]
-].map((v,i)=>({id:"DEMO-"+String(i+1).padStart(3,"0"),name:v[0],kingdom:v[1],alliance:v[2],role:v[3],castle:v[4],power:v[5],fit:v[6],status:v[7],eligibility:v[8],activity:v[9],language:v[10],timezone:v[11],notes:"Fictional example for interface testing. Not a real candidate.",lastUpdated:"Demo seed",...(i===0?{mysticTrials:{knowledge:47,molten:39,crystal:43,forest:52,coliseum:45,radiant:38},evidenceSource:"FICTIONAL TEST DATA · Six illustrative Mystic Trial stages",observedAt:"2026-09-29 (demo)"}:{})}));
+].map((v,i)=>({id:"DEMO-"+String(i+1).padStart(3,"0"),name:v[0],kingdom:v[1],alliance:v[2],role:v[3],castle:v[4],power:v[5],fit:v[6],status:v[7],eligibility:v[8],activity:v[9],language:v[10],timezone:v[11],notes:"Fictional example for interface testing. Not a real candidate.",lastUpdated:"Demo seed",...(i===0?{mysticTrials:{knowledge:47,molten:39,crystal:43,forest:52,coliseum:45,radiant:38},evidenceSource:"FICTIONAL TEST DATA · Six illustrative Mystic Trial stages",observedAt:"2026-09-29 (demo)"}:i===1?{mysticTrials:{knowledge:51,molten:37,crystal:41,forest:49,coliseum:46,radiant:42},evidenceSource:"FICTIONAL TEST DATA · Six illustrative Mystic Trial stages",observedAt:"2026-09-29 (demo)"}:{})}));
+const TRIALS=[["Research","knowledge"],["Governor Gear","molten"],["Governor Charms","crystal"],["Pets","forest"],["Heroes & Hero Gear","coliseum"],["Other / Mixed","radiant"]];
+const trialData=p=>p.mysticTrials||p.mystic_trials||{};
+const stageValue=(p,k)=>{const raw=trialData(p)[k];if(raw===null||raw===undefined||raw==="")return null;const n=Number(raw);return Number.isInteger(n)&&n>=0&&n<=999?n:null;};
+const stageCount=p=>TRIALS.filter(([,k])=>stageValue(p,k)!==null).length;
+const stageDisplay=(p,k)=>{const v=stageValue(p,k);return v===null?"Not recorded":String(v);};
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const clone=()=>defaultPlayers.map(x=>({...x}));
@@ -100,12 +105,14 @@ function editForm(p){
  '<label>Invitation type<select name="invitationType">'+makeOpts(["Auto","Ordinary","Special","To confirm"],p?.invitationType||"Auto")+'</select></label>'+ '<label>Estimated eligibility<select name="eligibility">'+makeOpts(["Unknown","Under Cap","Likely Eligible","Possible Special","Needs Invite","Needs Slots"],p?.eligibility||"Unknown")+'</select></label>'+
  '<label>Activity<select name="activity">'+makeOpts(["Unknown","Low","Medium","High"],p?.activity||"Unknown")+'</select></label></div>'+
  '<label>Combat strength (optional)<input name="combatStrength" type="text" maxlength="60" value="'+esc(p?.combatStrength||"")+'" placeholder="e.g. PvP / Bear Hunt"></label>'+ '<label>Availability (optional)<input name="availability" type="text" maxlength="60" value="'+esc(p?.availability||"")+'" placeholder="e.g. Evenings / Weekends"></label>'+ '<label>Scouting notes<textarea name="notes" rows="4" maxlength="1500">'+esc(p?.notes||"")+'</textarea></label>'+
+ '<details class="scout-intelligence"><summary>✦ Optional Mystic Trials evidence · Demo</summary><p class="smallprint">Enter only observed stages; leave unknowns blank.</p><div class="form-grid">'+TRIALS.map(([label,key])=>'<label>'+esc(label)+' stage<input name="trial_'+key+'" type="number" min="0" max="999" step="1" value="'+(stageValue(p||{},key)??"")+'"></label>').join("")+'</div><label>Evidence source<input name="evidenceSource" type="text" maxlength="160" value="'+esc(p?.evidenceSource||p?.evidence_source||"")+'"></label><label>Observation date<input name="observedAt" type="date" value="'+esc(/^\\d{4}-\\d{2}-\\d{2}$/.test(p?.observedAt||p?.observed_at||"")?(p?.observedAt||p?.observed_at):"")+'"></label></details>'+
  '<div class="actions"><button type="submit">'+(fresh?"Add demo candidate":"Save demo changes")+'</button><button id="cancelEdit" type="button" class="secondary">Cancel</button></div>';
  $("modal").hidden=false;editing=true;$("candidateForm").dataset.editId=p?.id||"";
  $("cancelEdit").onclick=closeEdit;$("candidateForm").querySelector('input[name="name"]').focus();
 }
 function closeEdit(){$("modal").hidden=true;editing=false;}
-$("candidateForm").onsubmit=e=>{e.preventDefault();const v=Object.fromEntries(new FormData(e.currentTarget).entries()),id=e.currentTarget.dataset.editId||"DEMO-"+Date.now().toString(36);const fit=Number(v.fit),power=Number(v.power);if(!v.name.trim()||!v.kingdom.trim()||!Number.isFinite(fit)||fit<0||fit>100||!Number.isFinite(power)||power<0){$("editorError").textContent="Please enter a name, kingdom number, valid power and fit score (0–100).";return;}const previous=players.find(p=>p.id===id);const item={...(previous||{}),...v,id,fit,power,lastUpdated:"Local demo edit"};if(e.currentTarget.dataset.editId){const idx=players.findIndex(p=>p.id===id);if(idx>=0)players[idx]=item;}else players.unshift(item);selected=id;closeEdit();save();render();};
+$("candidateForm").onsubmit=e=>{e.preventDefault();const v=Object.fromEntries(new FormData(e.currentTarget).entries()),id=e.currentTarget.dataset.editId||"DEMO-"+Date.now().toString(36);const fit=Number(v.fit),power=Number(v.power);if(!v.name.trim()||!v.kingdom.trim()||!Number.isFinite(fit)||fit<0||fit>100||!Number.isFinite(power)||power<0){$("editorError").textContent="Please enter a name, kingdom number, valid power and fit score (0–100).";return;}const previous=players.find(p=>p.id===id);const mysticTrials={};for(const [,key] of TRIALS){const raw=v["trial_"+key];if(raw!==""){const n=Number(raw);if(!Number.isInteger(n)||n<0||n>999){$("editorError").textContent="Mystic Trial stages must be whole numbers from 0 to 999, or left blank.";return;}mysticTrials[key]=n;}delete v["trial_"+key];}
+const item={...(previous||{}),...v,id,fit,power,mysticTrials,lastUpdated:"Local demo edit"};if(e.currentTarget.dataset.editId){const idx=players.findIndex(p=>p.id===id);if(idx>=0)players[idx]=item;}else players.unshift(item);selected=id;closeEdit();save();render();};
 $("search").oninput=render;
 $("sort").onchange=e=>{sort=e.target.value;render();};
 document.querySelectorAll("[data-filter]").forEach(b=>b.onclick=()=>{filter=b.dataset.filter;render();});
@@ -128,7 +135,10 @@ $("compareBtn").onclick=()=>{
  const ids=[...compareIds].map(id=>players.find(p=>p.id===id)).filter(Boolean);
  if(ids.length<2){$("comparison").textContent="Select two or three fictional candidates using the checkboxes in the board.";return;}
  const values=[["Kingdom",p=>"#"+p.kingdom],["Alliance",p=>p.alliance||"–"],["Role",p=>p.role||"–"],["Castle",p=>p.castle||"–"],["Power",p=>fmt(p.power)+"M"],["Demo fit",p=>fmt(p.fit)+"%"],["Activity",p=>p.activity||"–"],["Combat strength",p=>p.combatStrength||"Not provided"],["Availability",p=>p.availability||"Not provided"],["Language",p=>p.language||"–"],["Invitation (provisional)",p=>invitationType(p)],["Transfer",p=>p.eligibility||"Unknown"],["Contact",p=>p.status||"–"]];
- $("comparison").innerHTML='<h3 style="margin:14px 0 8px">Selected candidates · demo comparison</h3><div class="scroll"><table><thead><tr><th>Metric</th>'+ids.map(p=>'<th>'+esc(p.name)+'</th>').join("")+'</tr></thead><tbody>'+values.map(([label,get])=>'<tr><td>'+esc(label)+'</td>'+ids.map(p=>'<td>'+esc(get(p))+'</td>').join("")+'</tr>').join("")+'</tbody></table></div><p class="smallprint">Only fictional data. No transfer outcome is predicted.</p>';
+ $("comparison").innerHTML='<h3 style="margin:14px 0 8px">Selected candidates · demo comparison</h3><div class="scroll"><table><thead><tr><th>Metric</th>'+ids.map(p=>'<th>'+esc(p.name)+'</th>').join("")+'</tr></thead><tbody>'+values.map(([label,get])=>'<tr><td>'+esc(label)+'</td>'+ids.map(p=>'<td>'+esc(get(p))+'</td>').join("")+'</tr>').join("")+'</tbody></table></div><p class="smallprint">Only fictional data. No transfer outcome is predicted.</p>'+
+ '<details class="scout-intelligence"><summary>✦ Compare Mystic Trials · Recorded stages</summary><div class="scroll"><table><thead><tr><th>Trial / evidence</th>'+ids.map(p=>'<th>'+esc(p.name)+'</th>').join("")+'</tr></thead><tbody>'+
+ [['Recorded stages',p=>stageCount(p)+"/6"],...TRIALS.map(([label,key])=>[label,p=>stageDisplay(p,key)]),['Evidence',p=>p.evidenceSource||p.evidence_source||"Not recorded"],['Observed on',p=>p.observedAt||p.observed_at||"Not recorded"]].map(([label,get])=>'<tr><td>'+esc(label)+'</td>'+ids.map(p=>'<td>'+esc(get(p))+'</td>').join("")+'</tr>').join("")+
+ '</tbody></table></div><p class="smallprint">Compare only the same named trial across candidates. No combined strength score or inference from missing stages.</p></details>';
 };
 
 /* Optional player detail in existing profile; never changes candidate schema, editors or comparison calculations. */
@@ -139,17 +149,14 @@ function renderIntelligence(){
  if(!p){el.textContent="Select a player to see recorded intelligence.";return;}
  const add=(tag,text)=>{const n=document.createElement(tag);n.textContent=text;el.append(n);};
  const known=(v)=>v===null||v===undefined||String(v).trim()===""?"Not recorded":String(v);
- const stages=p.mysticTrials||p.mystic_trials||{};
- const trialFields=[
-  ["Research",stages.knowledge],["Governor Gear",stages.molten],
-  ["Governor Charms",stages.crystal],["Pets",stages.forest],
-  ["Heroes & Hero Gear",stages.coliseum],["Other / Mixed",stages.radiant]
- ];
- add("h3","Mystic Trials · Recorded stages");
- if(trialFields.every(([,v])=>v===null||v===undefined||v==="")){
+ add("h3","Mystic Trials · Recorded stages ("+stageCount(p)+"/6)");
+ if(stageCount(p)===0){
   add("p","No Mystic Trial stages recorded for this candidate. No development strength can be inferred.");
  }else{
-  for(const [name,value] of trialFields)add("p",name+": "+known(value));
+  for(const [name,key] of TRIALS)add("p",name+": "+stageDisplay(p,key));
+  if(stageCount(p)<6)add("p","Incomplete profile: unrecorded stages remain unknown.");
+  add("h3","Development observations · Limited to recorded data");
+  add("p","These are observed trial stages, not verified combat attributes. Compare each trial only with the same named trial in another profile; stages from different trials cannot be added together as a strength score.");
  }
  add("h3","Evidence & History");
  add("p","Evidence: "+known(p.evidenceSource||p.evidence_source));
