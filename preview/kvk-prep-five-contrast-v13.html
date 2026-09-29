@@ -330,8 +330,7 @@ function sizeWarnlist(){
  const dataRows=Array.from(body.rows).filter(row=>row.cells.length>1);
  /* No row-height measurements: avoid repeated layout work while scrolling. */
  box.style.maxHeight='none'; // The outer KvK page owns vertical scrolling.
- const extra=Math.max(0,dataRows.length-20);
- $('warnlistScrollHint').textContent=extra?dataRows.length+' player(s) shown · Scroll the page to view all rows.';
+ $('warnlistScrollHint').textContent=dataRows.length+' player(s) shown · Scroll the page to view all rows.';
 }
 function render(){
 const q=$('filter').value.toLowerCase().trim(),severity=$('severity').value;
