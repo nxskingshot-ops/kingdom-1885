@@ -369,5 +369,5 @@ $('copyShortBrief').onclick=()=>copyMessage(shortBrief());
 $('refresh').onclick=load;$('filter').oninput=render;$('severity').onchange=render;$('sortOrder').onchange=render;
 window.addEventListener('resize',sizeWarnlist);
 try{const c=await db();if(await membership(c))await load();else showLogin();}catch(error){showLogin('Unable to check sign-in status: '+error.message);}
-setInterval(()=>{if(!$('private').hidden&&!document.hidden&&(!window.frameElement||window.frameElement.getClientRects().length))load()},60000);
+/* Automatic minute-by-minute full-table re-renders are disabled to avoid UI stalls on mobile. The existing Refresh button still retrieves fresh protected data on demand. */
 </script><script>(function(){const field=document.getElementById('password'),toggle=document.getElementById('togglePassword');if(!field||!toggle)return;toggle.addEventListener('click',function(){const visible=field.type==='password';field.type=visible?'text':'password';toggle.textContent=visible?'🙈 Hide password':'👁 Show password';toggle.setAttribute('aria-pressed',String(visible));toggle.setAttribute('aria-label',visible?'Hide password':'Show password');});})();</script></body></html>
