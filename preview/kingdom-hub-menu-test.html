@@ -77,13 +77,7 @@ body:has(#nexusFeedback:not([hidden])) #dismissKeyboard:not([hidden]){z-index:21
 #nexusAbout.poster-ready{padding:0;background:#090806}
 #nexusAbout.poster-ready #nexusAboutCard{padding:0;border:0;border-radius:0;box-shadow:none;background:#090806;width:100vw;height:100dvh;max-width:none;max-height:none;overflow:hidden;display:flex;align-items:center;justify-content:center}
 #nexusAbout.poster-ready #nexusAboutPoster{display:block;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain;object-position:center;margin:0;flex:0 0 auto;background:#090806}
-@media (orientation:landscape){
- /* The approved portrait artwork must rotate to fill a landscape phone naturally.
-    Keep its entire content visible; never crop, stretch or replace the original. */
- #nexusAbout.poster-ready #nexusAboutCard{position:relative;isolation:isolate;overflow:hidden}
- #nexusAbout.poster-ready #nexusAboutCard::before{content:"";position:absolute;z-index:-1;inset:-30px;background:linear-gradient(#09080688,#09080688),url('../assets/epic_cinematic_fantasy_poster_marketing_splash_ar-2.png') center/cover no-repeat;filter:blur(24px) brightness(.42)}
- #nexusAbout.poster-ready #nexusAboutPoster{position:relative;width:100dvh;height:100vw;max-width:none;max-height:none;flex:0 0 auto;object-fit:contain;transform:rotate(90deg);background:transparent}
-}
+/* Landscape artwork fits naturally inside the available viewport; no rotation or crop. */
 #nexusAbout.poster-ready #nexusAboutCard > :not(#nexusAboutPoster):not(#nexusAboutClose){display:none!important}
 #nexusAbout.poster-ready #nexusAboutClose{position:fixed;z-index:2;right:max(12px,env(safe-area-inset-right));top:max(12px,env(safe-area-inset-top));background:#f2d49c;border:2px solid #6c4a1d;box-shadow:0 2px 12px #000a}
 /* About NEXUS is an independent read-only dialog; reuse the exact existing header crest. */
@@ -301,7 +295,7 @@ document.getElementById('nexusAboutCrest').src=document.querySelector('.shared >
 const nexusAboutPoster=document.getElementById('nexusAboutPoster');
 nexusAboutPoster.addEventListener('load',()=>{nexusAboutPoster.hidden=false;nexusAbout.classList.add('poster-ready');});
 nexusAboutPoster.addEventListener('error',()=>{nexusAboutPoster.hidden=true;nexusAbout.classList.remove('poster-ready');});
-nexusAboutPoster.src='../assets/epic_cinematic_fantasy_poster_marketing_splash_ar-2.png?build=approved-poster-fullscreen-v2';
+nexusAboutPoster.src='../assets/file_00000000be7082109ed1f253b4cecf26.png?build=approved-landscape-v1';
 document.getElementById('nexusAboutLaunch').addEventListener('click',()=>{
  closeNexusMenu();nexusAbout.hidden=false;nexusAboutClose.focus();
 });
