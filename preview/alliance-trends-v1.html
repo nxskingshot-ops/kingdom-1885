@@ -30,4 +30,58 @@ document.querySelectorAll('.alliance').forEach(b=>b.addEventListener('click',()=
 ['kvk','competitive'].forEach(id=>el(id).addEventListener('click',()=>{view=id;for(const tab of ['kvk','competitive'])el(tab).setAttribute('aria-selected',String(tab===id));render();}));
 el('period').addEventListener('change',render);render();
 })();
+</script>
+<script>
+/* Provisional aggregates only. Never expose individual member rows through this public preview. */
+(async function(){
+'use strict';
+const dataUrl='./data/alliance-trends-2026-09-29.json';
+let snapshots;
+try{const response=await fetch(dataUrl,{cache:'no-store'});if(!response.ok)throw Error('Snapshot HTTP '+response.status);snapshots=await response.json();}
+catch(err){document.getElementById('info').textContent='Snapshot data currently unavailable. The dashboard is showing safe empty states.';console.warn('Alliance snapshot',err);return;}
+const names=['NXS','MYM','FRA','FOURTH'],display={NXS:'NXS',MYM:'MYM',FRA:'FRA',FOURTH:'Alliance 4'};
+let selected='ALL',perspective='kvk';
+const $=id=>document.getElementById(id);
+const formatPower=x=>(x/1000).toLocaleString('en-US',{maximumFractionDigits:2,minimumFractionDigits:2})+'B';
+const count=x=>x.toLocaleString('en-US');
+const empty='Not yet collected';
+const formatPeriod=()=>($('period').value==='all'?'all recorded dates':$('period').value+' days');
+function getVisible(){const ids=selected==='ALL'?names:[selected];const rows=ids.filter(n=>snapshots.alliances[n]).map(n=>({...snapshots.alliances[n],name:n}));return {ids,rows};}
+function render(){
+ const {ids,rows}=getVisible(),missing=ids.filter(n=>!snapshots.alliances[n]),has=rows.length>0;
+ const totalPower=rows.reduce((a,b)=>a+b.power_m,0),totalCastles=rows.reduce((a,b)=>a+b.castle_25_plus_count,0);
+ $('power').textContent=has?formatPower(totalPower):'—';
+ $('castles').textContent=has?count(totalCastles):'—';
+ $('growth').textContent='—';$('risk').textContent='—';
+ $('growthPeriod').textContent='Awaiting a second dated snapshot ('+formatPeriod()+')';
+ $('lastUpdate').textContent='Roster baseline: '+snapshots.snapshot_date+' · provisional';
+ let info=perspective==='kvk'
+  ?'KvK Controlling · A single roster snapshot cannot establish agreement violations, power growth, or castle upgrades.'
+  :'Competitive Intelligence · Current baseline comparisons are available for recorded alliances. Growth trends need another dated snapshot.';
+ if(missing.length)info+=' Missing: '+missing.map(x=>display[x]).join(', ')+'.';
+ info+=' Player-level records are not exposed by this public preview.';
+ $('info').textContent=info;
+ const body=$('compliance');body.replaceChildren();
+ for(const name of ids){
+  const r=snapshots.alliances[name];
+  const tr=document.createElement('tr');
+  const vals=[display[name],r?'Awaiting comparison':'—','—','Not assessed',r?'Baseline recorded':'Awaiting data'];
+  for(const v of vals){const td=document.createElement('td');td.textContent=v;tr.appendChild(td);}body.appendChild(tr);
+ }
+ const powerChart=$('powerChart');
+ powerChart.textContent=has
+   ?'Baseline recorded on '+snapshots.snapshot_date+'. A second dated snapshot is required for the Power Development line chart.'
+   :'Waiting for dated power snapshots.';
+ const upgradeChart=$('upgradeChart');
+ if(has){
+  const tg=rows.reduce((a,b)=>a+b.castle_tg_count,0);
+  upgradeChart.textContent='Current baseline: '+count(tg)+' Truegold castles out of '+count(rows.reduce((a,b)=>a+b.member_count,0))+' recorded members. Upgrade counts require a second snapshot.';
+ }else upgradeChart.textContent='Waiting for repeated castle-level snapshots.';
+ $('riskList').replaceChildren();for(const name of ids){const li=document.createElement('li');li.textContent=display[name]+': not calculated';$('riskList').appendChild(li);}
+}
+document.querySelectorAll('.alliance').forEach(b=>b.addEventListener('click',()=>{selected=b.dataset.a;render();}));
+for(const id of ['kvk','competitive'])$(id).addEventListener('click',()=>{perspective=id;render();});
+$('period').addEventListener('change',render);
+render();
+})();
 </script></body></html>
