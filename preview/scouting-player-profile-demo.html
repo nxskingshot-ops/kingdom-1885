@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#342313"><title>NEXUS · Player Intelligence Profile Demo</title>
+<style>
+:root{--bg:#ead5ae;--paper:#fff4da;--ink:#55351b;--gold:#b48b51;--navy:#122036;--light:#fff9eb;--sub:#836846}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#e4c99b,#faedcd);color:var(--ink);font:14px/1.5 system-ui,sans-serif}
+main{max-width:1200px;margin:auto;padding:14px}h1,h2,h3,p{margin:0}h1,h2,h3{font-family:Georgia,serif}h1{font-size:clamp(22px,4vw,32px)}h2{font-size:20px}h3{font-size:16px}
+button,input,select,textarea{font:inherit}button{border:1px solid #a67940;color:#4d3119;background:linear-gradient(#fff3cf,#e6bd7d);border-radius:8px;padding:8px 12px;font-weight:700;cursor:pointer}button:disabled{opacity:.45;cursor:default}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid #4774ad;outline-offset:2px}
+input,select,textarea{width:100%;min-width:0;padding:8px;border:1px solid #ba9866;border-radius:7px;background:#fffaf0;color:#472d18}label{display:grid;gap:4px;font-size:12px;font-weight:700;color:#67421f}textarea{resize:vertical;min-height:75px}
+.top{background:var(--paper);border:2px solid var(--gold);border-radius:15px;padding:13px;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}.stamp{display:inline-block;border-radius:30px;padding:5px 9px;background:#693e23;color:#fff0d0;font-size:10px;font-weight:800;letter-spacing:.08em}.subtitle{color:#81623d;font-size:12px}
+.heading{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:13px 0}.avatar{display:grid;place-items:center;flex:0 0 78px;height:78px;border:2px solid #9e723c;border-radius:12px;background:#17283d;color:#f0cf87;font:700 42px Georgia,serif}.heading-text{flex:1}.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.metric{background:var(--light);border:1px solid #b79663;border-radius:10px;padding:12px}.metric small{display:block;font-size:10px;color:#846d4d}.metric b{font-size:21px;color:#634017}.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0}.tabs button{font-size:12px;padding:7px 11px}.tabs button[aria-selected=true]{background:#543820;color:#ffdfac;border-color:#543820}
+.panel{border:1px solid #b38b54;background:var(--paper);border-radius:12px;padding:16px;margin-top:10px;box-shadow:0 3px 14px #53320b13}.panel>h2{margin-bottom:8px}.muted{color:#80694b;font-size:12px}.form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.form-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.note{padding:9px;border-radius:8px;background:#fff0cc;border:1px solid #b69564;font-size:12px;margin:8px 0}.note.warning{background:#fff0d8;border-color:#b2704e}.pill{display:inline-block;border:1px solid #9a794c;border-radius:30px;padding:3px 8px;font-size:11px;background:#fff3d6}
+.trials{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.trial{padding:10px;border:1px solid #ba9b69;background:#fff8e8;border-radius:9px}.trial b{display:block;font-size:16px}.track{height:8px;background:#e0d4ba;border-radius:8px;margin-top:7px;overflow:hidden}.fill{height:100%;background:#9c6936}.report{border:1px solid #bd995a;background:#15233a;color:#e9d8bb;border-radius:10px;padding:15px}.report h3{color:#efca83;margin:10px 0 4px;font-size:16px}.report h3:first-child{margin-top:0}.report p{font-size:13px;line-height:1.6}
+.evidence-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.evidence{border:1px solid #b99765;background:#fffaf0;border-radius:9px;padding:9px;min-width:0}.evidence img{width:100%;height:150px;object-fit:contain;background:#202d3c;border-radius:7px}.evidence small{display:block;word-break:break-word}.history{width:100%;border-collapse:collapse;margin-top:9px;font-size:12px}.history th,.history td{text-align:left;border-bottom:1px solid #cbb288;padding:8px}.history th{background:#e4c38c}.hidden{display:none!important}.small{font-size:11px}.footer{margin:17px 0;color:#72583b}
+@media(max-width:700px){.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.form-grid,.form-grid.two,.trials,.evidence-list{grid-template-columns:1fr}main{padding:9px}.panel{padding:11px}.metric b{font-size:18px}}
+@media(orientation:landscape) and (max-height:600px){main{max-width:1500px}.metrics{grid-template-columns:repeat(4,minmax(0,1fr))}.form-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.trials,.evidence-list{grid-template-columns:repeat(2,minmax(0,1fr))}.panel{padding:10px}}
+</style></head>
+<body><main>
+<header class="top"><div><span class="stamp">FICTIONAL DEMO · NO LIVE PLAYER DATA</span><h1>👑 NEXUS · Player Intelligence Profile</h1><p class="subtitle">External Transfer Scouting · Kingdom #1885</p></div><a href="./transfer-scouting-live-v3.html?build=fictional-external-demo-v1">← Back to LIVE Scouting</a></header>
+<section class="heading"><div class="avatar" aria-label="Placeholder profile image">⚔</div><div class="heading-text"><h2 id="displayName">NEXUS Demo Recruit</h2><p id="displayDetails">Kingdom #1720 · Example Alliance</p><span class="pill">EXTERNAL · FICTIONAL</span></div><button type="button" id="reset">↺ Reset demo</button></section>
+<div class="metrics" id="metrics"></div>
+<nav class="tabs" aria-label="Player intelligence sections">
+<button type="button" data-tab="identity" aria-selected="true">Identity</button>
+<button type="button" data-tab="development" aria-selected="false">Development</button>
+<button type="button" data-tab="history" aria-selected="false">History</button>
+<button type="button" data-tab="evidence" aria-selected="false">Screenshots</button>
+<button type="button" data-tab="recruitment" aria-selected="false">Recruitment</button>
+<button type="button" data-tab="intelligence" aria-selected="false">Intelligence</button>
+</nav>
+<section class="panel" id="tab-identity"><h2>Player Identity & Power</h2><p class="muted">Edit demo values to see the profile and report update. All data stay in this browser session.</p>
+<div class="form-grid" id="identityFields">
+<label>Player name<input data-key="name" maxlength="80"></label><label>Player ID (optional)<input data-key="id" maxlength="64"></label><label>Kingdom<input data-key="kingdom" inputmode="numeric" maxlength="10"></label>
+<label>Alliance<input data-key="alliance" maxlength="40"></label><label>Castle / Truegold<input data-key="castle" maxlength="30"></label><label>Total Power (millions)<input data-key="power" type="number" min="0" step="0.1"></label>
+<label>Previous name<input data-key="previous" maxlength="80"></label><label>Previous kingdom<input data-key="previousKingdom" maxlength="10"></label><label>Profile observed on<input data-key="updated" type="date"></label>
+</div><p class="note">Total Power is not a substitute for measured Troop Power. No unknown troop figures are calculated.</p></section>
+<section class="panel hidden" id="tab-development"><h2>Development & Mystic Trials</h2><p class="muted">Six sample trial stages. Replace with documented observations; blank means unknown.</p>
+<div class="form-grid" id="trialFields">
+<label>Heroes & Hero Gear<input data-trial="coliseum" pattern="[0-9]{1,3}-[0-9]{1,2}" placeholder="35-2"></label>
+<label>Pets<input data-trial="forest" pattern="[0-9]{1,3}-[0-9]{1,2}" placeholder="28-7"></label>
+<label>Governor Charms<input data-trial="crystal" pattern="[0-9]{1,3}-[0-9]{1,2}" placeholder="27-6"></label>
+<label>Research<input data-trial="knowledge" pattern="[0-9]{1,3}-[0-9]{1,2}" placeholder="31-8"></label>
+<label>Governor Gear<input data-trial="molten" pattern="[0-9]{1,3}-[0-9]{1,2}" placeholder="24-9"></label>
+<label>Radiant Spire · mixed<input data-trial="radiant" pattern="[0-9]{1,3}-[0-9]{1,2}" placeholder="36-4"></label>
+</div><h3 style="margin:13px 0 5px">Observed trial stages</h3><div class="trials" id="trialBars"></div>
+<p class="note">Progress bars show each sample stage only within this demo reference scale. Cross-trial bar lengths are not combat ratings.</p></section>
+<section class="panel hidden" id="tab-history"><h2>Development History</h2><p class="muted">New observations append dated snapshots instead of overwriting older ones. Session-only demo.</p>
+<div class="form-grid two"><label>Observation date<input id="historyDate" type="date"></label><label>Total Power (M)<input id="historyPower" type="number" min="0" step=".1"></label></div><div class="actions"><button id="saveSnapshot" type="button">＋ Add dated observation</button></div><div id="historyOutput"></div></section>
+<section class="panel hidden" id="tab-evidence"><h2>Evidence & Screenshot Capture</h2><p class="muted">Choose screenshots from your device. Files appear as local previews with category and date; they are NOT uploaded or automatically read.</p>
+<div class="form-grid"><label>Evidence category<select id="evidenceCategory"><option>Profile / Power</option><option>Heroes</option><option>Pets</option><option>Research</option><option>Gear & Charms</option><option>Mystic Trials</option><option>Rankings</option><option>Other</option></select></label><label>Screenshot date<input type="date" id="evidenceDate"></label><label>Add screenshots (local only)<input id="evidenceFiles" type="file" accept="image/*" multiple></label></div>
+<p class="note warning">Images are kept only in this open page. Reloading clears the previews. Never add real candidate images to this fictional demo.</p><div id="evidenceCount" class="muted"></div><div class="evidence-list" id="evidenceList"></div></section>
+<section class="panel hidden" id="tab-recruitment"><h2>Transfer & Recruitment</h2>
+<div class="form-grid"><label>Recruitment status<select data-key="status"><option>Scouted</option><option>Contacted</option><option>Interested</option><option>Negotiating</option><option>Confirmed</option><option>Needs Review</option><option>Declined</option></select></label><label>Desired role<input data-key="role"></label><label>Recruiter<input data-key="recruiter"></label><label>Transfer eligibility<input data-key="eligibility"></label><label>Last contact<input data-key="lastContact" type="date"></label><label>Evidence/source note<input data-key="source"></label></div>
+<label style="margin-top:10px">Scouting notes<textarea data-key="notes"></textarea></label>
+</section>
+<section class="panel hidden" id="tab-intelligence"><h2>✦ NEXUS Intelligence Report</h2><p class="muted">Generated from the fictional profile and explicitly labeled example comparison. No automated combat prediction.</p><div class="report" id="report"></div><div class="actions"><button type="button" id="copyReport">⧉ Copy report</button></div><p class="note">Comparison uses another invented sample governor from #1885, not a real kingdom member. Unavailable data remain unknown.</p></section>
+<p class="footer small">NEXUS · Fictional prototype. No Supabase writes, no real scouting entries, no image uploads. Values reset when the page is reloaded.</p>
+</main>
+<script>
+'use strict';
+const initial=()=>({name:'NEXUS Demo Recruit',id:'DEMO-ONLY',kingdom:'1720',alliance:'Example Alliance',castle:'TG5',power:'205.4',previous:'',previousKingdom:'',updated:'2026-09-29',status:'Scouted',role:'Fighter',recruiter:'DEMO',eligibility:'Not verified',lastContact:'',source:'FICTIONAL EXAMPLE · no actual evidence',notes:'Sample record for demonstrating full player dossiers.',trials:{coliseum:'35-2',forest:'28-7',crystal:'27-6',knowledge:'31-8',molten:'24-9',radiant:'36-4'},history:[{date:'2026-09-15',power:180},{date:'2026-09-22',power:195},{date:'2026-09-29',power:205.4}]});
+let record=initial(),images=[];
+const $=id=>document.getElementById(id),labels={coliseum:'Heroes & Hero Gear',forest:'Pets',crystal:'Governor Charms',knowledge:'Research',molten:'Governor Gear',radiant:'Radiant Spire (mixed)'};
+const fakePeer={name:'Demo Governor #1885',power:215.8,trials:{coliseum:'29-4',forest:'31-3',crystal:'24-5',knowledge:'34-2',molten:'24-9',radiant:'32-7'}};
+const stage=s=>{if(!/^\d{1,3}-\d{1,2}$/.test(String(s||'')))return null;let [a,b]=s.split('-').map(Number);return a>0&&b>0&&b<=10?(a-1)*10+b:null};
+const safePower=v=>v!==''&&Number.isFinite(Number(v))&&Number(v)>=0?Number(v):null;
+function elem(tag,text,cls=''){const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e}
+function render(){
+ $('displayName').textContent=record.name||'Unnamed sample';
+ $('displayDetails').textContent='Kingdom #'+(record.kingdom||'?')+' · '+(record.alliance||'Unknown alliance');
+ const stats=[['TOTAL POWER',safePower(record.power)===null?'Unknown':Number(record.power).toFixed(1)+'M'],['CASTLE',record.castle||'Unknown'],['MYSTIC TRIALS',Object.values(record.trials).filter(x=>stage(x)!==null).length+'/6'],['CONTACT',record.status||'Unknown']];
+ $('metrics').replaceChildren(...stats.map(([key,val])=>{const d=elem('div',undefined,'metric');d.append(elem('small',key),elem('b',val));return d}));
+ const bars=$('trialBars');bars.replaceChildren();
+ for(const [key,name] of Object.entries(labels)){const val=stage(record.trials[key]);const card=elem('div',undefined,'trial');card.append(elem('small',name),elem('b',val===null?'Not recorded':record.trials[key]));const track=elem('div',undefined,'track'),fill=elem('div',undefined,'fill');fill.style.width=val===null?'0%':Math.min(100,val/500*100)+'%';track.append(fill);card.append(track);bars.append(card)}
+ renderHistory();renderEvidence();renderReport();
+}
+function renderHistory(){
+ const target=$('historyOutput');target.replaceChildren();const table=elem('table',undefined,'history'),thead=elem('thead'),tbody=elem('tbody'),tr=elem('tr');
+ ['DATE','TOTAL POWER','CHANGE FROM PRIOR'].forEach(s=>tr.append(elem('th',s)));thead.append(tr);
+ const entries=[...record.history].sort((a,b)=>a.date.localeCompare(b.date));entries.forEach((entry,i)=>{const tr=elem('tr'),diff=i?entry.power-entries[i-1].power:null;[entry.date,entry.power.toFixed(1)+'M',diff===null?'—':(diff>0?'+':'')+diff.toFixed(1)+'M'].forEach(v=>tr.append(elem('td',v)));tbody.append(tr)});table.append(thead,tbody);target.append(table);
+}
+function renderEvidence(){
+ $('evidenceCount').textContent=images.length+' local screenshots in this demo session.';
+ const list=$('evidenceList');list.replaceChildren();
+ images.forEach((item,i)=>{const card=elem('article',undefined,'evidence'),img=document.createElement('img');img.src=item.url;img.alt='Local screenshot: '+item.name;const remove=elem('button','Remove image');remove.type='button';remove.onclick=()=>{URL.revokeObjectURL(item.url);images.splice(i,1);renderEvidence()};card.append(img,elem('strong',item.category),elem('small',item.date||'Undated'),elem('small',item.name),remove);list.append(card)});
+}
+function renderReport(){
+ const root=$('report');root.replaceChildren();const add=(heading,body)=>{root.append(elem('h3',heading),elem('p',body))};
+ const keys=['coliseum','forest','crystal','knowledge','molten'];
+ const compare=keys.map(key=>({key,left:stage(record.trials[key]),right:stage(fakePeer.trials[key])})).filter(x=>x.left!==null&&x.right!==null);
+ const ahead=compare.filter(x=>x.left>x.right),behind=compare.filter(x=>x.left<x.right),equal=compare.filter(x=>x.left===x.right);
+ const p=safePower(record.power);add('Overall picture',compare.length>=3?(ahead.length>behind.length?'This fictional candidate has progressed further across more comparable specialty trials than the example #1885 governor.':behind.length>ahead.length?'The example #1885 governor is further along across more comparable specialty trials.':'The two fictional development profiles are mixed or evenly matched across comparable specialties.'):'There are too few comparable specialty trials to describe a broad progression pattern.');
+ let detail='';if(ahead.length)detail+='External candidate has reached a later recorded stage in '+ahead.map(x=>labels[x.key]).join(', ')+'. ';if(behind.length)detail+='The invented #1885 governor is further along in '+behind.map(x=>labels[x.key]).join(', ')+'. ';if(equal.length)detail+='Matching stages appear in '+equal.map(x=>labels[x.key]).join(', ')+'. ';if(compare.length<5)detail+='Unknown stages in '+(5-compare.length)+' specialty areas are excluded.';add('Development profile',detail||'No verified specialty stage difference is available.');
+ if(p!==null)add('Power context',(p>fakePeer.power?'The external candidate has higher recorded Total Power.':p<fakePeer.power?'The example internal governor has higher recorded Total Power.':'Both example players have equal recorded Total Power.')+' These numbers do not establish troop-free power.');else add('Power context','Total Power is not recorded for this example.');
+ const mixed=stage(record.trials.radiant),peerMixed=stage(fakePeer.trials.radiant);if(mixed!==null&&peerMixed!==null)add('Mixed trial',mixed===peerMixed?'Both sample players have matching Radiant Spire stages.':(mixed>peerMixed?'The external candidate':'The sample #1885 governor')+' has reached a later Radiant Spire stage; it is not a pure specialty measurement.');
+ const last=record.history.length?record.history.reduce((a,b)=>a.date>b.date?a:b):null;
+ add('History & evidence',record.history.length>1?'This sample has '+record.history.length+' dated Total Power observations. Its history should be considered alongside screenshots and known snapshot dates.':'A reliable development trend requires more than one dated observation.');
+ add('NEXUS conclusion','This is a fictional demonstration of the scouting dossier. Real conclusions require dated, source-backed measurements, comparable game conditions, and direct examination of missing fields. No combat outcome or Troop Power is inferred.');
+}
+document.querySelectorAll('[data-tab]').forEach(button=>button.onclick=()=>{const name=button.dataset.tab;document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-selected',String(b===button)));document.querySelectorAll('section[id^="tab-"]').forEach(p=>p.classList.toggle('hidden',p.id!=='tab-'+name))});
+document.querySelectorAll('[data-key]').forEach(field=>{field.value=record[field.dataset.key]||'';field.addEventListener('input',()=>{record[field.dataset.key]=field.value;render()})});
+document.querySelectorAll('[data-trial]').forEach(field=>{field.value=record.trials[field.dataset.trial]||'';field.addEventListener('input',()=>{record.trials[field.dataset.trial]=field.value;render()})});
+$('historyDate').value='2026-09-29';$('historyPower').value=record.power;
+$('saveSnapshot').onclick=()=>{const date=$('historyDate').value,power=safePower($('historyPower').value);if(!date||power===null){alert('Enter a valid date and non-negative Total Power.');return}if(record.history.some(entry=>entry.date===date)){alert('That observation date already exists. Choose a different date.');return}record.history.push({date,power});render()};
+$('evidenceDate').value='2026-09-29';
+$('evidenceFiles').addEventListener('change',event=>{const files=[...event.target.files];for(const file of files){if(!file.type.startsWith('image/'))continue;if(images.length>=12){alert('This demo supports up to 12 local images.');break}images.push({name:file.name,date:$('evidenceDate').value,category:$('evidenceCategory').value,url:URL.createObjectURL(file)})}event.target.value='';renderEvidence()});
+$('reset').onclick=()=>{if(!confirm('Reset this fictional demo profile?'))return;images.forEach(x=>URL.revokeObjectURL(x.url));images=[];record=initial();document.querySelectorAll('[data-key]').forEach(field=>field.value=record[field.dataset.key]||'');document.querySelectorAll('[data-trial]').forEach(field=>field.value=record.trials[field.dataset.trial]||'');render()};
+$('copyReport').onclick=()=>{const message=$('report').innerText||$('report').textContent;navigator.clipboard?.writeText(message).then(()=>alert('Report copied.')).catch(()=>alert('Copy unavailable on this device.'))};
+window.addEventListener('pagehide',()=>images.forEach(x=>URL.revokeObjectURL(x.url)));
+render();
+</script></body></html>
