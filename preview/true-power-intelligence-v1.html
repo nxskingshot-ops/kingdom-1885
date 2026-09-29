@@ -98,6 +98,7 @@ button:focus-visible,select:focus-visible{outline:2px solid #e8bf66;outline-offs
 <div class="rank-title"><h2 class="rank-heading">♛ True Power Ranking</h2><span class="badge">MEMBERS ONLY · 29 SEP 2026</span></div>
 <div class="rank-fields">
 <label>RANK BY<select id="rankMetric" aria-label="Select measured ranking">
+<option value="development">True Power · Development Index (model)</option>
 <option value="overall">Mystic total levels</option>
 <option value="power">Total roster power (matched only)</option>
 <option value="coliseum">Heroes · Coliseum</option>
@@ -220,6 +221,7 @@ function renderInsights(a,b){
 }
 
 const rankDefinitions={
+ development:{label:"True Power Development Index",kind:"development"},
  overall:{rank:'overall_rank',score:'overall_score',label:'Mystic total levels',kind:'overall'},
  power:{label:'Total roster power',kind:'power'},
  coliseum:{rank:'coliseum_rank',score:'coliseum_stage',label:'Heroes · Coliseum',kind:'stage'},
@@ -230,6 +232,14 @@ const rankDefinitions={
  radiant:{rank:'radiant_rank',score:'radiant_stage',label:'Mixed · Radiant Spire',kind:'stage'}
 };
 function rankMeasurement(p,def){
+ if(def.kind==='development'){
+  const specialist=categories.filter(c=>c.key!=='radiant');
+  const measurements=specialist.map(c=>({value:stageNum(p[c.key+'_stage']),max:caps[c.key]}));
+  if(measurements.some(x=>x.value===null||!(x.max>0)))return null;
+  const score=100*measurements.reduce((sum,x)=>sum+x.value/x.max,0)/5;
+  return {number:score,label:score.toFixed(1)+' / 100'};
+ }
+
  if(def.kind==='power'){const ref=getPower(p);const v=ref?.power_m==null?null:Number(ref.power_m);return Number.isFinite(v)?{number:v,label:v.toFixed(1)+'M'}:null;}
  if(def.kind==='overall')return Number.isFinite(Number(p.overall_score))&&p.overall_score!=null?{number:Number(p.overall_score),label:Number(p.overall_score).toLocaleString('en-US')}:null;
  const v=stageNum(p[def.score]);return v===null?null:{number:v,label:String(p[def.score])};
@@ -245,7 +255,7 @@ function renderRanking(){
  const ranked=eligible.map((x,i)=>{const reported=definition.rank?Number(x.p[definition.rank]):null;
   const derived=x.measure.number===lastValue?lastRank:i+1;
   lastValue=x.measure.number;lastRank=derived;
-  return {...x,position:metric!=='power'&&Number.isInteger(reported)&&reported>0?reported:derived};
+  return {...x,position:metric!=='power'&&metric!=='development'&&Number.isInteger(reported)&&reported>0?reported:derived};
  });
  const visible=ranked.filter(x=>alliance==='ALL'||x.p.alliance_tag===alliance);
  const target=$('rankRows');target.replaceChildren();
@@ -260,7 +270,9 @@ function renderRanking(){
   actions.append(btn);tr.append(actions);target.append(tr);
  }
  if(!visible.length){const tr=el('tr'),cell=el('td','', 'No verified measurements available for this filter.');cell.colSpan=5;tr.append(cell);target.append(tr);}
- $('rankNote').textContent=metric==='power'
+ $('rankNote').textContent=metric==='development'
+  ?'Experimental development index · '+eligible.length+' of '+players.length+' profiles have all five specialist trial stages. The index is the equal-weighted average (20% each) of stages divided by the highest observed stage in each specialist trial. The troop-influenced Radiant Spire is excluded. Scores are relative indicators, not actual troop-free power or combat ratings. Missing data are excluded.'
+  :metric==='power'
   ?'Only '+eligible.length+' of '+players.length+' player profiles have an explicitly linked power measurement. Positions are calculated within this matched sample, not a kingdom-wide true-power rank. Troop and non-troop power remain unknown.'
   :definition.label+' · '+eligible.length+' recorded stages / scores · '+visible.length+' displayed. '+(alliance==='ALL'?'Kingdom-wide in-game ranks shown when supplied.':'Original kingdom positions retained despite alliance filter.')+' Missing measurements are excluded; never treated as zero. Rankings do not measure troop-free or actual combat power.';
 }
