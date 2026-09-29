@@ -115,7 +115,11 @@ header>div{min-width:0}
 <div class="metric">Castle upgrades<b id="castles">–</b></div>
 <div class="metric">Major power gains<b id="majorGains">–</b></div>
 <section class="metric matchmaking-tile" id="matchmaking-risk" aria-labelledby="matchmakingRiskHeading"><span id="matchmakingRiskHeading">⚠ Interval Matchmaking Signal</span><b id="matchRisk" class="risk-indicator risk-unknown" role="status" aria-live="polite">–</b><small id="intervalRiskScore">Interval score: –</small></section></div>
-<section class="panel" id="cumulativeRiskPanel" aria-labelledby="cumulativeRiskHeading"><h2 id="cumulativeRiskHeading">📈 Cumulative NXS Matchmaking Activity · Since 22 Sep 2026</h2><div class="metric-grid"><div class="metric">Cumulative activity score<b id="cumulativeRiskScore">–</b></div><div class="metric">Recorded castle upgrade events<b id="cumulativeCastles">–</b></div><div class="metric">Power-alert events<b id="cumulativePowerAlerts">–</b></div></div><p class="aside">The cumulative score sums recorded interval-model activity once per snapshot; repeated power alerts in different intervals are separate observations. It is an unbounded NXS monitoring index, not a win probability or the official Kingshot matchmaking formula. Early historical intervals are aggregates and interval lengths vary.</p></section>
+<section class="panel" id="cumulativeRiskPanel" aria-labelledby="cumulativeRiskHeading"><h2 id="cumulativeRiskHeading">📈 Cumulative NXS Matchmaking Activity · Since 22 Sep 2026</h2><div class="metric-grid"><div class="metric">Total activity since Sep 22<b id="cumulativeRiskScore">–</b></div><div class="metric">Castle upgrade events<b id="cumulativeCastles">–</b></div><div class="metric">Power-alert events<b id="cumulativePowerAlerts">–</b></div></div>
+<h3 style="margin:18px 0 8px;font:700 clamp(17px,3vw,23px) Georgia,serif;color:#67441f">Matchmaking Risk Development</h3>
+<div id="riskDevelopmentChart" role="img" aria-label="Gold bars show the interval NXS risk score. A green line shows the cumulative activity score since September 22. Both share one numerical scale." style="width:100%;overflow:hidden;background:#fff8ea;border:1px solid #c9a66d;border-radius:10px;padding:8px 5px">Waiting for protected data…</div>
+<div style="display:flex;gap:15px;flex-wrap:wrap;align-items:center;margin-top:10px;font-size:13px;color:#573b1c"><span><i aria-hidden="true" style="display:inline-block;width:14px;height:14px;margin-right:6px;background:#cba04f;border:1px solid #9a722f;vertical-align:-2px"></i><strong>Gold:</strong> Since last update</span><span><i aria-hidden="true" style="display:inline-block;width:14px;height:4px;margin-right:6px;background:#285c48;vertical-align:3px"></i><strong>Green:</strong> Total activity since Sep 22</span></div>
+<details style="margin-top:12px;font-size:13px"><summary style="cursor:pointer;color:#69471f;font-weight:700;padding:7px 0">ⓘ How is the score calculated?</summary><p style="margin:8px 0">Internal NXS model: 15 points per recorded castle upgrade, +10 for castle and power in the same interval, 1.5 per power alert, plus 1 point per 10M retained-member growth. The cumulative score adds the recorded interval scores once each. Repeated power alerts across different intervals remain separate observations.</p><p style="margin:8px 0">The first historical periods are aggregated and their lengths differ. This activity index is not a percentage, winning probability, or the official Kingshot matchmaking formula.</p></details></section>
 <div class="original-row original-hero" id="dashboard"><div><section class="panel"><h2>👀 Players to Watch</h2><p class="muted">Castle upgrades first, then repeat warnings and power changes. Based on imported data, not live in-game activity.</p><div id="watchPlayers">Loading…</div></section></div><div><section class="panel"><h2>📊 Warning Overview</h2><div id="warningOverview">Loading…</div></section></div></div>
 <div id="trends"><section class="panel"><h2>📈 Power Change Trend</h2><div id="trendChart" style="display:flex;align-items:end;gap:16px;height:155px;border-bottom:2px solid #bd995e;padding:10px"></div><p class="aside">Recorded power changes among alerted players (M). Period lengths differ; compare daily averages, not the raw totals. This is not total kingdom power or a forecast.</p><p id="dailyGrowth" class="aside"></p></section></div>
 <div id="castle-section"><section class="panel"><h2>🏰 Castle Activity</h2><p id="castleWatch">Loading…</p></section></div>
@@ -184,12 +188,31 @@ function setMatchmakingRisk(label){
  el.className='risk-indicator risk-'+status;
  el.textContent=label||'–';
 }
+function renderRiskDevelopment(){
+ const host=$('riskDevelopmentChart');
+ if(!host)return;
+ const data=[...snapshots].reverse().filter(s=>Number.isFinite(Number(s.risk_score))&&Number.isFinite(Number(s.metadata?.cumulative_risk_score)));
+ if(!data.length){host.textContent='No comparable historical risk scores yet.';return;}
+ const W=690,H=285,L=52,R=18,T=32,B=54,innerW=W-L-R,innerH=H-T-B;
+ const max=Math.max(1,...data.map(s=>Math.max(Number(s.risk_score),Number(s.metadata.cumulative_risk_score))));
+ const step=Math.max(1,Math.ceil(max/4/25)*25), top=step*4;
+ const x=i=>L+innerW*(i+.5)/data.length;
+ const y=v=>T+innerH-innerH*Number(v)/top;
+ const tick=Array.from({length:5},(_,i)=>{const v=i*step,yy=y(v);return '<line x1="'+L+'" x2="'+(W-R)+'" y1="'+yy+'" y2="'+yy+'" stroke="#dbcca9" stroke-dasharray="4 5"/><text x="'+(L-10)+'" y="'+(yy+5)+'" font-size="13" text-anchor="end" fill="#6e5437">'+v+'</text>';}).join('');
+ const barWidth=Math.min(67,innerW/data.length*.32);
+ const bars=data.map((s,i)=>{const v=Number(s.risk_score),xx=x(i)-barWidth/2,yy=y(v);return '<rect x="'+xx+'" y="'+yy+'" width="'+barWidth+'" height="'+Math.max(0,y(0)-yy)+'" rx="4" fill="#cba04f" stroke="#99712f"/><text x="'+x(i)+'" y="'+Math.max(17,yy-8)+'" font-size="16" font-weight="700" fill="#7f561f" text-anchor="middle">'+riskNumber(v)+'</text>';}).join('');
+ const points=data.map((s,i)=>x(i)+','+y(s.metadata.cumulative_risk_score)).join(' ');
+ const dots=data.map((s,i)=>{const yy=y(s.metadata.cumulative_risk_score), xx=x(i);return '<circle cx="'+xx+'" cy="'+yy+'" r="6" fill="#285c48" stroke="#fff8ea" stroke-width="2"/><text x="'+xx+'" y="'+Math.max(18,yy-14)+'" text-anchor="middle" fill="#174331" font-size="16" font-weight="800">'+riskNumber(s.metadata.cumulative_risk_score)+'</text>';}).join('');
+ const dates=data.map((s,i)=>'<text x="'+x(i)+'" y="'+(H-B+23)+'" font-size="14" text-anchor="middle" fill="#584029">'+esc(String(s.snapshot_date).slice(8,10)+'.'+String(s.snapshot_date).slice(5,7)+'.')+'</text>').join('');
+ host.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block;max-height:325px" role="img" aria-label="Gold bars: interval score; green line: cumulative activity score. One shared scale from zero to '+top+'.">'+tick+bars+'<polyline points="'+points+'" fill="none" stroke="#285c48" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>'+dots+dates+'</svg>';
+}
 function overview(){
  const castle=isCastle;
  const counts=[rows.filter(r=>castle(r)&&/POWER/i.test(r.alert||'')).length,rows.filter(r=>castle(r)&&!/POWER/i.test(r.alert||'')).length,rows.filter(r=>!castle(r)&&/POWER/i.test(r.alert||'')).length];
  const titles=['Castle + Power','Castle only','Power only'];
  $('warningOverview').innerHTML=counts.map((n,i)=>'<div style="display:flex;justify-content:space-between;gap:12px;padding:11px;border-bottom:1px solid #d7be90"><span>'+titles[i]+'</span><b style="font-size:21px">'+n+'</b></div>').join('')+'<div style="display:flex;justify-content:space-between;gap:12px;padding:11px"><span>Repeat warnings (2+ snapshots)</span><b>'+rows.filter(r=>repeatCount(r)>1).length+'</b></div>';
  setMatchmakingRisk(snapshots[0]?.risk_label);
+ renderRiskDevelopment();
  const watch=[...rows].sort(importance).slice(0,8);
  $('watchPlayers').innerHTML=watch.map(r=>'<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;border-bottom:1px solid #d7be90;padding:8px 0"><b>'+esc(r.player_name)+'</b><span>'+number(r.power_change_m)+'M</span><span>'+esc(r.castle_current||'–')+'</span>'+(repeatCount(r)>1?'<span class="flag high">'+repeatCount(r)+'× warning</span>':'')+'<span>'+esc(r.alert||'–')+'</span></div>').join('');
  $('castleWatch').textContent=rows.filter(castle).map(r=>r.player_name+' '+(r.castle_current||'')).join(' · ')||'No castle events recorded.';
