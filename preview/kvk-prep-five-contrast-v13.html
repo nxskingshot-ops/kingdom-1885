@@ -115,7 +115,7 @@ header>div{min-width:0}
 <div class="metric">Castle upgrades<b id="castles">–</b></div>
 <div class="metric">Major power gains<b id="majorGains">–</b></div>
 <section class="metric matchmaking-tile" id="matchmaking-risk" aria-labelledby="matchmakingRiskHeading"><span id="matchmakingRiskHeading">⚠ Interval Matchmaking Signal</span><b id="matchRisk" class="risk-indicator risk-unknown" role="status" aria-live="polite">–</b><small id="intervalRiskScore">Interval score: –</small></section></div>
-<section class="panel" id="watchlist" aria-labelledby="warningListHeading"><h2 id="warningListHeading">⚠ Matchmaking Warnlist</h2><p class="muted">Historical NXS planning indicators, not a Kingshot matchmaking formula. Power values in millions (M).</p><div class="toolbar" style="margin-bottom:12px"><input id="filter" type="search" placeholder="Find player…"><select id="sortOrder" aria-label="Sort players"><option value="priority">Castle → Repeat → Power</option><option value="power">Highest power gain</option><option value="repeat">Most repeated warnings</option><option value="name">Player name</option></select><select id="severity"><option value="">All alerts</option><option value="High">High</option><option value="Medium">Medium</option><option value="Low">Low</option></select><span id="visibleCount" class="muted"></span></div><div class="tablewrap"><table><thead><tr><th>Player</th><th>Power (M)</th><th>Change (M)</th><th>Castle</th><th>Alert</th><th>Repeat</th><th>Severity</th></tr></thead><tbody id="players"></tbody></table></div><p class="aside">The list shows available records from the latest imported snapshot. Player identities and power changes are sourced from imported history; verify against current game data before making decisions.</p></section>
+<section class="panel" id="watchlist" aria-labelledby="warningListHeading"><h2 id="warningListHeading">⚠ Matchmaking Warnlist</h2><p class="muted">Historical NXS planning indicators, not a Kingshot matchmaking formula. Power values in millions (M).</p><div class="toolbar" style="margin-bottom:12px"><input id="filter" type="search" placeholder="Find player…"><select id="sortOrder" aria-label="Sort players"><option value="priority">Castle → Repeat → Power</option><option value="power">Highest power gain</option><option value="repeat">Most repeated warnings</option><option value="name">Player name</option></select><select id="severity"><option value="">All alerts</option><option value="High">High</option><option value="Medium">Medium</option><option value="Low">Low</option></select><span id="visibleCount" class="muted"></span></div><div class="tablewrap" id="warnlistScroll" role="region" aria-label="Matchmaking Warnlist — scroll to see remaining players" tabindex="0" style="overflow-x:auto;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y"><table><thead><tr><th>Player</th><th>Power (M)</th><th>Change (M)</th><th>Castle</th><th>Alert</th><th>Repeat</th><th>Severity</th></tr></thead><tbody id="players"></tbody></table></div><p class="aside" id="warnlistScrollHint" style="margin:6px 0 0"></p><p class="aside">The list shows available records from the latest imported snapshot. Player identities and power changes are sourced from imported history; verify against current game data before making decisions.</p></section>
 <section class="panel" id="cumulativeRiskPanel" aria-labelledby="cumulativeRiskHeading"><h2 id="cumulativeRiskHeading">📈 Cumulative NXS Matchmaking Activity · Since 22 Sep 2026</h2><div class="metric-grid"><div class="metric">Total activity since Sep 22<b id="cumulativeRiskScore">–</b></div><div class="metric">Castle upgrade events<b id="cumulativeCastles">–</b></div><div class="metric">Power-alert events<b id="cumulativePowerAlerts">–</b></div></div>
 <h3 style="margin:18px 0 8px;font:700 clamp(17px,3vw,23px) Georgia,serif;color:#67441f">Matchmaking Risk Development</h3>
 <div id="riskDevelopmentChart" role="img" aria-label="Gold bars show the interval NXS risk score. A green line shows the cumulative activity score since September 22. Both share one numerical scale." style="width:100%;overflow:hidden;background:#fff8ea;border:1px solid #c9a66d;border-radius:10px;padding:8px 5px">Waiting for protected data…</div>
@@ -319,11 +319,21 @@ function renderFullRoster(){
   ' · '+latestRows.length+' player records · Change compared with '+(previous?.snapshot_date||'no earlier snapshot')+
   '. New or unmatched player IDs show –; no change is invented.';
 }
+function sizeWarnlist(){
+ const box=$('warnlistScroll'),body=$('players'),table=box?.querySelector('table');
+ if(!box||!body||!table)return;
+ const dataRows=Array.from(body.rows).filter(row=>row.cells.length>1);
+ const height=table.tHead?.getBoundingClientRect().height||0;
+ box.style.maxHeight=Math.ceil(height+dataRows.slice(0,20).reduce((sum,row)=>sum+row.getBoundingClientRect().height,0)+3)+'px';
+ const extra=Math.max(0,dataRows.length-20);
+ $('warnlistScrollHint').textContent=extra?'↕ Showing first 20 of '+dataRows.length+' players · Scroll inside this list to view the remaining '+extra+'.':dataRows.length+' player(s) shown · No additional rows to scroll.';
+}
 function render(){
 const q=$('filter').value.toLowerCase().trim(),severity=$('severity').value;
 const matches=rows.filter(r=>(!q||String(r.player_name??'').toLowerCase().includes(q))&&(!severity||String(r.severity??'').toLowerCase()===severity.toLowerCase())).sort(sorting);
 $('visibleCount').textContent=matches.length+' rows';
 $('players').innerHTML=matches.map(r=>'<tr><td>'+esc(r.player_name)+'</td><td>'+number(r.power_current_m)+'</td><td>'+number(r.power_change_m)+'</td><td>'+esc(r.castle_current||r.castle_previous||'–')+'</td><td>'+esc(r.alert||'–')+'</td><td>'+repeatLabel(r)+'</td><td><span class="flag '+(r.severity==='High'?'high':r.severity==='Medium'?'medium':'low')+'">'+esc(r.severity||'–')+'</span></td></tr>').join('')||'<tr><td colspan="7">No matching player records.</td></tr>';
+sizeWarnlist();
 $('history').innerHTML=snapshots.map(s=>'<tr><td>'+esc(s.snapshot_date)+'</td><td>'+number(s.tracked_players)+'</td><td>'+number(s.warning_count)+'</td><td>'+number(s.castle_upgrades)+'</td><td>'+esc(s.risk_label||'–')+'</td></tr>').join('');
 }
 async function load(){
@@ -357,6 +367,7 @@ $('copyBrief').onclick=()=>copyMessage(briefText());
 $('copyShortBrief').onclick=()=>copyMessage(shortBrief());
 ['rosterFilter','rosterStatus','rosterSort'].forEach(id=>$(id).addEventListener(id==='rosterFilter'?'input':'change',renderFullRoster));
 $('refresh').onclick=load;$('filter').oninput=render;$('severity').onchange=render;$('sortOrder').onchange=render;
+window.addEventListener('resize',sizeWarnlist);
 try{const c=await db();if(await membership(c))await load();else showLogin();}catch(error){showLogin('Unable to check sign-in status: '+error.message);}
 setInterval(()=>{if(!$('private').hidden&&!document.hidden&&(!window.frameElement||window.frameElement.getClientRects().length))load()},60000);
 </script><script>(function(){const field=document.getElementById('password'),toggle=document.getElementById('togglePassword');if(!field||!toggle)return;toggle.addEventListener('click',function(){const visible=field.type==='password';field.type=visible?'text':'password';toggle.textContent=visible?'🙈 Hide password':'👁 Show password';toggle.setAttribute('aria-pressed',String(visible));toggle.setAttribute('aria-label',visible?'Hide password':'Show password');});})();</script></body></html>
