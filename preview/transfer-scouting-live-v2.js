@@ -87,7 +87,7 @@ const externalTrials=['coliseum','forest','crystal','knowledge','molten','radian
 const externalLabels={coliseum:'Heroes & Hero Gear',forest:'Pets',crystal:'Governor Charms',knowledge:'Research',molten:'Governor Gear',radiant:'Mixed · Radiant Spire'};
 let internalPlayers=null,internalPowers=[],internalSnapshot='',internalLoading=false;
 const stageIndex=x=>{
- if(typeof x!=='string'||!/^\\d{1,3}-\\d{1,2}$/.test(x))return null;
+ if(typeof x!=='string'||!/^\d{1,3}-\d{1,2}$/.test(x))return null;
  const [chapter,step]=x.split('-').map(Number);
  return chapter>=1&&step>=1&&step<=10?(chapter-1)*10+step:null;
 };
