@@ -1,6 +1,6 @@
 // NEXUS: always request fresh network content; cache is used only when offline.
-const CACHE = 'kingdom-1885-nexus-20260929-v11';
-const OFFLINE = ['./','./index.html','./preview/kingdom-hub-scouting-v6.html','./manifest.webmanifest','./nexus.webmanifest','./pwa-update.js','./icon-192.png','./icon-512.png'];
+const CACHE = 'kingdom-1885-nexus-20260929-v12';
+const OFFLINE = ['./','./index.html','./preview/kingdom-hub-menu-test.html','./manifest.webmanifest','./nexus.webmanifest','./pwa-update.js','./icon-192.png','./icon-512.png'];
 self.addEventListener('install', event => event.waitUntil(
  caches.open(CACHE).then(c=>c.addAll(OFFLINE)).then(()=>self.skipWaiting())
 ));
@@ -22,7 +22,7 @@ self.addEventListener('fetch', event => {
   }).catch(async()=>{
    const cached=await caches.match(request,{ignoreSearch:true});
    if(cached)return cached;
-   if(isHTML)return (await caches.match('./preview/kingdom-hub-scouting-v6.html'))||
+   if(isHTML)return (await caches.match('./preview/kingdom-hub-menu-test.html'))||
     new Response('<h1>NEXUS offline</h1><p>Reconnect to load the latest version.</p>',{headers:{'Content-Type':'text/html'}});
    return Response.error();
   })
