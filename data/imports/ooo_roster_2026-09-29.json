@@ -1,0 +1,49 @@
+{
+  "alliance_tag": "OoO",
+  "alliance_name": "OutofOrder",
+  "kingdom": 1885,
+  "snapshot_date": "2026-09-29",
+  "source": "Public Kingshot alliance ranking and supplied member-list screenshots",
+  "ranking_alliance_power": 9711322485,
+  "visible_member_count": 99,
+  "rank_distribution": {
+    "R1": 5,
+    "R2": 14,
+    "R3": 66,
+    "R4": 13,
+    "R5": 1
+  },
+  "displayed_member_power_sum_millions": 9706.3,
+  "displayed_member_power_sum_approximate": 9706300000,
+  "ranking_to_displayed_sum_difference": 5022485,
+  "truegold_castle_count": 66,
+  "non_truegold_castle_count": 33,
+  "castle_distribution": {
+    "Lv. 27": 3,
+    "Lv. 28": 3,
+    "Lv. 29": 8,
+    "Lv. 30": 19,
+    "TG1": 12,
+    "TG2": 28,
+    "TG3": 17,
+    "TG4": 8,
+    "TG5": 1
+  },
+  "truegold_distribution": {
+    "TG1": 12,
+    "TG2": 28,
+    "TG3": 17,
+    "TG4": 8,
+    "TG5": 1
+  },
+  "data_quality": {
+    "duplicate_visible_player_names": 0,
+    "rank_header_counts_match": true,
+    "partial_unreadable_names": 1,
+    "unreadable_individual_power_values": 0,
+    "power_difference_unresolved": true,
+    "power_note": "Individual powers are displayed rounded to 0.1M. The remaining 5.022485M difference exceeds the maximum 4.95M discrepancy explained by rounding 99 numbers alone. Possible capture timing or transcription discrepancy; do not assume agreement.",
+    "castle_note": "Where TG1–TG5 is shown, underlying numeric castle level is not visible and has not been inferred.",
+    "completeness_note": "99 visible unique player entries matching the counts shown for R1 through R5."
+  }
+}
