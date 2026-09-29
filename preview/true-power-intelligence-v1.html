@@ -98,7 +98,7 @@ button:focus-visible,select:focus-visible{outline:2px solid #e8bf66;outline-offs
 <div class="rank-title"><h2 class="rank-heading">♛ True Power Ranking</h2><span class="badge">MEMBERS ONLY · 29 SEP 2026</span></div>
 <div class="rank-fields">
 <label>RANK BY<select id="rankMetric" aria-label="Select measured ranking">
-<option value="development">True Power · Development Index (model)</option>
+<option value="development">Development Index · Mystic Trials (default)</option>
 <option value="overall">Mystic total levels</option>
 <option value="power">Total roster power (matched only)</option>
 <option value="troops">Troop power (measured only)</option>
@@ -112,6 +112,7 @@ button:focus-visible,select:focus-visible{outline:2px solid #e8bf66;outline-offs
 </select></label>
 <label>ALLIANCE<select id="rankAlliance" aria-label="Filter ranking by alliance"><option value="ALL">All recorded alliances</option></select></label>
 </div>
+<p class="rank-note">Total Power is measured independently of Mystic Trials. Troop Power and calculated True Power stay unknown (—) until actual troop data are supplied; they are not required for the Development Index ranking.</p>
 <p class="rank-note" id="rankNote"></p>
 <div class="rank-scroll" tabindex="0" aria-label="Scrollable ranked player list">
 <table class="rank-table"><thead><tr><th>RANK</th><th>GOVERNOR</th><th>TAG</th><th>VALUE</th><th>TOTAL POWER</th><th>TROOPS</th><th>TRUE POWER</th><th>COMPARE</th></tr></thead><tbody id="rankRows"></tbody></table>
@@ -224,7 +225,7 @@ function renderInsights(a,b){
 }
 
 const rankDefinitions={
- development:{label:"True Power Development Index",kind:"development"},
+ development:{label:"Mystic Trials Development Index",kind:"development"},
  overall:{rank:'overall_rank',score:'overall_score',label:'Mystic total levels',kind:'overall'},
  power:{label:'Total roster power',kind:'power'},
  troops:{label:'Measured troop power',kind:'troops'},
@@ -293,7 +294,7 @@ function renderRanking(){
  }
  if(!visible.length){const tr=el('tr'),cell=el('td','', 'No verified measurements available for this filter.');cell.colSpan=8;tr.append(cell);target.append(tr);}
  $('rankNote').textContent=metric==='development'
-  ?'Experimental development index · '+eligible.length+' of '+players.length+' profiles have all five specialist trial stages. The index is the equal-weighted average (20% each) of stages divided by the highest observed stage in each specialist trial. The troop-influenced Radiant Spire is excluded. Scores are relative indicators, not actual troop-free power or combat ratings. Missing data are excluded.'
+  ?'Default Mystic Trials Development Index · '+eligible.length+' of '+players.length+' profiles have all five specialist trial stages. The index is the equal-weighted average (20% each) of stages divided by the highest observed stage in each specialist trial. The troop-influenced Radiant Spire is excluded. Scores are relative indicators, not actual troop-free power or combat ratings. Missing data are excluded.'
   :['power','troops','true'].includes(metric)
   ?'Only '+eligible.length+' of '+players.length+' player profiles have measurements for '+definition.label+'. Rankings cover this measured sample only, not the whole kingdom. Total minus troops is a troop-free power proxy, not a combat performance score. Unrecorded troop power is shown as —, never assumed to be zero.'
   :definition.label+' · '+eligible.length+' recorded stages / scores · '+visible.length+' displayed. '+(alliance==='ALL'?'Kingdom-wide in-game ranks shown when supplied.':'Original kingdom positions retained despite alliance filter.')+' Missing measurements are excluded; never treated as zero. Rankings do not measure troop-free or actual combat power.';
