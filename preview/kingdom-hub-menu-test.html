@@ -73,6 +73,15 @@ body:has(#nexusFeedback:not([hidden])) #dismissKeyboard:not([hidden]){z-index:21
 /* Menu-only test: keep original tab elements and their handlers, hide the empty legacy strip. */
 #bar{display:none!important}
 #nexusMenu button[aria-pressed="true"]{background:#fff2ce;border-color:#e9bd6b}
+/* KvK sub-navigation stays outside the authenticated dashboard iframe, so its scroll remains untouched. */
+#kvkSubnav{display:none;flex:0 0 auto;gap:7px;padding:5px 9px;background:#3a2a1b;border-bottom:1px solid #c5a069;align-items:center}
+body.kvk #kvkSubnav{display:flex}
+#kvkSubnav button{padding:6px 10px;font-size:12px;min-height:32px}
+#kvkSubnav button[aria-pressed="true"]{background:#fff0c6;border-color:#f2ca84}
+#kvkControlling{display:none}
+body.kvk.kvk-control #kvk{display:none!important}
+body.kvk.kvk-control #kvkControlling{display:block!important}
+@media(max-height:420px){#kvkSubnav{padding:2px 6px;gap:5px}#kvkSubnav button{min-height:25px;padding:3px 8px;font-size:11px}}
 /* Scouting entries remain vertically stacked even in landscape's two-column menu. */
 #nexusMenu #liveScoutButton,#nexusMenu #scoutButton{width:100%}
 /* Landscape phone: two compact columns instead of a long scrolling list. */
@@ -96,14 +105,22 @@ body:has(#nexusFeedback:not([hidden])) #dismissKeyboard:not([hidden]){z-index:21
 
 </style></head><body>
 <header class="shared"><img src="data:image/webp;base64,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" alt="Nexus NXS crest"><div class="identity"><b>Nexus · NXS</b><small>KINGDOM #1885 · ALLIANCE OPERATIONS</small><p>Nexus — every path matters, every strength counts, from all of us, one force.</p></div><div class="context"><small>CURRENT SECTION</small><strong id="sectionTitle">Outpost Map</strong></div><div class="nexus-tools"><button id="nexusMenuButton" type="button" aria-label="NEXUS menu" aria-haspopup="true" aria-expanded="false" aria-controls="nexusMenu">☰</button><div id="nexusMenu" hidden role="menu" aria-label="NEXUS utilities"><button type="button" role="menuitem" id="nexusContact">✉ Contact &amp; Feedback</button><button type="button" disabled>⚙ Settings · Coming soon</button><button type="button" disabled>ⓘ About NEXUS · Coming soon</button></div></div></header><nav id="bar" aria-label="Kingdom sections"><span class="nav-brand">KINGDOM #1885</span><button id="mapButton" aria-pressed="true">🗺 Outpost Map</button><button type="button" id="editorLaunch">✎ Outpost Editor 🔒</button><button id="kvkButton" aria-pressed="false">⚔ KvK Prep 🔒</button><button id="allianceComparisonButton" aria-pressed="false">📊 Alliance Comparison</button><button id="allianceTrendsButton" aria-pressed="false">📈 Alliance Trends</button><button id="scoutButton" aria-pressed="false" title="Fictional sample candidates only">🔎 Transfer Scouting · DEMO</button><button id="liveScoutButton" aria-pressed="false" title="Protected real records">🔎 Transfer Scouting · LIVE 🔒</button><button id="focusButton" type="button" aria-pressed="false" title="Hide the heading to enlarge the map">⤢ Map focus</button><button id="fullscreenButton" type="button" title="Request browser full screen">⛶ Full screen</button></nav><iframe id="map" title="Public Kingdom Outpost Map" src="./for-an-single-header-test.html?build=nexus-single-header-v3"></iframe>
-<iframe id="kvk" title="Protected KvK Prep dashboard with original NXS data" loading="lazy"></iframe><iframe id="allianceComparison" title="Alliance Comparison: current NXS, MYM, FRA and OoO baseline" loading="lazy"></iframe><iframe id="allianceTrends" title="Alliance Trends: dated growth and KvK activity snapshots" loading="lazy"></iframe><iframe id="scouting" title="Fictional Transfer Scouting Demo" loading="lazy"></iframe><iframe id="liveScouting" title="Protected live Transfer Scouting records" loading="lazy"></iframe>
+<div id="kvkSubnav" aria-label="KvK Prep sections"><button id="kvkDashboardButton" type="button" aria-pressed="true">⚔ Dashboard</button><button id="kvkControllingButton" type="button" aria-pressed="false">🛡 KvK Controlling</button></div><iframe id="kvk" title="Protected KvK Prep dashboard with original NXS data" loading="lazy"></iframe><iframe id="kvkControlling" title="Four-alliance KvK controlling snapshot" loading="lazy"></iframe><iframe id="allianceComparison" title="Alliance Comparison: current NXS, MYM, FRA and OoO baseline" loading="lazy"></iframe><iframe id="allianceTrends" title="Alliance Trends: dated growth and KvK activity snapshots" loading="lazy"></iframe><iframe id="scouting" title="Fictional Transfer Scouting Demo" loading="lazy"></iframe><iframe id="liveScouting" title="Protected live Transfer Scouting records" loading="lazy"></iframe>
 <button id="exitMapFocus" type="button" aria-label="Return to NEXUS header and navigation">⤡ Show NEXUS header</button>
 <button id="dismissKeyboard" type="button" hidden aria-label="Hide on-screen keyboard">⌨ Tastatur schließen</button>
 <div id="nexusFeedback" hidden role="dialog" aria-modal="true" aria-labelledby="nexusFeedbackHeading"><form id="nexusFeedbackCard"><h2 id="nexusFeedbackHeading">✉ Contact &amp; Feedback</h2><p>Send a message to our NEXUS team on Discord.</p><label for="nexusCategory">Category</label><select id="nexusCategory"><option>General</option><option>Bug report</option><option>Suggestion</option><option>Question</option></select><label for="nexusMessage">Message</label><textarea id="nexusMessage" maxlength="1400" required placeholder="Your feedback..." ></textarea><p id="nexusFeedbackStatus" role="status" aria-live="polite"></p><div class="nexus-actions"><button type="button" id="nexusFeedbackHideKeyboard" aria-label="Hide on-screen keyboard">⌨ Tastatur schließen</button><button type="button" id="nexusFeedbackCancel">Cancel</button><button type="submit" id="nexusFeedbackSend">Send feedback</button></div></form></div>
 <script>
 const mapButton=document.getElementById('mapButton'),kvkButton=document.getElementById('kvkButton'),allianceComparisonButton=document.getElementById('allianceComparisonButton'),allianceTrendsButton=document.getElementById('allianceTrendsButton'),scoutButton=document.getElementById('scoutButton'),liveScoutButton=document.getElementById('liveScoutButton');
-const map=document.getElementById('map'),kvk=document.getElementById('kvk'),allianceComparison=document.getElementById('allianceComparison'),allianceTrends=document.getElementById('allianceTrends'),scouting=document.getElementById('scouting'),liveScouting=document.getElementById('liveScouting');
-let kvkLoaded=false,allianceComparisonLoaded=false,allianceTrendsLoaded=false,scoutLoaded=false,liveScoutLoaded=false;
+const map=document.getElementById('map'),kvk=document.getElementById('kvk'),kvkControlling=document.getElementById('kvkControlling'),allianceComparison=document.getElementById('allianceComparison'),allianceTrends=document.getElementById('allianceTrends'),scouting=document.getElementById('scouting'),liveScouting=document.getElementById('liveScouting');
+let kvkLoaded=false,kvkControllingLoaded=false,allianceComparisonLoaded=false,allianceTrendsLoaded=false,scoutLoaded=false,liveScoutLoaded=false;
+function selectKvkSubsection(value){
+ const controlling=value==='controlling';
+ document.body.classList.toggle('kvk-control',controlling);
+ document.getElementById('kvkDashboardButton').setAttribute('aria-pressed',String(!controlling));
+ document.getElementById('kvkControllingButton').setAttribute('aria-pressed',String(controlling));
+ if(controlling&&!kvkControllingLoaded){kvkControlling.src='./alliance-trends-ring-test.html?section=kvk&build=kvk-under-prep-v1';kvkControllingLoaded=true;}
+ if(document.body.classList.contains('kvk'))history.replaceState(null,'','?view=kvk'+(controlling?'&sub=controlling':''));
+}
 function activate(section){
  if(!['map','kvk','allianceComparison','allianceTrends','scouting','liveScouting'].includes(section))section='map';
  if(section!=='map')document.body.classList.remove('map-focus');
@@ -136,7 +153,7 @@ function isTypingElement(el){
  return el.matches('input:not([type="button"]):not([type="submit"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="hidden"]):not([type="range"]):not([type="color"]):not([type="reset"])');
 }
 function focusedInput(){
- for(const frame of [map,kvk,allianceComparison,allianceTrends,scouting,liveScouting]){
+ for(const frame of [map,kvk,kvkControlling,allianceComparison,allianceTrends,scouting,liveScouting]){
   try{const el=frame.contentDocument?.activeElement;if(el&&isTypingElement(el))return el;}
   catch(e){/* Third-party content cannot be read; no control applied. */}
  }
@@ -152,7 +169,7 @@ function connectKeyboardSupport(frame){
   doc.addEventListener('visibilitychange',updateKeyboardButton);
  }catch(e){/* Not all iframe documents permit shared input management. */}
 }
-[map,kvk,allianceComparison,allianceTrends,scouting,liveScouting].forEach(frame=>{
+[map,kvk,kvkControlling,allianceComparison,allianceTrends,scouting,liveScouting].forEach(frame=>{
  frame.addEventListener('load',()=>{connectKeyboardSupport(frame);updateKeyboardButton();});
  connectKeyboardSupport(frame);
 });
@@ -195,7 +212,9 @@ document.addEventListener('fullscreenchange',()=>{
 });
 mapButton.onclick=()=>activate('map');
 document.getElementById('editorLaunch').onclick=()=>{location.href='./outpost-editor-menu-test.html';};
-kvkButton.onclick=()=>activate('kvk');
+kvkButton.onclick=()=>{activate('kvk');selectKvkSubsection('dashboard');};
+document.getElementById('kvkDashboardButton').onclick=()=>selectKvkSubsection('dashboard');
+document.getElementById('kvkControllingButton').onclick=()=>selectKvkSubsection('controlling');
 allianceComparisonButton.onclick=()=>activate('allianceComparison');
 allianceTrendsButton.onclick=()=>activate('allianceTrends');
 scoutButton.onclick=()=>activate('scouting');
@@ -217,6 +236,7 @@ liveScouting.addEventListener('load',()=>{
 });
 
 activate(new URLSearchParams(location.search).get('view')||'map');
+if(new URLSearchParams(location.search).get('view')==='kvk'&&new URLSearchParams(location.search).get('sub')==='controlling')selectKvkSubsection('controlling');
 // Root-scoped service worker allows the installed NEXUS PWA to use its manifest start URL.
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
