@@ -3,7 +3,7 @@
   "name": "NEXUS · Kingdom #1885",
   "short_name": "NEXUS NXS",
   "description": "NEXUS Alliance Operations · Kingdom #1885",
-  "start_url": "./preview/kingdom-hub-scouting-v6.html?view=map",
+  "start_url": "./preview/kingdom-hub-menu-test.html?view=map",
   "scope": "./",
   "display": "fullscreen",
   "background_color": "#17110c",
