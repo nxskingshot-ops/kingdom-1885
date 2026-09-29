@@ -82,6 +82,7 @@ button:focus-visible,select:focus-visible{outline:2px solid #e8bf66;outline-offs
 .rank-table td:nth-child(4){white-space:nowrap}
 @media(orientation:landscape) and (max-height:600px){.rank-panel{padding:9px;margin-top:10px}.rank-heading{font-size:16px}.rank-fields{margin:6px 0}.rank-fields select{padding:5px 8px}.rank-scroll{max-height:240px}.rank-table th,.rank-table td{padding:6px}}
 @media(max-width:550px){.rank-table{font-size:11px}.rank-table td,.rank-table th{padding:6px 4px}.rank-table .rank-button{padding:5px}/* Column widths remain shared with the full-size ranking; narrow screens scroll horizontally. */}
+.radiant-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(270px,1fr);gap:13px;align-items:start}.radiant-layout .trials{grid-template-columns:1fr}.radiant-intel h3{color:var(--pale);font-size:15px;margin-bottom:9px}.rci-names{font-size:11px;color:var(--sub);overflow-wrap:anywhere;margin-bottom:10px}.rci-row{margin:8px 0 12px}.rci-head{display:flex;justify-content:space-between;gap:8px;font-size:11px}.rci-head b{color:var(--pale)}.rci-track{height:9px;border-radius:9px;background:#26364a;border:1px solid #4b5970;margin-top:5px;overflow:hidden}.rci-fill{height:100%;border-radius:9px;background:linear-gradient(90deg,#856130,#e8bc69)}.rci-row.blue .rci-fill{background:linear-gradient(90deg,#32658b,#78c3fa)}.rci-note{padding:9px;border:1px solid #354965;background:#0c182a;border-radius:8px;color:var(--sub);font-size:11px;line-height:1.5;margin-top:8px}.rci-note strong{color:var(--pale)}@media(max-width:740px) and (orientation:portrait){.radiant-layout{grid-template-columns:1fr}}@media(orientation:landscape) and (max-height:600px){.radiant-layout{gap:9px}.radiant-intel{padding:10px}.rci-row{margin:6px 0 9px}}
 </style></head>
 <body><main>
 <header class="page-top"><div><div class="eyebrow">KINGDOM #1885 · PRIVATE INTELLIGENCE</div><h1>True Power Intelligence</h1><p>Account development signals · verified snapshot comparisons</p></div><span class="stamp" id="dateLabel">Snapshot pending</span></header>
@@ -123,7 +124,7 @@ button:focus-visible,select:focus-visible{outline:2px solid #e8bf66;outline-offs
 <div class="analysis-grid" id="insights"></div>
 </section>
 <section class="section"><div class="section-title"><h2>Five development trials</h2><small>Independent trial scales · stage and rank, not combat power</small></div><div class="trials" id="trials"></div></section>
-<section class="section"><div class="section-title"><h2>Additional mixed indicator</h2><small>Not included in the five specialized areas</small></div><div class="trials" id="radiant"></div></section>
+<section class="section"><div class="section-title"><h2>Additional mixed indicator</h2><small>Not included in the five specialized areas</small></div><div class="radiant-layout"><div class="trials" id="radiant"></div><aside class="panel radiant-intel" aria-label="Radiant Spire comparison"><h3>Radiant Spire · Comparison</h3><div id="radiantComparison" aria-live="polite"></div></aside></div></section>
 <div class="footnote" id="method">
 <b>Reading the chart:</b> Each bar measures stage progress relative to the highest observed stage in that same trial on 29 Sep 2026. Different trials have different scales; compare bars within the same trial only. Progress indicates account development, not a calculated share of combat power. Rankings cover only the in-game top 40, so an absent ranking does not mean no progress. Personal power components (troops vs. other sources) cannot be calculated from the trial results alone. Where separately measured troop power is provided, True Power is total roster power minus troop power; otherwise it is unknown. Participation and login frequency are not recorded by these leaderboards.
 </div>
@@ -190,6 +191,28 @@ function trialRow(p,c,slot){
  return row;
 }
 
+function renderRadiantComparison(a,b){
+ const target=$('radiantComparison');target.replaceChildren();
+ const same=keyName(a.player_name)===keyName(b.player_name);
+ const stageA=stageNum(a.radiant_stage),stageB=stageNum(b.radiant_stage),maximum=caps.radiant;
+ target.append(el('div','rci-names',a.player_name+' vs '+b.player_name+' · same trial, same observed scale'));
+ for(const [p,stage,slot] of [[a,stageA,'a'],[b,stageB,'b']]){
+  const row=el('div','rci-row'+(slot==='b'?' blue':'')),head=el('div','rci-head');
+  head.append(el('span','',p.player_name),el('b','',value(p.radiant_stage)));
+  const track=el('div','rci-track'),fill=el('div','rci-fill');
+  fill.style.width=stage!==null&&maximum?Math.min(100,Math.max(0,100*stage/maximum))+'%':'0%';
+  track.append(fill);row.append(head,track);target.append(row);
+ }
+ const note=el('div','rci-note');note.append(el('strong','','NEXUS Insight'));
+ let message;
+ if(same)message='Choose a different player B to compare two governors.';
+ else if(stageA===null||stageB===null)message='At least one verified Radiant Spire stage is unavailable. No comparison can be calculated.';
+ else if(stageA===stageB)message='Both players have reached the same recorded stage ('+a.radiant_stage+').';
+ else {const ahead=stageA>stageB?a:b,behind=stageA>stageB?b:a;
+  message=ahead.player_name+' has reached '+ahead.radiant_stage+' versus '+behind.player_name+' at '+behind.radiant_stage+'. This is a stage-progression difference, not a measure of combat power.';}
+ note.append(el('p','',message));target.append(note);
+ target.append(el('div','rci-note','Bars use the highest observed Radiant Spire stage as reference. Radiant Spire mixes multiple factors including troops; its stages cannot be treated as pure troop-free power.'));
+}
 function renderInsights(a,b){
  const target=$('insights');target.replaceChildren();
  const same=keyName(a.player_name)===keyName(b.player_name);
@@ -304,6 +327,7 @@ function render(){
  const a=current('playerA'),b=current('playerB');$('cards').replaceChildren(summary(a,'a'),summary(b,'b'));
  renderRanking();
  renderInsights(a,b);
+ renderRadiantComparison(a,b);
  $('trials').replaceChildren();$('radiant').replaceChildren();
  for(const c of categories){
   const target=c.key==='radiant'?$('radiant'):$('trials'),panel=el('section','panel');
