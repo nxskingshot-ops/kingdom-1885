@@ -11,27 +11,6 @@
 <section class="grid2"><div class="panel"><h2>Agreement Compliance</h2><small>Only documented deviations from the agreed KvK rules</small><div class="scroll"><table><thead><tr><th>Alliance</th><th>Power change</th><th>Castle upgrades</th><th>Confirmed deviations</th><th>Status</th></tr></thead><tbody id="compliance"></tbody></table></div><div class="foot">An increase is not automatically a violation. Exceptions and documented rules must be checked first.</div></div><div class="panel"><h2>Matchmaking Risk Contribution</h2><small>Share of documented risk indicators</small><div class="risk"><div class="donut"><span>Not<br>calculated</span></div><ul id="riskList"></ul></div><div class="foot">No risk shares are calculated without verified inputs and a documented calculation method.</div></div></section>
 <div class="foot">Analysis scope: four Outpost alliances only. This test view is read-only and does not expose internal player records or invent historical trends.</div>
 </main><script>
-(function(){
-'use strict';
-const names=['NXS','MYM','FRA','OoO'],labels={NXS:'NXS',MYM:'MYM',FRA:'FRA',OoO:'OoO'};
-let selected='ALL',view='kvk';
-const el=id=>document.getElementById(id);
-function render(){
-const visible=selected==='ALL'?names:[selected];
-el('power').textContent='—';el('castles').textContent='—';el('growth').textContent='—';el('risk').textContent='—';
-el('growthPeriod').textContent='Change over '+(el('period').value==='all'?'all recorded dates':el('period').value+' days');
-el('compliance').replaceChildren();
-for(const name of visible){const tr=document.createElement('tr');for(const value of [labels[name],'—','—','Not assessed','Awaiting data']){const td=document.createElement('td');td.textContent=value;tr.appendChild(td);}el('compliance').appendChild(tr);}
-el('riskList').replaceChildren();for(const name of visible){const li=document.createElement('li');li.textContent=labels[name]+': not calculated';el('riskList').appendChild(li);}
-el('info').textContent=view==='kvk'?'KvK Controlling: agreement compliance is assessed only when verified records, rules and exceptions are available.':'Competitive Intelligence: compare dated power and castle snapshots when verified measurements are available.';
-el('powerChart').textContent='Waiting for dated power snapshots.';el('upgradeChart').textContent='Waiting for repeated castle-level snapshots.';
-}
-document.querySelectorAll('.alliance').forEach(b=>b.addEventListener('click',()=>{selected=b.dataset.a;document.querySelectorAll('.alliance').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));render();}));
-['kvk','competitive'].forEach(id=>el(id).addEventListener('click',()=>{view=id;for(const tab of ['kvk','competitive'])el(tab).setAttribute('aria-selected',String(tab===id));render();}));
-el('period').addEventListener('change',render);render();
-})();
-</script>
-<script>
 /* Provisional aggregates only. Never expose individual member rows through this public preview. */
 (async function(){
 'use strict';
@@ -50,17 +29,20 @@ function getVisible(){const ids=selected==='ALL'?names:[selected];const rows=ids
 function render(){
  const {ids,rows}=getVisible(),missing=ids.filter(n=>!snapshots.alliances[n]),has=rows.length>0;
  const totalPower=rows.reduce((a,b)=>a+b.power_m,0),totalCastles=rows.reduce((a,b)=>a+b.castle_25_plus_count,0);
- const dates=[...new Set(rows.map(r=>r.snapshot_date||snapshots.snapshot_date))];const comparable=dates.length===1&&missing.length===0;
+ const dates=[...new Set(rows.map(r=>r.snapshot_date||snapshots.snapshot_date))];const comparable=dates.length===1;
  $('power').textContent=has&&comparable?formatPower(totalPower):'—';
  $('castles').textContent=has&&comparable?count(totalCastles):'—';
  $('growth').textContent='—';$('risk').textContent='—';
  if(selected==='NXS'&&snapshots.alliances.NXS?.latest_change){const change=snapshots.alliances.NXS.latest_change;$('growth').textContent=(change.net_power_change_m>0?'+':'')+change.net_power_change_m.toLocaleString('en-US',{maximumFractionDigits:1})+'M';$('risk').textContent=change.risk_label+' ('+change.risk_score+')';}
  $('growthPeriod').textContent=selected==='NXS'?'Net change 28–29 Sep · retained members +71.3M':'Awaiting a second dated snapshot ('+formatPeriod()+')';
- $('lastUpdate').textContent='Roster baseline: '+snapshots.snapshot_date+' · provisional';
+ $('lastUpdate').textContent='Roster baseline: '+snapshots.snapshot_date+' · 3 of 4 alliances · provisional';
+ $('power').nextElementSibling.textContent=has?(missing.length?'Partial total · missing '+missing.join(', '):'Recorded alliance power'):'Recorded alliance power';
+ $('castles').nextElementSibling.textContent=has?(missing.length?'Partial total · missing '+missing.join(', '):'Count from available rosters'):'Count from available roster';
  let info=perspective==='kvk'
   ?'KvK Controlling · A single roster snapshot cannot establish agreement violations, power growth, or castle upgrades.'
   :'Competitive Intelligence · Current baseline comparisons are available for recorded alliances. Growth trends need another dated snapshot.';
  if(missing.length)info+=' Missing: '+missing.map(x=>display[x]).join(', ')+'.';
+ if(selected==='ALL'&&missing.length)info+=' The displayed totals cover only '+rows.length+' recorded alliances, not all four.';
  if(dates.length>1)info+=' Snapshot dates differ ('+dates.join(' / ')+'); combined totals are deliberately hidden until we have contemporaneous data.';
  if(selected==='NXS')info+=' Supabase 28–29 Sep: 97 → 96 members; net power −164.7M, retained member growth +71.3M; 6 castle upgrades. Internal NXS risk indicator is not a violation count.';
  info+=' Player-level records are not exposed by this public preview.';
@@ -72,15 +54,34 @@ function render(){
   const vals=[display[name],name==='NXS'?'−164.7M net (28–29 Sep)':r?'Awaiting comparison':'—',name==='NXS'?'6 (28–29 Sep)':'—','Not assessed',r?'Snapshot '+(r.snapshot_date||snapshots.snapshot_date):'Awaiting data'];
   for(const v of vals){const td=document.createElement('td');td.textContent=v;tr.appendChild(td);}body.appendChild(tr);
  }
- const powerChart=$('powerChart');
- powerChart.textContent=selected==='NXS'?'Recorded NXS power: 24 Sep 11.478B → 28 Sep 11.5004B → 29 Sep 11.3357B. Chart view needs a dated series.' :has
-   ?'Baseline recorded on '+snapshots.snapshot_date+'. A second dated snapshot is required for the Power Development line chart.'
-   :'Waiting for dated power snapshots.';
- const upgradeChart=$('upgradeChart');
- if(has){
-  const tg=rows.reduce((a,b)=>a+b.castle_tg_count,0);
-  upgradeChart.textContent='Current baseline: '+count(tg)+' Truegold castles out of '+count(rows.reduce((a,b)=>a+b.member_count,0))+' recorded members. Upgrades across all alliances need comparable successive snapshots.';
- }else upgradeChart.textContent='Waiting for repeated castle-level snapshots.';
+ const powerChart=$('powerChart'),upgradeChart=$('upgradeChart');
+ function plotBars(container,entries,suffix,limit){
+   container.replaceChildren();
+   if(!entries.length){container.textContent='Waiting for verified roster snapshots.';return;}
+   const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 560 255');svg.setAttribute('role','img');svg.setAttribute('aria-label',entries.map(e=>e.label+': '+e.value+suffix).join('; '));
+   const colors={NXS:'#417750',MYM:'#5071a2',FRA:'#b18b51',OoO:'#86649b'};
+   const max=Math.max(limit||0,...entries.map(e=>e.value))*1.1||1,base=201,top=25,bw=Math.min(94,360/entries.length),step=480/entries.length;
+   for(let i=0;i<=4;i++){const y=base-(base-top)*i/4;const line=document.createElementNS(ns,'line');line.setAttribute('x1','38');line.setAttribute('y1',y);line.setAttribute('x2','550');line.setAttribute('y2',y);line.setAttribute('stroke','#c8b58f');line.setAttribute('stroke-width','.8');svg.appendChild(line);const tick=document.createElementNS(ns,'text');tick.setAttribute('x','31');tick.setAttribute('y',y+4);tick.setAttribute('text-anchor','end');tick.textContent=((max/4)*i).toLocaleString('en-US',{maximumFractionDigits:suffix==='B'?1:0});svg.appendChild(tick);}
+   entries.forEach((e,i)=>{const x=48+i*step+(step-bw)/2,h=Math.max(2,e.value/max*(base-top));const rect=document.createElementNS(ns,'rect');rect.setAttribute('x',x);rect.setAttribute('y',base-h);rect.setAttribute('width',bw);rect.setAttribute('height',h);rect.setAttribute('rx','5');rect.setAttribute('fill',colors[e.label]||'#aa8a5c');svg.appendChild(rect);
+     const v=document.createElementNS(ns,'text');v.setAttribute('x',x+bw/2);v.setAttribute('y',base-h-9);v.setAttribute('font-weight','bold');v.setAttribute('text-anchor','middle');v.textContent=e.value.toLocaleString('en-US',{maximumFractionDigits:suffix==='B'?2:0})+suffix;svg.appendChild(v);
+     const t=document.createElementNS(ns,'text');t.setAttribute('x',x+bw/2);t.setAttribute('y','222');t.setAttribute('text-anchor','middle');t.textContent=e.label;svg.appendChild(t);
+   });container.appendChild(svg);
+ }
+ function plotNxsHistory(container){
+   const ns='http://www.w3.org/2000/svg';container.replaceChildren();const svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 560 255');svg.setAttribute('role','img');svg.setAttribute('aria-label','NXS power 24 September 11.478 billion; 28 September 11.5004 billion; 29 September 11.3357 billion');
+   const vals=[{d:'24 Sep',v:11478},{d:'28 Sep',v:11500.4},{d:'29 Sep',v:11335.7}];const min=11250,max=11600;
+   for(let k=0;k<=4;k++){const y=200-k*40,l=document.createElementNS(ns,'line');for(const [key,value] of Object.entries({x1:42,x2:550,y1:y,y2:y,stroke:'#c8b58f'}))l.setAttribute(key,value);svg.appendChild(l);const t=document.createElementNS(ns,'text');t.setAttribute('x','34');t.setAttribute('y',y+4);t.setAttribute('text-anchor','end');t.textContent=((min+(max-min)*k/4)/1000).toFixed(2)+'B';svg.appendChild(t);}
+   const coords=vals.map((e,i)=>[78+i*220,200-(e.v-min)/(max-min)*160]);const line=document.createElementNS(ns,'polyline');line.setAttribute('points',coords.map(p=>p.join(',')).join(' '));line.setAttribute('fill','none');line.setAttribute('stroke','#417750');line.setAttribute('stroke-width','4');svg.appendChild(line);
+   vals.forEach((e,i)=>{const [x,y]=coords[i],dot=document.createElementNS(ns,'circle');dot.setAttribute('cx',x);dot.setAttribute('cy',y);dot.setAttribute('r','6');dot.setAttribute('fill','#417750');svg.appendChild(dot);
+     const v=document.createElementNS(ns,'text');v.setAttribute('x',x);v.setAttribute('y',y-13);v.setAttribute('text-anchor','middle');v.textContent=(e.v/1000).toFixed(3)+'B';svg.appendChild(v);
+     const t=document.createElementNS(ns,'text');t.setAttribute('x',x);t.setAttribute('y','226');t.setAttribute('text-anchor','middle');t.textContent=e.d;svg.appendChild(t);});container.appendChild(svg);
+ }
+ const comparison=rows.map(r=>({label:r.name,value:r.power_m/1000})),castleComparison=rows.map(r=>({label:r.name,value:r.castle_tg_count}));
+ const chartHeading=powerChart.closest('.panel').querySelector('h2'),castleHeading=upgradeChart.closest('.panel').querySelector('h2');
+ if(selected==='NXS'){chartHeading.textContent='Power Development';plotNxsHistory(powerChart);castleHeading.textContent='Castle Upgrades';upgradeChart.textContent='NXS recorded 6 castle upgrades between 28 and 29 September 2026.';}
+ else{chartHeading.textContent='Current Power Comparison';plotBars(powerChart,comparison,'B');castleHeading.textContent='Truegold Castles · Current Baseline';plotBars(upgradeChart,castleComparison,'');}
+ powerChart.closest('.panel').querySelector('small').textContent=selected==='NXS'?'Historical NXS values (24, 28 and 29 Sep)':'Recorded power from the 29 Sep baseline; OoO awaiting data';
+ upgradeChart.closest('.panel').querySelector('small').textContent=selected==='NXS'?'Confirmed from Supabase snapshot comparison':'Current Truegold castle counts, not castle upgrades';
  $('riskList').replaceChildren();for(const name of ids){const li=document.createElement('li');li.textContent=display[name]+': not calculated';$('riskList').appendChild(li);}
 }
 document.querySelectorAll('.alliance').forEach(b=>b.addEventListener('click',()=>{selected=b.dataset.a;render();}));
