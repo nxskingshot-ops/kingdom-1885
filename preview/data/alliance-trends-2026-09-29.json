@@ -2,7 +2,7 @@
   "schema_version": 1,
   "snapshot_date": "2026-09-29",
   "status": "provisional_manual_transcription",
-  "notes": "Aggregates from user-supplied Kingshot roster screenshots. Displayed player power is rounded to 0.1M; totals are therefore approximate. Raw player-level records are not published in this public repository. No historical growth or KvK agreement violations have been computed. NXS baseline refreshed from dated 2026-09-29 Supabase snapshot. Power totals across alliances remain provisional and use rounded player readings.",
+  "notes": "Aggregates from user-supplied Kingshot roster screenshots. Displayed player power is rounded to 0.1M; totals are therefore approximate. Raw player-level records are not published in this public repository. No historical growth or KvK agreement violations have been computed. NXS baseline refreshed from dated 2026-09-29 Supabase snapshot. Power totals across alliances remain provisional and use rounded player readings. OoO alliance total power is sourced from an earlier alliance overview record on 2026-09-29; this is not a member-by-member roster, so no individual records, member count or castle-level statistics are inferred.",
   "alliances": {
     "FRA": {
       "member_count": 98,
@@ -94,7 +94,17 @@
         "risk_method": "Internal NXS risk indicator, not proven KvK agreement violations or a comparable inter-alliance score"
       }
     },
-    "OoO": null
+    "OoO": {
+      "snapshot_date": "2026-09-29",
+      "source": "Previously recorded Kingshot alliance overview screenshot (alliance total power only)",
+      "source_quality": "alliance_power_only; individual OoO roster screenshots not currently available for verification",
+      "member_count": null,
+      "power_m": 9711.322485,
+      "castle_tg_count": null,
+      "castle_25_plus_count": null,
+      "ranks": null,
+      "castles": null
+    }
   },
-  "comparison_policy": "Do not calculate cross-alliance trend rates from different-date baselines. Null alliance data means not available. Violation counts require verified agreements and exception rules."
+  "comparison_policy": "Do not calculate cross-alliance trend rates from different-date baselines. Null alliance data means not available. Violation counts require verified agreements and exception rules. Sum castle/member data only where numeric fields exist, and mark partial coverage."
 }
