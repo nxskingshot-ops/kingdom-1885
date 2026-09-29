@@ -235,8 +235,9 @@ liveScouting.addEventListener('load',()=>{
  }catch(err){console.warn('NEXUS demo switch unavailable',err);}
 });
 
-activate(new URLSearchParams(location.search).get('view')||'map');
-if(new URLSearchParams(location.search).get('view')==='kvk'&&new URLSearchParams(location.search).get('sub')==='controlling')selectKvkSubsection('controlling');
+const initialNexusRoute=new URLSearchParams(location.search);
+activate(initialNexusRoute.get('view')||'map');
+if(initialNexusRoute.get('view')==='kvk'&&initialNexusRoute.get('sub')==='controlling')selectKvkSubsection('controlling');
 // Root-scoped service worker allows the installed NEXUS PWA to use its manifest start URL.
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
