@@ -119,9 +119,9 @@ function selectKvkSubsection(value){
  document.body.classList.toggle('kvk-comparison',subsection==='comparison');
  document.body.classList.toggle('kvk-trends',subsection==='trends');
  for(const [name,id] of Object.entries({dashboard:'kvkDashboardButton',controlling:'kvkControllingButton',comparison:'kvkComparisonButton',trends:'kvkTrendsButton'}))document.getElementById(id).setAttribute('aria-pressed',String(name===subsection));
- if(subsection==='controlling'&&!kvkControllingLoaded){kvkControlling.src='./alliance-trends-ring-test.html?section=kvk&build=kvk-under-prep-v1';kvkControllingLoaded=true;}
- if(subsection==='comparison'&&!allianceComparisonLoaded){allianceComparison.src='./alliance-trends-ring-test.html?section=comparison&build=kvk-nested-v1';allianceComparisonLoaded=true;}
- if(subsection==='trends'&&!allianceTrendsLoaded){allianceTrends.src='./alliance-trends-ring-test.html?section=trends&build=kvk-nested-v1';allianceTrendsLoaded=true;}
+ if(subsection==='controlling'&&!kvkControllingLoaded){kvkControlling.src='./alliance-trends-ring-test.html?section=kvk&build=distinct-control-v2';kvkControllingLoaded=true;}
+ if(subsection==='comparison'&&!allianceComparisonLoaded){allianceComparison.src='./alliance-trends-ring-test.html?section=comparison&build=distinct-control-v2';allianceComparisonLoaded=true;}
+ if(subsection==='trends'&&!allianceTrendsLoaded){allianceTrends.src='./alliance-trends-ring-test.html?section=trends&build=distinct-control-v2';allianceTrendsLoaded=true;}
  if(document.body.classList.contains('kvk'))history.replaceState(null,'','?view=kvk'+(subsection==='dashboard'?'':'&sub='+subsection));
 }
 function activate(section){
