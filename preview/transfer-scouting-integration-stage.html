@@ -91,9 +91,15 @@ table{border-collapse:collapse;width:100%;min-width:680px;font-size:12px}th{text
 <div class="transfer-cap-indicator" role="note"><span>⚖️ Invitation Power Cap</span><strong>170 M</strong><span>≤ 170 M Ordinary · &gt; 170 M Special</span><small>Demo planning value · Not official</small></div><div class="scroll"><table class="scouting-table"><thead><tr><th>✓</th><th>Player</th><th>KD</th><th>Alliance</th><th>Role</th><th>TG</th><th>Power</th><th>Fit</th><th>Invitation</th><th>Transfer</th><th>Status</th></tr></thead><tbody id="boardRows"></tbody></table></div>
 <div class="actions"><button type="button" id="compareBtn">⚖ Compare selected (0/3)</button><button type="button" id="exportCsv">↓ Export visible CSV</button></div>
 <div id="comparison" aria-live="polite"></div></div></section>
-<section class="panel"><div class="panel-head"><h2>Scouting rules · Demo</h2></div><div class="panel-body"><div class="info">Invitation categories use a provisional 170M ordinary-invite planning cap (up to 170M = Ordinary, above 170M = Special), with optional manual override; confirm official Kingshot rules for each window. Role needs, transfer eligibility and fit scores are fictional examples. No contacts, approvals or transfers occur when you change demo status. Candidate details can be edited freely and are saved only on this device.</div><p id="storageNotice" class="smallprint">Demo edits are saved only in this browser.</p></div></section>
+
 </div>
 <aside class="side-stack">
+<section class="panel"><div class="panel-head"><h2 id="profileTitle">Candidate profile</h2></div><div class="panel-body"><div id="profileBody" aria-live="polite"></div>
+<details id="intelligenceDetails" class="scout-intelligence">
+<summary>✦ Player Intelligence · More details</summary>
+<div id="intelligenceContent" role="region" aria-label="Optional player intelligence details"></div>
+</details>
+<div class="actions"><button id="editCandidate" type="button">✎ Edit Profile</button><button id="deleteCandidate" class="secondary" type="button">Delete Demo Player</button></div></div></section>
 <section class="panel"><div class="panel-head"><h2>NXS Needs</h2><small>4 planning categories</small></div><div class="panel-body needs-grid">
 <div><b>Rally Leads</b><span>Priority role</span><strong id="needRally">–</strong></div>
 <div><b>Active Fighters</b><span>Events and KvK</span><strong id="needFighters">–</strong></div>
@@ -101,12 +107,8 @@ table{border-collapse:collapse;width:100%;min-width:680px;font-size:12px}th{text
 <div><b>R4 / R5 Potential</b><span>Coordination</span><strong id="needCommand">–</strong></div>
 </div><p class="smallprint" style="padding:0 12px 10px">Candidate counts are fictional illustrations, not staffing requirements.</p></section>
 <section class="panel"><div class="panel-head"><h2>Kingdom Notes</h2><small>fictional examples</small></div><div id="kingdomNotes" class="panel-body intel-grid"></div></section>
-<section class="panel"><div class="panel-head"><h2 id="profileTitle">Candidate profile</h2></div><div class="panel-body"><div id="profileBody" aria-live="polite"></div>
-<details id="intelligenceDetails" class="scout-intelligence">
-<summary>✦ Player Intelligence · More details</summary>
-<div id="intelligenceContent" role="region" aria-label="Optional player intelligence details"></div>
-</details>
-<div class="actions"><button id="editCandidate" type="button">✎ Edit Profile</button><button id="deleteCandidate" class="secondary" type="button">Delete Demo Player</button></div></div></section>
+
+<section class="panel"><div class="panel-head"><h2>Scouting rules · Demo</h2></div><div class="panel-body"><div class="info">Invitation categories use a provisional 170M ordinary-invite planning cap (up to 170M = Ordinary, above 170M = Special), with optional manual override; confirm official Kingshot rules for each window. Role needs, transfer eligibility and fit scores are fictional examples. No contacts, approvals or transfers occur when you change demo status. Candidate details can be edited freely and are saved only on this device.</div><p id="storageNotice" class="smallprint">Demo edits are saved only in this browser.</p></div></section>
 </aside>
 </div>
 </main>
