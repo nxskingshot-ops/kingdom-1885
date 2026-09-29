@@ -84,6 +84,15 @@ button:focus-visible,select:focus-visible{outline:2px solid #e8bf66;outline-offs
 @media(max-width:550px){.rank-table{font-size:11px}.rank-table td,.rank-table th{padding:6px 4px}.rank-table .rank-button{padding:5px}/* Column widths remain shared with the full-size ranking; narrow screens scroll horizontally. */}
 .radiant-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(270px,1fr);gap:13px;align-items:start}.radiant-layout .trials{grid-template-columns:1fr}.radiant-intel h3{color:var(--pale);font-size:15px;margin-bottom:9px}.rci-names{font-size:11px;color:var(--sub);overflow-wrap:anywhere;margin-bottom:10px}.rci-row{margin:8px 0 12px}.rci-head{display:flex;justify-content:space-between;gap:8px;font-size:11px}.rci-head b{color:var(--pale)}.rci-track{height:9px;border-radius:9px;background:#26364a;border:1px solid #4b5970;margin-top:5px;overflow:hidden}.rci-fill{height:100%;border-radius:9px;background:linear-gradient(90deg,#856130,#e8bc69)}.rci-row.blue .rci-fill{background:linear-gradient(90deg,#32658b,#78c3fa)}.rci-note{padding:9px;border:1px solid #354965;background:#0c182a;border-radius:8px;color:var(--sub);font-size:11px;line-height:1.5;margin-top:8px}.rci-note strong{color:var(--pale)}@media(max-width:740px) and (orientation:portrait){.radiant-layout{grid-template-columns:1fr}}@media(orientation:landscape) and (max-height:600px){.radiant-layout{gap:9px}.radiant-intel{padding:10px}.rci-row{margin:6px 0 9px}}
 .written-interpretation{margin-top:12px;padding:12px 14px;background:#0c182a;border:1px solid #736044;border-radius:10px}.written-interpretation h3{font-size:13px;color:var(--pale);margin-bottom:7px}.written-interpretation p{color:var(--ink);font-size:12px;line-height:1.65;margin:7px 0}.written-interpretation .wi-caution{color:var(--sub);font-size:10px;border-top:1px solid #354965;padding-top:8px;margin-top:11px}
+
+/* Only the two top player cards are compacted; all other dashboard panels retain their layout. */
+.compact-summary{padding:11px 13px}
+.compact-summary .subject{padding-bottom:7px}
+.compact-summary .kpi-grid{margin-top:8px;gap:7px}
+.compact-summary .kpi{padding:8px 10px}
+.compact-summary .kpi .value{font-size:19px}
+.compact-summary-meta{display:flex;flex-wrap:wrap;gap:4px 12px;color:var(--sub);font-size:10px;margin-top:8px;line-height:1.4}
+@media(orientation:landscape) and (max-height:600px){.compact-summary{padding:8px 10px}.compact-summary .subject{padding-bottom:5px}.compact-summary .kpi-grid{margin-top:6px}.compact-summary .kpi{padding:6px 8px}.compact-summary-meta{margin-top:5px}}
 </style></head>
 <body><main>
 <header class="page-top"><div><div class="eyebrow">KINGDOM #1885 · PRIVATE INTELLIGENCE</div><h1>True Power Intelligence</h1><p>Account development signals · verified snapshot comparisons</p></div><span class="stamp" id="dateLabel">Snapshot pending</span></header>
@@ -155,27 +164,22 @@ function selectPlayer(id,preferred){const field=$(id);field.replaceChildren();fo
 function current(id){return players.find(p=>p.player_name===$(id).value)||players[0];}
 function kpi(label,text,help){const outer=el('div','kpi');outer.append(el('span','caption',label),el('div','value',text),el('div','help',help||''));return outer;}
 function summary(p,slot){
- const card=el('article','panel player-'+slot);
+ const card=el('article','panel player-'+slot+' compact-summary');
  const top=el('div','subject'),identity=el('div');
  identity.append(el('div','name',p.player_name),el('div','alliance',(p.alliance_tag||'Alliance not verified')+' · '+snapshot));
  top.append(identity,el('span','badge',p.overall_rank?'OVERALL #'+p.overall_rank:'NO OVERALL TOP-40 RANK'));
  card.append(top);
  const box=el('div','kpi-grid'),ref=getPower(p),m=measuredPower(p);
- const formatted=v=>v===null?'—':v.toFixed(1)+'M';
  box.append(
-  kpi('TOTAL POWER',ref?Number(ref.power_m).toFixed(1)+'M':'—',ref?'Verified roster snapshot':'Not matched to a roster'),
-  kpi('MYSTIC LEVELS',value(p.overall_score),p.overall_rank?'Overall rank #'+p.overall_rank:'Overall total not shown'),
-  kpi('TROOP POWER',formatted(m.troops),m.troops===null?'Not separately measured':'Measured power component'),
-  kpi('NON-TROOP POWER',formatted(m.total!==null&&m.troops!==null?m.total-m.troops:null),m.troops===null?'Not separately measured':'Total minus troop power')
+  kpi('TOTAL POWER',m.total===null?'—':m.total.toFixed(1)+'M',m.total!==null?'Verified roster snapshot':'Not matched to a roster'),
+  kpi('MYSTIC LEVELS',value(p.overall_score),p.overall_rank?'Overall rank #'+p.overall_rank:'Overall total not shown')
  );
  card.append(box);
- const comp=el('div','composition');
- comp.append(el('p','','Power composition · troops / non-troops'),el('div','composition-bar'),el('div','note',m.troops===null?'Breakdown unavailable · no estimated segments':'Measured troop share '+(m.troops/m.total*100).toFixed(1)+'%'));
- card.append(comp);
  const covered=categories.filter(c=>p[c.key+'_rank']!=null).length;
- const tags=el('div','aux');
- tags.append(el('span','tag','Trials recorded: '+covered+'/6'),el('span','tag','Snapshot: '+snapshot),el('span','tag','Participation: not measured'));
- card.append(tags);
+ const meta=el('div','compact-summary-meta');
+ meta.append(el('span','','Trials recorded: '+covered+'/6'),
+  el('span','',m.troops===null?'Troop split unavailable · comparison based on Total Power + Mystic Trials':'Troop split measured · detailed comparison available below'));
+ card.append(meta);
  if(ref?.source_note&&/provisional/i.test(ref.source_note))card.append(el('p','msg','Power linkage is provisional: '+ref.source_note));
  return card;
 }
