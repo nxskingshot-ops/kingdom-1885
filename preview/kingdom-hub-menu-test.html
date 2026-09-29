@@ -166,7 +166,7 @@ function activate(section){
  liveScoutButton.setAttribute('aria-pressed',String(section==='liveScouting'));
  truePowerButton.setAttribute('aria-pressed',String(section==='truePower'));
  if(section==='kvk'&&!kvkLoaded){kvk.src='./kvk-prep-five-contrast-v13.html?build=kvk-login-syntax-fix-v4';kvkLoaded=true;}
- if(section==='scouting'&&!scoutLoaded){scouting.src='./transfer-scouting-integrated-v9.html?build=scouting-v9-seed-only';scoutLoaded=true;}
+ if(section==='scouting'&&!scoutLoaded){scouting.src='./transfer-scouting-integrated-v10.html?build=scouting-v10-restore';scoutLoaded=true;}
  if(section==='liveScouting'&&!liveScoutLoaded){liveScouting.src='./transfer-scouting-live-v5.html?build=simple-flow-v2';liveScoutLoaded=true;}
  if(section==='truePower'&&!truePowerLoaded){truePower.src='./true-power-development-v3.html?build=20260929-intelligence-v3';truePowerLoaded=true;}
  history.replaceState(null,'','?view='+section);
