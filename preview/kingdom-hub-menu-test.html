@@ -222,15 +222,24 @@ document.getElementById('exitMapFocus').onclick=()=>setMapFocus(false);
 fullscreenButton.onclick=async()=>{
  try{
   if(document.fullscreenElement)await document.exitFullscreen();
-  else if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();
-  else fullscreenButton.textContent='Use Install app for full screen';
+  else if(document.documentElement.requestFullscreen){
+   // Full screen is for the WHOLE NEXUS app, never just the map.
+   if(document.body.classList.contains('map-focus'))setMapFocus(false);
+   await document.documentElement.requestFullscreen();
+  }else fullscreenButton.textContent='Use Install app for full screen';
  }catch(e){
   console.warn('Browser full screen unavailable',e);
   fullscreenButton.textContent='Use Install app for full screen';
  }
 };
 document.addEventListener('fullscreenchange',()=>{
+ // Map focus deliberately hides the header; restore the NEXUS menu in fullscreen.
+ if(document.fullscreenElement&&document.body.classList.contains('map-focus'))setMapFocus(false);
  fullscreenButton.textContent=document.fullscreenElement?'⤡ Exit full screen':'⛶ Full screen';
+ // Nested same-origin map canvases should recompute their visible viewport.
+ requestAnimationFrame(()=>{window.dispatchEvent(new Event('resize'));
+  for(const child of [map.contentWindow,map.contentWindow?.frames?.[0]])try{child?.dispatchEvent(new Event('resize'))}catch(e){}
+ });
 });
 mapButton.onclick=()=>activate('map');
 document.getElementById('editorLaunch').onclick=()=>{location.href='./outpost-editor-menu-test.html';};
