@@ -59,6 +59,29 @@ button:focus-visible,select:focus-visible{outline:2px solid #e8bf66;outline-offs
 .aux{margin-top:12px;display:flex;flex-wrap:wrap;gap:9px;justify-content:space-between}.tag{border:1px solid #3f536d;border-radius:7px;padding:6px 9px;color:var(--sub);font-size:11px}
 .footnote{margin-top:16px;font-size:11px;color:var(--sub);line-height:1.6}.signin{padding:15px;border:1px solid #7a5837;border-radius:12px;background:#1f2530;margin:15px 0;display:none}.signin.visible{display:block}.muted{opacity:.85}
 @media(max-width:600px){main{padding:12px 10px 28px}.page-top{align-items:flex-start}.stamp{padding:6px;font-size:9px}.compare-grid,.trials{grid-template-columns:1fr}.controls{margin:12px 0}.kpi .value{font-size:20px}.page-top p{max-width:260px}}
+
+/* Standalone ranking additions; leave existing NEXUS design and comparison unchanged. */
+.rank-panel{margin-top:16px;border:1px solid #6e5b3c;background:linear-gradient(145deg,#142239,#0e1b2c);border-radius:12px;padding:13px}
+.rank-title{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.rank-heading{font:700 18px Georgia,serif;color:var(--pale)}
+.rank-fields{display:flex;gap:9px;flex-wrap:wrap;margin:11px 0}
+.rank-fields label{display:flex;flex-direction:column;gap:4px;min-width:145px;flex:1 1 150px;color:var(--gold);font-size:11px;font-weight:750}
+.rank-fields select{padding:8px}
+.rank-note{font-size:11px;color:var(--sub);line-height:1.5;margin-bottom:10px}
+.rank-scroll{max-height:410px;overflow:auto;border:1px solid #34475f;border-radius:10px;scrollbar-width:thin}
+.rank-table{width:100%;border-collapse:collapse;text-align:left;table-layout:fixed;font-size:12px}
+.rank-table th{position:sticky;top:0;background:#26344b;color:var(--gold);font-size:10px;letter-spacing:.06em;z-index:1;padding:9px 8px;border-bottom:1px solid #6e5b3c}
+.rank-table td{padding:8px;border-bottom:1px solid #324158;overflow-wrap:anywhere}
+.rank-table tbody tr:last-child td{border-bottom:0}
+.rank-table tbody tr:nth-child(even){background:#17263a}
+.rank-table tbody tr.self{background:#3c3525}
+.rank-table .rank-num{font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums}
+.rank-table .rank-value{font-weight:800;color:var(--pale);font-variant-numeric:tabular-nums}
+.rank-table .rank-button{padding:4px 7px;font-size:11px}
+.rank-table th:nth-child(1){width:11%}.rank-table th:nth-child(2){width:34%}.rank-table th:nth-child(3){width:12%}.rank-table th:nth-child(4){width:15%}.rank-table th:nth-child(5){width:28%}
+.rank-table td:nth-child(4){white-space:nowrap}
+@media(orientation:landscape) and (max-height:600px){.rank-panel{padding:9px;margin-top:10px}.rank-heading{font-size:16px}.rank-fields{margin:6px 0}.rank-fields select{padding:5px 8px}.rank-scroll{max-height:240px}.rank-table th,.rank-table td{padding:6px}}
+@media(max-width:550px){.rank-table{font-size:11px}.rank-table td,.rank-table th{padding:6px 4px}.rank-table .rank-button{padding:5px}.rank-table th:nth-child(1){width:11%}.rank-table th:nth-child(2){width:33%}.rank-table th:nth-child(3){width:13%}.rank-table th:nth-child(4){width:15%}.rank-table th:nth-child(5){width:28%}}
 </style></head>
 <body><main>
 <header class="page-top"><div><div class="eyebrow">KINGDOM #1885 · PRIVATE INTELLIGENCE</div><h1>True Power Intelligence</h1><p>Account development signals · verified snapshot comparisons</p></div><span class="stamp" id="dateLabel">Snapshot pending</span></header>
@@ -71,6 +94,26 @@ button:focus-visible,select:focus-visible{outline:2px solid #e8bf66;outline-offs
 </section>
 <div class="legend"><span><b class="gold">● Player A · Gold</b></span><span><b class="blue">● Player B · Blue</b></span></div>
 <div class="compare-grid" id="cards"></div>
+<section class="rank-panel" aria-label="True Power ranking">
+<div class="rank-title"><h2 class="rank-heading">♛ True Power Ranking</h2><span class="badge">MEMBERS ONLY · 29 SEP 2026</span></div>
+<div class="rank-fields">
+<label>RANK BY<select id="rankMetric" aria-label="Select measured ranking">
+<option value="overall">Mystic total levels</option>
+<option value="power">Total roster power (matched only)</option>
+<option value="coliseum">Heroes · Coliseum</option>
+<option value="forest">Pets · Forest of Life</option>
+<option value="crystal">Charms · Crystal Cave</option>
+<option value="knowledge">Research · Knowledge Nexus</option>
+<option value="molten">Governor Gear · Molten Fort</option>
+<option value="radiant">Mixed · Radiant Spire</option>
+</select></label>
+<label>ALLIANCE<select id="rankAlliance" aria-label="Filter ranking by alliance"><option value="ALL">All recorded alliances</option></select></label>
+</div>
+<p class="rank-note" id="rankNote"></p>
+<div class="rank-scroll" tabindex="0" aria-label="Scrollable ranked player list">
+<table class="rank-table"><thead><tr><th>RANK</th><th>GOVERNOR</th><th>TAG</th><th>VALUE</th><th>COMPARE</th></tr></thead><tbody id="rankRows"></tbody></table>
+</div>
+</section>
 <section class="analysis" aria-label="Observed player differences">
 <h2>Development comparison</h2>
 <div class="analysis-grid" id="insights"></div>
@@ -176,9 +219,55 @@ function renderInsights(a,b){
  }
 }
 
+const rankDefinitions={
+ overall:{rank:'overall_rank',score:'overall_score',label:'Mystic total levels',kind:'overall'},
+ power:{label:'Total roster power',kind:'power'},
+ coliseum:{rank:'coliseum_rank',score:'coliseum_stage',label:'Heroes · Coliseum',kind:'stage'},
+ forest:{rank:'forest_rank',score:'forest_stage',label:'Pets · Forest of Life',kind:'stage'},
+ crystal:{rank:'crystal_rank',score:'crystal_stage',label:'Charms · Crystal Cave',kind:'stage'},
+ knowledge:{rank:'knowledge_rank',score:'knowledge_stage',label:'Research · Knowledge Nexus',kind:'stage'},
+ molten:{rank:'molten_rank',score:'molten_stage',label:'Governor Gear · Molten Fort',kind:'stage'},
+ radiant:{rank:'radiant_rank',score:'radiant_stage',label:'Mixed · Radiant Spire',kind:'stage'}
+};
+function rankMeasurement(p,def){
+ if(def.kind==='power'){const ref=getPower(p);const v=ref?.power_m==null?null:Number(ref.power_m);return Number.isFinite(v)?{number:v,label:v.toFixed(1)+'M'}:null;}
+ if(def.kind==='overall')return Number.isFinite(Number(p.overall_score))&&p.overall_score!=null?{number:Number(p.overall_score),label:Number(p.overall_score).toLocaleString('en-US')}:null;
+ const v=stageNum(p[def.score]);return v===null?null:{number:v,label:String(p[def.score])};
+}
+function renderRanking(){
+ const metric=$('rankMetric').value,definition=rankDefinitions[metric]||rankDefinitions.overall;
+ const alliance=$('rankAlliance').value;
+ const eligible=players.map(p=>({p,measure:rankMeasurement(p,definition)})).filter(x=>x.measure!==null)
+  .sort((x,y)=>y.measure.number-x.measure.number||x.p.player_name.localeCompare(y.p.player_name));
+ // Ranking position must always be calculated against the full measured set.
+ // Alliance filters only hide rows; they do not silently renumber positions.
+ let lastValue=null,lastRank=0;
+ const ranked=eligible.map((x,i)=>{const reported=definition.rank?Number(x.p[definition.rank]):null;
+  const derived=x.measure.number===lastValue?lastRank:i+1;
+  lastValue=x.measure.number;lastRank=derived;
+  return {...x,position:metric!=='power'&&Number.isInteger(reported)&&reported>0?reported:derived};
+ });
+ const visible=ranked.filter(x=>alliance==='ALL'||x.p.alliance_tag===alliance);
+ const target=$('rankRows');target.replaceChildren();
+ for(const {p,measure,position} of visible){
+  const tr=el('tr');if(keyName(p.player_name)==='faqu')tr.className='self';
+  tr.append(el('td','rank-num','#'+position),el('td','',p.player_name),
+    el('td','',p.alliance_tag||'—'),el('td','rank-value',measure.label));
+  const actions=el('td');
+  const btn=el('button','rank-button','Compare ↗');btn.type='button';
+  btn.setAttribute('aria-label','Compare '+p.player_name+' as player B');
+  btn.addEventListener('click',()=>{$('playerB').value=p.player_name;render();$('playerB').focus();$('playerB').scrollIntoView({behavior:'smooth',block:'nearest'});});
+  actions.append(btn);tr.append(actions);target.append(tr);
+ }
+ if(!visible.length){const tr=el('tr'),cell=el('td','', 'No verified measurements available for this filter.');cell.colSpan=5;tr.append(cell);target.append(tr);}
+ $('rankNote').textContent=metric==='power'
+  ?'Only '+eligible.length+' of '+players.length+' player profiles have an explicitly linked power measurement. Positions are calculated within this matched sample, not a kingdom-wide true-power rank. Troop and non-troop power remain unknown.'
+  :definition.label+' · '+eligible.length+' recorded stages / scores · '+visible.length+' displayed. '+(alliance==='ALL'?'Kingdom-wide in-game ranks shown when supplied.':'Original kingdom positions retained despite alliance filter.')+' Missing measurements are excluded; never treated as zero. Rankings do not measure troop-free or actual combat power.';
+}
 function render(){
  if(!players.length)return;
  const a=current('playerA'),b=current('playerB');$('cards').replaceChildren(summary(a,'a'),summary(b,'b'));
+ renderRanking();
  renderInsights(a,b);
  $('trials').replaceChildren();$('radiant').replaceChildren();
  for(const c of categories){
@@ -189,6 +278,7 @@ function render(){
  }
 }
 $('playerA').addEventListener('change',render);$('playerB').addEventListener('change',render);
+$('rankMetric').addEventListener('change',renderRanking);$('rankAlliance').addEventListener('change',renderRanking);
 $('openLogin').addEventListener('click',()=>{
  try{window.parent.document.getElementById('kvkButton').click();}
  catch(_){window.parent.location.href='./kingdom-hub-menu-test.html?view=kvk';}
@@ -211,6 +301,8 @@ async function init(){
   players.sort((a,b)=>(a.overall_rank??999)-(b.overall_rank??999)||a.player_name.localeCompare(b.player_name));
   for(const c of categories)caps[c.key]=Math.max(0,...players.map(p=>stageNum(p[c.key+'_stage'])||0));
   selectPlayer('playerA','FaQu');selectPlayer('playerB','Indy Tao');
+ const alliances=[...new Set(players.map(p=>p.alliance_tag).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+ for(const name of alliances){const opt=el('option','',name);opt.value=name;$('rankAlliance').append(opt);}
   $('dashboard').hidden=false;$('signin').classList.remove('visible');
   $('status').textContent=players.length+' distinct profiles · seven complete top-40 rank sets · member-only snapshot';
   render();
