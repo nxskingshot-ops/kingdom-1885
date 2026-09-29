@@ -22,11 +22,12 @@ catch(err){document.getElementById('info').textContent='Snapshot data currently 
 const names=['NXS','MYM','FRA','OoO'],display={NXS:'NXS',MYM:'MYM',FRA:'FRA',OoO:'OoO'};
 const sectionMode=new URLSearchParams(location.search).get('section');
 let selected='ALL',perspective=sectionMode==='comparison'?'competitive':'kvk';
-if(sectionMode==='comparison'||sectionMode==='trends'){
+if(sectionMode==='comparison'||sectionMode==='trends'||sectionMode==='kvk'){
  const heading=document.querySelector('.heading h1');
- heading.textContent=sectionMode==='comparison'?'Alliance Comparison':'Alliance Trends';
+ heading.textContent=sectionMode==='comparison'?'Alliance Comparison':sectionMode==='kvk'?'KvK Controlling':'Alliance Trends';
  document.title='NEXUS · '+heading.textContent;
- /* Perspective buttons remain interactive: each shows its own panels. */
+ /* Each area now has its own NEXUS navigation. Do not show the competing perspectives here. */
+ document.querySelector('.tabs').hidden=true;
 }
 const $=id=>document.getElementById(id);
 const formatPower=x=>(x/1000).toLocaleString('en-US',{maximumFractionDigits:2,minimumFractionDigits:2})+'B';
