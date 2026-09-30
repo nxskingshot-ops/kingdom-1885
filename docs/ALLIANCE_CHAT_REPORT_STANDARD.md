@@ -136,3 +136,16 @@ Provided by Nexus App
 ```
 
 The illustrative timestamp is **not a statement that this data was verified**. Obtain a reliable map source (Linus or another authoritative maintainer) before displaying Verified. These report conventions apply to future exportable reports in other Nexus App sections as appropriate.
+
+## Quadrant report selector — provisional implementation (2026-09-30)
+
+The public Outpost Map's **Copy Report** chooser now includes both individual published alliances and a provisional set of quadrant aliases:
+
+- North → FRA
+- East → NXS
+- South → OoO
+- West → MYM
+
+**These are alliance-territory aliases, not geometric coordinate quadrants.** Do not use map-center filtering or claim that every outpost of an alliance lies geographically inside the named sector. Until Linus or another responsible map maintainer confirms sector definitions, show `(PROVISIONAL)` in the quadrant report header and `Unverified` in the footer. All quadrants only read published rows for their mapped alliance; edits and protected data are out of scope.
+
+For lengthy reports, the formatter may pair short items on one line to preserve Kingshot chat line breaks at the end. Entries are ordered by building level descending, then type and coordinates; all records remain present. This compact treatment applies only where explicitly enabled (current public map report chooser), not across unrelated report types. Source timestamps always represent the newest change among displayed records, not a human verification date.
