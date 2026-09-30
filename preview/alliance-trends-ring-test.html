@@ -122,7 +122,9 @@ function render(){
  const efficiency=snapshots.kvk_efficiency;
  const efficiencyAlliances=efficiency&&efficiency.alliances&&typeof efficiency.alliances==='object'?efficiency.alliances:null;
  const serverPrep=Number(efficiency?.server_prep_points),serverPower=Number(efficiency?.server_power_m);
- const efficiencyReady=efficiencyAlliances&&Number.isFinite(serverPrep)&&serverPrep>0&&Number.isFinite(serverPower)&&serverPower>0;
+ const efficiencyPrepSum=efficiencyAlliances?names.reduce((sum,name)=>sum+(Number(efficiencyAlliances[name]?.prep_points)||0),0):0;
+ const efficiencyPowerSum=efficiencyAlliances?names.reduce((sum,name)=>sum+(Number(efficiencyAlliances[name]?.power_m)||0),0):0;
+ const efficiencyReady=efficiencyAlliances&&Number.isFinite(serverPrep)&&serverPrep>0&&Number.isFinite(serverPower)&&serverPower>0&&efficiencyPrepSum<=serverPrep&&efficiencyPowerSum<=serverPower;
  const efficiencyNames=selected==='ALL'?names:[selected];
  for(const name of efficiencyNames){
   const row=efficiencyAlliances?.[name]||null;
@@ -136,7 +138,7 @@ function render(){
  }
  $('efficiencyFoot').textContent=efficiencyReady
   ?'Snapshot '+(efficiency.snapshot_date||snapshots.snapshot_date||'date unavailable')+' · Formula: (Alliance Prep Point Share ÷ Alliance Power Share) × 100. 100% means prep contribution is proportional to the recorded power share. Governance thresholds are shown nowhere in this calculation. Local snapshots: '+efficiencyHistory.length+'.'
-  :'Awaiting a verified end-of-prep snapshot with server total prep points and server total power. Formula: (Alliance Prep Point Share ÷ Alliance Power Share) × 100. Governance thresholds are not part of this calculation. Local snapshots: '+efficiencyHistory.length+'.';
+  :((efficiencyAlliances&&(efficiencyPrepSum>serverPrep||efficiencyPowerSum>serverPower))?'Saved snapshot has inconsistent totals and is not used. ':'Awaiting a verified end-of-prep snapshot with server total prep points and server total power. ')+'Formula: (Alliance Prep Point Share ÷ Alliance Power Share) × 100. Governance thresholds are not part of this calculation. Local snapshots: '+efficiencyHistory.length+'.';
  const powerChart=$('powerChart'),upgradeChart=$('upgradeChart');
  function plotBars(container,entries,suffix,limit){
    container.replaceChildren();
@@ -185,14 +187,22 @@ $('effUseCurrentPower').addEventListener('click',()=>{
 });
 $('effSave').addEventListener('click',()=>{
  const date=$('effDate').value,serverPrep=Number($('effServerPrep').value),serverPower=Number($('effServerPower').value);
- if(!date||!Number.isFinite(serverPrep)||serverPrep<=0||!Number.isFinite(serverPower)||serverPower<=0){$('effInputStatus').textContent='Enter a date, server total prep points and server total power first.';return;}
- const alliances={};let missing=false;
+ if(!date||!Number.isFinite(serverPrep)||serverPrep<=0||!Number.isFinite(serverPower)||serverPower<=0){
+  $('effInputStatus').textContent='Enter a valid date, server total prep points and server total power first.';return;
+ }
+ const alliances={};let missing=false,totalAlliancePrep=0,totalAlliancePower=0;
  for(const name of names){
   const prep=Number($('effPrep_'+name).value),power=Number($('effPower_'+name).value);
   if(!Number.isFinite(prep)||prep<0||!Number.isFinite(power)||power<=0){missing=true;break;}
-  alliances[name]={prep_points:prep,power_m:power};
+  alliances[name]={prep_points:prep,power_m:power};totalAlliancePrep+=prep;totalAlliancePower+=power;
  }
- if(missing){$('effInputStatus').textContent='Enter prep points and power for all four alliances.';return;}
+ if(missing){$('effInputStatus').textContent='Enter non-negative prep points and positive power for all four alliances.';return;}
+ if(totalAlliancePrep>serverPrep){
+  $('effInputStatus').textContent='Check the numbers: the four alliance prep scores exceed the server total.';return;
+ }
+ if(totalAlliancePower>serverPower){
+  $('effInputStatus').textContent='Check the numbers: the four alliance power values exceed the server total power.';return;
+ }
  const entry={snapshot_date:date,server_prep_points:serverPrep,server_power_m:serverPower,alliances};
  const same=efficiencyHistory.findIndex(x=>x.snapshot_date===date);
  if(same>=0)efficiencyHistory[same]=entry;else efficiencyHistory.push(entry);
@@ -200,7 +210,8 @@ $('effSave').addEventListener('click',()=>{
  efficiencyHistory=efficiencyHistory.slice(-20);
  try{localStorage.setItem(EFFICIENCY_KEY,JSON.stringify(efficiencyHistory));}catch(_){}
  snapshots.kvk_efficiency=entry;
- $('effInputStatus').textContent='Snapshot '+date+' saved locally. Relative efficiency recalculated.';
+ const prepCoverage=serverPrep?totalAlliancePrep/serverPrep*100:0,powerCoverage=serverPower?totalAlliancePower/serverPower*100:0;
+ $('effInputStatus').textContent='Snapshot '+date+' saved locally · four-alliance coverage: '+prepCoverage.toFixed(1)+'% of prep points, '+powerCoverage.toFixed(1)+'% of server power.';
  render();
 });
 $('effClear').addEventListener('click',()=>{
