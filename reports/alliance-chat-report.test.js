@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const {makeOutpostReport, makeTextReport, splitReportForKingshot, footer} = require('./alliance-chat-report.js');
+const {makeOutpostReport, makeDiscordOutpostReport, makeTextReport, splitReportForKingshot, splitReportForDiscord, footer} = require('./alliance-chat-report.js');
 test('approved single-message map layout and data status', () => {
   const actual = makeOutpostReport({sector:'FRA NORTH',outposts:[
     {type:"Builder's Guild",level:1,x:1068,y:138},
@@ -74,4 +74,29 @@ test('invalid limits and impossible entries throw rather than truncate', () => {
   assert.throws(()=>splitReportForKingshot('abc',10),/character limit/);
   const overlyLong='FRA | 1 OUTPOST\n'+'X'.repeat(460)+'\nUnverified\nProvided by Nexus App';
   assert.throws(()=>splitReportForKingshot(overlyLong),/entry exceeds/);
+});
+
+test('Discord report includes complete numbered entries and provenance', () => {
+  const rows = [{type:'Arsenal',level:2,x:868,y:139},{type:"Builder's Guild",level:1,x:1068,y:138}];
+  const report = makeDiscordOutpostReport({sector:'FRA',outposts:rows,sourceUpdatedAt:'2026-09-28T11:42:00Z'});
+  assert.match(report,/\*\*NEXUS APP · OUTPOST REPORT\*\*/);
+  assert.match(report,/1\. Arsenal L2: 868,139/);
+  assert.match(report,/2\. Builder's Guild L1: 1068,138/);
+  assert.match(report,/\*\*Source updated:\*\* 28\.09\.26\/13:42/);
+  assert.match(report,/\*\*Verification:\*\* Unverified\nProvided by Nexus App$/);
+  assert.deepEqual(splitReportForDiscord(report), [report]);
+});
+test('Discord long report splits only at entry boundaries without truncation', () => {
+  const rows = Array.from({length:90}, (_,i) => ({type:"Scholar's Tower",level:3,x:100+i,y:200+i}));
+  const report = makeDiscordOutpostReport({sector:'KINGDOM #1885',outposts:rows});
+  const parts = splitReportForDiscord(report);
+  assert.ok(parts.length > 1);
+  assert.ok(parts.every((part, i) => part.length <= 1900 &&
+    part.includes('(PART ' + (i+1) + '/' + parts.length + ')') &&
+    part.endsWith('**Verification:** Unverified\nProvided by Nexus App')));
+  for (let i=0;i<rows.length;i++) {
+    const token = (i+1) + ". Scholar's Tower L3: " + (100+i) + "," + (200+i);
+    assert.equal(parts.filter(part => part.includes(token)).length,1);
+  }
+  assert.throws(() => splitReportForDiscord(report, 2200),/character limit/);
 });
