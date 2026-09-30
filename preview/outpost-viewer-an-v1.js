@@ -147,7 +147,7 @@
 
   // The only new public control: a self-contained report overlay.
   // Uses exactly the published data displayed by the map; never guesses sectors or verification.
-  const reportModuleURL = new URL('../reports/alliance-chat-report.js', document.currentScript?.src || location.href).href + '?build=auto-split-v1';
+  const reportModuleURL = new URL('../reports/alliance-chat-report.js', document.currentScript?.src || location.href).href + '?build=discord-dual-export-v8';
   const reportStyle = document.createElement('style');
   reportStyle.textContent = `
 #viewerControls #mapCopyReport{background:#f1d19a;color:#523719;border:1px solid #b58a4c;border-radius:8px;padding:5px 7px;font-size:11px;font-weight:800;white-space:nowrap;min-height:27px}
@@ -160,7 +160,7 @@
 #mapReportPanel select,#mapReportPanel textarea{box-sizing:border-box;width:100%;border:1px solid #a5814b;border-radius:6px;background:#17120d;color:#fff1d6;padding:8px}
 #mapReportPanel textarea{min-height:80px;max-height:none;flex:1 1 auto;overflow:auto;resize:none;font:12px/1.5 monospace;white-space:pre}
 #mapReportPanel button{margin:9px 8px 0 0;padding:9px 12px;border-radius:7px;border:1px solid #a5814b;background:#efd09b;color:#332111;font-weight:700}
-#mapReportPageRow{display:flex;justify-content:space-between;align-items:center;gap:8px}#mapReportPageRow #mapReportPart{width:auto;max-width:55%;flex:0 1 auto;font-size:12px;padding:4px}#mapReportPageRow #mapReportPart[hidden]{display:none}#mapReportPanel small{display:block;color:#ead1a5;margin-top:7px}#mapReportFooter{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid #6b5030}#mapReportFooter small{margin:0;min-width:0;flex:1}#mapReportActions{display:flex;flex:0 0 auto;gap:7px}#mapReportActions button{margin:0;white-space:nowrap}@media(max-height:480px){#mapReportPanel{padding:8px}#mapReportPanel h3{font-size:16px;margin-bottom:3px}#mapReportPanel label{margin:3px 0 2px}#mapReportPanel textarea{min-height:60px}#mapReportFooter small{font-size:10px}}
+#mapReportFormatRow{display:flex;align-items:center;gap:9px;flex-shrink:0}#mapReportFormatRow label{margin:4px 0!important}#mapReportFormatRow select{width:auto;flex:1;min-width:0;max-width:200px;padding:5px}#mapReportPageRow{display:flex;justify-content:space-between;align-items:center;gap:8px}#mapReportPageRow #mapReportPart{width:auto;max-width:55%;flex:0 1 auto;font-size:12px;padding:4px}#mapReportPageRow #mapReportPart[hidden]{display:none}#mapReportPanel small{display:block;color:#ead1a5;margin-top:7px}#mapReportFooter{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid #6b5030}#mapReportFooter small{margin:0;min-width:0;flex:1}#mapReportActions{display:flex;flex:0 0 auto;gap:7px}#mapReportActions button{margin:0;white-space:nowrap}@media(max-height:480px){#mapReportPanel{padding:8px}#mapReportPanel h3{font-size:16px;margin-bottom:3px}#mapReportPanel label{margin:3px 0 2px}#mapReportPanel textarea{min-height:60px}#mapReportFooter small{font-size:10px}}
 `;
   document.head.appendChild(reportStyle);
   const reportButton = document.createElement('button');
@@ -174,12 +174,13 @@
   const overlay = document.createElement('div');
   overlay.id = 'mapReportOverlay';
   overlay.hidden = true;
-  overlay.innerHTML = '<div id="mapReportPanel" role="dialog" aria-modal="true" aria-label="Public outpost report"><h3>Outpost Report</h3><div id="mapReportBody"><label for="mapReportAlliance">Alliance or quadrant</label><select id="mapReportAlliance"></select><div id="mapReportPageRow"><label for="mapReportText">Preview</label><select id="mapReportPart" aria-label="Report part" hidden></select></div><textarea id="mapReportText" readonly></textarea></div><div id="mapReportFooter"><small id="mapReportInfo" role="status">Published records only · Unverified</small><div id="mapReportActions"><button type="button" id="mapReportCopy">Copy All</button><button type="button" id="mapReportClose">Close</button></div></div></div>';
+  overlay.innerHTML = '<div id="mapReportPanel" role="dialog" aria-modal="true" aria-label="Public outpost report"><h3>Outpost Report</h3><div id="mapReportBody"><label for="mapReportAlliance">Alliance or quadrant</label><select id="mapReportAlliance"></select><div id="mapReportFormatRow"><label for="mapReportFormat">Format</label><select id="mapReportFormat" aria-label="Export format"><option value="kingshot">Kingshot · Compact</option><option value="discord">Discord · Detailed</option></select></div><div id="mapReportPageRow"><label for="mapReportText">Preview</label><select id="mapReportPart" aria-label="Report part" hidden></select></div><textarea id="mapReportText" readonly></textarea></div><div id="mapReportFooter"><small id="mapReportInfo" role="status">Published records only · Unverified</small><div id="mapReportActions"><button type="button" id="mapReportCopy">Copy All</button><button type="button" id="mapReportClose">Close</button></div></div></div>';
   document.body.appendChild(overlay);
   const selector = $('mapReportAlliance');
   const reportText = $('mapReportText');
   const reportInfo = $('mapReportInfo');
   const partSelector = $('mapReportPart');
+  const formatSelector = $('mapReportFormat');
   let reportParts = [];
   let reportAPI = null;
   function showReportPart() {
@@ -192,6 +193,7 @@
       : 'Copy All';
   }
   partSelector.onchange = showReportPart;
+  formatSelector.onchange = updateReport;
   function closeReport() { overlay.hidden = true; reportButton.focus(); }
   function updateReport() {
     if (!reportAPI || !hasLiveSnapshot) {
@@ -217,15 +219,18 @@
     const times = selected.map(item => Date.parse(item.updated_at)).filter(Number.isFinite);
     const updatedAt = times.length && times.length === selected.length
       ? new Date(Math.max(...times)) : null;
-    const fullReport = reportAPI.makeOutpostReport({
+    const isDiscord = formatSelector.value === 'discord';
+    const fullReport = (isDiscord ? reportAPI.makeDiscordOutpostReport : reportAPI.makeOutpostReport)({
       sector: sectorLabel,
       outposts: selected,
       sourceUpdatedAt: updatedAt,
       verified: false,
-      kingshotCompact: true
+      kingshotCompact: !isDiscord
     });
     try {
-      reportParts = reportAPI.splitReportForKingshot(fullReport, 480);
+      reportParts = isDiscord
+        ? reportAPI.splitReportForDiscord(fullReport, 1900)
+        : reportAPI.splitReportForKingshot(fullReport, 480);
     } catch (error) {
       reportParts = [];
       reportText.value = '';
@@ -243,9 +248,8 @@
     partSelector.hidden = reportParts.length <= 1;
     partSelector.value = '0';
     showReportPart();
-    reportInfo.textContent = name
-      ? 'Provisional quadrant = assigned alliance territory, not a coordinate-defined area. Unverified until confirmed.'
-      : 'Published outposts only · Unverified until confirmed by a responsible data steward.';
+    reportInfo.textContent = (isDiscord ? 'Discord: up to 1900 characters per part. ' : 'Kingshot: up to 480 characters per part. ') +
+      (name ? 'Quadrant assignment provisional. ' : '') + 'Published outposts · Unverified.';
   }
   reportButton.onclick = () => {
     if (!hasLiveSnapshot || !reportAPI) return;
