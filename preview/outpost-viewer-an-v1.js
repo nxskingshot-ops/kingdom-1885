@@ -204,6 +204,16 @@
       return;
     }
     const selection = selector.value;
+    if (!selection) {
+      reportParts = [];
+      partSelector.replaceChildren();
+      partSelector.hidden = true;
+      reportText.value = '';
+      $('mapReportCopy').disabled = true;
+      $('mapReportCopy').textContent = 'Copy All';
+      reportInfo.textContent = 'Select an alliance or quadrant to generate a report.';
+      return;
+    }
     // Provisional alliance-to-quadrant aliases, NOT geographical coordinate boundaries.
     // Do not mark Verified until the official allocation is confirmed.
     const proposedSectors = {
@@ -266,12 +276,13 @@
       opt.textContent = label;
       selector.appendChild(opt);
     };
+    appendOption('', 'Select alliance or quadrant…');
     appendOption('ALL', 'All published outposts');
     for (const name of alliances) {
       const direction = sectors[name.toUpperCase()];
       appendOption(name, direction ? name + ' · ' + direction + ' (provisional)' : name);
     }
-    selector.value = 'ALL';
+    selector.value = '';
     formatSelector.value = 'kingshot';
     partSelector.value = '0';
     updateReport();
