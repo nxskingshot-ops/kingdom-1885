@@ -14,7 +14,7 @@ const frame=document.getElementById('kingdom'),status=document.getElementById('l
 frame.addEventListener('load',()=>{try{
 const doc=frame.contentDocument;if(!doc||!doc.body)throw Error('map unavailable');
 const script=doc.createElement('script');
-script.src=new URL('./outpost-viewer-an-v1.js',location.href).href;
+script.src=new URL('./outpost-viewer-an-v1.js?build=live-only-v2',location.href).href;
 // Hide an extra NEXUS shell, if the embedded map contains one.
 const nestedStyle=doc.createElement('style');
 nestedStyle.textContent='.shared{display:none!important}body:has(>.shared) #bar{display:none!important}body:has(>.shared)>iframe{height:100%!important;flex:1 1 auto!important}/* NEXUS test: no second title strip; compact controls float over the map. */#app{grid-template-rows:0 minmax(0,1fr) 42px!important;--toolbar-h:0px!important}#app>.top{display:none!important}#mapTools{position:absolute!important;left:auto!important;right:6px!important;top:6px!important;width:auto!important;height:auto!important;min-height:0!important;padding:0!important;gap:4px!important;background:transparent!important;border:0!important;box-shadow:none!important}#mapTools .mapbrand,#mapTools #healthBadge{display:none!important}#mapTools button{min-height:27px!important;padding:4px 6px!important}';
