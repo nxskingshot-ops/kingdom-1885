@@ -113,6 +113,7 @@
       syncAllianceFilters(live);
       DATA.splice(0, DATA.length, ...live);
       hasLiveSnapshot = true;
+      if (typeof reportButton !== 'undefined') reportButton.disabled = !reportAPI;
       redraw();
 
       const times = valid.map(row => Date.parse(row.updated_at)).filter(Number.isFinite);
@@ -125,6 +126,7 @@
     } catch (error) {
       if (!hasLiveSnapshot) {
         DATA.splice(0, DATA.length);
+        if (typeof reportButton !== 'undefined') reportButton.disabled = true;
         redraw();
         status('● Live data unavailable', 'No unverified snapshot markers are being shown. ' + error.message);
         if ($('sourceNote')) $('sourceNote').textContent = 'Live data unavailable. No unverified snapshot markers are shown.';
@@ -137,6 +139,98 @@
       busy = false;
     }
   }
+
+  // The only new public control: a self-contained report overlay.
+  // Uses exactly the published data displayed by the map; never guesses sectors or verification.
+  const reportModuleURL = new URL('../reports/alliance-chat-report.js', document.currentScript?.src || location.href).href;
+  const reportStyle = document.createElement('style');
+  reportStyle.textContent = \`
+#mapCopyReport{background:#f1d19a;color:#523719;border:1px solid #b58a4c;border-radius:8px;padding:7px 9px;font-size:11px;font-weight:800}
+#mapCopyReport:disabled{opacity:.5}
+#mapReportOverlay{position:fixed;inset:0;z-index:9999;background:#100c09b8;display:flex;align-items:center;justify-content:center;padding:12px}
+#mapReportOverlay[hidden]{display:none}
+#mapReportPanel{box-sizing:border-box;width:min(480px,100%);max-height:85dvh;overflow:auto;background:#2b2015;color:#ffe9bf;border:1px solid #c7a265;border-radius:12px;padding:14px;box-shadow:0 15px 50px #000a;font:13px system-ui}
+#mapReportPanel h3{font:700 19px Georgia,serif;margin:0 0 9px}
+#mapReportPanel label{display:block;margin:8px 0 4px}
+#mapReportPanel select,#mapReportPanel textarea{box-sizing:border-box;width:100%;border:1px solid #a5814b;border-radius:6px;background:#17120d;color:#fff1d6;padding:8px}
+#mapReportPanel textarea{min-height:170px;max-height:35dvh;resize:vertical;font:12px/1.5 monospace;white-space:pre}
+#mapReportPanel button{margin:9px 8px 0 0;padding:9px 12px;border-radius:7px;border:1px solid #a5814b;background:#efd09b;color:#332111;font-weight:700}
+#mapReportPanel small{display:block;color:#ead1a5;margin-top:7px}
+\`;
+  document.head.appendChild(reportStyle);
+  const reportButton = document.createElement('button');
+  reportButton.type = 'button';
+  reportButton.id = 'mapCopyReport';
+  reportButton.textContent = 'Copy Report';
+  reportButton.disabled = true;
+  controls.insertBefore(reportButton, $('viewerStatus'));
+  const overlay = document.createElement('div');
+  overlay.id = 'mapReportOverlay';
+  overlay.hidden = true;
+  overlay.innerHTML = '<div id="mapReportPanel" role="dialog" aria-modal="true" aria-label="Public outpost report"><h3>Outpost Report</h3><label for="mapReportAlliance">Alliance</label><select id="mapReportAlliance"></select><label for="mapReportText">Preview</label><textarea id="mapReportText" readonly></textarea><small id="mapReportInfo" role="status">Published records only · Unverified</small><button type="button" id="mapReportCopy">Copy All</button><button type="button" id="mapReportClose">Close</button></div>';
+  document.body.appendChild(overlay);
+  const selector = $('mapReportAlliance');
+  const reportText = $('mapReportText');
+  const reportInfo = $('mapReportInfo');
+  let reportAPI = null;
+  function closeReport() { overlay.hidden = true; reportButton.focus(); }
+  function updateReport() {
+    if (!reportAPI || !hasLiveSnapshot) {
+      reportText.value = '';
+      $('mapReportCopy').disabled = true;
+      reportInfo.textContent = 'Published data unavailable.';
+      return;
+    }
+    const alliance = selector.value;
+    const selected = DATA.filter(item => alliance === 'ALL' || item.alliance === alliance);
+    const times = selected.map(item => Date.parse(item.updated_at)).filter(Number.isFinite);
+    const updatedAt = times.length && times.length === selected.length
+      ? new Date(Math.max(...times)) : null;
+    reportText.value = reportAPI.makeOutpostReport({
+      sector: alliance === 'ALL' ? 'KINGDOM #1885' : alliance,
+      outposts: selected,
+      sourceUpdatedAt: updatedAt,
+      verified: false
+    });
+    $('mapReportCopy').disabled = false;
+    reportInfo.textContent = 'Published outposts only · Unverified until confirmed by a responsible data steward.';
+  }
+  reportButton.onclick = () => {
+    if (!hasLiveSnapshot || !reportAPI) return;
+    const previous = selector.value;
+    const alliances = [...new Set(DATA.map(item => item.alliance))].sort();
+    selector.replaceChildren();
+    for (const name of ['ALL', ...alliances]) {
+      const opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name === 'ALL' ? 'All published outposts' : name;
+      selector.appendChild(opt);
+    }
+    selector.value = alliances.includes(previous) ? previous : 'ALL';
+    updateReport();
+    overlay.hidden = false;
+  };
+  selector.onchange = updateReport;
+  $('mapReportClose').onclick = closeReport;
+  overlay.addEventListener('click', event => { if (event.target === overlay) closeReport(); });
+  $('mapReportCopy').onclick = async () => {
+    try {
+      await navigator.clipboard.writeText(reportText.value);
+      reportInfo.textContent = 'Copied · Ready for alliance chat.';
+    } catch (error) {
+      reportText.focus();
+      reportText.select();
+      reportInfo.textContent = 'Clipboard permission unavailable · Select and copy the highlighted text.';
+    }
+  };
+  const reportScript = document.createElement('script');
+  reportScript.src = reportModuleURL;
+  reportScript.onload = () => {
+    reportAPI = window.NexusAllianceReports;
+    reportButton.disabled = !reportAPI || !hasLiveSnapshot;
+  };
+  reportScript.onerror = () => { reportButton.disabled = true; console.warn('Map report module unavailable'); };
+  document.head.appendChild(reportScript);
 
   $('viewerRefresh').onclick = refresh;
   await refresh();
