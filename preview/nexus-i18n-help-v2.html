@@ -1,0 +1,417 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#342313"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><link rel="manifest" href="../nexus.webmanifest?build=nexus-current-shell-v12"><title>Nexus App · EN DE FR with translated Help Center test</title>
+<style>*{box-sizing:border-box}html,body{height:100%;margin:0;background:#151b16;color:#ffe5b3;font:13px system-ui}#bar{height:48px;background:#322518;border-bottom:2px solid #b28b4a;display:flex;align-items:center;gap:8px;padding:5px 9px}#bar strong{font:700 16px Georgia,serif;margin-right:auto;white-space:nowrap}button{padding:7px 11px;background:#f0cf8f;border:1px solid #ad833f;color:#32200c;border-radius:8px;font-weight:bold;cursor:pointer}button[aria-pressed="true"]{background:#f9e9c6}iframe{width:100%;height:calc(100% - 48px);border:0;display:block}#kvk{display:none}body.kvk #map{display:none}body.kvk #kvk{display:block}@media(max-width:430px){#bar strong{font-size:12px}button{font-size:11px;padding:7px}}html,body{width:100%;max-width:100%;overflow:hidden}#bar{max-width:100%;min-width:0}#bar strong{overflow:hidden;text-overflow:ellipsis}iframe{max-width:100%;min-width:0}.hub-caption{font:600 10px system-ui;letter-spacing:1px;color:#c6a778}#bar{background:linear-gradient(90deg,#342313,#644522,#342313);border-bottom-color:#c5a069}@media(max-width:640px){.hub-caption{display:none}}.shared{height:112px;display:flex;align-items:center;gap:13px;padding:8px 14px;background:linear-gradient(105deg,#302218,#624525,#302218);color:#fbe8c0;border-bottom:2px solid #c69b53}.shared img{width:74px;height:74px;object-fit:contain;flex:none;border-radius:9px}.identity{flex:1;min-width:0}.identity>b{display:block;font:700 25px Georgia,serif}.identity>small,.context small{display:block;font:700 10px system-ui;letter-spacing:1px;color:#d4b782}.identity p{margin:5px 0 0;padding:6px 9px;background:#94704455;border:1px solid #bb965f;border-radius:6px;font:italic 600 13px/1.35 Georgia,serif}.identity em{font:700 9px system-ui;color:#dfbf88;margin-right:8px}.context{min-width:105px;text-align:right}.context strong{display:block;font:700 17px Georgia,serif;margin-top:6px}.nav-brand{margin-right:auto;color:#e6ca96;font-size:11px;font-weight:bold}#bar{height:44px;justify-content:flex-end}iframe{height:calc(100% - 156px)}@media(max-width:680px){.shared{height:109px;padding:7px;gap:7px}.shared img{width:56px;height:56px}.identity>b{font-size:19px}.identity>small{font-size:9px;letter-spacing:0}.identity p{font-size:11px;padding:4px;margin-top:3px}.identity em{display:block;font-size:8px;margin-bottom:2px}.context{min-width:80px}.context strong{font-size:13px}.context small{font-size:8px}.nav-brand{font-size:9px}iframe{height:calc(100% - 153px)}}@media(max-width:390px){.context{display:none}.nav-brand{display:none}}#scouting{display:none}body.scouting #map,body.scouting #kvk,body.scouting #liveScouting{display:none}body.scouting #scouting{display:block}#liveScouting{display:none}body.liveScouting #map,body.liveScouting #kvk,body.liveScouting #scouting{display:none}body.liveScouting #liveScouting{display:block}#allianceTrends,#allianceComparison{display:none}body.allianceTrends #map,body.allianceTrends #kvk,body.allianceTrends #scouting,body.allianceTrends #liveScouting,body.allianceTrends #allianceComparison{display:none}body.allianceTrends #allianceTrends{display:block}body.allianceComparison #map,body.allianceComparison #kvk,body.allianceComparison #scouting,body.allianceComparison #liveScouting,body.allianceComparison #allianceTrends{display:none}body.allianceComparison #allianceComparison{display:block}body.scouting #allianceTrends,body.scouting #allianceComparison,body.liveScouting #allianceTrends,body.liveScouting #allianceComparison,body.kvk #allianceTrends,body.kvk #allianceComparison{display:none}#bar{overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin}#bar button{white-space:nowrap;flex-shrink:0}
+/* Global Android-friendly keyboard dismissal — independent of individual tabs. */
+#dismissKeyboard[hidden]{display:none!important}
+#dismissKeyboard{
+ position:fixed;right:max(14px,env(safe-area-inset-right));bottom:max(15px,env(safe-area-inset-bottom));
+ z-index:10000;display:flex;align-items:center;gap:7px;
+ padding:11px 15px;border:2px solid #ebc88c;border-radius:25px;
+ background:linear-gradient(120deg,#50351d,#6a4a29);
+ color:#fff1ca;box-shadow:0 4px 20px #23160d77;
+ font:700 13px system-ui,sans-serif;white-space:nowrap;
+}
+#dismissKeyboard:focus-visible{outline:3px solid #ffe09b;outline-offset:2px}
+
+/* Keep the map usable when Android browser chrome reduces the visible height.
+   The map iframe receives every remaining pixel instead of a fixed percentage. */
+html,body{height:100%;height:100dvh;min-height:0}
+body{display:flex;flex-direction:column;min-height:0}
+.shared,#bar{flex:0 0 auto}
+body>iframe{flex:1 1 auto;height:auto!important;min-height:0;width:100%}
+@media (max-height:650px){
+ .shared{height:54px!important;min-height:54px;padding:3px 9px;gap:9px}
+ .shared img{width:43px;height:43px}
+ .identity>b{font-size:16px;line-height:1.1}
+ .identity>small{font-size:8px}
+ .identity p{display:none}
+ .context strong{font-size:12px;margin-top:2px}
+ #bar{height:39px!important;min-height:39px;padding:2px 8px}
+ #bar button{padding:5px 8px;font-size:11px}
+}
+@media (max-height:420px){
+ .shared{height:39px!important;min-height:39px}
+ .shared img{height:33px;width:33px}
+ .identity>b{font-size:14px}
+ .identity>small,.context{display:none}
+ #bar{height:34px!important;min-height:34px}
+}
+
+/* Optional immersive view: leave map content/data unchanged, free viewport space. */
+#focusButton,#fullscreenButton{white-space:nowrap;flex-shrink:0}
+/* Map focus uses the whole usable viewport without resizing/distorting the game map. */
+body.map-focus .shared,body.map-focus #bar{display:none!important}
+body.map-focus>iframe#map{display:block!important;flex:1 1 auto!important;min-height:0;height:100%!important}
+#exitMapFocus{display:none;position:fixed;z-index:2147483640;top:max(9px,env(safe-area-inset-top));right:max(9px,env(safe-area-inset-right));padding:8px 12px;border-radius:10px;box-shadow:0 3px 14px #0009}
+body.map-focus #exitMapFocus{display:block}
+html:fullscreen,html:fullscreen body{width:100%;height:100%;height:100dvh}
+html:fullscreen body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+
+/* Isolated NEXUS utilities menu / feedback dialog */
+.nexus-tools{position:relative;align-self:center;flex:none}
+#nexusMenuButton{font-size:21px;min-width:40px;min-height:39px;line-height:1;padding:7px 10px}
+#nexusMenu{position:absolute;z-index:2147483000;top:calc(100% + 8px);right:0;width:min(290px,calc(100vw - 20px));max-height:70dvh;overflow:auto;background:#2e261c;border:2px solid #c9a162;border-radius:12px;padding:6px;box-shadow:0 12px 36px #000a}
+#nexusMenu[hidden],#nexusFeedback[hidden],#nexusAbout[hidden]{display:none!important}
+#nexusMenu button{display:block;width:100%;text-align:left;margin:3px 0;padding:12px 10px;background:#ecd4a7;color:#352513}
+#nexusMenu button:disabled{opacity:.48;cursor:not-allowed}
+#nexusFeedback{position:fixed;z-index:2147483500;inset:0;background:#000b;display:flex;align-items:center;justify-content:center;padding:12px}
+#nexusFeedbackCard{background:#30251a;border:2px solid #cba564;border-radius:14px;padding:18px;color:#ffe5b3;width:min(460px,100%);max-height:calc(100dvh - 24px);overflow:hidden;display:flex;flex-direction:column;box-shadow:0 15px 50px #0009}
+#nexusFeedbackCard h2{margin:0 0 12px;font:700 21px Georgia,serif}
+#nexusFeedbackCard label{display:block;margin:10px 0 5px;font-weight:700}
+#nexusFeedbackCard select,#nexusFeedbackCard textarea{width:100%;padding:10px;border:1px solid #c39e63;border-radius:8px;background:#fff1d4;color:#302012;font:14px system-ui}
+#nexusFeedbackCard textarea{min-height:55px;height:clamp(55px,19dvh,145px);resize:none;overflow-y:auto;overscroll-behavior:contain}
+#nexusFeedbackCard .nexus-actions{flex-shrink:0}
+#nexusFeedbackCard h2,#nexusFeedbackCard label,#nexusFeedbackCard select,#nexusFeedbackCard p{flex-shrink:0}
+#nexusFeedback:focus-within #nexusFeedbackCard{max-height:calc(100dvh - 16px)}
+#nexusFeedback:not([hidden])~#dismissKeyboard{z-index:2147483600}
+body:has(#nexusFeedback:not([hidden])) #dismissKeyboard:not([hidden]){z-index:2147483600;bottom:auto;top:max(5px,env(safe-area-inset-top));right:max(6px,env(safe-area-inset-right));padding:7px 10px;font-size:12px}
+@media(max-height:420px){#nexusFeedback{padding:6px}#nexusFeedbackCard{padding:9px 12px;max-height:calc(100dvh - 12px)}#nexusFeedbackCard h2{font-size:16px;margin-bottom:2px}#nexusFeedbackCard>p:first-of-type{margin:2px 0}#nexusFeedbackCard label{margin:4px 0 2px}#nexusFeedbackCard textarea{height:55px;min-height:40px}#nexusFeedbackCard select{padding:5px}#nexusFeedbackStatus{min-height:14px;margin:3px 0;font-size:11px}.nexus-actions{margin-top:4px}}
+.nexus-actions{display:flex;gap:7px;justify-content:flex-end;align-items:center;margin-top:14px;flex-wrap:wrap}
+#nexusFeedbackHideKeyboard{margin-right:auto;white-space:nowrap;font-size:12px;padding:8px 9px}
+@media(max-height:420px){#nexusFeedbackHideKeyboard{padding:5px 7px;font-size:11px}}
+#nexusFeedbackStatus{min-height:18px;line-height:1.4}
+@media(max-height:420px){#nexusMenuButton{min-height:32px;padding:4px 8px}}
+/* Menu-only test: keep original tab elements and their handlers, hide the empty legacy strip. */
+#bar{display:none!important}
+#nexusMenu button[aria-pressed="true"]{background:#fff2ce;border-color:#e9bd6b}
+/* Exact approved About poster, full viewport with no crop; retain the original informational card until the PNG is published. */
+#nexusAbout.poster-ready{padding:0;background:#090806}
+#nexusAbout.poster-ready #nexusAboutCard{padding:0;border:0;border-radius:0;box-shadow:none;background:#090806;width:100vw;height:100dvh;max-width:none;max-height:none;overflow:hidden;display:flex;align-items:center;justify-content:center}
+/* Fill the letterbox space with the SAME approved artwork, softly blurred.
+   The sharp foreground poster remains completely visible and never scrolls. */
+#nexusAbout.poster-ready #nexusAboutCard{isolation:isolate}
+#nexusAbout.poster-ready #nexusAboutCard::before{content:"";position:absolute;inset:-24px;z-index:0;background:linear-gradient(#100c0877,#100c0877),url("../assets/nexus-banner-1885.png?build=approved-1885-wide-v3") center/cover no-repeat;filter:blur(22px) brightness(.70);pointer-events:none}
+#nexusAbout.poster-ready #nexusAboutPoster{display:block;position:relative;z-index:1;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain;object-position:center;margin:0;flex:0 0 auto;background:transparent}
+/* Landscape artwork fits naturally inside the available viewport; no rotation or crop. */
+#nexusAbout.poster-ready #nexusAboutCard > :not(#nexusAboutPoster):not(#nexusAboutClose){display:none!important}
+#nexusAbout.poster-ready #nexusAboutClose{position:fixed;z-index:2;right:max(12px,env(safe-area-inset-right));top:max(12px,env(safe-area-inset-top));background:#f2d49c;border:2px solid #6c4a1d;box-shadow:0 2px 12px #000a}
+/* About NEXUS is an independent read-only dialog; reuse the exact existing header crest. */
+#nexusAbout{position:fixed;inset:0;z-index:2147483550;background:#0e0b08dc;display:flex;align-items:center;justify-content:center;padding:12px}
+#nexusAboutCard{position:relative;width:min(590px,100%);max-height:calc(100dvh - 24px);overflow-y:auto;overscroll-behavior:contain;background:linear-gradient(145deg,#fff4d9,#ead3a5);border:2px solid #c69b53;border-radius:17px;box-shadow:0 18px 55px #000b;padding:clamp(14px,3dvh,28px);color:#3c2917;text-align:center}
+#nexusAboutClose{position:absolute;right:9px;top:9px;padding:5px 10px;min-width:34px;min-height:34px;font-size:19px;line-height:1}
+#nexusAboutCrest{width:clamp(120px,28vmin,215px);height:clamp(120px,28vmin,215px);object-fit:contain;display:block;margin:0 auto 7px;filter:drop-shadow(0 5px 8px #50311555)}
+#nexusAboutCard h2{margin:0;font:700 clamp(23px,4vmin,32px) Georgia,serif;color:#392414}
+#nexusAboutCard .about-kicker{font:700 11px system-ui;letter-spacing:1.9px;color:#88663a;margin:2px 0 12px}
+#nexusAboutCard blockquote{margin:0 auto 14px;max-width:490px;border-top:1px solid #c5a069;border-bottom:1px solid #c5a069;padding:10px 6px;font:italic 700 clamp(15px,2.4vmin,19px)/1.5 Georgia,serif;color:#6e4a21}
+#nexusAboutCard .about-copy{font:14px/1.55 system-ui,sans-serif;text-align:left;max-width:490px;margin:auto}
+#nexusAboutCard .about-copy p{margin:8px 0}
+#nexusAboutCard .about-copy strong{color:#60411c}
+#nexusAboutCard .about-footer{text-align:center;border-top:1px solid #c5a069;padding-top:10px;margin-top:14px;font:700 11px/1.5 system-ui;letter-spacing:.7px;color:#795a30}
+@media(max-height:420px){#nexusAbout{padding:5px}#nexusAboutCard{max-height:calc(100dvh - 10px);padding:10px 16px}#nexusAboutCrest{width:100px;height:100px}#nexusAboutCard blockquote{margin-bottom:8px;padding:6px}}
+/* KvK sub-navigation stays outside the authenticated dashboard iframe, so its scroll remains untouched. */
+#kvkSubnav{display:none;flex:0 0 auto;gap:7px;padding:5px 9px;background:#3a2a1b;border-bottom:1px solid #c5a069;align-items:center;overflow-x:auto;scrollbar-width:thin;white-space:nowrap}
+body.kvk #kvkSubnav{display:flex}
+#kvkSubnav button{padding:6px 10px;font-size:12px;min-height:32px;flex:0 0 auto;white-space:nowrap}
+#kvkSubnav button[aria-pressed="true"]{background:#fff0c6;border-color:#f2ca84}
+#kvkControlling{display:none}
+body.kvk.kvk-control #kvk{display:none!important}
+body.kvk.kvk-control #kvkControlling{display:block!important}
+body.kvk.kvk-comparison #kvk,body.kvk.kvk-trends #kvk{display:none!important}
+body.kvk.kvk-comparison #allianceComparison,body.kvk.kvk-trends #allianceTrends{display:block!important}
+@media(max-height:420px){#kvkSubnav{padding:2px 6px;gap:5px}#kvkSubnav button{min-height:25px;padding:3px 8px;font-size:11px}}
+/* Scouting entries remain vertically stacked even in landscape's two-column menu. */
+#nexusMenu #liveScoutButton,#nexusMenu #scoutButton{width:100%}
+/* Landscape phone: two compact columns instead of a long scrolling list. */
+@media (orientation:landscape) and (min-width:680px){
+ #nexusMenu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:min-content;align-content:start;gap:5px;width:min(430px,calc(100vw - 28px));max-height:calc(100dvh - 62px);overflow-y:auto;overscroll-behavior:contain}
+ #nexusMenu button{min-width:0;margin:0;padding:8px 9px;white-space:normal;overflow-wrap:anywhere;font-size:12px;align-self:start}
+ /* Compact two-column landscape menu. Keep LIVE and DEMO vertically adjacent in the right column. */
+ #nexusMenu #mapButton{grid-column:1;grid-row:1}
+ #nexusMenu #editorLaunch{grid-column:2;grid-row:1}
+ #nexusMenu #kvkButton{grid-column:1;grid-row:2}
+ #nexusMenu #liveScoutButton{grid-column:2;grid-row:2}
+ #nexusMenu #focusButton{grid-column:1;grid-row:3}
+ #nexusMenu #scoutButton{grid-column:2;grid-row:3}
+ #nexusMenu #fullscreenButton{grid-column:1;grid-row:4}
+ #nexusMenu #nexusContact{grid-column:2;grid-row:4}
+ #nexusMenu button:disabled:nth-of-type(1){grid-column:1;grid-row:5}
+ #nexusMenu #nexusAboutLaunch{grid-column:2;grid-row:5}
+}
+
+#truePower{display:none}
+body.truePower #map,body.truePower #kvk,body.truePower #kvkControlling,body.truePower #allianceComparison,body.truePower #allianceTrends,body.truePower #scouting,body.truePower #liveScouting{display:none!important}
+body.truePower #truePower{display:block}
+</style></head><body>
+<header class="shared"><img src="data:image/webp;base64,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" alt="Nexus NXS crest"><div class="identity"><b>Nexus · NXS</b><small>KINGDOM #1885 · ALLIANCE OPERATIONS</small><p>Nexus — every path matters, every strength counts, from all of us, one force.</p></div><div class="context"><small>CURRENT SECTION</small><strong id="sectionTitle">Outpost Map</strong></div><div class="nexus-tools"><button id="nexusMenuButton" type="button" aria-label="NEXUS menu" aria-haspopup="true" aria-expanded="false" aria-controls="nexusMenu">☰</button><div id="nexusMenu" hidden role="menu" aria-label="NEXUS utilities"><div id="languageTestRow" role="group" aria-label="Language" style="display:flex;gap:4px;padding:4px;border-bottom:1px solid #a78356;margin-bottom:5px"><button type="button" data-test-lang="en" aria-pressed="true" style="flex:1 1 0;width:auto;min-width:0;text-align:center;padding:8px 5px">EN</button><button type="button" data-test-lang="de" aria-pressed="false" style="flex:1 1 0;width:auto;min-width:0;text-align:center;padding:8px 5px">DE</button><button type="button" data-test-lang="fr" aria-pressed="false" style="flex:1 1 0;width:auto;min-width:0;text-align:center;padding:8px 5px">FR</button></div><button type="button" role="menuitem" id="nexusHelpLaunch">? Help &amp; User Guide</button><button type="button" role="menuitem" id="nexusContact">✉ Contact &amp; Feedback</button><button type="button" disabled>⚙ Settings · Coming soon</button><button type="button" role="menuitem" id="nexusAboutLaunch">ⓘ About NEXUS</button></div></div></header><nav id="bar" aria-label="Kingdom sections"><span class="nav-brand">KINGDOM #1885</span><button id="mapButton" aria-pressed="true">🗺 Outpost Map</button><button type="button" id="editorLaunch">✎ Outpost Editor 🔒</button><button id="kvkButton" aria-pressed="false">⚔ KvK Prep 🔒</button><button id="truePowerButton" aria-pressed="false">✦ True Power Intelligence 🔒</button><button id="scoutButton" aria-pressed="false" title="Fictional sample candidates only">🔎 Transfer Scouting · DEMO</button><button id="liveScoutButton" aria-pressed="false" title="Protected real records">🔎 Transfer Scouting · LIVE 🔒</button><button id="focusButton" type="button" aria-pressed="false" title="Hide the heading to enlarge the map">⤢ Map focus</button><button id="fullscreenButton" type="button" title="Request browser full screen">⛶ Full screen</button></nav><iframe id="map" title="Public Kingdom Outpost Map" src="./for-an-single-header-test.html?build=nexus-menu-fullscreen-fix-v4"></iframe>
+<div id="kvkSubnav" aria-label="KvK Prep sections"><button id="kvkDashboardButton" type="button" aria-pressed="true">⚔ Dashboard</button><button id="kvkControllingButton" type="button" aria-pressed="false">🛡 KvK Controlling</button><button id="kvkComparisonButton" type="button" aria-pressed="false">📊 Alliance Comparison</button><button id="kvkTrendsButton" type="button" aria-pressed="false">📈 Alliance Trends</button></div><iframe id="kvk" title="Protected KvK Prep dashboard with original NXS data" loading="lazy"></iframe><iframe id="kvkControlling" title="Four-alliance KvK controlling snapshot" loading="lazy"></iframe><iframe id="allianceComparison" title="Alliance Comparison: current NXS, MYM, FRA and OoO baseline" loading="lazy"></iframe><iframe id="allianceTrends" title="Alliance Trends: dated growth and KvK activity snapshots" loading="lazy"></iframe><iframe id="scouting" title="Fictional Transfer Scouting Demo" loading="lazy"></iframe><iframe id="liveScouting" title="Protected live Transfer Scouting records" loading="lazy"></iframe><iframe id="truePower" title="NEXUS member-only True Power Intelligence" loading="lazy"></iframe>
+<button id="exitMapFocus" type="button" aria-label="Return to NEXUS header and navigation">⤡ Show NEXUS header</button>
+<button id="dismissKeyboard" type="button" hidden aria-label="Hide on-screen keyboard">⌨ Tastatur schließen</button>
+<div id="nexusAbout" hidden role="dialog" aria-modal="true" aria-labelledby="nexusAboutHeading"><article id="nexusAboutCard"><button type="button" id="nexusAboutClose" aria-label="Close About NEXUS">×</button><img id="nexusAboutPoster" hidden alt="NEXUS: Kingdom #1885, alliance crest, motto and FaQu's app vision"><img id="nexusAboutCrest" alt="NEXUS NXS alliance crest"><h2 id="nexusAboutHeading">NEXUS</h2><div class="about-kicker">KINGDOM #1885 · ALLIANCE OPERATIONS</div><blockquote>Nexus — every path matters, every strength counts, from all of us, one force.</blockquote><div class="about-copy"><p><strong>A personal vision from FaQu.</strong> NEXUS began as an idea for a useful alliance tool, built first for NXS and intended to benefit Kingdom #1885 as well.</p><p>This is an <strong>early demo and test version</strong>. Some features are still experimental or unfinished. Your opinions, ideas and feedback are welcome — and needed.</p><p>NEXUS can only succeed if we explore it together, keep its information up to date and make it better as a team.</p></div><div class="about-footer">CREATED FOR NXS · BUILT TOGETHER · YOUR FEEDBACK MATTERS</div></article></div>
+<div id="nexusFeedback" hidden role="dialog" aria-modal="true" aria-labelledby="nexusFeedbackHeading"><form id="nexusFeedbackCard"><h2 id="nexusFeedbackHeading">✉ Contact &amp; Feedback</h2><p>Send a message to our NEXUS team on Discord.</p><label for="nexusCategory">Category</label><select id="nexusCategory"><option>General</option><option>Bug report</option><option>Suggestion</option><option>Question</option></select><label for="nexusMessage">Message</label><textarea id="nexusMessage" maxlength="1400" required placeholder="Your feedback..." ></textarea><p id="nexusFeedbackStatus" role="status" aria-live="polite"></p><div class="nexus-actions"><button type="button" id="nexusFeedbackHideKeyboard" aria-label="Hide on-screen keyboard">⌨ Tastatur schließen</button><button type="button" id="nexusFeedbackCancel">Cancel</button><button type="submit" id="nexusFeedbackSend">Send feedback</button></div></form></div>
+<script>
+const mapButton=document.getElementById('mapButton'),kvkButton=document.getElementById('kvkButton'),scoutButton=document.getElementById('scoutButton'),liveScoutButton=document.getElementById('liveScoutButton'),truePowerButton=document.getElementById('truePowerButton');
+const map=document.getElementById('map'),kvk=document.getElementById('kvk'),kvkControlling=document.getElementById('kvkControlling'),allianceComparison=document.getElementById('allianceComparison'),allianceTrends=document.getElementById('allianceTrends'),scouting=document.getElementById('scouting'),liveScouting=document.getElementById('liveScouting'),truePower=document.getElementById('truePower');
+let kvkLoaded=false,kvkControllingLoaded=false,allianceComparisonLoaded=false,allianceTrendsLoaded=false,scoutLoaded=false,liveScoutLoaded=false,truePowerLoaded=false;
+function selectKvkSubsection(value){
+ const subsection=['dashboard','controlling','comparison','trends'].includes(value)?value:'dashboard';
+ document.body.classList.toggle('kvk-control',subsection==='controlling');
+ document.body.classList.toggle('kvk-comparison',subsection==='comparison');
+ document.body.classList.toggle('kvk-trends',subsection==='trends');
+ for(const [name,id] of Object.entries({dashboard:'kvkDashboardButton',controlling:'kvkControllingButton',comparison:'kvkComparisonButton',trends:'kvkTrendsButton'}))document.getElementById(id).setAttribute('aria-pressed',String(name===subsection));
+ if(subsection==='controlling'&&!kvkControllingLoaded){kvkControlling.src='./alliance-trends-ring-test.html?section=kvk&build=distinct-control-v2';kvkControllingLoaded=true;}
+ if(subsection==='comparison'&&!allianceComparisonLoaded){allianceComparison.src='./alliance-trends-ring-test.html?section=comparison&build=distinct-control-v2';allianceComparisonLoaded=true;}
+ if(subsection==='trends'&&!allianceTrendsLoaded){allianceTrends.src='./alliance-trends-ring-test.html?section=trends&build=distinct-control-v2';allianceTrendsLoaded=true;}
+ if(document.body.classList.contains('kvk'))history.replaceState(null,'','?view=kvk'+(subsection==='dashboard'?'':'&sub='+subsection));
+}
+function activate(section){
+ if(!['map','kvk','scouting','liveScouting','truePower'].includes(section))section='map';
+ if(section!=='map')document.body.classList.remove('map-focus');
+ document.body.classList.toggle('kvk',section==='kvk');
+ document.body.classList.toggle('scouting',section==='scouting');
+ document.body.classList.toggle('liveScouting',section==='liveScouting');
+ document.body.classList.toggle('truePower',section==='truePower');
+ document.getElementById('sectionTitle').textContent=section==='kvk'?'KvK Prep':section==='scouting'?'Transfer Scouting · DEMO':section==='liveScouting'?'Transfer Scouting · LIVE':section==='truePower'?'True Power Intelligence':'Outpost Map';
+ mapButton.setAttribute('aria-pressed',String(section==='map'));
+ kvkButton.setAttribute('aria-pressed',String(section==='kvk'));
+ scoutButton.setAttribute('aria-pressed',String(section==='scouting'));
+ liveScoutButton.setAttribute('aria-pressed',String(section==='liveScouting'));
+ truePowerButton.setAttribute('aria-pressed',String(section==='truePower'));
+ if(section==='kvk'&&!kvkLoaded){kvk.src='./kvk-prep-five-contrast-v13.html?build=kvk-login-syntax-fix-v4';kvkLoaded=true;}
+ if(section==='scouting'&&!scoutLoaded){scouting.src='./transfer-scouting-integrated-v10.html?build=scouting-v10-restore';scoutLoaded=true;}
+ if(section==='liveScouting'&&!liveScoutLoaded){liveScouting.src='./transfer-scouting-live-v5.html?build=simple-flow-v2';liveScoutLoaded=true;}
+ if(section==='truePower'&&!truePowerLoaded){truePower.src='./true-power-development-v3.html?build=20260929-intelligence-v3';truePowerLoaded=true;}
+ history.replaceState(null,'','?view='+section);
+ dismissKeyboard.hidden=true;
+}
+kvk.addEventListener('load',()=>{try{const nested=kvk.contentDocument.querySelector('header');if(nested)nested.style.display='none';}catch(e){console.warn('Dashboard header isolation',e);}});
+
+const dismissKeyboard=document.getElementById('dismissKeyboard');
+function isTypingElement(el){
+ if(!el||!el.matches)return false;
+ if(el.matches('textarea,[contenteditable=""],[contenteditable="true"]'))return true;
+ return el.matches('input:not([type="button"]):not([type="submit"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="hidden"]):not([type="range"]):not([type="color"]):not([type="reset"])');
+}
+function focusedInput(){
+ for(const frame of [map,kvk,kvkControlling,allianceComparison,allianceTrends,scouting,liveScouting,truePower]){
+  try{const el=frame.contentDocument?.activeElement;if(el&&isTypingElement(el))return el;}
+  catch(e){/* Third-party content cannot be read; no control applied. */}
+ }
+ return isTypingElement(document.activeElement)?document.activeElement:null;
+}
+function updateKeyboardButton(){dismissKeyboard.hidden=!focusedInput();}
+function connectKeyboardSupport(frame){
+ try{
+  const doc=frame.contentDocument;
+  if(!doc)return;
+  doc.addEventListener('focusin',updateKeyboardButton);
+  doc.addEventListener('focusout',()=>setTimeout(updateKeyboardButton,90));
+  doc.addEventListener('visibilitychange',updateKeyboardButton);
+ }catch(e){/* Not all iframe documents permit shared input management. */}
+}
+[map,kvk,kvkControlling,allianceComparison,allianceTrends,scouting,liveScouting,truePower].forEach(frame=>{
+ frame.addEventListener('load',()=>{connectKeyboardSupport(frame);updateKeyboardButton();});
+ connectKeyboardSupport(frame);
+});
+document.addEventListener('focusin',updateKeyboardButton);
+document.addEventListener('focusout',()=>setTimeout(updateKeyboardButton,90));
+dismissKeyboard.addEventListener('pointerdown',e=>e.preventDefault());
+dismissKeyboard.onclick=()=>{
+ const el=focusedInput();
+ if(el)el.blur();
+ try{document.activeElement?.blur();}catch(e){}
+ dismissKeyboard.hidden=true;
+};
+const focusButton=document.getElementById('focusButton');
+const fullscreenButton=document.getElementById('fullscreenButton');
+function setMapFocus(focused){
+ document.body.classList.toggle('map-focus',focused);
+ focusButton.textContent=focused?'⤡ Show header':'⤢ Map focus';
+ focusButton.setAttribute('aria-pressed',String(focused));
+ // Nested iframe map layouts can need a resize event after the available area changes.
+ requestAnimationFrame(()=>{window.dispatchEvent(new Event('resize'));
+  for(const child of [map.contentWindow,map.contentWindow?.frames?.[0]]){
+   try{child?.dispatchEvent(new Event('resize'))}catch(e){}
+  }
+ });
+}
+focusButton.onclick=()=>setMapFocus(!document.body.classList.contains('map-focus'));
+document.getElementById('exitMapFocus').onclick=()=>setMapFocus(false);
+fullscreenButton.onclick=async()=>{
+ try{
+  if(document.fullscreenElement)await document.exitFullscreen();
+  else if(document.documentElement.requestFullscreen){
+   // Full screen is for the WHOLE NEXUS app, never just the map.
+   if(document.body.classList.contains('map-focus'))setMapFocus(false);
+   await document.documentElement.requestFullscreen();
+  }else fullscreenButton.textContent='Use Install app for full screen';
+ }catch(e){
+  console.warn('Browser full screen unavailable',e);
+  fullscreenButton.textContent='Use Install app for full screen';
+ }
+};
+document.addEventListener('fullscreenchange',()=>{
+ // Map focus deliberately hides the header; restore the NEXUS menu in fullscreen.
+ if(document.fullscreenElement&&document.body.classList.contains('map-focus'))setMapFocus(false);
+ fullscreenButton.textContent=document.fullscreenElement?'⤡ Exit full screen':'⛶ Full screen';
+ // Nested same-origin map canvases should recompute their visible viewport.
+ requestAnimationFrame(()=>{window.dispatchEvent(new Event('resize'));
+  for(const child of [map.contentWindow,map.contentWindow?.frames?.[0]])try{child?.dispatchEvent(new Event('resize'))}catch(e){}
+ });
+});
+mapButton.onclick=()=>activate('map');
+document.getElementById('editorLaunch').onclick=()=>{location.href='./outpost-editor-menu-test.html';};
+kvkButton.onclick=()=>{activate('kvk');selectKvkSubsection('dashboard');};
+document.getElementById('kvkDashboardButton').onclick=()=>selectKvkSubsection('dashboard');
+document.getElementById('kvkControllingButton').onclick=()=>selectKvkSubsection('controlling');
+document.getElementById('kvkComparisonButton').onclick=()=>selectKvkSubsection('comparison');
+document.getElementById('kvkTrendsButton').onclick=()=>selectKvkSubsection('trends');
+scoutButton.onclick=()=>activate('scouting');
+liveScoutButton.onclick=()=>activate('liveScouting');
+truePowerButton.onclick=()=>activate('truePower');
+/* Test-only shortcut from protected live scouting to the existing fictional demo tab. */
+liveScouting.addEventListener('load',()=>{
+ try{
+  const doc=liveScouting.contentDocument;
+  const heading=doc?.querySelector('.hero');
+  if(!heading||doc.getElementById('nexusOpenDemoBoard'))return;
+  const button=doc.createElement('button');
+  button.type='button';
+  button.id='nexusOpenDemoBoard';
+  button.textContent='🎭 Open Demo Board';
+  button.title='Switch to fictional demo candidates (not live records)';
+  button.addEventListener('click',()=>activate('scouting'));
+  heading.appendChild(button);
+ }catch(err){console.warn('NEXUS demo switch unavailable',err);}
+});
+
+const initialNexusRoute=new URLSearchParams(location.search);
+const initialSection=initialNexusRoute.get('view');
+const migratedSection=initialSection==='allianceComparison'?'comparison':initialSection==='allianceTrends'?'trends':null;
+activate(migratedSection?'kvk':initialSection||'map');
+if(migratedSection||initialSection==='kvk')selectKvkSubsection(migratedSection||initialNexusRoute.get('sub')||'dashboard');
+// Root-scoped service worker allows the installed NEXUS PWA to use its manifest start URL.
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('../sw.js', {scope:'../'}).catch(err => {
+      console.warn('NEXUS offline support unavailable', err);
+    });
+  });
+}
+
+/* Independent utilities menu: leave existing tab routing and iframe logic untouched. */
+const nexusMenuButton=document.getElementById('nexusMenuButton');
+const nexusMenu=document.getElementById('nexusMenu');
+/* Move existing controls into the shared menu: same DOM nodes, IDs and onclick handlers. */
+const nexusOriginalNav=document.getElementById('bar');
+const nexusMenuAnchor=document.getElementById('nexusContact');
+for(const control of Array.from(nexusOriginalNav.querySelectorAll('button'))){
+ nexusMenu.insertBefore(control,nexusMenuAnchor);
+ control.addEventListener('click',()=>closeNexusMenu());
+}
+/* Keep both Transfer Scouting entries adjacent and full-width in every orientation. */
+nexusMenu.insertBefore(liveScoutButton,scoutButton);
+const nexusFeedback=document.getElementById('nexusFeedback');
+const nexusFeedbackCard=document.getElementById('nexusFeedbackCard');
+const nexusFeedbackStatus=document.getElementById('nexusFeedbackStatus');
+function closeNexusMenu(){nexusMenu.hidden=true;nexusMenuButton.setAttribute('aria-expanded','false');}
+nexusMenuButton.addEventListener('click',event=>{
+ event.stopPropagation();nexusMenu.hidden=!nexusMenu.hidden;
+ nexusMenuButton.setAttribute('aria-expanded',String(!nexusMenu.hidden));
+});
+document.addEventListener('click',event=>{if(!event.target.closest('.nexus-tools'))closeNexusMenu();});
+const nexusAbout=document.getElementById('nexusAbout');
+const nexusAboutClose=document.getElementById('nexusAboutClose');
+document.getElementById('nexusAboutCrest').src=document.querySelector('.shared > img').src;
+/* Show the approved artwork only when the unmodified PNG is published. */
+const nexusAboutPoster=document.getElementById('nexusAboutPoster');
+nexusAboutPoster.addEventListener('load',()=>{nexusAboutPoster.hidden=false;nexusAbout.classList.add('poster-ready');});
+nexusAboutPoster.addEventListener('error',()=>{nexusAboutPoster.hidden=true;nexusAbout.classList.remove('poster-ready');});
+nexusAboutPoster.src='../assets/nexus-banner-1885.png?build=approved-1885-wide-v3';
+document.getElementById('nexusAboutLaunch').addEventListener('click',()=>{
+ closeNexusMenu();nexusAbout.hidden=false;nexusAboutClose.focus();
+});
+function closeNexusAbout(){nexusAbout.hidden=true;nexusMenuButton.focus();}
+nexusAboutClose.addEventListener('click',closeNexusAbout);
+nexusAbout.addEventListener('click',event=>{if(event.target===nexusAbout)closeNexusAbout();});
+document.getElementById('nexusHelpLaunch').addEventListener('click',()=>{
+ closeNexusMenu();window.location.href='./nexus-user-guide-i18n-v1.html';
+});
+document.getElementById('nexusContact').addEventListener('click',()=>{
+ closeNexusMenu();nexusFeedback.hidden=false;nexusFeedbackStatus.textContent='';
+ /* Keep the keyboard closed until the user taps a field. */
+});
+function closeNexusFeedback(){const active=focusedInput();if(active)active.blur();nexusFeedback.hidden=true;dismissKeyboard.hidden=true;nexusMenuButton.focus();}
+document.getElementById('nexusFeedbackHideKeyboard').addEventListener('pointerdown',event=>event.preventDefault());
+document.getElementById('nexusFeedbackHideKeyboard').addEventListener('click',()=>{const active=focusedInput();if(active)active.blur();document.getElementById('nexusMessage').blur();document.getElementById('nexusCategory').blur();dismissKeyboard.hidden=true;});
+document.getElementById('nexusFeedbackCancel').addEventListener('click',closeNexusFeedback);
+nexusFeedback.addEventListener('click',event=>{if(event.target===nexusFeedback)closeNexusFeedback();});
+document.addEventListener('keydown',event=>{if(event.key==='Escape'){if(!nexusAbout.hidden)closeNexusAbout();else if(!nexusFeedback.hidden)closeNexusFeedback();else closeNexusMenu();}});
+nexusFeedbackCard.addEventListener('submit',async event=>{
+ event.preventDefault();
+ const send=document.getElementById('nexusFeedbackSend');
+ const message=document.getElementById('nexusMessage').value.trim();
+ if(!message)return;
+ send.disabled=true;nexusFeedbackStatus.textContent='Sending...';
+ try {
+  const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2');
+  const client=createClient('https://hcjrdofkdkasznywvcxo.supabase.co','sb_publishable_hkqBaMme70g2f3wcxvaTKg_FczqkpCh',
+   {auth:{persistSession:true,autoRefreshToken:true}});
+  const {data:{session},error}=await client.auth.getSession();
+  if(error||!session?.access_token)throw new Error('Please sign in to NEXUS first (KvK Prep), then try again.');
+  const response=await fetch('https://hcjrdofkdkasznywvcxo.supabase.co/functions/v1/nexus-feedback',{
+   method:'POST',headers:{'Content-Type':'application/json','apikey':'sb_publishable_hkqBaMme70g2f3wcxvaTKg_FczqkpCh','Authorization':'Bearer '+session.access_token},
+   body:JSON.stringify({category:document.getElementById('nexusCategory').value,message})
+  });
+  const result=await response.json();
+  if(!response.ok||!result.delivered)throw new Error(result.error||'Delivery failed. Please retry.');
+  nexusFeedbackStatus.textContent='✓ Delivered to NEXUS feedback on Discord.';
+  document.getElementById('nexusMessage').value='';
+ }catch(err){nexusFeedbackStatus.textContent=err instanceof Error?err.message:'Unable to send feedback.';}
+ finally{send.disabled=false;}
+});
+</script><script defer src="../pwa-update.js"></script><script>
+/* Isolated language/overflow trial. Never edit the working app or its iframe contents. */
+(()=>{'use strict';
+const copy={"en":{"section":"CURRENT SECTION","help":"? Help & User Guide","contact":"✉ Contact & Feedback","settings":"⚙ Settings · Coming soon","about":"ⓘ About NEXUS","map":"🗺 Outpost Map","editor":"✎ Outpost Editor 🔒","kvk":"⚔ KvK Prep 🔒","power":"✦ True Power Intelligence 🔒","scout":"🔎 Transfer Scouting · DEMO","live":"🔎 Transfer Scouting · LIVE 🔒","focus":"⤢ Map focus","full":"⛶ Full screen","feedbackHeading":"✉ Contact & Feedback","feedbackDescription":"Send a message to our NEXUS team on Discord.","category":"Category","message":"Message","cancel":"Cancel","send":"Send feedback","aboutHeading":"NEXUS"},"de":{"section":"AKTUELLER BEREICH","help":"? Hilfe & Anleitung","contact":"✉ Kontakt & Feedback","settings":"⚙ Einstellungen · Bald","about":"ⓘ Über NEXUS","map":"🗺 Außenposten-Karte","editor":"✎ Außenposten-Editor 🔒","kvk":"⚔ KvK-Vorbereitung 🔒","power":"✦ True-Power-Analyse 🔒","scout":"🔎 Transfer-Scouting · DEMO","live":"🔎 Transfer-Scouting · LIVE 🔒","focus":"⤢ Kartenfokus","full":"⛶ Vollbild","feedbackHeading":"✉ Kontakt & Feedback","feedbackDescription":"Sende eine Nachricht an unser NEXUS-Team auf Discord.","category":"Kategorie","message":"Nachricht","cancel":"Abbrechen","send":"Feedback senden","aboutHeading":"NEXUS"},"fr":{"section":"SECTION ACTUELLE","help":"? Aide & guide","contact":"✉ Contact & avis","settings":"⚙ Paramètres · Bientôt","about":"ⓘ À propos de NEXUS","map":"🗺 Carte des avant-postes","editor":"✎ Éditeur d’avant-postes 🔒","kvk":"⚔ Préparation KvK 🔒","power":"✦ Analyse True Power 🔒","scout":"🔎 Recrutement · DÉMO","live":"🔎 Recrutement · LIVE 🔒","focus":"⤢ Focus carte","full":"⛶ Plein écran","feedbackHeading":"✉ Contact & avis","feedbackDescription":"Envoyez un message à notre équipe NEXUS sur Discord.","category":"Catégorie","message":"Message","cancel":"Annuler","send":"Envoyer l’avis","aboutHeading":"NEXUS"}};
+const baseline={
+section:document.querySelector('.context > small'),
+help:document.getElementById('nexusHelpLaunch'),
+contact:document.getElementById('nexusContact'),
+settings:document.querySelector('#nexusMenu button[disabled]'),
+about:document.getElementById('nexusAboutLaunch'),
+map:document.getElementById('mapButton'),
+editor:document.getElementById('editorLaunch'),
+kvk:document.getElementById('kvkButton'),
+power:document.getElementById('truePowerButton'),
+scout:document.getElementById('scoutButton'),
+live:document.getElementById('liveScoutButton'),
+focus:document.getElementById('focusButton'),
+full:document.getElementById('fullscreenButton'),
+feedbackHeading:document.getElementById('nexusFeedbackHeading'),
+feedbackDescription:document.querySelector('#nexusFeedbackCard > p:first-of-type'),
+category:document.querySelector('label[for="nexusCategory"]'),
+message:document.querySelector('label[for="nexusMessage"]'),
+cancel:document.getElementById('nexusFeedbackCancel'),
+send:document.getElementById('nexusFeedbackSend'),
+aboutHeading:document.getElementById('nexusAboutHeading')
+};
+const titleValues={en:'Outpost Map',de:'Außenposten-Karte',fr:'Carte des avant-postes'};
+const status=document.createElement('output');
+status.id='languageTrialStatus';
+status.setAttribute('role','status');
+status.style.cssText='display:block;color:#e8d0a6;font-size:11px;padding:4px 8px';
+document.getElementById('nexusMenu').appendChild(status);
+const keys=Object.keys(baseline);
+function setLanguage(lang){
+ if(!copy[lang])lang='en';
+ document.documentElement.lang=lang;
+ keys.forEach(key=>{if(baseline[key])baseline[key].textContent=copy[lang][key];});
+ document.querySelectorAll('[data-test-lang]').forEach(btn=>{
+  const current=btn.dataset.testLang===lang;
+  btn.setAttribute('aria-pressed',String(current));
+  btn.style.background=current?'#fff1ce':'#ecd4a7';
+ });
+ const sectionTitle=document.getElementById('sectionTitle');
+ if(sectionTitle && Object.values(titleValues).includes(sectionTitle.textContent))sectionTitle.textContent=titleValues[lang];
+ status.textContent='Language preview only · '+lang.toUpperCase()+' · Other embedded dashboards remain unchanged.';
+ try{localStorage.setItem('nexus_i18n_preview_only',lang);}catch(_){}
+ requestAnimationFrame(()=>{
+  const candidates=['map','editor','kvk','power','scout','live','focus','full'];
+  const over=candidates.filter(k=>baseline[k]&&baseline[k].scrollWidth>baseline[k].clientWidth+2);
+  status.textContent='Language preview only · '+lang.toUpperCase()+(over.length?' · Text overflow: '+over.join(', '):' · No clipped navigation labels detected')+' · Embedded dashboards unchanged.';
+ });
+}
+document.querySelectorAll('[data-test-lang]').forEach(b=>b.addEventListener('click',()=>setLanguage(b.dataset.testLang)));
+let language='en';try{language=localStorage.getItem('nexus_i18n_preview_only')||'en'}catch(_){}
+setLanguage(language);
+})();
+</script></body></html>
