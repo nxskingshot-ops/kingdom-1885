@@ -20,6 +20,8 @@ This document is the shared, persistent backlog of ideas and follow-up work. **A
 - [ ] **Onboarding and documentation:** After app tests, write simple member/tester instructions for mobile PWA and desktop usage, access, and demo-vs-live sections.
 - [ ] **Keyboard dismissal:** Check the Hide Keyboard control across all editable mobile tabs.
 
+- [ ] **Alliance-chat report system:** Prepare a reusable **Create Report → Copy All** pattern for useful Nexus App queries (map/outposts first, later rankings, comparisons, scouting and operational summaries). Reports must be concise, mobile-readable, directly pasteable into alliance chat, respect source-view permissions, and require no manual reformatting. First concrete use case: An's request for all outposts in the northern quadrant. Map reports depend on a reliable, verified current map data source / baseline; Linus' help is valuable for establishing that source of truth. Specification: `docs/ALLIANCE_CHAT_REPORT_STANDARD.md`.
+
 ## Implemented in code · still verify live/device behavior
 
 - [x] Integrated NEXUS app shell with Outpost Map, Outpost Editor, KvK Prep, fictional Transfer Scouting Demo, protected Live Scouting.
