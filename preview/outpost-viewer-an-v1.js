@@ -253,7 +253,7 @@
   }
   reportButton.onclick = () => {
     if (!hasLiveSnapshot || !reportAPI) return;
-    const previous = selector.value;
+    // Reset the dialog on every opening; do not preserve selections from the last report.
     const alliances = [...new Set(DATA.map(item => item.alliance))].sort();
     const sectors = {
       FRA: 'Northern Quadrant', NXS: 'Eastern Quadrant',
@@ -271,7 +271,9 @@
       const direction = sectors[name.toUpperCase()];
       appendOption(name, direction ? name + ' · ' + direction + ' (provisional)' : name);
     }
-    selector.value = [...selector.options].some(opt => opt.value === previous) ? previous : 'ALL';
+    selector.value = 'ALL';
+    formatSelector.value = 'kingshot';
+    partSelector.value = '0';
     updateReport();
     overlay.hidden = false;
   };
