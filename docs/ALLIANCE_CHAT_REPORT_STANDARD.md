@@ -105,3 +105,14 @@ Every report generated for alliance chat must end with this exact, consistent si
 **⚔️ Provided by Nexus App**
 
 This identifies the information source and makes the Nexus App recognizable to members throughout Kingdom #1885. Keep the footer identical for map reports, rankings, comparisons, and other copyable outputs. Check actual in-game rendering of the crossed-swords symbol before rollout; if incompatible, seek approval for a substitute instead of silently changing the standard.
+
+## Compact data freshness line (approved standard)
+
+Every copy-paste report should show the **source data's last update date AND time**, followed by its actual verification status, immediately above the mandatory Nexus App signature. Example format (illustrative only, not a claim of live data):
+
+```text
+Data: 30.09.2026 09:15 | Verified
+⚔️ Provided by Nexus App
+```
+
+Use the real source-data timestamp, **not** report-generation time. Display the timestamp consistently in the Kingdom #1885 reporting timezone (Europe/Berlin), with the time zone identified in report context if necessary. If the actual update time or verification status is unknown, say `Time unknown` or `Unverified`; never invent it. Preserve the short two-line layout where practical.
