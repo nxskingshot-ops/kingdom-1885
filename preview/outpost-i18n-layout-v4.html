@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Nexus App · Outpost Map EN DE FR V4 label coverage test</title>
+<style>
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#140e0a}
+iframe{border:0;width:100%;height:100%;display:block}
+#loading{position:fixed;z-index:2147483647;top:9px;right:9px;padding:7px 11px;background:#281c13ee;color:#ffe8bc;border:1px solid #d4a458;border-radius:8px;font:12px system-ui}
+#loading[hidden]{display:none}
+
+#nexusLangTrial{position:fixed;z-index:2147483646;left:max(9px,env(safe-area-inset-left));bottom:max(9px,env(safe-area-inset-bottom));display:flex;gap:3px;border:1px solid #bd9259;border-radius:9px;padding:4px;background:#302115ed;box-shadow:0 2px 10px #0009}
+#nexusLangTrial button{font:700 12px system-ui;min-height:33px;min-width:39px;border:1px solid #ae814c;border-radius:5px;background:#ecd1a2;color:#38220c;padding:5px}
+#nexusLangTrial button[aria-pressed="true"]{background:#fff3d0;outline:2px solid #f6d38b}
+#nexusLangTrial[hidden]{display:none}
+</style></head><body>
+<div id="loading" role="status">Loading Kingdom #1885…</div><div id="nexusLangTrial" role="group" aria-label="Preview language"><button type="button" data-language="en" aria-pressed="true">EN</button><button type="button" data-language="de" aria-pressed="false">DE</button><button type="button" data-language="fr" aria-pressed="false">FR</button></div>
+<iframe id="kingdom" src="../index.html?kingdom-preview=an-viewer-v1&single-header=3" title="Kingdom #1885 Outpost Map" allow="fullscreen"></iframe>
+<script>
+const frame=document.getElementById('kingdom'),status=document.getElementById('loading');
+frame.addEventListener('load',()=>{try{
+const doc=frame.contentDocument;if(!doc||!doc.body)throw Error('map unavailable');
+const script=doc.createElement('script');
+script.src=new URL('./outpost-viewer-an-v1.js?build=discord-full-report-v11',location.href).href;
+// Hide an extra NEXUS shell, if the embedded map contains one.
+const nestedStyle=doc.createElement('style');
+nestedStyle.textContent='.shared{display:none!important}body:has(>.shared) #bar{display:none!important}body:has(>.shared)>iframe{height:100%!important;flex:1 1 auto!important}/* NEXUS test: no second title strip; compact controls float over the map. */#app{grid-template-rows:0 minmax(0,1fr) 42px!important;--toolbar-h:0px!important}#app>.top{display:none!important}#mapTools{position:absolute!important;left:auto!important;right:6px!important;top:6px!important;width:auto!important;height:auto!important;min-height:0!important;padding:0!important;gap:4px!important;background:transparent!important;border:0!important;box-shadow:none!important}#mapTools .mapbrand,#mapTools #healthBadge{display:none!important}#mapTools button{min-height:27px!important;padding:4px 6px!important}';
+doc.head.appendChild(nestedStyle);
+// The map's own fullscreen icon must not fullscreen ONLY the nested iframe:
+// that would hide the NEXUS header/menu. Forward the same user tap to the
+// top-level NEXUS shell, while leaving all map tools and map data untouched.
+doc.addEventListener('click',event=>{
+ const control=event.target?.closest?.('button,[role="button"]');
+ if(!control)return;
+ const label=[control.id,control.getAttribute('aria-label'),control.getAttribute('title'),control.getAttribute('data-action'),control.textContent].filter(Boolean).join(' ');
+ if(!/full[\s-]?screen|vollbild|⛶|⤢/i.test(label))return;
+ try{
+  const root=window.top;
+  if(!root?.document?.getElementById('nexusMenuButton'))return;
+  event.preventDefault();event.stopImmediatePropagation();
+  if(root.document.fullscreenElement)root.document.exitFullscreen();
+  else{
+   if(root.document.body.classList.contains('map-focus'))root.setMapFocus?.(false);
+   root.document.documentElement.requestFullscreen?.().catch(err=>console.warn('NEXUS full screen unavailable',err));
+  }
+ }catch(err){console.warn('NEXUS map fullscreen routing unavailable',err)}
+},true);
+// The underlying Kingdom map defaults to Fit map (fixed aspect ratio),
+// leaving wide empty margins in NEXUS landscape. Select its native Cover mode
+// after the map's own event handlers are initialized; do not stretch its image.
+let initialFillDone=false;
+function selectNativeCover(){
+  if(initialFillDone)return true;
+  const mapDoc=frame.contentDocument;
+  const app=mapDoc?.getElementById('app');
+  const cover=mapDoc?.getElementById('coverMode');
+  if(!app||!cover||frame.getBoundingClientRect().width<120)return false;
+  if(!app.classList.contains('cover-map'))cover.click();
+  // Fall back to the native mode's state if an earlier handler was unavailable.
+  if(!app.classList.contains('cover-map'))return false;
+  initialFillDone=true;
+  return true;
+}
+function fillOnStartup(){
+  if(selectNativeCover())return;
+  setTimeout(()=>{if(!selectNativeCover())setTimeout(selectNativeCover,800)},350);
+}
+// Wait until the nested map has fully loaded before choosing its display mode.
+function enforceSingleHeader(){
+ const root=frame.contentDocument;
+ const app=root?.getElementById('app');
+ const top=app?.querySelector(':scope > .top');
+ const tools=app?.querySelector('#mapTools');
+ if(!app||!tools)return;
+ app.style.setProperty('grid-template-rows','0px minmax(0,1fr) 42px','important');
+ app.style.setProperty('--toolbar-h','0px','important');
+ if(top)top.style.setProperty('display','none','important');
+ const brand=tools.querySelector('.mapbrand');
+ if(brand)brand.style.setProperty('display','none','important');
+ const badge=tools.querySelector('#healthBadge');
+ if(badge)badge.style.setProperty('display','none','important');
+ for(const [key,val] of Object.entries({position:'absolute',left:'auto',right:'6px',top:'6px',width:'auto',height:'auto',background:'transparent',border:'0',boxShadow:'none'}))tools.style.setProperty(key.replace(/[A-Z]/g,m=>'-'+m.toLowerCase()),val,'important');
+}
+script.onload=()=>{status.hidden=true;enforceSingleHeader();requestAnimationFrame(()=>{enforceSingleHeader();fillOnStartup()});setTimeout(()=>{enforceSingleHeader();selectNativeCover()},1200)};
+script.onerror=()=>{status.textContent='Live controls unavailable · reload to retry'};
+doc.body.appendChild(script);
+setTimeout(()=>{if(!status.hidden&&status.textContent==='Loading Kingdom #1885…')status.textContent='Still loading map…';},12000)
+}catch(e){status.textContent='Map setup error · reload to retry'}});
+</script><script>
+/* Language-only wrapper for map/report: leave map logic, report formatter, permissions untouched. */
+(()=>{
+'use strict';
+const dock=document.getElementById('nexusLangTrial');
+const words={
+ en:{report:'▤ Report',reportTitle:'Outpost Report',alliance:'Alliance or quadrant',format:'Format',preview:'Preview',
+ refresh:'Refresh Map',choose:'Select alliance or quadrant…',all:'All published outposts',compact:'Kingshot · Compact',detailed:'Discord · Detailed',
+ close:'Close',copyAll:'Copy All',copyFull:'Copy Full Report',copyPart:(a,b)=>'Copy Part '+a+'/'+b,part:(a,b)=>'Part '+a+'/'+b,
+ ready:'Select an alliance or quadrant to generate a report.',missing:'Published data unavailable.',failed:'Report cannot be safely split: ',
+ kingshot:'Kingshot: up to 480 characters per part. ',discord:(n)=>'Discord: full report ('+n+' characters). Longer messages may be attached as a .txt file. ',
+ provisional:'Quadrant assignment provisional. ',published:'Published outposts · Unverified.',
+ copiedDiscord:'Full report copied · Paste into Discord (a long message may become a text attachment).',
+ copiedKingshot:(a,b)=>'Copied part '+a+'/'+b+' · Ready for alliance chat.',
+ clipboard:'Clipboard permission unavailable · Select and copy the highlighted text.',
+ outposts:'Outposts',mapSearch:'Search name or coordinates…'},
+ de:{report:'▤ Bericht',reportTitle:'Außenposten-Bericht',alliance:'Allianz oder Quadrant',format:'Format',preview:'Vorschau',
+ refresh:'Karte aktualisieren',choose:'Allianz oder Quadrant wählen…',all:'Alle veröffentlichten Außenposten',compact:'Kingshot · Kompakt',detailed:'Discord · Ausführlich',
+ close:'Schließen',copyAll:'Alles kopieren',copyFull:'Gesamten Bericht kopieren',copyPart:(a,b)=>'Teil '+a+'/'+b+' kopieren',part:(a,b)=>'Teil '+a+'/'+b,
+ ready:'Wähle eine Allianz oder einen Quadranten, um einen Bericht zu erstellen.',missing:'Veröffentlichte Daten nicht verfügbar.',failed:'Bericht kann nicht sicher aufgeteilt werden: ',
+ kingshot:'Kingshot: maximal 480 Zeichen pro Teil. ',discord:(n)=>'Discord: vollständiger Bericht ('+n+' Zeichen). Lange Nachrichten können als Textdatei angehängt werden. ',
+ provisional:'Quadranten-Zuordnung vorläufig. ',published:'Veröffentlichte Außenposten · Nicht verifiziert.',
+ copiedDiscord:'Gesamter Bericht kopiert · In Discord einfügen (lange Texte können als Datei gesendet werden).',
+ copiedKingshot:(a,b)=>'Teil '+a+'/'+b+' kopiert · Bereit für den Allianz-Chat.',
+ clipboard:'Zwischenablage nicht verfügbar · Markierten Text manuell kopieren.',
+ outposts:'Außenposten',mapSearch:'Name oder Koordinaten suchen…'},
+ fr:{report:'▤ Rapport',reportTitle:'Rapport des avant-postes',alliance:'Alliance ou quadrant',format:'Format',preview:'Aperçu',
+ refresh:'Actualiser la carte',choose:'Choisir une alliance ou un quadrant…',all:'Tous les avant-postes publiés',compact:'Kingshot · Compact',detailed:'Discord · Détaillé',
+ close:'Fermer',copyAll:'Tout copier',copyFull:'Copier le rapport complet',copyPart:(a,b)=>'Copier la partie '+a+'/'+b,part:(a,b)=>'Partie '+a+'/'+b,
+ ready:'Choisissez une alliance ou un quadrant pour créer un rapport.',missing:'Données publiées indisponibles.',failed:'Impossible de fractionner le rapport : ',
+ kingshot:'Kingshot : 480 caractères maximum par partie. ',discord:(n)=>'Discord : rapport complet ('+n+' caractères). Les longs messages peuvent être envoyés comme fichier texte. ',
+ provisional:'Attribution des quadrants provisoire. ',published:'Avant-postes publiés · Non vérifiés.',
+ copiedDiscord:'Rapport complet copié · Collez-le dans Discord (un long texte peut devenir un fichier).',
+ copiedKingshot:(a,b)=>'Partie '+a+'/'+b+' copiée · Prête pour le chat de l’alliance.',
+ clipboard:'Presse-papiers indisponible · Sélectionnez le texte et copiez-le.',
+ outposts:'Avant-postes',mapSearch:'Rechercher un nom ou des coordonnées…'}
+};
+const set=(node,value)=>{if(node&&value!==undefined&&node.textContent!==String(value))node.textContent=String(value)};
+const one=(root,selector)=>root.querySelector(selector);
+let language='en';try{language=localStorage.getItem('nexus_i18n_preview_only')||'en'}catch(_){}if(!words[language])language='en';
+let reportDoc=null,lastInfoEnglish='',lastInfoTranslated='',observer=null,queued=false;
+function getEnglishStatus(info){
+ if(!info)return '';
+ if(info===lastInfoTranslated)return lastInfoEnglish;
+ lastInfoEnglish=info;return info;
+}
+function translateStatus(info,w,lang,doc){
+ const english=getEnglishStatus(info);
+ let output=english;
+ if(english==='Published records only · Unverified') output=w.published;
+ else if(english==='Select an alliance or quadrant to generate a report.') output=w.ready;
+ else if(english==='Published data unavailable.') output=w.missing;
+ else if(english.startsWith('Report cannot be safely split: '))output=w.failed+english.slice(36);
+ else if(english.startsWith('Kingshot: up to 480 characters per part. ')){
+  output=w.kingshot+(english.includes('Quadrant assignment provisional.')?w.provisional:'')+w.published;
+ }else if(english.startsWith('Discord: full report (')){
+  const count=one(doc,'#mapReportText')?.value.length||0;
+  output=w.discord(count)+(english.includes('Quadrant assignment provisional.')?w.provisional:'')+w.published;
+ }else if(english.startsWith('Full report copied ·'))output=w.copiedDiscord;
+ else if(english.startsWith('Copied part ')){
+  const options=one(doc,'#mapReportPart');
+  output=w.copiedKingshot((Number(options?.value)||0)+1,options?.options.length||1);
+ }else if(english.startsWith('Clipboard permission unavailable'))output=w.clipboard;
+ lastInfoTranslated=output;
+ return output;
+}
+
+// Translate only known fixed labels in the read-only map and shell.
+// Do not traverse text fields, markers, popup data, the report preview,
+// alliance names, levels, timestamps or any free-form player content.
+const mapStaticLabels={
+ 'Outpost Information':['Außenposten-Informationen','Informations sur les avant-postes'],
+ 'Outpost Details & Filters':['Außenposten-Details & Filter','Détails et filtres des avant-postes'],
+ 'Outpost Details & Filters:':['Außenposten-Details & Filter :','Détails et filtres des avant-postes :'],
+ 'Alliances':['Allianzen','Alliances'],
+ 'Levels':['Stufen','Niveaux'],
+ 'Reset':['Zurücksetzen','Réinitialiser'],
+ 'Map':['Karte','Carte'],
+ 'List':['Liste','Liste'],
+ 'Statistics':['Statistik','Statistiques'],
+ 'Fit map':['Karte einpassen','Ajuster la carte'],
+ 'Fill screen':['Bildschirm füllen','Remplir l’écran'],
+ 'Alliance colors':['Allianzfarben','Couleurs des alliances'],
+ 'Show all':['Alle anzeigen','Tout afficher'],
+ 'Select all':['Alle wählen','Tout sélectionner'],
+ 'Clear':['Leeren','Effacer'],
+ 'Tap a marker or list entry.':['Markierung oder Listeneintrag antippen.','Touchez un marqueur ou un élément de liste.'],
+ 'Tap a marker or list entry':['Markierung oder Listeneintrag antippen','Touchez un marqueur ou un élément de liste'],
+ 'Search name or coordinates…':['Name oder Koordinaten suchen…','Rechercher un nom ou des coordonnées…']
+};
+const reverseStatic=new Map();
+for(const [en,localized] of Object.entries(mapStaticLabels)){
+ reverseStatic.set(en,en);
+ for(const value of localized)reverseStatic.set(value,en);
+}
+const mapFilterLabels={
+ 'All':['Alle','Tous'],
+ 'None':['Keine','Aucun']
+};
+const reverseFilter=new Map();
+for(const [en,localized] of Object.entries(mapFilterLabels)){
+ reverseFilter.set(en,en);
+ for(const v of localized)reverseFilter.set(v,en);
+}
+function translateFixedLabels(doc){
+ const index=language==='de'?0:language==='fr'?1:-1;
+ // Only known UI text; never use fuzzy or substring replacement on game records.
+ const roots=['.left','.right','#mapTools','#bar','#kvkSubnav','#filters'].map(sel=>doc.querySelector(sel)).filter(Boolean);
+ const seen=new Set();
+ function translateLeafText(node, allowGeneric){
+  if(!node || seen.has(node))return;
+  seen.add(node);
+  if(node.parentElement?.closest('#mapReportPanel,#nexusLangTrial,#mapReportOverlay'))return;
+  const current=node.nodeValue;
+  if(!current || !current.trim())return;
+  const original=reverseStatic.get(current.trim());
+  const filter=allowGeneric?reverseFilter.get(current.trim()):undefined;
+  const key=original||filter;
+  if(!key)return;
+  const values=original?mapStaticLabels[key]:mapFilterLabels[key];
+  const next=index<0?key:values[index];
+  // Retain existing whitespace (and any surrounding icon nodes).
+  const output=current.replace(current.trim(),next);
+  if(output!==current)node.nodeValue=output;
+ }
+ for(const root of roots){
+  const walker=doc.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+  let node;
+  // "All" and "None" are only translated inside the right-hand filter sidebar.
+  const generic=root.matches('.right,#filters');
+  while((node=walker.nextNode()))translateLeafText(node,generic);
+ }
+ const candidates=doc.querySelectorAll('button,label,input[placeholder],[role="tab"],#outpostInfoHeader');
+ for(const node of candidates){
+  if(node.closest('#mapReportPanel,#nexusLangTrial,#mapReportOverlay'))continue;
+  if(node.matches('input[placeholder]')){
+   const en=reverseStatic.get(node.placeholder);
+   if(en)node.placeholder=index<0?en:mapStaticLabels[en][index];
+   continue;
+  }
+  // Handle only direct text nodes; preserve button icons, dropdowns and children.
+  for(const child of node.childNodes)if(child.nodeType===3)translateLeafText(child,node.closest('.right,#filters')!==null);
+ }
+ // Preserve alliance tags, named outposts, levels, coordinates, and all report payloads.
+}
+
+function translate(){
+ queued=false;
+ const doc=reportDoc;if(!doc||!doc.body)return;
+ const w=words[language];
+ doc.documentElement.lang=language;
+ const report=one(doc,'#mapCopyReport');
+ if(report){set(report,w.report);report.title=w.refresh===words.en.refresh?'Copy Outpost Report':(language==='de'?'Außenposten-Bericht kopieren':'Copier le rapport des avant-postes');report.setAttribute('aria-label',report.title);}
+ const refresh=one(doc,'#viewerRefresh');
+ if(refresh){refresh.setAttribute('aria-label',w.refresh);refresh.title=w.refresh;}
+ const title=one(doc,'.left .phead');
+ if(title&&/^((Outposts|Außenposten|Avant-postes)\s*[·:]\s*)\d+$/.test(title.textContent)){
+  set(title,title.textContent.replace(/^(Outposts|Außenposten|Avant-postes)/,w.outposts));
+ }
+ const search=one(doc,'#search');
+ if(search&&search.placeholder&&/(Search|suchen|Rechercher)/i.test(search.placeholder))search.placeholder=w.mapSearch;
+ translateFixedLabels(doc);
+ const panel=one(doc,'#mapReportPanel');if(!panel)return;
+ set(one(panel,'h3'),w.reportTitle);
+ set(one(panel,'label[for="mapReportAlliance"]'),w.alliance);
+ set(one(panel,'label[for="mapReportFormat"]'),w.format);
+ set(one(panel,'label[for="mapReportText"]'),w.preview);
+ const alliances=one(panel,'#mapReportAlliance');
+ if(alliances){
+  for(const option of alliances.options){
+   if(option.value==='')set(option,w.choose);
+   else if(option.value==='ALL')set(option,w.all);
+   // Alliance tags, coordinates and provisional territory names remain unmodified.
+  }
+ }
+ const formats=one(panel,'#mapReportFormat');
+ if(formats){for(const option of formats.options)set(option,option.value==='discord'?w.detailed:w.compact);}
+ const partSelect=one(panel,'#mapReportPart');
+ if(partSelect){for(let i=0;i<partSelect.options.length;i++)set(partSelect.options[i],w.part(i+1,partSelect.options.length));}
+ const close=one(panel,'#mapReportClose');set(close,w.close);
+ const copy=one(panel,'#mapReportCopy');
+ if(copy){
+  const isDiscord=formats?.value==='discord',count=partSelect?.options.length||1;
+  set(copy,isDiscord?w.copyFull:count>1?w.copyPart((Number(partSelect.value)||0)+1,count):w.copyAll);
+ }
+ const info=one(panel,'#mapReportInfo');
+ if(info){const output=translateStatus(info.textContent,w,language,doc);set(info,output);}
+ // Keep the entire readonly report output unchanged so tested chat limits remain valid.
+ const content=one(panel,'#mapReportText');
+ if(content)content.lang='en';
+}
+function schedule(){if(queued)return;queued=true;queueMicrotask(translate);}
+function hook(doc){
+ if(observer)observer.disconnect();
+ reportDoc=doc;lastInfoEnglish='';lastInfoTranslated='';
+ observer=new MutationObserver(schedule);
+ observer.observe(doc.documentElement,{childList:true,characterData:true,subtree:true});
+ doc.addEventListener('change',schedule,true);
+ doc.addEventListener('click',schedule,true);
+ translate();
+}
+const frame=document.getElementById('kingdom');
+frame.addEventListener('load',()=>{
+ try{if(frame.contentDocument)hook(frame.contentDocument)}catch(err){console.warn('Language preview cannot access map frame',err)}
+});
+for(const btn of dock.querySelectorAll('[data-language]')){
+ btn.addEventListener('click',()=>{
+  language=btn.dataset.language;
+  try{localStorage.setItem('nexus_i18n_preview_only',language)}catch(_){}
+  for(const other of dock.querySelectorAll('[data-language]'))other.setAttribute('aria-pressed',String(other===btn));
+  // The report remains unchanged. Reset status classification on language switch
+  // by asking the original report dialog to recompute its own status, when visible.
+  if(reportDoc){
+   const select=one(reportDoc,'#mapReportAlliance');
+   if(select){select.dispatchEvent(new Event('change',{bubbles:true}));}
+  }
+  schedule();
+ });
+}
+for(const btn of dock.querySelectorAll('[data-language]'))btn.setAttribute('aria-pressed',String(btn.dataset.language===language));
+
+// In the combined test shell the existing language selector is sufficient.
+// The embedded map receives language changes from that same-origin preview shell.
+if(new URLSearchParams(location.search).get('embedded')==='1'){
+ dock.hidden=true;
+ window.addEventListener('message',event=>{
+  if(event.origin!==location.origin||event.source!==window.parent)return;
+  const payload=event.data;
+  if(!payload||payload.type!=='nexus-test-language'||!words[payload.language])return;
+  const button=dock.querySelector('[data-language="'+payload.language+'"]');
+  if(button && payload.language!==language)button.click();
+ });
+}
+})();
+</script></body></html>
