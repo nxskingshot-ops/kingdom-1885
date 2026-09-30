@@ -167,7 +167,7 @@
   const overlay = document.createElement('div');
   overlay.id = 'mapReportOverlay';
   overlay.hidden = true;
-  overlay.innerHTML = '<div id="mapReportPanel" role="dialog" aria-modal="true" aria-label="Public outpost report"><h3>Outpost Report</h3><label for="mapReportAlliance">Alliance</label><select id="mapReportAlliance"></select><label for="mapReportText">Preview</label><textarea id="mapReportText" readonly></textarea><small id="mapReportInfo" role="status">Published records only · Unverified</small><button type="button" id="mapReportCopy">Copy All</button><button type="button" id="mapReportClose">Close</button></div>';
+  overlay.innerHTML = '<div id="mapReportPanel" role="dialog" aria-modal="true" aria-label="Public outpost report"><h3>Outpost Report</h3><label for="mapReportAlliance">Alliance or quadrant</label><select id="mapReportAlliance"></select><label for="mapReportText">Preview</label><textarea id="mapReportText" readonly></textarea><small id="mapReportInfo" role="status">Published records only · Unverified</small><button type="button" id="mapReportCopy">Copy All</button><button type="button" id="mapReportClose">Close</button></div>';
   document.body.appendChild(overlay);
   const selector = $('mapReportAlliance');
   const reportText = $('mapReportText');
@@ -181,32 +181,55 @@
       reportInfo.textContent = 'Published data unavailable.';
       return;
     }
-    const alliance = selector.value;
-    const selected = DATA.filter(item => alliance === 'ALL' || item.alliance === alliance);
+    const selection = selector.value;
+    // Provisional alliance-based sector names, NOT geographical coordinate cuts.
+    // Confirm official boundaries/ownership with Linus before calling these verified.
+    const proposedSectors = {FRA: 'NORTH', NXS: 'EAST', OOO: 'SOUTH', MYM: 'WEST'};
+    const chosenAlliance = selection.startsWith('Q:') || selection.startsWith('A:')
+      ? selection.slice(2) : selection;
+    const selected = DATA.filter(item => selection === 'ALL' ||
+      item.alliance.toUpperCase() === chosenAlliance.toUpperCase());
+    const sectorLabel = selection === 'ALL' ? 'KINGDOM #1885'
+      : selection.startsWith('Q:')
+      ? (proposedSectors[chosenAlliance.toUpperCase()] + ' / ' + chosenAlliance.toUpperCase() + ' (PROVISIONAL)')
+      : chosenAlliance.toUpperCase();
     const times = selected.map(item => Date.parse(item.updated_at)).filter(Number.isFinite);
     const updatedAt = times.length && times.length === selected.length
       ? new Date(Math.max(...times)) : null;
     reportText.value = reportAPI.makeOutpostReport({
-      sector: alliance === 'ALL' ? 'KINGDOM #1885' : alliance,
+      sector: sectorLabel,
       outposts: selected,
       sourceUpdatedAt: updatedAt,
-      verified: false
+      verified: false,
+      kingshotCompact: true
     });
     $('mapReportCopy').disabled = false;
-    reportInfo.textContent = 'Published outposts only · Unverified until confirmed by a responsible data steward.';
+    reportInfo.textContent = selection.startsWith('Q:')
+      ? 'Provisional quadrant = assigned alliance territory, not a coordinate-defined area. Unverified until confirmed.'
+      : 'Published outposts only · Unverified until confirmed by a responsible data steward.';
   }
   reportButton.onclick = () => {
     if (!hasLiveSnapshot || !reportAPI) return;
     const previous = selector.value;
     const alliances = [...new Set(DATA.map(item => item.alliance))].sort();
+    const sectors = [
+      ['FRA', 'North'], ['NXS', 'East'],
+      ['OoO', 'South'], ['MYM', 'West']
+    ];
     selector.replaceChildren();
-    for (const name of ['ALL', ...alliances]) {
+    const appendOption = (value, label) => {
       const opt = document.createElement('option');
-      opt.value = name;
-      opt.textContent = name === 'ALL' ? 'All published outposts' : name;
+      opt.value = value;
+      opt.textContent = label;
       selector.appendChild(opt);
+    };
+    appendOption('ALL', 'All published outposts');
+    for (const name of alliances) appendOption('A:' + name, name + ' · Alliance');
+    for (const [tag, direction] of sectors) {
+      const matching = alliances.find(name => name.toUpperCase() === tag.toUpperCase());
+      if (matching) appendOption('Q:' + matching, direction + ' · ' + matching + ' (provisional)');
     }
-    selector.value = alliances.includes(previous) ? previous : 'ALL';
+    selector.value = [...selector.options].some(opt => opt.value === previous) ? previous : 'ALL';
     updateReport();
     overlay.hidden = false;
   };
