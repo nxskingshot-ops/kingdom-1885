@@ -444,7 +444,11 @@ async function init(){
   if(!response.ok)throw new Error(data.error||'Intelligence data unavailable.');
   players=Array.isArray(data.observations)?data.observations:[];
   power=Array.isArray(data.power_references)?data.power_references:[];
-  snapshot=data.snapshot_date||'—';$('dateLabel').textContent='29 SEP 2026 · SNAPSHOT';
+  snapshot=data.snapshot_date||'—';
+  const snapshotLabel=/^\d{4}-\d{2}-\d{2}$/.test(snapshot)
+   ?new Date(snapshot+'T00:00:00Z').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric',timeZone:'UTC'}).toUpperCase()+' · SNAPSHOT'
+   :String(snapshot).toUpperCase()+' · SNAPSHOT';
+  $('dateLabel').textContent=snapshotLabel;
   if(players.length===0)throw new Error('No verified player observations found.');
   players.sort((a,b)=>(a.overall_rank??999)-(b.overall_rank??999)||a.player_name.localeCompare(b.player_name));
   for(const c of categories)caps[c.key]=Math.max(0,...players.map(p=>stageNum(p[c.key+'_stage'])||0));
@@ -452,7 +456,9 @@ async function init(){
  const alliances=[...new Set(players.map(p=>p.alliance_tag).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
  for(const name of alliances){const opt=el('option','',name);opt.value=name;$('rankAlliance').append(opt);}
   $('dashboard').hidden=false;$('signin').classList.remove('visible');
-  $('status').textContent=players.length+' distinct profiles · seven complete top-40 rank sets · member-only snapshot';
+  const completeSpecialist=players.filter(p=>categories.slice(0,5).every(cat=>stageNum(p[cat.key+'_stage'])!==null)).length;
+  const matchedPower=players.filter(p=>measuredPower(p).total!==null).length;
+  $('status').textContent=players.length+' distinct profiles across seven top-40 boards · '+completeSpecialist+' complete specialist profiles · '+matchedPower+' matched power references · member-only snapshot';
   render();
  }catch(e){
   $('status').textContent='Protected data not loaded.';$('status').classList.add('error');
