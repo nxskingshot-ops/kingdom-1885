@@ -57,21 +57,21 @@ test('automatically splits complete entries under 480 chars with footer on every
   assert.ok(parts.length>1);
   assert.ok(parts.every((part,index)=>part.length<=480 &&
     part.includes('(PART '+(index+1)+'/'+parts.length+')') &&
-    part.endsWith('28.09.26/13:42 | Unverified\\nProvided by Nexus App')));
+    part.endsWith('28.09.26/13:42 | Unverified\nProvided by Nexus App')));
   for(const row of outposts){
     const entry=row.type+' L2: '+row.x+','+row.y;
     assert.equal(parts.filter(part=>part.includes(entry)).length,1);
   }
 });
 test('exactly 480 chars remains unsplit', () => {
-  const base = 'FRA | 1 OUTPOST\\n'+ 'A'.repeat(480-('FRA | 1 OUTPOST\\n'.length+'\\nUnverified\\nProvided by Nexus App'.length))
-    + '\\nUnverified\\nProvided by Nexus App';
+  const base = 'FRA | 1 OUTPOST\n'+ 'A'.repeat(480-('FRA | 1 OUTPOST\n'.length+'\nUnverified\nProvided by Nexus App'.length))
+    + '\nUnverified\nProvided by Nexus App';
   assert.equal(base.length,480);
   assert.deepEqual(splitReportForKingshot(base),[base]);
 });
 test('invalid limits and impossible entries throw rather than truncate', () => {
   assert.throws(()=>splitReportForKingshot('x'.repeat(500)),/footer missing/);
   assert.throws(()=>splitReportForKingshot('abc',10),/character limit/);
-  const overlyLong='FRA | 1 OUTPOST\\n'+'X'.repeat(460)+'\\nUnverified\\nProvided by Nexus App';
+  const overlyLong='FRA | 1 OUTPOST\n'+'X'.repeat(460)+'\nUnverified\nProvided by Nexus App';
   assert.throws(()=>splitReportForKingshot(overlyLong),/entry exceeds/);
 });
