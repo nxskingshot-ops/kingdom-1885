@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nexus App | Public Outpost Report Preview</title>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}
+body{margin:0;min-height:100vh;padding:22px;background:#21170f;color:#ffe6ae;font:15px/1.45 system-ui,sans-serif}
+main{max-width:680px;margin:auto;padding:20px;border:1px solid #ad8a50;border-radius:14px;background:#332518}
+h1{font:700 25px Georgia,serif;margin:0 0 9px}p{margin:6px 0 18px;color:#d7bf91}
+label{display:block;margin-bottom:5px}select,button,textarea{font:inherit;border-radius:8px}
+select{background:#21170f;color:#fff0c4;border:1px solid #a88951;padding:10px;width:100%}
+.controls{display:flex;flex-wrap:wrap;gap:9px;margin:13px 0}button{background:#f1d19a;color:#3b2510;border:1px solid #b58a4c;padding:10px 16px;font-weight:700;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}
+textarea{width:100%;min-height:320px;background:#18120e;border:1px solid #ad8a50;color:#fff5dc;padding:13px;font:13px/1.55 monospace;resize:vertical}
+small{display:block;color:#e0cda7;margin:10px 0}
+</style></head><body><main>
+<h1>Outpost Reports · Public Preview</h1>
+<p>Kingdom #1885 · Public, read-only report test. No login or outpost editing. Current sector boundaries are not assumed; select a published alliance instead. All reports remain Unverified until the data steward confirms their accuracy.</p>
+<label for="alliance">Choose alliance</label>
+<select id="alliance" aria-label="Choose alliance"></select>
+<div class="controls"><button id="refresh" type="button">Refresh</button><button id="copy" type="button" disabled>Copy Report</button></div>
+<textarea id="report" readonly aria-label="Alliance chat report" placeholder="Waiting for published data…"></textarea>
+<small id="status" role="status">Connecting…</small>
+</main>
+<script src="./alliance-chat-report.js"></script>
+<script src="./public-outpost-report-preview.js"></script>
+</body></html>
