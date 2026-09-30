@@ -62,10 +62,61 @@
     return [`${name} | ${items.length} OUTPOST${items.length === 1 ? '' : 'S'}`, ...lines,
       footer({sourceUpdatedAt, verified})].join('\n');
   }
+  // Keep each complete message below the experimentally estimated Kingshot limit.
+  // The 512-character ceiling is not confirmed; 480 leaves a small safety margin.
+  // Every part repeats the source footer so that forwarded individual parts retain provenance.
+  function splitReportForKingshot(report, maxCharacters = 480) {
+    if (typeof report !== 'string' || !report.trim()) throw new TypeError('report is required');
+    if (!Number.isInteger(maxCharacters) || maxCharacters < 100) throw new RangeError('invalid character limit');
+    if (report.length <= maxCharacters) return [report];
+    const allLines = report.split('\n');
+    if (allLines.length < 4 || allLines[allLines.length - 1] !== 'Provided by Nexus App') {
+      throw new TypeError('report footer missing: cannot safely split');
+    }
+    const title = allLines[0];
+    const ending = allLines.slice(-2).join('\n');
+    const entries = allLines.slice(1, -2);
+    if (!entries.length) throw new RangeError('no report entries to split');
+
+    // Iterate until header numbering size stabilizes (Part 1/2, Part 1/10, etc.).
+    let guess = 1;
+    let chunks = [];
+    for (let attempt = 0; attempt < 30; attempt++) {
+      const pages = [];
+      let current = [];
+      for (const entry of entries) {
+        const heading = title + ' (PART ' + (pages.length + 1) + '/' + guess + ')';
+        const trial = [heading, ...current, entry, ending].join('\n');
+        if (trial.length <= maxCharacters) {
+          current.push(entry);
+        } else {
+          if (!current.length) throw new RangeError('one complete report entry exceeds character limit');
+          pages.push(current);
+          current = [entry];
+          const nextHeading = title + ' (PART ' + (pages.length + 1) + '/' + guess + ')';
+          if ([nextHeading, entry, ending].join('\n').length > maxCharacters) {
+            throw new RangeError('one complete report entry exceeds character limit');
+          }
+        }
+      }
+      if (current.length) pages.push(current);
+      if (pages.length === guess) {
+        chunks = pages.map((entriesForPage, index) =>
+          [title + ' (PART ' + (index + 1) + '/' + pages.length + ')',
+            ...entriesForPage, ending].join('\n'));
+        break;
+      }
+      guess = pages.length;
+    }
+    if (!chunks.length || chunks.some(part => part.length > maxCharacters)) {
+      throw new RangeError('could not split report safely');
+    }
+    return chunks;
+  }
   function makeTextReport({heading, lines, sourceUpdatedAt = null, verified = false} = {}) {
     const title = clean(heading);
     if (!title || !Array.isArray(lines)) throw new TypeError('heading and lines required');
     return [title, ...lines.map(clean).filter(Boolean), footer({sourceUpdatedAt, verified})].join('\n');
   }
-  return Object.freeze({ makeOutpostReport, makeTextReport, footer });
+  return Object.freeze({ makeOutpostReport, makeTextReport, splitReportForKingshot, footer });
 });
