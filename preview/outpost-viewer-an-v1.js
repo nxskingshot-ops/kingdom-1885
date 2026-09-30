@@ -160,7 +160,7 @@
 #mapReportPanel select,#mapReportPanel textarea{box-sizing:border-box;width:100%;border:1px solid #a5814b;border-radius:6px;background:#17120d;color:#fff1d6;padding:8px}
 #mapReportPanel textarea{min-height:80px;max-height:none;flex:1 1 auto;overflow:auto;resize:none;font:12px/1.5 monospace;white-space:pre}
 #mapReportPanel button{margin:9px 8px 0 0;padding:9px 12px;border-radius:7px;border:1px solid #a5814b;background:#efd09b;color:#332111;font-weight:700}
-#mapReportPanel small{display:block;color:#ead1a5;margin-top:7px}#mapReportFooter{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid #6b5030}#mapReportFooter small{margin:0;min-width:0;flex:1}#mapReportActions{display:flex;flex:0 0 auto;gap:7px}#mapReportActions button{margin:0;white-space:nowrap}@media(max-height:480px){#mapReportPanel{padding:8px}#mapReportPanel h3{font-size:16px;margin-bottom:3px}#mapReportPanel label{margin:3px 0 2px}#mapReportPanel textarea{min-height:60px}#mapReportFooter small{font-size:10px}}
+#mapReportPageRow{display:flex;justify-content:space-between;align-items:center;gap:8px}#mapReportPageRow #mapReportPart{width:auto;max-width:55%;flex:0 1 auto;font-size:12px;padding:4px}#mapReportPageRow #mapReportPart[hidden]{display:none}#mapReportPanel small{display:block;color:#ead1a5;margin-top:7px}#mapReportFooter{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid #6b5030}#mapReportFooter small{margin:0;min-width:0;flex:1}#mapReportActions{display:flex;flex:0 0 auto;gap:7px}#mapReportActions button{margin:0;white-space:nowrap}@media(max-height:480px){#mapReportPanel{padding:8px}#mapReportPanel h3{font-size:16px;margin-bottom:3px}#mapReportPanel label{margin:3px 0 2px}#mapReportPanel textarea{min-height:60px}#mapReportFooter small{font-size:10px}}
 `;
   document.head.appendChild(reportStyle);
   const reportButton = document.createElement('button');
@@ -174,15 +174,28 @@
   const overlay = document.createElement('div');
   overlay.id = 'mapReportOverlay';
   overlay.hidden = true;
-  overlay.innerHTML = '<div id="mapReportPanel" role="dialog" aria-modal="true" aria-label="Public outpost report"><h3>Outpost Report</h3><div id="mapReportBody"><label for="mapReportAlliance">Alliance or quadrant</label><select id="mapReportAlliance"></select><label for="mapReportText">Preview</label><textarea id="mapReportText" readonly></textarea></div><div id="mapReportFooter"><small id="mapReportInfo" role="status">Published records only · Unverified</small><div id="mapReportActions"><button type="button" id="mapReportCopy">Copy All</button><button type="button" id="mapReportClose">Close</button></div></div></div>';
+  overlay.innerHTML = '<div id="mapReportPanel" role="dialog" aria-modal="true" aria-label="Public outpost report"><h3>Outpost Report</h3><div id="mapReportBody"><label for="mapReportAlliance">Alliance or quadrant</label><select id="mapReportAlliance"></select><div id="mapReportPageRow"><label for="mapReportText">Preview</label><select id="mapReportPart" aria-label="Report part" hidden></select></div><textarea id="mapReportText" readonly></textarea></div><div id="mapReportFooter"><small id="mapReportInfo" role="status">Published records only · Unverified</small><div id="mapReportActions"><button type="button" id="mapReportCopy">Copy All</button><button type="button" id="mapReportClose">Close</button></div></div></div>';
   document.body.appendChild(overlay);
   const selector = $('mapReportAlliance');
   const reportText = $('mapReportText');
   const reportInfo = $('mapReportInfo');
+  const partSelector = $('mapReportPart');
+  let reportParts = [];
   let reportAPI = null;
+  function showReportPart() {
+    const partIndex = Number(partSelector.value) || 0;
+    reportText.value = reportParts[partIndex] || '';
+    reportText.scrollTop = 0;
+    $('mapReportCopy').disabled = !reportText.value;
+    $('mapReportCopy').textContent = reportParts.length > 1
+      ? 'Copy Part ' + (partIndex + 1) + '/' + reportParts.length
+      : 'Copy All';
+  }
+  partSelector.onchange = showReportPart;
   function closeReport() { overlay.hidden = true; reportButton.focus(); }
   function updateReport() {
     if (!reportAPI || !hasLiveSnapshot) {
+      reportParts = [];
       reportText.value = '';
       $('mapReportCopy').disabled = true;
       reportInfo.textContent = 'Published data unavailable.';
@@ -204,14 +217,32 @@
     const times = selected.map(item => Date.parse(item.updated_at)).filter(Number.isFinite);
     const updatedAt = times.length && times.length === selected.length
       ? new Date(Math.max(...times)) : null;
-    reportText.value = reportAPI.makeOutpostReport({
+    const fullReport = reportAPI.makeOutpostReport({
       sector: sectorLabel,
       outposts: selected,
       sourceUpdatedAt: updatedAt,
       verified: false,
       kingshotCompact: true
     });
-    $('mapReportCopy').disabled = false;
+    try {
+      reportParts = reportAPI.splitReportForKingshot(fullReport, 480);
+    } catch (error) {
+      reportParts = [];
+      reportText.value = '';
+      $('mapReportCopy').disabled = true;
+      reportInfo.textContent = 'Report cannot be safely split: ' + error.message;
+      return;
+    }
+    partSelector.replaceChildren();
+    reportParts.forEach((part, index) => {
+      const opt = document.createElement('option');
+      opt.value = String(index);
+      opt.textContent = 'Part ' + (index + 1) + '/' + reportParts.length;
+      partSelector.appendChild(opt);
+    });
+    partSelector.hidden = reportParts.length <= 1;
+    partSelector.value = '0';
+    showReportPart();
     reportInfo.textContent = name
       ? 'Provisional quadrant = assigned alliance territory, not a coordinate-defined area. Unverified until confirmed.'
       : 'Published outposts only · Unverified until confirmed by a responsible data steward.';
@@ -246,7 +277,7 @@
   $('mapReportCopy').onclick = async () => {
     try {
       await navigator.clipboard.writeText(reportText.value);
-      reportInfo.textContent = 'Copied · Ready for alliance chat.';
+      reportInfo.textContent = 'Copied part ' + (Number(partSelector.value) + 1) + '/' + reportParts.length + ' · Ready for alliance chat.';
     } catch (error) {
       reportText.focus();
       reportText.select();
