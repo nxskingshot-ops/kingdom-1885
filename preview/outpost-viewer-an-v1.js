@@ -18,15 +18,20 @@
 
   const styles = document.createElement('style');
   styles.textContent = `
-#viewerControls{position:absolute;z-index:110;bottom:62px;right:8px;display:flex;align-items:center;gap:5px}
+#viewerControls{position:absolute;z-index:110;bottom:62px;right:8px;display:flex;align-items:center;gap:4px}
+#mapTools #viewerControls{position:static;inset:auto;display:inline-flex;align-items:center;gap:4px;margin:0;padding:0;max-width:100%;background:transparent;border:0;box-shadow:none}
+#viewerControls button{box-sizing:border-box;background:#f1d19a;color:#523719;border:1px solid #b58a4c;border-radius:8px;padding:5px 7px;font-size:11px;font-weight:800;white-space:nowrap;min-height:27px}
 #viewerRefresh{background:#f1d19a;color:#523719;border:1px solid #b58a4c;border-radius:8px;padding:7px 9px;font-size:11px;font-weight:800}
-#viewerStatus{background:#25190f;color:#e2c9a1;border:1px solid #99713c;border-radius:7px;padding:8px;font-size:11px;min-width:88px;max-width:235px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#viewerStatus{background:#25190f;color:#e2c9a1;border:1px solid #99713c;border-radius:7px;padding:5px;font-size:10px;min-width:0;max-width:83px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#mapTools #viewerStatus{display:none}
 `;
   document.head.appendChild(styles);
   const controls = document.createElement('div');
   controls.id = 'viewerControls';
-  controls.innerHTML = '<button type="button" id="viewerRefresh">↻ Refresh Map</button><small id="viewerStatus" role="status">Connecting…</small>';
-  $('app').appendChild(controls);
+  controls.innerHTML = '<button type="button" id="viewerRefresh" aria-label="Refresh Map" title="Refresh Map">↻</button><small id="viewerStatus" role="status">Connecting…</small>';
+  const nativeMapTools = $('mapTools');
+  if (nativeMapTools) nativeMapTools.appendChild(controls);
+  else $('app').appendChild(controls);
 
   function status(text, detail = text) {
     if (notice) notice.textContent = text;
@@ -145,7 +150,7 @@
   const reportModuleURL = new URL('../reports/alliance-chat-report.js', document.currentScript?.src || location.href).href;
   const reportStyle = document.createElement('style');
   reportStyle.textContent = `
-#mapCopyReport{background:#f1d19a;color:#523719;border:1px solid #b58a4c;border-radius:8px;padding:7px 9px;font-size:11px;font-weight:800}
+#viewerControls #mapCopyReport{background:#f1d19a;color:#523719;border:1px solid #b58a4c;border-radius:8px;padding:5px 7px;font-size:11px;font-weight:800;white-space:nowrap;min-height:27px}
 #mapCopyReport:disabled{opacity:.5}
 #mapReportOverlay{position:fixed;inset:0;z-index:9999;background:#100c09b8;display:flex;align-items:center;justify-content:center;padding:12px}
 #mapReportOverlay[hidden]{display:none}
@@ -161,7 +166,9 @@
   const reportButton = document.createElement('button');
   reportButton.type = 'button';
   reportButton.id = 'mapCopyReport';
-  reportButton.textContent = 'Copy Report';
+  reportButton.textContent = '▤ Report';
+  reportButton.title = 'Copy Outpost Report';
+  reportButton.setAttribute('aria-label', 'Copy Outpost Report');
   reportButton.disabled = true;
   controls.insertBefore(reportButton, $('viewerStatus'));
   const overlay = document.createElement('div');
