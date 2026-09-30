@@ -98,21 +98,41 @@ Map reporting must not be treated as reliable until the current map data source 
 
 Linus' help is valuable for establishing that reliable current source of truth.
 
-## Mandatory report footer (approved standard)
+## Approved Kingshot chat report format (frozen after in-game tests, 2026-09-30)
 
-Every report generated for alliance chat must end with this exact, consistent signature on its own line:
+The user has approved the **single-message, one-outpost-per-line** report from the latest Kingshot screenshot. Treat its layout as frozen. Do not switch to a split report, icons or combined outpost lines unless expressly requested.
 
-**⚔️ Provided by Nexus App**
+- Header: `FRA NORTH | 9 OUTPOSTS` in the illustrative example — use actual sector/alliance label and actual number of entries for real reports. **Do not put Nexus App in the header.**
+- Body: one outpost per line, `Building name L#: x,y`, preserving the game's building names and source coordinates.
+- Footer: a **data timestamp and verification status**, followed by `Provided by Nexus App` on the next line. **No emoji/icon** in the report footer, since candidate icons did not render satisfactorily in-game.
+- Timestamp layout when a real last-update timestamp exists: `DD.MM.YY/HH:MM | Verified` (or `Unverified`, according to source status). The date/time must reflect the **source data's actual latest update** in Europe/Berlin time, **never** the report-generation time.
+- If the source timestamp is unknown, write `Data: Date/time unknown | Unverified`. Do not use the example timestamp to imply verification.
+- Last line exactly: `Provided by Nexus App`.
+- The user-approved screenshot demonstrated that Kingshot can sometimes remove line breaks near the end of long messages; prioritize readable one-message reports for lists of this scale, and check final rendering before any future dynamic rollout.
+- Keep authorization identical to the source data. This document is a specification only: it does not implement report buttons or modify the existing Nexus App design.
 
-This identifies the information source and makes the Nexus App recognizable to members throughout Kingdom #1885. Keep the footer identical for map reports, rankings, comparisons, and other copyable outputs. Check actual in-game rendering of the crossed-swords symbol before rollout; if incompatible, seek approval for a substitute instead of silently changing the standard.
-
-## Compact data freshness line (approved standard)
-
-Every copy-paste report should show the **source data's last update date AND time**, followed by its actual verification status, immediately above the mandatory Nexus App signature. Example format (illustrative only, not a claim of live data):
+### Frozen format example, using historical/unverified FRA data
 
 ```text
-Data: 30.09.2026 09:15 | Verified
-⚔️ Provided by Nexus App
+FRA NORTH | 9 OUTPOSTS
+Builder's Guild L1: 1068,138
+Forager Grove L1: 957,138
+Arsenal L2: 868,139
+Harvest Altar L1: 770,140
+Drill Camp L2: 769,239
+Scholar's Tower L1: 666,267
+Scholar's Tower L3: 869,328
+Frontier Lodge L3: 769,329
+Armory L2: 956,438
+Data: Date/time unknown | Unverified
+Provided by Nexus App
 ```
 
-Use the real source-data timestamp, **not** report-generation time. Display the timestamp consistently in the Kingdom #1885 reporting timezone (Europe/Berlin), with the time zone identified in report context if necessary. If the actual update time or verification status is unknown, say `Time unknown` or `Unverified`; never invent it. Preserve the short two-line layout where practical.
+### Footer after actual verification (illustrative only)
+
+```text
+30.09.26/12:23 | Verified
+Provided by Nexus App
+```
+
+The illustrative timestamp is **not a statement that this data was verified**. Obtain a reliable map source (Linus or another authoritative maintainer) before displaying Verified. These report conventions apply to future exportable reports in other Nexus App sections as appropriate.
