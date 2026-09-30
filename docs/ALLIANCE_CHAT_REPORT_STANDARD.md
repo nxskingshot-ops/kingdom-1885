@@ -97,3 +97,11 @@ The existing approved Nexus App design and working features remain unchanged unl
 Map reporting must not be treated as reliable until the current map data source is verified and a trustworthy present-day baseline exists.
 
 Linus' help is valuable for establishing that reliable current source of truth.
+
+## Mandatory report footer (approved standard)
+
+Every report generated for alliance chat must end with this exact, consistent signature on its own line:
+
+**⚔️ Provided by Nexus App**
+
+This identifies the information source and makes the Nexus App recognizable to members throughout Kingdom #1885. Keep the footer identical for map reports, rankings, comparisons, and other copyable outputs. Check actual in-game rendering of the crossed-swords symbol before rollout; if incompatible, seek approval for a substitute instead of silently changing the standard.
