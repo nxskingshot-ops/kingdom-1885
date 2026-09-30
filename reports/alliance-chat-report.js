@@ -25,11 +25,11 @@
     // The date is the actual source record time, never Date.now() / report creation time.
     return `${time || 'Data: Date/time unknown'} | ${verified === true ? 'Verified' : 'Unverified'}\nProvided by Nexus App`;
   }
-  function makeOutpostReport({sector, outposts, sourceUpdatedAt = null, verified = false} = {}) {
+  function makeOutpostReport({sector, outposts, sourceUpdatedAt = null, verified = false, kingshotCompact = false} = {}) {
     if (!Array.isArray(outposts)) throw new TypeError('outposts must be an array');
     const name = clean(sector).toUpperCase();
     if (!name) throw new TypeError('sector is required');
-    const lines = outposts.map((row, index) => {
+    const items = outposts.map((row, index) => {
       if (!row || typeof row !== 'object') throw new TypeError(`invalid outpost at ${index}`);
       const title = clean(row.name ?? row.structure_type ?? row.type);
       const level = Number(row.level);
@@ -38,9 +38,28 @@
       if (!title || !Number.isInteger(level) || level < 1 || !Number.isInteger(x) || !Number.isInteger(y) || x < 0 || y < 0) {
         throw new TypeError(`incomplete outpost at ${index}; never guess missing data`);
       }
-      return `${title} L${level}: ${x},${y}`;
+      return { title, level, x, y, text: `${title} L${level}: ${x},${y}` };
     });
-    return [`${name} | ${lines.length} OUTPOST${lines.length === 1 ? '' : 'S'}`, ...lines,
+    // Level descending, then building name, then coordinates. Never mutate the source.
+    items.sort((a, b) => b.level - a.level ||
+      a.title.localeCompare(b.title, 'en') || a.x - b.x || a.y - b.y);
+    const lines = [];
+    if (kingshotCompact) {
+      // Some versions of Kingshot collapse newlines at the end of long reports.
+      // Combine only genuinely short adjacent entries. Keep the long names legible.
+      for (let i = 0; i < items.length; i++) {
+        const next = items[i + 1];
+        if (next && items[i].text.length + next.text.length + 3 <= 48) {
+          lines.push(items[i].text + ' | ' + next.text);
+          i++;
+        } else {
+          lines.push(items[i].text);
+        }
+      }
+    } else {
+      lines.push(...items.map(item => item.text));
+    }
+    return [`${name} | ${items.length} OUTPOST${items.length === 1 ? '' : 'S'}`, ...lines,
       footer({sourceUpdatedAt, verified})].join('\n');
   }
   function makeTextReport({heading, lines, sourceUpdatedAt = null, verified = false} = {}) {
