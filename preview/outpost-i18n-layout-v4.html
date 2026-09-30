@@ -191,7 +191,7 @@ for(const [en,localized] of Object.entries(mapFilterLabels)){
 function translateFixedLabels(doc){
  const index=language==='de'?0:language==='fr'?1:-1;
  // Only known UI text; never use fuzzy or substring replacement on game records.
- const roots=['.left','.right','#mapTools','#bar','#kvkSubnav','#filters'].map(sel=>doc.querySelector(sel)).filter(Boolean);
+ const roots=[doc.body]; // Exact known UI phrases only; unknown map records are never modified.
  const seen=new Set();
  function translateLeafText(node, allowGeneric){
   if(!node || seen.has(node))return;
@@ -213,8 +213,8 @@ function translateFixedLabels(doc){
   const walker=doc.createTreeWalker(root,NodeFilter.SHOW_TEXT);
   let node;
   // "All" and "None" are only translated inside the right-hand filter sidebar.
-  const generic=root.matches('.right,#filters');
-  while((node=walker.nextNode()))translateLeafText(node,generic);
+  const generic=false;
+  while((node=walker.nextNode()))translateLeafText(node,generic||Boolean(node.parentElement?.closest('.right,#filters')));
  }
  const candidates=doc.querySelectorAll('button,label,input[placeholder],[role="tab"],#outpostInfoHeader');
  for(const node of candidates){
