@@ -113,10 +113,72 @@
     }
     return chunks;
   }
+  // Discord's ordinary message cap is 2,000 characters; keep a safety margin.
+  // No truncation: complete entries are carried over to subsequent messages.
+  function makeDiscordOutpostReport({sector, outposts, sourceUpdatedAt = null, verified = false} = {}) {
+    const base = makeOutpostReport({sector, outposts, sourceUpdatedAt, verified, kingshotCompact:false});
+    const lines = base.split('\n');
+    const title = lines.shift();
+    const attribution = lines.pop();
+    const status = lines.pop();
+    // Decorative markdown only: the building names/coordinates remain unchanged.
+    return [
+      '**NEXUS APP · OUTPOST REPORT**',
+      '**' + title + '**',
+      '',
+      ...lines.map((line, index) => (index + 1) + '. ' + line),
+      '',
+      '**Source updated:** ' + status.split(' | ')[0],
+      '**Verification:** ' + (verified === true ? 'Verified' : 'Unverified'),
+      attribution
+    ].join('\n');
+  }
+  function splitReportForDiscord(report, maxCharacters = 1900) {
+    if (typeof report !== 'string' || !report.trim()) throw new TypeError('report is required');
+    if (!Number.isInteger(maxCharacters) || maxCharacters < 150 || maxCharacters > 2000) {
+      throw new RangeError('invalid Discord character limit');
+    }
+    if (report.length <= maxCharacters) return [report];
+    const lines = report.split('\n');
+    const header = lines.slice(0, 3);
+    const footer = lines.slice(-3);
+    if (header[0] !== '**NEXUS APP · OUTPOST REPORT**' ||
+        footer[2] !== 'Provided by Nexus App' || !footer[0].startsWith('**Source updated:** ')) {
+      throw new TypeError('Discord report header or footer missing');
+    }
+    const entries = lines.slice(3, -4); // exclude the blank separator before source status
+    if (!entries.length) throw new RangeError('no report entries to split');
+    const groups = [];
+    let guess = 1;
+    for (let attempt = 0; attempt < 30; attempt++) {
+      const pages = [];
+      let active = [];
+      const make = (rows, index) =>
+        [header[0], header[1] + ' (PART ' + (index + 1) + '/' + guess + ')', '',
+          ...rows, '', ...footer].join('\n');
+      for (const entry of entries) {
+        if (make([...active, entry], pages.length).length <= maxCharacters) active.push(entry);
+        else {
+          if (!active.length) throw new RangeError('one complete Discord entry exceeds character limit');
+          pages.push(active);
+          active = [entry];
+          if (make(active, pages.length).length > maxCharacters) {
+            throw new RangeError('one complete Discord entry exceeds character limit');
+          }
+        }
+      }
+      if (active.length) pages.push(active);
+      if (pages.length === guess) {
+        return pages.map((rows, index) => make(rows,index));
+      }
+      guess = pages.length;
+    }
+    throw new RangeError('could not split Discord report safely');
+  }
   function makeTextReport({heading, lines, sourceUpdatedAt = null, verified = false} = {}) {
     const title = clean(heading);
     if (!title || !Array.isArray(lines)) throw new TypeError('heading and lines required');
     return [title, ...lines.map(clean).filter(Boolean), footer({sourceUpdatedAt, verified})].join('\n');
   }
-  return Object.freeze({ makeOutpostReport, makeTextReport, splitReportForKingshot, footer });
+  return Object.freeze({ makeOutpostReport, makeDiscordOutpostReport, makeTextReport, splitReportForKingshot, splitReportForDiscord, footer });
 });
