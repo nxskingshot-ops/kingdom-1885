@@ -182,17 +182,18 @@
       return;
     }
     const selection = selector.value;
-    // Provisional alliance-based sector names, NOT geographical coordinate cuts.
-    // Confirm official boundaries/ownership with Linus before calling these verified.
-    const proposedSectors = {FRA: 'NORTH', NXS: 'EAST', OOO: 'SOUTH', MYM: 'WEST'};
-    const chosenAlliance = selection.startsWith('Q:') || selection.startsWith('A:')
-      ? selection.slice(2) : selection;
+    // Provisional alliance-to-quadrant aliases, NOT geographical coordinate boundaries.
+    // Do not mark Verified until the official allocation is confirmed.
+    const proposedSectors = {
+      FRA: 'NORTHERN QUADRANT', NXS: 'EASTERN QUADRANT',
+      OOO: 'SOUTHERN QUADRANT', MYM: 'WESTERN QUADRANT'
+    };
     const selected = DATA.filter(item => selection === 'ALL' ||
-      item.alliance.toUpperCase() === chosenAlliance.toUpperCase());
+      item.alliance.toUpperCase() === selection.toUpperCase());
+    const name = proposedSectors[selection.toUpperCase()];
     const sectorLabel = selection === 'ALL' ? 'KINGDOM #1885'
-      : selection.startsWith('Q:')
-      ? (proposedSectors[chosenAlliance.toUpperCase()] + ' / ' + chosenAlliance.toUpperCase() + ' (PROVISIONAL)')
-      : chosenAlliance.toUpperCase();
+      : name ? selection.toUpperCase() + ' · ' + name + ' (PROVISIONAL)'
+      : selection.toUpperCase();
     const times = selected.map(item => Date.parse(item.updated_at)).filter(Number.isFinite);
     const updatedAt = times.length && times.length === selected.length
       ? new Date(Math.max(...times)) : null;
@@ -204,7 +205,7 @@
       kingshotCompact: true
     });
     $('mapReportCopy').disabled = false;
-    reportInfo.textContent = selection.startsWith('Q:')
+    reportInfo.textContent = name
       ? 'Provisional quadrant = assigned alliance territory, not a coordinate-defined area. Unverified until confirmed.'
       : 'Published outposts only · Unverified until confirmed by a responsible data steward.';
   }
@@ -212,10 +213,10 @@
     if (!hasLiveSnapshot || !reportAPI) return;
     const previous = selector.value;
     const alliances = [...new Set(DATA.map(item => item.alliance))].sort();
-    const sectors = [
-      ['FRA', 'North'], ['NXS', 'East'],
-      ['OoO', 'South'], ['MYM', 'West']
-    ];
+    const sectors = {
+      FRA: 'Northern Quadrant', NXS: 'Eastern Quadrant',
+      OOO: 'Southern Quadrant', MYM: 'Western Quadrant'
+    };
     selector.replaceChildren();
     const appendOption = (value, label) => {
       const opt = document.createElement('option');
@@ -224,10 +225,9 @@
       selector.appendChild(opt);
     };
     appendOption('ALL', 'All published outposts');
-    for (const name of alliances) appendOption('A:' + name, name + ' · Alliance');
-    for (const [tag, direction] of sectors) {
-      const matching = alliances.find(name => name.toUpperCase() === tag.toUpperCase());
-      if (matching) appendOption('Q:' + matching, direction + ' · ' + matching + ' (provisional)');
+    for (const name of alliances) {
+      const direction = sectors[name.toUpperCase()];
+      appendOption(name, direction ? name + ' · ' + direction + ' (provisional)' : name);
     }
     selector.value = [...selector.options].some(opt => opt.value === previous) ? previous : 'ALL';
     updateReport();
