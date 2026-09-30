@@ -149,13 +149,13 @@
 #mapCopyReport:disabled{opacity:.5}
 #mapReportOverlay{position:fixed;inset:0;z-index:9999;background:#100c09b8;display:flex;align-items:center;justify-content:center;padding:12px}
 #mapReportOverlay[hidden]{display:none}
-#mapReportPanel{box-sizing:border-box;width:min(480px,100%);max-height:85dvh;overflow:auto;background:#2b2015;color:#ffe9bf;border:1px solid #c7a265;border-radius:12px;padding:14px;box-shadow:0 15px 50px #000a;font:13px system-ui}
+#mapReportPanel{box-sizing:border-box;width:min(480px,100%);max-height:calc(100dvh - 24px);display:flex;flex-direction:column;overflow:hidden;background:#2b2015;color:#ffe9bf;border:1px solid #c7a265;border-radius:12px;padding:12px;box-shadow:0 15px 50px #000a;font:13px system-ui}
 #mapReportPanel h3{font:700 19px Georgia,serif;margin:0 0 9px}
-#mapReportPanel label{display:block;margin:8px 0 4px}
+#mapReportBody{display:flex;min-height:0;flex:1 1 auto;flex-direction:column;overflow:hidden}#mapReportPanel label{display:block;margin:8px 0 4px;flex-shrink:0}
 #mapReportPanel select,#mapReportPanel textarea{box-sizing:border-box;width:100%;border:1px solid #a5814b;border-radius:6px;background:#17120d;color:#fff1d6;padding:8px}
-#mapReportPanel textarea{min-height:170px;max-height:35dvh;resize:vertical;font:12px/1.5 monospace;white-space:pre}
+#mapReportPanel textarea{min-height:80px;max-height:none;flex:1 1 auto;overflow:auto;resize:none;font:12px/1.5 monospace;white-space:pre}
 #mapReportPanel button{margin:9px 8px 0 0;padding:9px 12px;border-radius:7px;border:1px solid #a5814b;background:#efd09b;color:#332111;font-weight:700}
-#mapReportPanel small{display:block;color:#ead1a5;margin-top:7px}
+#mapReportPanel small{display:block;color:#ead1a5;margin-top:7px}#mapReportFooter{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid #6b5030}#mapReportFooter small{margin:0;min-width:0;flex:1}#mapReportActions{display:flex;flex:0 0 auto;gap:7px}#mapReportActions button{margin:0;white-space:nowrap}@media(max-height:480px){#mapReportPanel{padding:8px}#mapReportPanel h3{font-size:16px;margin-bottom:3px}#mapReportPanel label{margin:3px 0 2px}#mapReportPanel textarea{min-height:60px}#mapReportFooter small{font-size:10px}}
 `;
   document.head.appendChild(reportStyle);
   const reportButton = document.createElement('button');
@@ -167,7 +167,7 @@
   const overlay = document.createElement('div');
   overlay.id = 'mapReportOverlay';
   overlay.hidden = true;
-  overlay.innerHTML = '<div id="mapReportPanel" role="dialog" aria-modal="true" aria-label="Public outpost report"><h3>Outpost Report</h3><label for="mapReportAlliance">Alliance or quadrant</label><select id="mapReportAlliance"></select><label for="mapReportText">Preview</label><textarea id="mapReportText" readonly></textarea><small id="mapReportInfo" role="status">Published records only · Unverified</small><button type="button" id="mapReportCopy">Copy All</button><button type="button" id="mapReportClose">Close</button></div>';
+  overlay.innerHTML = '<div id="mapReportPanel" role="dialog" aria-modal="true" aria-label="Public outpost report"><h3>Outpost Report</h3><div id="mapReportBody"><label for="mapReportAlliance">Alliance or quadrant</label><select id="mapReportAlliance"></select><label for="mapReportText">Preview</label><textarea id="mapReportText" readonly></textarea></div><div id="mapReportFooter"><small id="mapReportInfo" role="status">Published records only · Unverified</small><div id="mapReportActions"><button type="button" id="mapReportCopy">Copy All</button><button type="button" id="mapReportClose">Close</button></div></div></div>';
   document.body.appendChild(overlay);
   const selector = $('mapReportAlliance');
   const reportText = $('mapReportText');
