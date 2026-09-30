@@ -9,7 +9,7 @@
 <div class="announce" id="info">No verified records have been connected yet. Example figures from the design image are deliberately not presented as real data.</div>
 <section class="grid4" aria-label="Key metrics"><div class="panel metric"><div class="label">TOTAL POWER</div><strong id="power">—</strong><div class="desc">Recorded alliance power</div></div><div class="panel metric"><div class="label">CASTLES ≥ LV 25</div><strong id="castles">—</strong><div class="desc">Count from available roster</div></div><div class="panel metric"><div class="label">POWER GROWTH</div><strong id="growth">—</strong><div class="desc" id="growthPeriod">Change over 30 days</div></div><div class="panel metric"><div class="label">MATCHMAKING RISK</div><strong id="risk">—</strong><div class="desc">Needs defined agreement thresholds</div></div></section>
 <section class="grid2" id="competitivePanel"><div class="panel"><h2>Power Development</h2><small>Recorded power over time by alliance</small><div id="powerChart" class="plot">Waiting for dated power snapshots.</div><div class="legend"><span><b style="background:var(--green)"></b>NXS</span><span><b style="background:var(--blue)"></b>MYM</span><span><b style="background:var(--gold)"></b>FRA</span><span><b style="background:var(--purple)"></b>OoO</span></div></div><div class="panel"><h2>Castle Upgrades</h2><small>Recorded castle-level changes</small><div id="upgradeChart" class="plot">Waiting for repeated castle-level snapshots.</div></div></section>
-<section class="grid2" id="kvkPanel"><div class="panel"><h2>Agreement Compliance</h2><small>Only documented deviations from the agreed KvK rules</small><div class="scroll"><table><thead><tr><th>Alliance</th><th>Power change</th><th>Castle upgrades</th><th>Confirmed deviations</th><th>Status</th></tr></thead><tbody id="compliance"></tbody></table></div><div class="foot">An increase is not automatically a violation. Exceptions and documented rules must be checked first.</div></div><div class="panel"><h2>Matchmaking Risk · Known Scores</h2><small>Internal NXS risk status · not a cross-alliance percentage</small><div class="risk"><div class="donut" data-status="unassessed" role="img" aria-label="Risk not assessed"><span>Not assessed</span></div><ul id="riskList"></ul></div><div class="foot">No risk shares are calculated without verified inputs and a documented calculation method.</div></div></section>
+<section class="grid2" id="kvkPanel"><div class="panel"><h2>Agreement Compliance</h2><small>Only documented deviations from the agreed KvK rules</small><div class="scroll"><table><thead><tr><th>Alliance</th><th>Power change</th><th>Castle upgrades</th><th>Confirmed deviations</th><th>Status</th></tr></thead><tbody id="compliance"></tbody></table></div><div class="foot">An increase is not automatically a violation. Exceptions and documented rules must be checked first.</div></div><div class="panel"><h2>Matchmaking Risk · Known Scores</h2><small>Internal NXS risk status · not a cross-alliance percentage</small><div class="risk"><div class="donut" data-status="unassessed" role="img" aria-label="Risk not assessed"><span>Not assessed</span></div><ul id="riskList"></ul></div><div class="foot">No risk shares are calculated without verified inputs and a documented calculation method.</div></div></section><section class="panel" id="efficiencyPanel"><h2>Relative KvK Prep Efficiency</h2><small>Verified prep-point share compared with verified server power share</small><div class="scroll"><table><thead><tr><th>Alliance</th><th>Prep points</th><th>Prep share</th><th>Power share</th><th>Relative efficiency</th></tr></thead><tbody id="efficiencyRows"></tbody></table></div><div class="foot" id="efficiencyFoot">Awaiting a verified end-of-prep snapshot. Formula: (Alliance Prep Point Share ÷ Alliance Power Share) × 100. Governance thresholds are not part of this calculation.</div></section>
 <div class="foot">Analysis scope: four Outpost alliances only. This test view is read-only and does not expose internal player records or invent historical trends.</div>
 </main><script>
 /* Provisional aggregates only. Never expose individual member rows through this public preview. */
@@ -46,6 +46,7 @@ function render(){
  $('kvk').setAttribute('aria-selected',String(perspective==='kvk'));
  $('competitive').setAttribute('aria-selected',String(perspective==='competitive'));
  $('kvkPanel').hidden=perspective!=='kvk';
+ $('efficiencyPanel').hidden=perspective!=='kvk';
  $('competitivePanel').hidden=perspective!=='competitive';
  const {ids,rows}=getVisible(),missing=ids.filter(n=>!snapshots.alliances[n]),has=rows.length>0;
  const totalPower=rows.reduce((a,b)=>a+(Number.isFinite(b.power_m)?b.power_m:0),0),totalCastles=rows.reduce((a,b)=>a+(Number.isFinite(b.castle_25_plus_count)?b.castle_25_plus_count:0),0);
@@ -81,6 +82,25 @@ function render(){
   const vals=[display[name],name==='NXS'?'−164.7M net (28–29 Sep)':r?'Awaiting comparison':'—',name==='NXS'?'6 (28–29 Sep)':'—','Not assessed',r?'Snapshot '+(r.snapshot_date||snapshots.snapshot_date):'Awaiting data'];
   for(const v of vals){const td=document.createElement('td');td.textContent=v;tr.appendChild(td);}body.appendChild(tr);
  }
+ const efficiencyBody=$('efficiencyRows');efficiencyBody.replaceChildren();
+ const efficiency=snapshots.kvk_efficiency;
+ const efficiencyAlliances=efficiency&&efficiency.alliances&&typeof efficiency.alliances==='object'?efficiency.alliances:null;
+ const serverPrep=Number(efficiency?.server_prep_points),serverPower=Number(efficiency?.server_power_m);
+ const efficiencyReady=efficiencyAlliances&&Number.isFinite(serverPrep)&&serverPrep>0&&Number.isFinite(serverPower)&&serverPower>0;
+ const efficiencyNames=selected==='ALL'?names:[selected];
+ for(const name of efficiencyNames){
+  const row=efficiencyAlliances?.[name]||null;
+  const prep=Number(row?.prep_points),power=Number(row?.power_m);
+  const prepShare=efficiencyReady&&Number.isFinite(prep)?prep/serverPrep:null;
+  const powerShare=efficiencyReady&&Number.isFinite(power)?power/serverPower:null;
+  const relative=Number.isFinite(prepShare)&&Number.isFinite(powerShare)&&powerShare>0?prepShare/powerShare*100:null;
+  const tr=document.createElement('tr');
+  const vals=[display[name]||name,Number.isFinite(prep)?prep.toLocaleString('en-US'):'—',Number.isFinite(prepShare)?(prepShare*100).toFixed(2)+'%':'—',Number.isFinite(powerShare)?(powerShare*100).toFixed(2)+'%':'—',Number.isFinite(relative)?relative.toFixed(1)+'%':'Awaiting data'];
+  for(const v of vals){const td=document.createElement('td');td.textContent=v;tr.appendChild(td);}efficiencyBody.appendChild(tr);
+ }
+ $('efficiencyFoot').textContent=efficiencyReady
+  ?'Snapshot '+(efficiency.snapshot_date||snapshots.snapshot_date||'date unavailable')+' · Formula: (Alliance Prep Point Share ÷ Alliance Power Share) × 100. 100% means prep contribution is proportional to the recorded power share. Governance thresholds are shown nowhere in this calculation.'
+  :'Awaiting a verified end-of-prep snapshot with server total prep points and server total power. Formula: (Alliance Prep Point Share ÷ Alliance Power Share) × 100. Governance thresholds are not part of this calculation.';
  const powerChart=$('powerChart'),upgradeChart=$('upgradeChart');
  function plotBars(container,entries,suffix,limit){
    container.replaceChildren();
