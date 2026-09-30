@@ -1,7 +1,7 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NEXUS · Alliance Trends</title>
 <style>
 :root{--bg:#e9dcc1;--panel:#fff5df;--ink:#332619;--muted:#705a3d;--gold:#b18b51;--line:#c5a46b;--red:#a14b3d;--green:#417750;--blue:#5071a2;--purple:#86649b}*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,sans-serif}body{padding:15px}main{max-width:1320px;margin:auto}h1,h2{font-family:Georgia,serif;margin:0}h1{font-size:26px}h2{font-size:18px}p{margin:5px 0}.muted,small{color:var(--muted)}.heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}.heading small{text-align:right}.panel{background:linear-gradient(125deg,#fff9ea,var(--panel));border:1px solid var(--line);border-radius:12px;padding:15px;box-shadow:0 2px 12px #55402110}.tabs,.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}/* Keep both perspective controls accessible in both NEXUS menu routes. */
-[hidden]{display:none!important}button,select{font:inherit;border:1px solid var(--line);color:var(--ink);background:#fbebcb;padding:9px 12px;border-radius:8px;cursor:pointer}button[aria-selected=true],button[aria-pressed=true]{background:#533b23;border-color:#533b23;color:#fff1d1}.controls label{font-weight:700;color:var(--muted);font-size:12px;margin-left:auto}.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:12px}.grid4[data-metric-count="2"]{grid-template-columns:repeat(2,minmax(0,1fr))}.grid2{display:grid;grid-template-columns:1.35fr 1fr;gap:12px;margin-bottom:12px}.metric .label{color:var(--muted);font-size:12px;font-weight:700}.metric strong{font:700 28px Georgia,serif;display:block;margin:8px 0 2px}.metric .desc{color:var(--muted);font-size:12px}.plot{height:250px;position:relative;margin-top:12px;display:flex;align-items:center;justify-content:center;border:1px dashed #bba27c;border-radius:8px;background:#f2e6ce7a;color:var(--muted);text-align:center;padding:20px}.plot svg{height:100%;width:100%;overflow:visible}svg text{font:11px system-ui;fill:var(--muted)}.legend{display:flex;flex-wrap:wrap;gap:11px;margin-top:9px;color:var(--muted);font-size:12px}.legend b{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:4px}.scroll{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:12px;margin-top:12px}th,td{padding:10px 7px;border-bottom:1px solid #dfcca9;text-align:left;white-space:nowrap}th{font-size:10px;text-transform:uppercase;color:var(--muted)}tr:last-child td{border:0}.foot{font-size:12px;color:var(--muted);margin:8px 0 0}.risk{display:flex;gap:20px;align-items:center;justify-content:center;min-height:220px;flex-wrap:wrap}.donut{width:165px;height:165px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#ddd1b9 0 100%);position:relative}.donut:before{content:"";position:absolute;inset:28px;background:var(--panel);border-radius:50%}.donut span{z-index:1;text-align:center;font-weight:700;display:flex;flex-direction:column;gap:4px;align-items:center}.donut .risk-score{font-size:21px;line-height:1.12;white-space:nowrap}.donut .risk-status{font-size:12px;line-height:1.1}.donut .risk-context{font-size:9px;line-height:1.1;color:var(--muted);white-space:nowrap}.donut[data-status="critical"]{background:#c53434}.donut[data-status="warning"]{background:#d67e2b}.donut[data-status="elevated"]{background:#d8b33e}.donut[data-status="low"]{background:#3b915f}.donut[data-status="unassessed"]{background:#ddd1b9}.risk ul{list-style:none;padding:0;margin:0}.risk li{padding:5px 0}.announce{background:#f3e3c2;border-left:4px solid #a27a38;padding:9px 12px;margin-bottom:12px;font-size:12px;border-radius:5px}.green{color:var(--green)}.red{color:var(--red)}@media(max-width:920px){.grid4{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}}@media(max-width:420px){body{padding:9px}.heading h1{font-size:21px}.panel{padding:11px}.metric strong{font-size:21px}.heading small{font-size:10px}.controls label{margin-left:0}} 
+[hidden]{display:none!important}button,select{font:inherit;border:1px solid var(--line);color:var(--ink);background:#fbebcb;padding:9px 12px;border-radius:8px;cursor:pointer}button[aria-selected=true],button[aria-pressed=true]{background:#533b23;border-color:#533b23;color:#fff1d1}.controls label{font-weight:700;color:var(--muted);font-size:12px;margin-left:auto}.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:12px}.grid4[data-metric-count="2"]{grid-template-columns:repeat(2,minmax(0,1fr))}.grid2{display:grid;grid-template-columns:1.35fr 1fr;gap:12px;margin-bottom:12px}.metric .label{color:var(--muted);font-size:12px;font-weight:700}.metric strong{font:700 28px Georgia,serif;display:block;margin:8px 0 2px}.metric .desc{color:var(--muted);font-size:12px}.plot{height:250px;position:relative;margin-top:12px;display:flex;align-items:center;justify-content:center;border:1px dashed #bba27c;border-radius:8px;background:#f2e6ce7a;color:var(--muted);text-align:center;padding:20px}.plot svg{height:100%;width:100%;overflow:visible}svg text{font:11px system-ui;fill:var(--muted)}.legend{display:flex;flex-wrap:wrap;gap:11px;margin-top:9px;color:var(--muted);font-size:12px}.legend b{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:4px}.scroll{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:12px;margin-top:12px}th,td{padding:10px 7px;border-bottom:1px solid #dfcca9;text-align:left;white-space:nowrap}th{font-size:10px;text-transform:uppercase;color:var(--muted)}tr:last-child td{border:0}.foot{font-size:12px;color:var(--muted);margin:8px 0 0}.risk{display:flex;gap:20px;align-items:center;justify-content:center;min-height:220px;flex-wrap:wrap}.donut{width:165px;height:165px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#ddd1b9 0 100%);position:relative}.donut:before{content:"";position:absolute;inset:28px;background:var(--panel);border-radius:50%}.donut span{z-index:1;text-align:center;font-weight:700;display:flex;flex-direction:column;gap:4px;align-items:center}.donut .risk-score{font-size:21px;line-height:1.12;white-space:nowrap}.donut .risk-status{font-size:12px;line-height:1.1}.donut .risk-context{font-size:9px;line-height:1.1;color:var(--muted);white-space:nowrap}.donut[data-status="critical"]{background:#c53434}.donut[data-status="warning"]{background:#d67e2b}.donut[data-status="elevated"]{background:#d8b33e}.donut[data-status="low"]{background:#3b915f}.donut[data-status="unassessed"]{background:#ddd1b9}.risk ul{list-style:none;padding:0;margin:0}.risk li{padding:5px 0}.announce{background:#f3e3c2;border-left:4px solid #a27a38;padding:9px 12px;margin-bottom:12px;font-size:12px;border-radius:5px}.green{color:var(--green)}.red{color:var(--red)}@media(max-width:920px){.grid4{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}}@media(max-width:420px){body{padding:9px}.heading h1{font-size:21px}.panel{padding:11px}.metric strong{font-size:21px}.heading small{font-size:10px}.controls label{margin-left:0}} .eff-entry{margin-top:12px;border-top:1px solid #dfcca9;padding-top:10px}.eff-entry summary{cursor:pointer;font-weight:750;color:var(--ink)}.eff-form{margin-top:10px}.eff-meta,.eff-alliance-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:8px}.eff-alliance-row{grid-template-columns:90px 1fr 1fr;align-items:end}.eff-form label{font-size:11px;font-weight:700;color:var(--muted)}.eff-form input{width:100%;margin-top:3px;padding:8px 9px;border:1px solid var(--line);border-radius:7px;background:#fffaf0;color:var(--ink);font:inherit}.eff-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}.eff-status{font-size:11px;color:var(--muted);margin-top:7px}@media(max-width:620px){.eff-meta{grid-template-columns:1fr}.eff-alliance-row{grid-template-columns:70px 1fr 1fr}.eff-alliance-row label{font-size:10px}}
 </style></head><body><main>
 <div class="heading"><div><h1>Alliance Trends</h1><small>Kingdom #1885 · Outpost Alliance Analysis</small></div><small id="lastUpdate">Last update: No verified snapshots</small></div>
 <div class="tabs" role="tablist" aria-label="Analysis perspective"><button role="tab" id="kvk" aria-selected="true">🛡 KvK Controlling</button><button role="tab" id="competitive" aria-selected="false">🔭 Competitive Intelligence</button></div>
@@ -9,7 +9,13 @@
 <div class="announce" id="info">No verified records have been connected yet. Example figures from the design image are deliberately not presented as real data.</div>
 <section class="grid4" aria-label="Key metrics"><div class="panel metric"><div class="label">TOTAL POWER</div><strong id="power">—</strong><div class="desc">Recorded alliance power</div></div><div class="panel metric"><div class="label">CASTLES ≥ LV 25</div><strong id="castles">—</strong><div class="desc">Count from available roster</div></div><div class="panel metric"><div class="label">POWER GROWTH</div><strong id="growth">—</strong><div class="desc" id="growthPeriod">Change over 30 days</div></div><div class="panel metric"><div class="label">MATCHMAKING RISK</div><strong id="risk">—</strong><div class="desc">Needs defined agreement thresholds</div></div></section>
 <section class="grid2" id="competitivePanel"><div class="panel"><h2>Power Development</h2><small>Recorded power over time by alliance</small><div id="powerChart" class="plot">Waiting for dated power snapshots.</div><div class="legend"><span><b style="background:var(--green)"></b>NXS</span><span><b style="background:var(--blue)"></b>MYM</span><span><b style="background:var(--gold)"></b>FRA</span><span><b style="background:var(--purple)"></b>OoO</span></div></div><div class="panel"><h2>Castle Upgrades</h2><small>Recorded castle-level changes</small><div id="upgradeChart" class="plot">Waiting for repeated castle-level snapshots.</div></div></section>
-<section class="grid2" id="kvkPanel"><div class="panel"><h2>Agreement Compliance</h2><small>Only documented deviations from the agreed KvK rules</small><div class="scroll"><table><thead><tr><th>Alliance</th><th>Power change</th><th>Castle upgrades</th><th>Confirmed deviations</th><th>Status</th></tr></thead><tbody id="compliance"></tbody></table></div><div class="foot">An increase is not automatically a violation. Exceptions and documented rules must be checked first.</div></div><div class="panel"><h2>Matchmaking Risk · Known Scores</h2><small>Internal NXS risk status · not a cross-alliance percentage</small><div class="risk"><div class="donut" data-status="unassessed" role="img" aria-label="Risk not assessed"><span>Not assessed</span></div><ul id="riskList"></ul></div><div class="foot">No risk shares are calculated without verified inputs and a documented calculation method.</div></div></section><section class="panel" id="efficiencyPanel"><h2>Relative KvK Prep Efficiency</h2><small>Verified prep-point share compared with verified server power share</small><div class="scroll"><table><thead><tr><th>Alliance</th><th>Prep points</th><th>Prep share</th><th>Power share</th><th>Relative efficiency</th></tr></thead><tbody id="efficiencyRows"></tbody></table></div><div class="foot" id="efficiencyFoot">Awaiting a verified end-of-prep snapshot. Formula: (Alliance Prep Point Share ÷ Alliance Power Share) × 100. Governance thresholds are not part of this calculation.</div></section>
+<section class="grid2" id="kvkPanel"><div class="panel"><h2>Agreement Compliance</h2><small>Only documented deviations from the agreed KvK rules</small><div class="scroll"><table><thead><tr><th>Alliance</th><th>Power change</th><th>Castle upgrades</th><th>Confirmed deviations</th><th>Status</th></tr></thead><tbody id="compliance"></tbody></table></div><div class="foot">An increase is not automatically a violation. Exceptions and documented rules must be checked first.</div></div><div class="panel"><h2>Matchmaking Risk · Known Scores</h2><small>Internal NXS risk status · not a cross-alliance percentage</small><div class="risk"><div class="donut" data-status="unassessed" role="img" aria-label="Risk not assessed"><span>Not assessed</span></div><ul id="riskList"></ul></div><div class="foot">No risk shares are calculated without verified inputs and a documented calculation method.</div></div></section><section class="panel" id="efficiencyPanel"><h2>Relative KvK Prep Efficiency</h2><small>Verified prep-point share compared with verified server power share</small><div class="scroll"><table><thead><tr><th>Alliance</th><th>Prep points</th><th>Prep share</th><th>Power share</th><th>Relative efficiency</th></tr></thead><tbody id="efficiencyRows"></tbody></table></div><div class="foot" id="efficiencyFoot">Awaiting a verified end-of-prep snapshot. Formula: (Alliance Prep Point Share ÷ Alliance Power Share) × 100. Governance thresholds are not part of this calculation.</div>
+<details class="eff-entry" id="efficiencyEntry"><summary>＋ Enter end-of-prep snapshot</summary><div class="eff-form">
+<div class="eff-meta"><label>Snapshot date<input id="effDate" type="date"></label><label>Server total prep points<input id="effServerPrep" type="number" min="0" step="1" inputmode="numeric" placeholder="e.g. 1250000000"></label><label>Server total power (M)<input id="effServerPower" type="number" min="0" step="0.1" inputmode="decimal" placeholder="e.g. 85000"></label></div>
+<div id="effAllianceInputs"></div>
+<div class="eff-actions"><button type="button" id="effUseCurrentPower">Use current alliance power</button><button type="button" id="effSave">Save snapshot locally</button><button type="button" id="effClear">Clear local snapshots</button></div>
+<div class="eff-status" id="effInputStatus">Stored only in this browser. Nothing is written to Supabase or GitHub.</div>
+</div></details></section>
 <div class="foot">Analysis scope: four Outpost alliances only. This test view is read-only and does not expose internal player records or invent historical trends.</div>
 </main><script>
 /* Provisional aggregates only. Never expose individual member rows through this public preview. */
@@ -20,6 +26,14 @@ let snapshots;
 try{const response=await fetch(dataUrl,{cache:'no-store'});if(!response.ok)throw Error('Snapshot HTTP '+response.status);snapshots=await response.json();}
 catch(err){document.getElementById('info').textContent='Snapshot data currently unavailable. The dashboard is showing safe empty states.';console.warn('Alliance snapshot',err);return;}
 const names=['NXS','MYM','FRA','OoO'],display={NXS:'NXS',MYM:'MYM',FRA:'FRA',OoO:'OoO'};
+const EFFICIENCY_KEY='nexus.kvkEfficiencySnapshots.v1';
+let efficiencyHistory=[];
+try{
+ const stored=JSON.parse(localStorage.getItem(EFFICIENCY_KEY)||'[]');
+ if(Array.isArray(stored))efficiencyHistory=stored.filter(x=>x&&typeof x==='object').slice(-20);
+}catch(_){}
+if(efficiencyHistory.length)snapshots.kvk_efficiency=efficiencyHistory[efficiencyHistory.length-1];
+
 const sectionMode=new URLSearchParams(location.search).get('section');
 let selected=sectionMode==='trends'?'NXS':'ALL',perspective=sectionMode==='kvk'?'kvk':'competitive';
 if(sectionMode==='comparison'||sectionMode==='trends'||sectionMode==='kvk'){
@@ -30,6 +44,28 @@ if(sectionMode==='comparison'||sectionMode==='trends'||sectionMode==='kvk'){
  document.querySelector('.tabs').hidden=true;
 }
 const $=id=>document.getElementById(id);
+const allianceInputHost=$('effAllianceInputs');
+for(const name of names){
+ const row=document.createElement('div');row.className='eff-alliance-row';
+ const title=document.createElement('strong');title.textContent=display[name];
+ const prep=document.createElement('label');prep.textContent='Prep points';const prepInput=document.createElement('input');prepInput.type='number';prepInput.min='0';prepInput.step='1';prepInput.inputMode='numeric';prepInput.id='effPrep_'+name;prep.appendChild(prepInput);
+ const power=document.createElement('label');power.textContent='Power (M)';const powerInput=document.createElement('input');powerInput.type='number';powerInput.min='0';powerInput.step='0.1';powerInput.inputMode='decimal';powerInput.id='effPower_'+name;power.appendChild(powerInput);
+ row.append(title,prep,power);allianceInputHost.appendChild(row);
+}
+function latestEfficiency(){return efficiencyHistory.length?efficiencyHistory[efficiencyHistory.length-1]:null;}
+function fillEfficiencyForm(snapshot){
+ if(!snapshot)return;
+ $('effDate').value=snapshot.snapshot_date||'';
+ $('effServerPrep').value=Number.isFinite(Number(snapshot.server_prep_points))?snapshot.server_prep_points:'';
+ $('effServerPower').value=Number.isFinite(Number(snapshot.server_power_m))?snapshot.server_power_m:'';
+ for(const name of names){
+  const row=snapshot.alliances?.[name]||{};
+  $('effPrep_'+name).value=Number.isFinite(Number(row.prep_points))?row.prep_points:'';
+  $('effPower_'+name).value=Number.isFinite(Number(row.power_m))?row.power_m:'';
+ }
+}
+fillEfficiencyForm(latestEfficiency());
+
 const formatPower=x=>(x/1000).toLocaleString('en-US',{maximumFractionDigits:2,minimumFractionDigits:2})+'B';
 const count=x=>x.toLocaleString('en-US');
 const empty='Not yet collected';
@@ -99,8 +135,8 @@ function render(){
   for(const v of vals){const td=document.createElement('td');td.textContent=v;tr.appendChild(td);}efficiencyBody.appendChild(tr);
  }
  $('efficiencyFoot').textContent=efficiencyReady
-  ?'Snapshot '+(efficiency.snapshot_date||snapshots.snapshot_date||'date unavailable')+' · Formula: (Alliance Prep Point Share ÷ Alliance Power Share) × 100. 100% means prep contribution is proportional to the recorded power share. Governance thresholds are shown nowhere in this calculation.'
-  :'Awaiting a verified end-of-prep snapshot with server total prep points and server total power. Formula: (Alliance Prep Point Share ÷ Alliance Power Share) × 100. Governance thresholds are not part of this calculation.';
+  ?'Snapshot '+(efficiency.snapshot_date||snapshots.snapshot_date||'date unavailable')+' · Formula: (Alliance Prep Point Share ÷ Alliance Power Share) × 100. 100% means prep contribution is proportional to the recorded power share. Governance thresholds are shown nowhere in this calculation. Local snapshots: '+efficiencyHistory.length+'.'
+  :'Awaiting a verified end-of-prep snapshot with server total prep points and server total power. Formula: (Alliance Prep Point Share ÷ Alliance Power Share) × 100. Governance thresholds are not part of this calculation. Local snapshots: '+efficiencyHistory.length+'.';
  const powerChart=$('powerChart'),upgradeChart=$('upgradeChart');
  function plotBars(container,entries,suffix,limit){
    container.replaceChildren();
@@ -143,6 +179,39 @@ function render(){
 document.querySelectorAll('.alliance').forEach(b=>b.addEventListener('click',()=>{selected=b.dataset.a;render();}));
 for(const id of ['kvk','competitive'])$(id).addEventListener('click',()=>{perspective=id;render();});
 $('period').addEventListener('change',render);
+$('effUseCurrentPower').addEventListener('click',()=>{
+ for(const name of names){const p=snapshots.alliances[name]?.power_m;$('effPower_'+name).value=Number.isFinite(p)?p:'';}
+ $('effInputStatus').textContent='Current recorded alliance power values copied into the form.';
+});
+$('effSave').addEventListener('click',()=>{
+ const date=$('effDate').value,serverPrep=Number($('effServerPrep').value),serverPower=Number($('effServerPower').value);
+ if(!date||!Number.isFinite(serverPrep)||serverPrep<=0||!Number.isFinite(serverPower)||serverPower<=0){$('effInputStatus').textContent='Enter a date, server total prep points and server total power first.';return;}
+ const alliances={};let missing=false;
+ for(const name of names){
+  const prep=Number($('effPrep_'+name).value),power=Number($('effPower_'+name).value);
+  if(!Number.isFinite(prep)||prep<0||!Number.isFinite(power)||power<=0){missing=true;break;}
+  alliances[name]={prep_points:prep,power_m:power};
+ }
+ if(missing){$('effInputStatus').textContent='Enter prep points and power for all four alliances.';return;}
+ const entry={snapshot_date:date,server_prep_points:serverPrep,server_power_m:serverPower,alliances};
+ const same=efficiencyHistory.findIndex(x=>x.snapshot_date===date);
+ if(same>=0)efficiencyHistory[same]=entry;else efficiencyHistory.push(entry);
+ efficiencyHistory.sort((a,b)=>String(a.snapshot_date).localeCompare(String(b.snapshot_date)));
+ efficiencyHistory=efficiencyHistory.slice(-20);
+ try{localStorage.setItem(EFFICIENCY_KEY,JSON.stringify(efficiencyHistory));}catch(_){}
+ snapshots.kvk_efficiency=entry;
+ $('effInputStatus').textContent='Snapshot '+date+' saved locally. Relative efficiency recalculated.';
+ render();
+});
+$('effClear').addEventListener('click',()=>{
+ if(!confirm('Clear all locally stored KvK efficiency snapshots on this device?'))return;
+ efficiencyHistory=[];try{localStorage.removeItem(EFFICIENCY_KEY);}catch(_){}
+ delete snapshots.kvk_efficiency;
+ $('effDate').value='';$('effServerPrep').value='';$('effServerPower').value='';
+ for(const name of names){$('effPrep_'+name).value='';$('effPower_'+name).value='';}
+ $('effInputStatus').textContent='Local efficiency snapshots cleared. No other NEXUS data was changed.';
+ render();
+});
 render();
 })();
 </script></body></html>
