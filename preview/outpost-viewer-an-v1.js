@@ -156,7 +156,7 @@
 #mapReportPanel textarea{min-height:170px;max-height:35dvh;resize:vertical;font:12px/1.5 monospace;white-space:pre}
 #mapReportPanel button{margin:9px 8px 0 0;padding:9px 12px;border-radius:7px;border:1px solid #a5814b;background:#efd09b;color:#332111;font-weight:700}
 #mapReportPanel small{display:block;color:#ead1a5;margin-top:7px}
-\`;
+`;
   document.head.appendChild(reportStyle);
   const reportButton = document.createElement('button');
   reportButton.type = 'button';
