@@ -155,3 +155,12 @@ For lengthy reports, the formatter may pair short items on one line to preserve 
 Based on the in-game numeric test (128 three-digit numbers and 127 spaces arrived, totaling 511 characters), the exact Kingshot maximum is **not yet formally confirmed**. Use a conservative **480 UTF-16 code-unit** ceiling for each copyable message (including spaces, newlines, part labels and both footer lines). The public Outpost Map preview now calls `splitReportForKingshot(report, 480)` **after** generating the complete report. Single messages of 480 characters or fewer remain unchanged; larger ones are split **only between complete report-entry lines**. Every numbered part includes the same source timestamp, verification status and `Provided by Nexus App` attribution. No data row is discarded. An entry that cannot be kept whole under the limit triggers an explicit error instead of silent truncation.
 
 The report preview uses one existing Copy button and shows a compact Part selector **only when required**, allowing players to copy and paste each individual part into Kingshot. The Map and all editing rights remain unchanged. Verify actual Kingshot delivery for multi-part results before general release. The isolated test page is `preview/outpost-report-v7.html`.
+
+## Dual-platform export (test implementation, 2026-09-30)
+
+The same **publicly published outposts** can now be exported from the existing report dialog in either of two English-only formats, without adding controls to the map itself:
+
+- **Kingshot · Compact:** the previously approved compact one-line-or-paired outpost format; each copyable part stays within a conservative 480 characters, with the timestamp, status and `Provided by Nexus App` attribution retained on every part.
+- **Discord · Detailed:** all entries appear individually with numbering, a readable heading and explicit source-update and verification labels. Standard Discord messages are *not unlimited*: long reports are automatically divided into parts of at most 1,900 characters, preserving complete records and the source footer on each part. Each part has its own copy action using the existing Part selector.
+
+Both modes use the same published source records; neither automatically marks records Verified or changes map data. The provisional quadrant aliases remain subject to confirmation. This feature is available for user testing at `preview/outpost-report-v8.html`. Do not claim it was tested inside the Discord app until a tester confirms rendering there.
