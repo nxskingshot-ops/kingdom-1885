@@ -144,7 +144,7 @@
   // Uses exactly the published data displayed by the map; never guesses sectors or verification.
   const reportModuleURL = new URL('../reports/alliance-chat-report.js', document.currentScript?.src || location.href).href;
   const reportStyle = document.createElement('style');
-  reportStyle.textContent = \`
+  reportStyle.textContent = `
 #mapCopyReport{background:#f1d19a;color:#523719;border:1px solid #b58a4c;border-radius:8px;padding:7px 9px;font-size:11px;font-weight:800}
 #mapCopyReport:disabled{opacity:.5}
 #mapReportOverlay{position:fixed;inset:0;z-index:9999;background:#100c09b8;display:flex;align-items:center;justify-content:center;padding:12px}
