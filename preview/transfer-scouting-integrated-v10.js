@@ -18,9 +18,16 @@ function toggleMeta(which,edit){
 }
 const statuses=["Scouted","Contacted","Interested","Negotiating","Confirmed","Needs Review","Declined"];
 const roles=["Rally Lead","Fighter","Joiner","R4 / R5 Potential","Group Contact","Support"];
-// Provisional planning cap; actual Kingshot limits must be confirmed.
-const INVITATION_CAP_M=170;
-function invitationType(p){if(["Ordinary","Special","To confirm"].includes(p.invitationType))return p.invitationType;if(p.power===null||p.power===undefined||p.power==="")return "To confirm";const power=Number(p.power);return Number.isFinite(power)&&power>=0?(power<=INVITATION_CAP_M?"Ordinary":"Special"):"To confirm";}
+// Invite type depends on the target kingdom's transfer-event Power Cap.
+// There is no universal fixed 170M threshold; keep it unknown until the current in-game cap is recorded.
+const INVITATION_CAP_M=null;
+function invitationType(p){
+ if(["Ordinary","Special","To confirm"].includes(p.invitationType))return p.invitationType;
+ if(INVITATION_CAP_M===null)return "To confirm";
+ if(p.power===null||p.power===undefined||p.power==="")return "To confirm";
+ const power=Number(p.power);
+ return Number.isFinite(power)&&power>=0?(power<=INVITATION_CAP_M?"Ordinary":"Special"):"To confirm";
+}
 const defaultPlayers=[
 ["Astra Vale","1768","AUR","Rally Lead","TG5",218.4,88,"Scouted","Possible Special","High","English","UTC+1"],
 ["Nyx Ember","1812","NOVA","Fighter","TG5",164.1,84,"Contacted","Likely Eligible","High","English","UTC+2"],
@@ -194,8 +201,9 @@ function recruitmentAssessment(ids){
  const summary=section("1 · Recruitment Summary");
  const ordinary=ids.filter(p=>invitationType(p)==="Ordinary"),special=ids.filter(p=>invitationType(p)==="Special");
  summary(ids.map(p=>p.name+" · "+(p.role||"Role unknown")+" · "+fmt(p.power)+"M · "+invitationType(p)+" invitation (provisional) · "+(p.status||"Status unknown")).join(" | "));
- if(ordinary.length&&special.length)summary("At the demo planning cap of "+INVITATION_CAP_M+"M, "+ordinary.map(p=>p.name).join(", ")+" fall(s) within ordinary-invitation planning; "+special.map(p=>p.name).join(", ")+" require(s) special-invitation planning. Verify official rules.");
- else summary("The "+INVITATION_CAP_M+"M ordinary-invitation limit is a fictional planning assumption, not an official game rule.");
+ if(INVITATION_CAP_M===null)summary("Invite type cannot be inferred from Total Power alone until the current target kingdom Power Cap is recorded from the active transfer event.");
+ else if(ordinary.length&&special.length)summary("At the recorded planning cap of "+INVITATION_CAP_M+"M, "+ordinary.map(p=>p.name).join(", ")+" fall(s) within ordinary-invitation planning; "+special.map(p=>p.name).join(", ")+" require(s) special-invitation planning. Verify the current in-game rules.");
+ else summary("The recorded planning cap is "+INVITATION_CAP_M+"M for this snapshot; confirm it in-game for each transfer window.");
  const comparison=section("2 · Development Comparison");
  comparison("Mystic Trials recorded: "+ids.map(p=>p.name+" "+stageCount(p)+"/6").join("; ")+".");
  const diffTable=document.createElement("table");diffTable.className="assessment-trials-table";
@@ -219,8 +227,9 @@ function recruitmentAssessment(ids){
  const roles=new Map();for(const p of ids){const role=p.role||"Not recorded";if(!roles.has(role))roles.set(role,[]);roles.get(role).push(p.name);}
  if(roles.size>1)conclusion("Recorded role matches: "+[...roles].map(([role,names])=>role+" — "+names.join(", ")).join("; ")+". The actual NXS vacancy determines which match is relevant.");
  else conclusion("All selected profiles show the role "+[...roles.keys()][0]+"; the recorded role does not distinguish them.");
- if(ordinary.length===1&&special.length===1)conclusion("For an ordinary-invitation vacancy under the provisional cap, "+ordinary[0].name+" is within the planning limit; "+special[0].name+" would need special-invitation planning. Neither condition proves actual transfer eligibility.");
- else conclusion("Invitation requirement: "+ids.map(p=>p.name+" — "+invitationType(p)).join("; ")+". Verify these estimates against official limits.");
+ if(INVITATION_CAP_M===null)conclusion("Invitation requirement remains to confirm until the target kingdom's current Power Cap is known. Special Invites are relevant only for players above that cap.");
+ else if(ordinary.length===1&&special.length===1)conclusion("For an ordinary-invitation vacancy under the recorded cap, "+ordinary[0].name+" is within the planning limit; "+special[0].name+" would need special-invitation planning. Neither condition proves actual transfer eligibility.");
+ else conclusion("Invitation requirement: "+ids.map(p=>p.name+" — "+invitationType(p)).join("; ")+". Verify these estimates against the current in-game cap.");
  conclusion("Contact progress: "+ids.map(p=>p.name+" — "+(p.status||"Not recorded")).join("; ")+".");
  conclusion("No overall better candidate can be established without the specific opening and evidence of battle performance, participation and confirmed transfer eligibility.");
  const note=document.createElement("p");note.className="assessment-disclaimer";note.textContent="Fictional demo assessment · Editable fit scores, Total Power and trial stages are not proof of combat strength or reliability.";out.append(note);
