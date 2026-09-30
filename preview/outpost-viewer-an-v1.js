@@ -188,9 +188,11 @@
     reportText.value = reportParts[partIndex] || '';
     reportText.scrollTop = 0;
     $('mapReportCopy').disabled = !reportText.value;
-    $('mapReportCopy').textContent = reportParts.length > 1
-      ? 'Copy Part ' + (partIndex + 1) + '/' + reportParts.length
-      : 'Copy All';
+    $('mapReportCopy').textContent = formatSelector.value === 'discord'
+      ? 'Copy Full Report'
+      : reportParts.length > 1
+        ? 'Copy Part ' + (partIndex + 1) + '/' + reportParts.length
+        : 'Copy All';
   }
   partSelector.onchange = showReportPart;
   formatSelector.onchange = updateReport;
@@ -239,7 +241,7 @@
     });
     try {
       reportParts = isDiscord
-        ? reportAPI.splitReportForDiscord(fullReport, 1900)
+        ? [fullReport] // Discord converts messages over its limit to a text attachment.
         : reportAPI.splitReportForKingshot(fullReport, 480);
     } catch (error) {
       reportParts = [];
@@ -258,7 +260,9 @@
     partSelector.hidden = reportParts.length <= 1;
     partSelector.value = '0';
     showReportPart();
-    reportInfo.textContent = (isDiscord ? 'Discord: up to 1900 characters per part. ' : 'Kingshot: up to 480 characters per part. ') +
+    reportInfo.textContent = (isDiscord
+      ? 'Discord: full report (' + fullReport.length + ' characters). Longer messages may be attached as a .txt file. '
+      : 'Kingshot: up to 480 characters per part. ') +
       (name ? 'Quadrant assignment provisional. ' : '') + 'Published outposts · Unverified.';
   }
   reportButton.onclick = () => {
@@ -294,7 +298,9 @@
   $('mapReportCopy').onclick = async () => {
     try {
       await navigator.clipboard.writeText(reportText.value);
-      reportInfo.textContent = 'Copied part ' + (Number(partSelector.value) + 1) + '/' + reportParts.length + ' · Ready for alliance chat.';
+      reportInfo.textContent = formatSelector.value === 'discord'
+        ? 'Full report copied · Paste into Discord (a long message may become a text attachment).'
+        : 'Copied part ' + (Number(partSelector.value) + 1) + '/' + reportParts.length + ' · Ready for alliance chat.';
     } catch (error) {
       reportText.focus();
       reportText.select();
