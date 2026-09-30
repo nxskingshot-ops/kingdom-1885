@@ -185,8 +185,8 @@
     // Provisional alliance-to-quadrant aliases, NOT geographical coordinate boundaries.
     // Do not mark Verified until the official allocation is confirmed.
     const proposedSectors = {
-      FRA: 'NORTHERN QUADRANT', NXS: 'EASTERN QUADRANT',
-      OOO: 'SOUTHERN QUADRANT', MYM: 'WESTERN QUADRANT'
+      FRA: 'NÖRDLICHER QUADRANT', NXS: 'ÖSTLICHER QUADRANT',
+      OOO: 'SÜDLICHER QUADRANT', MYM: 'WESTLICHER QUADRANT'
     };
     const selected = DATA.filter(item => selection === 'ALL' ||
       item.alliance.toUpperCase() === selection.toUpperCase());
@@ -214,8 +214,8 @@
     const previous = selector.value;
     const alliances = [...new Set(DATA.map(item => item.alliance))].sort();
     const sectors = {
-      FRA: 'Northern Quadrant', NXS: 'Eastern Quadrant',
-      OOO: 'Southern Quadrant', MYM: 'Western Quadrant'
+      FRA: 'Nördlicher Quadrant', NXS: 'Östlicher Quadrant',
+      OOO: 'Südlicher Quadrant', MYM: 'Westlicher Quadrant'
     };
     selector.replaceChildren();
     const appendOption = (value, label) => {
