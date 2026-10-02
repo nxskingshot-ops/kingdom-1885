@@ -201,14 +201,27 @@
   "validation": {
     "member_count_sum_matches_rank_headers": true,
     "app_data_switched": false,
-    "supabase_nxs_imported": false,
-    "notes": "Four-alliance aggregate comparison 2026-09-29 → 2026-10-02 is complete. Safe to publish aggregate Alliance Comparison/Trends data. NXS protected player-level KvK Controlling import remains separate and is not part of this aggregate release.",
+    "supabase_nxs_imported": true,
+    "notes": "Four-alliance aggregate comparison is complete and published. NXS protected player-level KvK Controlling snapshot for 2026-10-02 is imported and verified at 96 roster rows / 11498.4M. No layout or design changes were made.",
     "member_and_rank_comparison_complete": true,
     "power_and_castle_comparison_complete": true,
     "nxs_power_comparison_complete": true,
     "fra_power_and_castles_complete": true,
     "ooo_power_and_castles_complete": true,
     "mym_power_and_castles_complete": true,
-    "nxs_castles_complete": true
+    "nxs_castles_complete": true,
+    "nxs_kvk_snapshot_id": "KVK1885 | 29 Sep 2026 → 02 Oct 2026",
+    "nxs_kvk_import_summary": {
+      "tracked_players": 96,
+      "warning_count": 34,
+      "power_alerts": 30,
+      "castle_upgrades": 5,
+      "combined_alerts": 1,
+      "risk_score": 146.3,
+      "risk_label": "Critical",
+      "retained_growth_m": 163,
+      "net_change_m": 162.7,
+      "total_power_m": 11498.4
+    }
   }
 }
