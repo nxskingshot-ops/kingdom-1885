@@ -1,5 +1,5 @@
 // NEXUS: always request fresh network content; cache is used only when offline.
-const CACHE = 'kingdom-1885-nexus-20261002-v22';
+const CACHE = 'kingdom-1885-nexus-20261002-v23';
 const OFFLINE = ['./','./index.html','./preview/kingdom-hub-menu-test.html','./manifest.webmanifest','./nexus.webmanifest','./pwa-update.js','./icon-192.png','./icon-512.png'];
 self.addEventListener('install', event => event.waitUntil(
  caches.open(CACHE).then(c=>c.addAll(OFFLINE)).then(()=>self.skipWaiting())
