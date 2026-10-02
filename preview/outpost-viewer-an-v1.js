@@ -147,7 +147,7 @@
 
   // The only new public control: a self-contained report overlay.
   // Uses exactly the published data displayed by the map; never guesses sectors or verification.
-  const reportModuleURL = new URL('../reports/alliance-chat-report.js', document.currentScript?.src || location.href).href + '?build=discord-dual-export-v10';
+  const reportModuleURL = new URL('../reports/alliance-chat-report.js', document.currentScript?.src || location.href).href + '?build=discord-dual-export-v11';
   const reportStyle = document.createElement('style');
   reportStyle.textContent = `
 #viewerControls #mapCopyReport{background:#f1d19a;color:#523719;border:1px solid #b58a4c;border-radius:8px;padding:5px 7px;font-size:11px;font-weight:800;white-space:nowrap;min-height:27px}
