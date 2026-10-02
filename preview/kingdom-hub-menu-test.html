@@ -462,8 +462,10 @@ async function reviewNexusAccessRequest(id,action,grant,controls,card){
   if(action==='approve'||action==='reset'){
    const box=document.createElement('div');box.className='nexus-access-credentials';
    const heading=document.createElement('b');heading.textContent=action==='reset'?'✓ New login details — share privately:':'✓ Access created — share these login details privately:';
-   const email=document.createElement('code');email.textContent='Email: '+result.email;
-   const password=document.createElement('code');password.textContent='Password: '+result.password;
+   const email=document.createElement('code');email.textContent='Email: '+result.email;email.title='Tap to copy email';email.style.cursor='pointer';
+   const password=document.createElement('code');password.textContent='Password: '+result.password;password.title='Tap to copy password';password.style.cursor='pointer';
+   email.onclick=async()=>{try{await navigator.clipboard.writeText(result.email);nexusAccessAdminStatus.textContent='✓ Email copied.';}catch{nexusAccessAdminStatus.textContent='Clipboard unavailable.';}};
+   password.onclick=async()=>{try{await navigator.clipboard.writeText(result.password);nexusAccessAdminStatus.textContent='✓ Password copied.';}catch{nexusAccessAdminStatus.textContent='Clipboard unavailable.';}};
    const copyEmail=document.createElement('button');copyEmail.type='button';copyEmail.textContent='📧 Copy email';
    copyEmail.onclick=async()=>{
     try{await navigator.clipboard.writeText(result.email);nexusAccessAdminStatus.textContent='✓ Email copied.';}
