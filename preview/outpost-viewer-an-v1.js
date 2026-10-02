@@ -147,7 +147,7 @@
 
   // The only new public control: a self-contained report overlay.
   // Uses exactly the published data displayed by the map; never guesses sectors or verification.
-  const reportModuleURL = new URL('../reports/alliance-chat-report.js', document.currentScript?.src || location.href).href + '?build=discord-dual-export-v12';
+  const reportModuleURL = new URL('../reports/alliance-chat-report.js', document.currentScript?.src || location.href).href + '?build=discord-dual-export-v13';
   const reportStyle = document.createElement('style');
   reportStyle.textContent = `
 #viewerControls #mapCopyReport{background:#f1d19a;color:#523719;border:1px solid #b58a4c;border-radius:8px;padding:5px 7px;font-size:11px;font-weight:800;white-space:nowrap;min-height:27px}
@@ -232,12 +232,17 @@
     const updatedAt = times.length && times.length === selected.length
       ? new Date(Math.max(...times)) : null;
     const isDiscord = formatSelector.value === 'discord';
+    const reportRows = selected.map(item => ({
+      ...item,
+      alliance: String(item.alliance || '').trim()
+    }));
     const fullReport = (isDiscord ? reportAPI.makeDiscordOutpostReport : reportAPI.makeOutpostReport)({
       sector: sectorLabel,
-      outposts: selected,
+      outposts: reportRows,
       sourceUpdatedAt: updatedAt,
       verified: true,
-      kingshotCompact: !isDiscord
+      kingshotCompact: !isDiscord,
+      includeAlliance: isDiscord
     });
     try {
       reportParts = isDiscord
