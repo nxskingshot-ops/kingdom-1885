@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nexus App — Outpost Test</title>
+<style>
+:root{color-scheme:dark}body{margin:0;background:#101319;color:#f2ead9;font-family:system-ui,-apple-system,sans-serif}header{padding:22px 18px;background:#171c25;border-bottom:1px solid #9d7a35}h1{margin:0;color:#d9b45d;font-size:22px}small{color:#aaa}.wrap{padding:16px;max-width:760px;margin:auto}.card{background:#191f29;border:1px solid #5c4b2b;border-radius:14px;padding:14px;margin:10px 0}.top{display:flex;justify-content:space-between;gap:10px}.badge{background:#2b3443;border-radius:999px;padding:4px 9px;font-weight:700}.status{font-size:13px;color:#cfc6b3;margin-top:8px}.note{background:#221f18;border-left:3px solid #d9b45d;padding:12px;margin:14px 0}.muted{opacity:.7}</style></head>
+<body><header><h1>Nexus App · Outpost Test</h1><small>Kingdom #1885 · isolated test build</small></header>
+<div class="wrap"><div class="note"><b>NXS current snapshot</b><br>12 occupied outpost entries captured from the supplied screenshot. Names and coordinates remain unverified until map matching.</div>
+<div id="list"></div></div>
+<script>
+const rows=[
+[1,"Vulnerable","00:12:20"],[3,"Vulnerable","15:00:58"],[1,"Vulnerable","18:03:01"],[4,"Vulnerable","21:19:36"],
+[2,"Inactive / Protected","02:24:17"],[2,"Inactive / Protected","2d 02:28:47"],[1,"Inactive / Protected","2d 12:07:43"],
+[4,"Protected","05:20:18"],[2,"Protected","14:39:58"],[2,"Protected","1d 09:45:54"],[2,"Bonus incompatible / Protected","1d 13:47:52"],[1,"Protected","2d 10:44:15"]
+];
+document.querySelector("#list").innerHTML=rows.map((r,i)=>`<div class="card"><div class="top"><b>NXS Outpost ${String(i+1).padStart(2,"0")}</b><span class="badge">L${r[0]}</span></div><div class="status">${r[1]} · ${r[2]}</div><div class="muted">Name: unverified · Coordinates: unverified</div></div>`).join("");
+</script></body></html>
