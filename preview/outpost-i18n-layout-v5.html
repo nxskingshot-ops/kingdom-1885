@@ -69,6 +69,8 @@ if(detailsPanel){
 doc.addEventListener('click',event=>{
  const control=event.target?.closest?.('button,[role="button"]');
  if(!control)return;
+ const fullLabel=[control.id,control.getAttribute('aria-label'),control.getAttribute('title'),control.textContent].filter(Boolean).join(' ');
+ if(/full[\\s-]?screen|vollbild|⛶|⤢/i.test(fullLabel)){control.style.setProperty('display','none','important');return;}
  const label=[control.id,control.getAttribute('aria-label'),control.getAttribute('title'),control.getAttribute('data-action'),control.textContent].filter(Boolean).join(' ');
  if(!/full[\s-]?screen|vollbild|⛶|⤢/i.test(label))return;
  try{
@@ -118,7 +120,7 @@ function enforceSingleHeader(){
  if(badge)badge.style.setProperty('display','none','important');
  for(const [key,val] of Object.entries({position:'absolute',left:'auto',right:'6px',top:'6px',width:'auto',height:'auto',background:'transparent',border:'0',boxShadow:'none'}))tools.style.setProperty(key.replace(/[A-Z]/g,m=>'-'+m.toLowerCase()),val,'important');
 }
-script.onload=()=>{status.hidden=true;enforceSingleHeader();requestAnimationFrame(()=>{enforceSingleHeader();fillOnStartup()});setTimeout(()=>{enforceSingleHeader();selectNativeCover()},1200)};
+script.onload=()=>{status.hidden=true;enforceSingleHeader();requestAnimationFrame(()=>{enforceSingleHeader();fillOnStartup()});setTimeout(()=>{enforceSingleHeader();selectNativeCover()},1200);setTimeout(()=>{const d=frame.contentDocument;if(!d)return;for(const b of d.querySelectorAll('button,[role="button"]')){const s=[b.id,b.getAttribute('aria-label'),b.getAttribute('title'),b.textContent].filter(Boolean).join(' ');if(/full[\\s-]?screen|vollbild|⛶|⤢/i.test(s))b.style.setProperty('display','none','important');}const intel=d.getElementById('outpostIntelButton');if(intel)intel.style.setProperty('display','none','important');},350)};
 script.onerror=()=>{status.textContent='Live controls unavailable · reload to retry'};
 doc.body.appendChild(script);
 setTimeout(()=>{if(!status.hidden&&status.textContent==='Loading Kingdom #1885…')status.textContent='Still loading map…';},12000)
