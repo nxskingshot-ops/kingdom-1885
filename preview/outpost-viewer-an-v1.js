@@ -306,7 +306,8 @@
   document.head.appendChild(intelStyle);
   function showIntelSummary(){const counts={};DATA.forEach(item=>{counts[item.alliance]=(counts[item.alliance]||0)+1});$('outpostIntelSummary').innerHTML=Object.entries(counts).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0])).map(([name,count])=>'<span><b>'+name+'</b> · '+count+'</span>').join('');}
   const openReport=reportButton.onclick;
-  intelButton.onclick=()=>{if(!hasLiveSnapshot)return;showIntelSummary();intel.hidden=false;};
+  async function loadIntelHistory(){const box=$('outpostIntelHistory');box.textContent='Loading…';try{const response=await fetch(API+'/rest/v1/outpost_ownership_history?select=structure_type,level,coord_x,coord_y,previous_owner,new_owner,status,reported_by,event_time,recorded_at&order=recorded_at.desc&limit=20',{headers:{apikey:KEY},cache:'no-store'});if(!response.ok)throw Error('HTTP '+response.status);const rows=await response.json();box.replaceChildren();if(!rows.length){const empty=document.createElement('div');empty.textContent='No ownership changes recorded yet.';box.appendChild(empty);return;}for(const row of rows){const item=document.createElement('div');const first=document.createElement('b');first.textContent=row.status||'Change';item.append(first,document.createTextNode(' · '+row.structure_type+' L'+row.level+' · '+row.coord_x+','+row.coord_y),document.createElement('br'),document.createTextNode(row.previous_owner+' → '+row.new_owner+(row.reported_by?' · '+row.reported_by:'')));box.appendChild(item);}}catch(error){box.textContent='Ownership history unavailable.';}}
+  intelButton.onclick=()=>{if(!hasLiveSnapshot)return;showIntelSummary();intel.hidden=false;loadIntelHistory();};
   $('outpostIntelClose').onclick=()=>{intel.hidden=true;};
   $('outpostIntelReport').onclick=()=>{intel.hidden=true;openReport();};
   intel.addEventListener('click',event=>{if(event.target===intel)intel.hidden=true;});
