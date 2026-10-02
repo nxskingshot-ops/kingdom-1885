@@ -14,7 +14,7 @@ const frame=document.getElementById('kingdom'),status=document.getElementById('l
 frame.addEventListener('load',()=>{try{
 const doc=frame.contentDocument;if(!doc||!doc.body)throw Error('map unavailable');
 const script=doc.createElement('script');
-script.src=new URL('./outpost-viewer-an-v1.js?build=quadrant-selector-fixed-footer-v4',location.href).href;
+script.src=new URL('./outpost-viewer-an-v1.js?build=outpost-intelligence-v25',location.href).href;
 // Hide an extra NEXUS shell, if the embedded map contains one.
 const nestedStyle=doc.createElement('style');
 nestedStyle.textContent='.shared{display:none!important}body:has(>.shared) #bar{display:none!important}body:has(>.shared)>iframe{height:100%!important;flex:1 1 auto!important}/* NEXUS test: no second title strip; compact controls float over the map. */#app{grid-template-rows:0 minmax(0,1fr) 42px!important;--toolbar-h:0px!important}#app>.top{display:none!important}#mapTools{position:absolute!important;left:auto!important;right:6px!important;top:6px!important;width:auto!important;height:auto!important;min-height:0!important;padding:0!important;gap:4px!important;background:transparent!important;border:0!important;box-shadow:none!important}#mapTools .mapbrand,#mapTools #healthBadge{display:none!important}#mapTools button{min-height:27px!important;padding:4px 6px!important}';
@@ -74,7 +74,31 @@ function enforceSingleHeader(){
  if(badge)badge.style.setProperty('display','none','important');
  for(const [key,val] of Object.entries({position:'absolute',left:'auto',right:'6px',top:'6px',width:'auto',height:'auto',background:'transparent',border:'0',boxShadow:'none'}))tools.style.setProperty(key.replace(/[A-Z]/g,m=>'-'+m.toLowerCase()),val,'important');
 }
-script.onload=()=>{status.hidden=true;enforceSingleHeader();requestAnimationFrame(()=>{enforceSingleHeader();fillOnStartup()});setTimeout(()=>{enforceSingleHeader();selectNativeCover()},1200)};
+function wireNativeBottomBar(){
+ const d=frame.contentDocument;if(!d)return;
+ const app=d.getElementById('app');
+ if(!app)return;
+ // Restore the map's own bottom row explicitly; this is the navigation source.
+ app.style.setProperty('grid-template-rows','0px minmax(0,1fr) 42px','important');
+ const candidates=[...d.querySelectorAll('nav,footer,[role="navigation"],[role="tablist"],.bottom,.bottom-nav,.bottomNav,#bottomNav,#bottomBar,#tabs,.tabs,.tabbar')];
+ const bar=candidates.find(el=>{const t=(el.textContent||'').replace(/\\s+/g,' ');return /Map/i.test(t)&&/List/i.test(t)&&/Statistics/i.test(t)&&/Settings/i.test(t);});
+ if(!bar)return;
+ bar.style.setProperty('display','grid','important');
+ bar.style.setProperty('visibility','visible','important');
+ bar.style.setProperty('opacity','1','important');
+ if(!d.getElementById('nexusNativeIntelTab')){
+  const settings=[...bar.querySelectorAll('button,[role="button"],[role="tab"]')].find(el=>/Settings/i.test(el.textContent||''));
+  if(settings){
+   const intel=settings.cloneNode(true);intel.id='nexusNativeIntelTab';intel.removeAttribute('aria-current');intel.removeAttribute('aria-pressed');
+   const walker=d.createTreeWalker(intel,NodeFilter.SHOW_TEXT);let n,changed=false;while(n=walker.nextNode()){if(/Settings/i.test(n.nodeValue)){n.nodeValue=n.nodeValue.replace(/Settings/i,'Intelligence');changed=true;}}
+   if(!changed)intel.textContent='⌕ Intelligence';
+   bar.insertBefore(intel,settings);
+   intel.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();d.getElementById('outpostIntelButton')?.click();});
+  }
+ }
+ const floating=d.getElementById('outpostIntelButton');if(floating)floating.style.setProperty('display','none','important');
+}
+script.onload=()=>{status.hidden=true;enforceSingleHeader();wireNativeBottomBar();requestAnimationFrame(()=>{enforceSingleHeader();wireNativeBottomBar();fillOnStartup()});setTimeout(()=>{enforceSingleHeader();wireNativeBottomBar();selectNativeCover()},350);setTimeout(wireNativeBottomBar,1200)};
 script.onerror=()=>{status.textContent='Live controls unavailable · reload to retry'};
 doc.body.appendChild(script);
 setTimeout(()=>{if(!status.hidden&&status.textContent==='Loading Kingdom #1885…')status.textContent='Still loading map…';},12000)
