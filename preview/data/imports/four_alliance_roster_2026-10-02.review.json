@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "snapshot_date": "2026-10-02",
+  "status": "REVIEW_REQUIRED",
+  "source": "User-supplied Kingshot alliance roster screenshots in ChatGPT conversation, 2026-10-02",
+  "publication_policy": "Aggregate-only staging record. No individual player names or player-level power values are published here.",
+  "alliances": {
+    "NXS": {
+      "member_count": 96,
+      "ranks": {
+        "R5": 1,
+        "R4": 9,
+        "R3": 83,
+        "R2": 2,
+        "R1": 1
+      },
+      "power_m": null,
+      "castles": null,
+      "verification": "rank counts verified from screenshot headers; power/castle aggregation pending"
+    },
+    "FRA": {
+      "member_count": 99,
+      "ranks": {
+        "R5": 1,
+        "R4": 11,
+        "R3": 85,
+        "R2": 0,
+        "R1": 2
+      },
+      "power_m": null,
+      "castles": null,
+      "verification": "rank counts verified from screenshot headers; power/castle aggregation pending"
+    },
+    "OoO": {
+      "member_count": 100,
+      "ranks": {
+        "R5": 1,
+        "R4": 13,
+        "R3": 66,
+        "R2": 15,
+        "R1": 5
+      },
+      "power_m": null,
+      "castles": null,
+      "verification": "rank counts verified from screenshot headers; power/castle aggregation pending"
+    },
+    "MYM": {
+      "member_count": 99,
+      "ranks": {
+        "R5": 1,
+        "R4": 10,
+        "R3": 85,
+        "R2": 3,
+        "R1": 0
+      },
+      "power_m": null,
+      "castles": null,
+      "verification": "rank counts verified from screenshot headers; power/castle aggregation pending"
+    }
+  },
+  "validation": {
+    "member_count_sum_matches_rank_headers": true,
+    "app_data_switched": false,
+    "supabase_nxs_imported": false,
+    "notes": "Do not point Alliance Trends/Comparison to this staging file and do not import NXS into protected KvK tables until player-level transcription and previous-snapshot matching are complete."
+  }
+}
