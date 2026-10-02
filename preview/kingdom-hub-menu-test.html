@@ -64,12 +64,35 @@ html:fullscreen body{padding:env(safe-area-inset-top) env(safe-area-inset-right)
 #nexusMenu #languageTestRow{border:0!important;margin:0!important;padding:0!important;gap:5px!important}
 #nexusMenu #languageTestRow button{margin:0;padding:9px 5px;text-align:center}
 @media (orientation:landscape) and (min-width:680px){
- #nexusMenu{width:min(520px,calc(100vw - 28px));max-height:calc(100dvh - 56px);padding:8px}
- .nexus-menu-group{padding:6px;margin-bottom:6px}
- .nexus-menu-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #nexusMenu{
+  width:min(560px,calc(100vw - 20px));
+  max-height:calc(100dvh - 46px);
+  padding:6px;
+  overflow:hidden;
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:5px;
+  align-content:start;
+ }
+ .nexus-menu-group{padding:5px;margin:0;min-width:0}
+ .nexus-menu-group-title{font-size:9px;margin-bottom:4px;letter-spacing:.9px}
+ .nexus-menu-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
+ .nexus-menu-group[data-group="kingdom"]{grid-column:1}
+ .nexus-menu-group[data-group="scouting"]{grid-column:2}
+ .nexus-menu-group[data-group="management"]{grid-column:1}
+ .nexus-menu-group[data-group="access"]{grid-column:2}
+ .nexus-menu-group[data-group="app"]{grid-column:1 / -1}
  .nexus-menu-group[data-group="kingdom"] .nexus-menu-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
- .nexus-menu-group[data-group="app"] .nexus-menu-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
- #nexusMenu .nexus-menu-grid>button{padding:8px 9px;min-height:36px;font-size:12px;white-space:normal}
+ .nexus-menu-group[data-group="app"] .nexus-menu-grid{grid-template-columns:repeat(5,minmax(0,1fr))}
+ #nexusMenu .nexus-menu-grid>button{
+  padding:6px 7px;
+  min-height:32px;
+  font-size:10px;
+  line-height:1.15;
+  white-space:normal;
+  overflow-wrap:anywhere;
+ }
+ #nexusMenu #languageTestRow button{padding:6px 4px;font-size:10px;min-height:32px}
 }
 
 #nexusFeedback{position:fixed;z-index:2147483500;inset:0;background:#000b;display:flex;align-items:center;justify-content:center;padding:12px}
