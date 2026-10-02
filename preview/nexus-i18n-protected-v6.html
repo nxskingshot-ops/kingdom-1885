@@ -108,24 +108,102 @@ body.kvk.kvk-control #kvkControlling{display:block!important}
 body.kvk.kvk-comparison #kvk,body.kvk.kvk-trends #kvk{display:none!important}
 body.kvk.kvk-comparison #allianceComparison,body.kvk.kvk-trends #allianceTrends{display:block!important}
 @media(max-height:420px){#kvkSubnav{padding:2px 6px;gap:5px}#kvkSubnav button{min-height:25px;padding:3px 8px;font-size:11px}}
-/* Scouting entries remain vertically stacked even in landscape's two-column menu. */
-#nexusMenu #liveScoutButton,#nexusMenu #scoutButton{width:100%}
-/* Landscape phone: two compact columns instead of a long scrolling list. */
-@media (orientation:landscape) and (min-width:680px){
- #nexusMenu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:min-content;align-content:start;gap:5px;width:min(430px,calc(100vw - 28px));max-height:calc(100dvh - 62px);overflow-y:auto;overscroll-behavior:contain}
- #nexusMenu button{min-width:0;margin:0;padding:8px 9px;white-space:normal;overflow-wrap:anywhere;font-size:12px;align-self:start}
- /* Compact two-column landscape menu. Keep LIVE and DEMO vertically adjacent in the right column. */
- #nexusMenu #mapButton{grid-column:1;grid-row:1}
- #nexusMenu #editorLaunch{grid-column:2;grid-row:1}
- #nexusMenu #kvkButton{grid-column:1;grid-row:2}
- #nexusMenu #liveScoutButton{grid-column:2;grid-row:2}
- #nexusMenu #focusButton{grid-column:1;grid-row:3}
- #nexusMenu #scoutButton{grid-column:2;grid-row:3}
- #nexusMenu #fullscreenButton{grid-column:1;grid-row:4}
- #nexusMenu #nexusContact{grid-column:2;grid-row:4}
- #nexusMenu button:disabled:nth-of-type(1){grid-column:1;grid-row:5}
- #nexusMenu #nexusAboutLaunch{grid-column:2;grid-row:5}
+/* TEST ONLY — ultra-compact grouped NEXUS menu. Live shell unchanged. */
+#nexusMenu{
+ width:min(500px,calc(100vw - 18px));
+ padding:7px;
+ display:grid!important;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:6px;
+ max-height:calc(100dvh - 56px);
+ overflow-y:auto;
 }
+#nexusMenu .menu-group{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:4px;
+ padding:5px;
+ border:1px solid #80633e;
+ border-radius:9px;
+ background:#3a2f22;
+ min-width:0;
+}
+#nexusMenu .menu-group-title{
+ grid-column:1/-1;
+ font:800 8px/1 system-ui;
+ letter-spacing:1px;
+ color:#d8bc89;
+ text-transform:uppercase;
+ padding:0 1px 2px;
+}
+#nexusMenu .menu-group button{
+ margin:0!important;
+ padding:6px 7px!important;
+ min-height:32px;
+ font-size:10px!important;
+ line-height:1.15;
+ white-space:normal;
+ overflow-wrap:anywhere;
+}
+#nexusMenu .menu-group .wide{grid-column:1/-1}
+#nexusMenu .menu-main{grid-column:1}
+#nexusMenu .menu-scout{grid-column:2}
+#nexusMenu .menu-admin{grid-column:1}
+#nexusMenu .menu-view{grid-column:2}
+#nexusMenu .menu-support{grid-column:1}
+#nexusMenu .menu-bottom{grid-column:2}
+#nexusMenu #languageTestRow{
+ display:grid!important;
+ grid-template-columns:repeat(3,1fr);
+ gap:4px!important;
+ margin:0!important;
+ padding:0!important;
+ border:0!important;
+}
+#nexusMenu #languageTestRow button{
+ padding:5px 4px!important;
+ min-height:28px;
+ font-size:9px!important;
+}
+#nexusMenu #languageTrialStatus{display:none!important}
+#nexusMenu .menu-settings-inline{
+ grid-column:1/-1;
+ display:flex;
+ gap:4px;
+ align-items:center;
+}
+#nexusMenu .menu-settings-inline>button{flex:1}
+@media(max-width:560px){
+ #nexusMenu{grid-template-columns:1fr;width:min(320px,calc(100vw - 12px))}
+ #nexusMenu .menu-main,#nexusMenu .menu-scout,#nexusMenu .menu-admin,#nexusMenu .menu-view,#nexusMenu .menu-support,#nexusMenu .menu-bottom{grid-column:1}
+}
+@media(orientation:landscape) and (min-width:680px){
+ #nexusMenu{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  width:min(500px,calc(100vw - 18px))!important;
+  max-height:calc(100dvh - 52px)!important;
+  overflow-y:auto!important;
+ }
+ #nexusMenu .menu-group{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ #nexusMenu .menu-group-title{grid-column:1/-1!important}
+ #nexusMenu .menu-group button{grid-column:auto!important;grid-row:auto!important}
+ #nexusMenu .menu-group .wide{grid-column:1/-1!important}
+}
+
+#nexusMenu .menu-admin,#nexusMenu .menu-view{align-content:start}
+#nexusMenu .menu-support button{min-height:30px!important;padding:5px 7px!important}
+#nexusMenu .menu-bottom{align-content:start}
+#nexusMenu .menu-bottom .menu-group-title{margin-bottom:1px}
+#nexusMenu .menu-bottom button:disabled{
+ opacity:.34;
+ min-height:28px!important;
+ padding:5px 7px!important;
+ font-size:9px!important;
+}
+#nexusMenu #nexusAboutLaunch{font-size:9px!important;min-height:28px!important}
+
+
+
 
 #truePower{display:none}
 body.truePower #map,body.truePower #kvk,body.truePower #kvkControlling,body.truePower #allianceComparison,body.truePower #allianceTrends,body.truePower #scouting,body.truePower #liveScouting{display:none!important}
@@ -299,6 +377,37 @@ for(const control of Array.from(nexusOriginalNav.querySelectorAll('button'))){
 }
 /* Keep both Transfer Scouting entries adjacent and full-width in every orientation. */
 nexusMenu.insertBefore(liveScoutButton,scoutButton);
+
+/* TEST ONLY: compact regrouping of existing controls without changing IDs or handlers. */
+(function(){
+ const makeGroup=(title,items,cls)=>{
+  const group=document.createElement('section');
+  group.className='menu-group '+cls;
+  const heading=document.createElement('div');
+  heading.className='menu-group-title';
+  heading.textContent=title;
+  group.appendChild(heading);
+  for(const item of items){if(item)group.appendChild(item);}
+  return group;
+ };
+ const languageRow=document.getElementById('languageTestRow');
+ const help=document.getElementById('nexusHelpLaunch');
+ const contact=document.getElementById('nexusContact');
+ const settings=document.querySelector('#nexusMenu button[disabled]'); if(settings){settings.title='Settings · Coming soon';} if(settings){settings.title='Settings · Coming soon';}
+ const about=document.getElementById('nexusAboutLaunch');
+ const admin=document.getElementById('editorLaunch');
+
+ [mapButton,kvkButton,truePowerButton,admin,settings].forEach(x=>x?.classList.add('wide'));
+
+ const main=makeGroup('Main',[mapButton,kvkButton,truePowerButton],'menu-main');
+ const scouting=makeGroup('Scouting',[liveScoutButton,scoutButton],'menu-scout');
+ const administration=makeGroup('Administration',[admin],'menu-admin');
+ const view=makeGroup('View',[focusButton,fullscreenButton],'menu-view');
+ const support=makeGroup('Support',[help,contact,about],'menu-support');
+ const bottom=makeGroup('Language',[languageRow,settings],'menu-bottom');
+
+ nexusMenu.replaceChildren(main,scouting,administration,view,support,bottom);
+})();
 const nexusFeedback=document.getElementById('nexusFeedback');
 const nexusFeedbackCard=document.getElementById('nexusFeedbackCard');
 const nexusFeedbackStatus=document.getElementById('nexusFeedbackStatus');
@@ -389,7 +498,7 @@ const status=document.createElement('output');
 status.id='languageTrialStatus';
 status.setAttribute('role','status');
 status.style.cssText='display:block;color:#e8d0a6;font-size:11px;padding:4px 8px';
-document.getElementById('nexusMenu').appendChild(status);
+document.getElementById('nexusMenu').appendChild(status); status.style.display='none';
 const keys=Object.keys(baseline);
 function setLanguage(lang){
  if(!copy[lang])lang='en';
