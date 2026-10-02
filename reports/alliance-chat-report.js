@@ -117,7 +117,7 @@
   // Discord's ordinary message cap is 2,000 characters; keep a safety margin.
   // No truncation: complete entries are carried over to subsequent messages.
   function makeDiscordOutpostReport({sector, outposts, sourceUpdatedAt = null, verified = false} = {}) {
-    const base = makeOutpostReport({sector, outposts, sourceUpdatedAt, verified, kingshotCompact:false});
+    const base = makeOutpostReport({sector, outposts, sourceUpdatedAt, verified, kingshotCompact:false, includeAlliance:true});
     const lines = base.split('\n');
     const title = lines.shift();
     const attribution = lines.pop();
