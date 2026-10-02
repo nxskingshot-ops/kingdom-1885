@@ -23,6 +23,21 @@ html,body{height:100%;min-height:0}body{display:grid;grid-template-rows:minmax(0
 <script>
 const frame=document.getElementById('kingdom'),status=document.getElementById('loading');
 const primaryNav=document.getElementById('outpostPrimaryNav');
+/* Android/PWA cold-start fix: force the wrapper to resolve the same viewport
+   geometry it gets after the first orientation change. No visual/layout values change. */
+function syncInitialViewport(){
+  document.documentElement.style.height=window.innerHeight+'px';
+  document.body.style.height=window.innerHeight+'px';
+  void primaryNav.offsetHeight;
+  requestAnimationFrame(()=>{
+    document.documentElement.style.height='';
+    document.body.style.height='';
+    window.dispatchEvent(new Event('resize'));
+  });
+}
+requestAnimationFrame(syncInitialViewport);
+setTimeout(syncInitialViewport,180);
+setTimeout(syncInitialViewport,700);
 function clickInnerTab(kind){
  const d=frame.contentDocument;if(!d)return;
  if(kind==='intelligence'){d.getElementById('outpostIntelButton')?.click();return;}
