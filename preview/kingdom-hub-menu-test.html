@@ -53,6 +53,25 @@ html:fullscreen body{padding:env(safe-area-inset-top) env(safe-area-inset-right)
 #nexusMenu[hidden],#nexusFeedback[hidden],#nexusAbout[hidden]{display:none!important}
 #nexusMenu button{display:block;width:100%;text-align:left;margin:3px 0;padding:12px 10px;background:#ecd4a7;color:#352513}
 #nexusMenu button:disabled{opacity:.48;cursor:not-allowed}
+#nexusMenu{width:min(360px,calc(100vw - 20px));padding:9px;display:block}
+#nexusMenu[hidden]{display:none!important}
+.nexus-menu-group{border:1px solid #765a36;border-radius:10px;padding:7px;margin:0 0 7px;background:#241d16}
+.nexus-menu-group:last-child{margin-bottom:0}
+.nexus-menu-group-title{display:block;margin:0 2px 6px;color:#d9b978;font:700 10px/1.2 system-ui,sans-serif;letter-spacing:1.15px;text-transform:uppercase}
+.nexus-menu-grid{display:grid;grid-template-columns:1fr;gap:5px}
+#nexusMenu .nexus-menu-grid>button,#nexusMenu .nexus-menu-grid>#languageTestRow{margin:0}
+#nexusMenu .nexus-menu-grid>button{padding:10px 11px;min-height:40px;border-radius:8px}
+#nexusMenu #languageTestRow{border:0!important;margin:0!important;padding:0!important;gap:5px!important}
+#nexusMenu #languageTestRow button{margin:0;padding:9px 5px;text-align:center}
+@media (orientation:landscape) and (min-width:680px){
+ #nexusMenu{width:min(520px,calc(100vw - 28px));max-height:calc(100dvh - 56px);padding:8px}
+ .nexus-menu-group{padding:6px;margin-bottom:6px}
+ .nexus-menu-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .nexus-menu-group[data-group="kingdom"] .nexus-menu-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .nexus-menu-group[data-group="app"] .nexus-menu-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #nexusMenu .nexus-menu-grid>button{padding:8px 9px;min-height:36px;font-size:12px;white-space:normal}
+}
+
 #nexusFeedback{position:fixed;z-index:2147483500;inset:0;background:#000b;display:flex;align-items:center;justify-content:center;padding:12px}
 #nexusFeedbackCard{background:#30251a;border:2px solid #cba564;border-radius:14px;padding:18px;color:#ffe5b3;width:min(460px,100%);max-height:calc(100dvh - 24px);overflow:hidden;display:flex;flex-direction:column;box-shadow:0 15px 50px #0009}
 #nexusFeedbackCard h2{margin:0 0 12px;font:700 21px Georgia,serif}
@@ -327,15 +346,34 @@ if ('serviceWorker' in navigator) {
 /* Independent utilities menu: leave existing tab routing and iframe logic untouched. */
 const nexusMenuButton=document.getElementById('nexusMenuButton');
 const nexusMenu=document.getElementById('nexusMenu');
-/* Move existing controls into the shared menu: same DOM nodes, IDs and onclick handlers. */
+/* Reuse the existing controls, but arrange them into calm, purpose-based groups.
+   Same DOM nodes, IDs and handlers: navigation behavior stays unchanged. */
 const nexusOriginalNav=document.getElementById('bar');
-const nexusMenuAnchor=document.getElementById('nexusContact');
-for(const control of Array.from(nexusOriginalNav.querySelectorAll('button'))){
- nexusMenu.insertBefore(control,nexusMenuAnchor);
- control.addEventListener('click',()=>closeNexusMenu());
+const menuControls=Array.from(nexusOriginalNav.querySelectorAll('button'));
+for(const control of menuControls)control.addEventListener('click',()=>closeNexusMenu());
+
+const languageRow=document.getElementById('languageTestRow');
+const helpButton=document.getElementById('nexusHelpLaunch');
+const requestButton=document.getElementById('nexusAccessRequestLaunch');
+const accessAdminButton=document.getElementById('nexusAccessAdminLaunch');
+const contactButton=document.getElementById('nexusContact');
+const aboutButton=document.getElementById('nexusAboutLaunch');
+const settingsButton=Array.from(nexusMenu.querySelectorAll('button')).find(button=>button.disabled);
+
+function nexusMenuGroup(title,key,nodes){
+ const section=document.createElement('section');section.className='nexus-menu-group';section.dataset.group=key;
+ const heading=document.createElement('span');heading.className='nexus-menu-group-title';heading.textContent=title;
+ const grid=document.createElement('div');grid.className='nexus-menu-grid';
+ nodes.filter(Boolean).forEach(node=>grid.appendChild(node));
+ section.append(heading,grid);return section;
 }
-/* Keep both Transfer Scouting entries adjacent and full-width in every orientation. */
-nexusMenu.insertBefore(liveScoutButton,scoutButton);
+nexusMenu.replaceChildren(
+ nexusMenuGroup('Kingdom','kingdom',[mapButton,kvkButton,truePowerButton]),
+ nexusMenuGroup('Scouting','scouting',[liveScoutButton,scoutButton]),
+ nexusMenuGroup('Management','management',[document.getElementById('editorLaunch'),accessAdminButton]),
+ nexusMenuGroup('Access & Support','access',[requestButton,helpButton,contactButton]),
+ nexusMenuGroup('App','app',[document.getElementById('focusButton'),document.getElementById('fullscreenButton'),aboutButton,settingsButton,languageRow])
+);
 const nexusFeedback=document.getElementById('nexusFeedback');
 const nexusFeedbackCard=document.getElementById('nexusFeedbackCard');
 const nexusFeedbackStatus=document.getElementById('nexusFeedbackStatus');
