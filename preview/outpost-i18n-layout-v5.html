@@ -31,8 +31,8 @@ const intelViewportActions=document.getElementById('outpostIntelViewportActions'
 const intelViewportReport=document.getElementById('outpostIntelViewportReport');
 const intelViewportClose=document.getElementById('outpostIntelViewportClose');
 function setIntelViewportActions(show){intelViewportActions.hidden=!show;primaryNav.classList.toggle('intel-open',!!show)}
-intelViewportReport.addEventListener('click',()=>{const d=frame.contentDocument;d?.getElementById('outpostIntelReport')?.click();setIntelViewportActions(false)});
-intelViewportClose.addEventListener('click',()=>{const d=frame.contentDocument;d?.getElementById('outpostIntelClose')?.click();setIntelViewportActions(false);const mapTab=primaryNav.querySelector('[data-tab="map"]');for(const x of primaryNav.querySelectorAll('button'))x.removeAttribute('aria-current');mapTab?.setAttribute('aria-current','page')});
+intelViewportReport.addEventListener('click',()=>{const d=frame.contentDocument;if(!d)return;d.getElementById('outpostIntelOverlay')?.setAttribute('hidden','');d.getElementById('mapCopyReport')?.click();setIntelViewportActions(false)});
+intelViewportClose.addEventListener('click',()=>{const d=frame.contentDocument;if(!d)return;d.getElementById('outpostIntelOverlay')?.setAttribute('hidden','');setIntelViewportActions(false);clickInnerTab('map');const mapTab=primaryNav.querySelector('[data-tab="map"]');for(const x of primaryNav.querySelectorAll('button'))x.removeAttribute('aria-current');mapTab?.setAttribute('aria-current','page')});
 function clickInnerTab(kind){
  const d=frame.contentDocument;if(!d)return;
  if(kind==='intelligence'){d.getElementById('outpostIntelButton')?.click();setIntelViewportActions(true);return;}
