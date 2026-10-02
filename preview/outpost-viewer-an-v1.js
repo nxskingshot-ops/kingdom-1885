@@ -261,7 +261,7 @@
     partSelector.value = '0';
     showReportPart();
     reportInfo.textContent = (isDiscord
-      ? 'Discord: full report (' + fullReport.length + ' characters). Longer messages may be attached as a .txt file. '
+      ? 'Discord: up to 1,900 characters per part · ' + reportParts.length + ' part' + (reportParts.length === 1 ? '' : 's') + '. '
       : 'Kingshot: up to 480 characters per part. ') +
       (name ? 'Quadrant assignment provisional. ' : '') + 'Published outposts · Verified.';
   }
@@ -319,7 +319,7 @@
     try {
       await navigator.clipboard.writeText(reportText.value);
       reportInfo.textContent = formatSelector.value === 'discord'
-        ? 'Full report copied · Paste into Discord (a long message may become a text attachment).'
+        ? 'Copied Discord part ' + (Number(partSelector.value) + 1) + '/' + reportParts.length + ' · Ready to paste.'
         : 'Copied part ' + (Number(partSelector.value) + 1) + '/' + reportParts.length + ' · Ready for alliance chat.';
     } catch (error) {
       reportText.focus();
