@@ -131,19 +131,83 @@ body.kvk.kvk-comparison #allianceComparison,body.kvk.kvk-trends #allianceTrends{
 body.truePower #map,body.truePower #kvk,body.truePower #kvkControlling,body.truePower #allianceComparison,body.truePower #allianceTrends,body.truePower #scouting,body.truePower #liveScouting{display:none!important}
 body.truePower #truePower{display:block}
 
-/* TEST ONLY — grouped compact NEXUS menu. Live shell unchanged. */
-#nexusMenu{width:min(520px,calc(100vw - 24px));padding:8px;gap:7px}
-#nexusMenu .menu-group{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;padding:7px;border:1px solid #80633e;border-radius:10px;background:#3a2f22}
-#nexusMenu .menu-group-title{grid-column:1/-1;font:800 9px/1 system-ui;letter-spacing:1.1px;color:#d8bc89;text-transform:uppercase;padding:1px 2px 3px}
-#nexusMenu .menu-group button{margin:0!important;padding:8px 9px!important;min-height:38px;font-size:11px!important}
+/* TEST ONLY — ultra-compact grouped NEXUS menu. Live shell unchanged. */
+#nexusMenu{
+ width:min(500px,calc(100vw - 18px));
+ padding:7px;
+ display:grid!important;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:6px;
+ max-height:calc(100dvh - 56px);
+ overflow-y:auto;
+}
+#nexusMenu .menu-group{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:4px;
+ padding:5px;
+ border:1px solid #80633e;
+ border-radius:9px;
+ background:#3a2f22;
+ min-width:0;
+}
+#nexusMenu .menu-group-title{
+ grid-column:1/-1;
+ font:800 8px/1 system-ui;
+ letter-spacing:1px;
+ color:#d8bc89;
+ text-transform:uppercase;
+ padding:0 1px 2px;
+}
+#nexusMenu .menu-group button{
+ margin:0!important;
+ padding:6px 7px!important;
+ min-height:32px;
+ font-size:10px!important;
+ line-height:1.15;
+ white-space:normal;
+ overflow-wrap:anywhere;
+}
 #nexusMenu .menu-group .wide{grid-column:1/-1}
-#nexusMenu #languageTestRow{grid-column:1/-1;margin:0!important;padding:0!important;border:0!important;display:grid!important;grid-template-columns:repeat(3,1fr);gap:5px!important}
-#nexusMenu #languageTestRow button{padding:7px 5px!important;min-height:34px}
-#nexusMenu #languageTrialStatus{grid-column:1/-1;padding:4px 2px!important;font-size:9px!important}
-@media(max-width:560px){#nexusMenu{width:min(320px,calc(100vw - 16px))}#nexusMenu .menu-group{grid-template-columns:1fr}}
+#nexusMenu .menu-main{grid-column:1}
+#nexusMenu .menu-scout{grid-column:2}
+#nexusMenu .menu-admin{grid-column:1}
+#nexusMenu .menu-view{grid-column:2}
+#nexusMenu .menu-support{grid-column:1}
+#nexusMenu .menu-bottom{grid-column:2}
+#nexusMenu #languageTestRow{
+ display:grid!important;
+ grid-template-columns:repeat(3,1fr);
+ gap:4px!important;
+ margin:0!important;
+ padding:0!important;
+ border:0!important;
+}
+#nexusMenu #languageTestRow button{
+ padding:5px 4px!important;
+ min-height:28px;
+ font-size:9px!important;
+}
+#nexusMenu #languageTrialStatus{display:none!important}
+#nexusMenu .menu-settings-inline{
+ grid-column:1/-1;
+ display:flex;
+ gap:4px;
+ align-items:center;
+}
+#nexusMenu .menu-settings-inline>button{flex:1}
+@media(max-width:560px){
+ #nexusMenu{grid-template-columns:1fr;width:min(320px,calc(100vw - 12px))}
+ #nexusMenu .menu-main,#nexusMenu .menu-scout,#nexusMenu .menu-admin,#nexusMenu .menu-view,#nexusMenu .menu-support,#nexusMenu .menu-bottom{grid-column:1}
+}
 @media(orientation:landscape) and (min-width:680px){
- #nexusMenu{display:block!important;width:min(520px,calc(100vw - 24px));max-height:calc(100dvh - 58px)}
- #nexusMenu .menu-group{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ #nexusMenu{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  width:min(500px,calc(100vw - 18px))!important;
+  max-height:calc(100dvh - 52px)!important;
+  overflow-y:auto!important;
+ }
+ #nexusMenu .menu-group{grid-template-columns:repeat(2,minmax(0,1fr))!important}
  #nexusMenu .menu-group-title{grid-column:1/-1!important}
  #nexusMenu .menu-group button{grid-column:auto!important;grid-row:auto!important}
  #nexusMenu .menu-group .wide{grid-column:1/-1!important}
@@ -318,11 +382,15 @@ for(const control of Array.from(nexusOriginalNav.querySelectorAll('button'))){
 /* Keep both Transfer Scouting entries adjacent and full-width in every orientation. */
 nexusMenu.insertBefore(liveScoutButton,scoutButton);
 
-/* TEST ONLY: regroup existing controls without changing IDs or click handlers. */
+/* TEST ONLY: compact regrouping of existing controls without changing IDs or handlers. */
 (function(){
- const makeGroup=(title,items)=>{
-  const group=document.createElement('section');group.className='menu-group';
-  const heading=document.createElement('div');heading.className='menu-group-title';heading.textContent=title;group.appendChild(heading);
+ const makeGroup=(title,items,cls)=>{
+  const group=document.createElement('section');
+  group.className='menu-group '+cls;
+  const heading=document.createElement('div');
+  heading.className='menu-group-title';
+  heading.textContent=title;
+  group.appendChild(heading);
   for(const item of items){if(item)group.appendChild(item);}
   return group;
  };
@@ -331,19 +399,18 @@ nexusMenu.insertBefore(liveScoutButton,scoutButton);
  const contact=document.getElementById('nexusContact');
  const settings=document.querySelector('#nexusMenu button[disabled]');
  const about=document.getElementById('nexusAboutLaunch');
- const groups=[
-  makeGroup('Main', [mapButton,kvkButton,truePowerButton]),
-  makeGroup('Scouting', [liveScoutButton,scoutButton]),
-  makeGroup('Administration', [document.getElementById('editorLaunch')]),
-  makeGroup('View', [focusButton,fullscreenButton]),
-  makeGroup('Support', [help,contact,about]),
-  makeGroup('Language', [languageRow]),
-  makeGroup('Settings', [settings])
- ];
- nexusMenu.replaceChildren(...groups);
- [mapButton,kvkButton,truePowerButton].forEach(x=>x?.classList.add('wide'));
- document.getElementById('editorLaunch')?.classList.add('wide');
- settings?.classList.add('wide');
+ const admin=document.getElementById('editorLaunch');
+
+ [mapButton,kvkButton,truePowerButton,admin,settings].forEach(x=>x?.classList.add('wide'));
+
+ const main=makeGroup('Main',[mapButton,kvkButton,truePowerButton],'menu-main');
+ const scouting=makeGroup('Scouting',[liveScoutButton,scoutButton],'menu-scout');
+ const administration=makeGroup('Administration',[admin],'menu-admin');
+ const view=makeGroup('View',[focusButton,fullscreenButton],'menu-view');
+ const support=makeGroup('Support',[help,contact,about],'menu-support');
+ const bottom=makeGroup('Language / Settings',[languageRow,settings],'menu-bottom');
+
+ nexusMenu.replaceChildren(main,scouting,administration,view,support,bottom);
 })();
 
 const nexusFeedback=document.getElementById('nexusFeedback');
@@ -436,7 +503,7 @@ const status=document.createElement('output');
 status.id='languageTrialStatus';
 status.setAttribute('role','status');
 status.style.cssText='display:block;color:#e8d0a6;font-size:11px;padding:4px 8px';
-(document.querySelector('#nexusMenu .menu-group:nth-of-type(6)')||document.getElementById('nexusMenu')).appendChild(status);
+document.getElementById('nexusMenu').appendChild(status);
 const keys=Object.keys(baseline);
 function setLanguage(lang){
  if(!copy[lang])lang='en';
