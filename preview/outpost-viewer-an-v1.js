@@ -147,7 +147,7 @@
 
   // The only new public control: a self-contained report overlay.
   // Uses exactly the published data displayed by the map; never guesses sectors or verification.
-  const reportModuleURL = new URL('../reports/alliance-chat-report.js', document.currentScript?.src || location.href).href + '?build=discord-dual-export-v9';
+  const reportModuleURL = new URL('../reports/alliance-chat-report.js', document.currentScript?.src || location.href).href + '?build=discord-dual-export-v10';
   const reportStyle = document.createElement('style');
   reportStyle.textContent = `
 #viewerControls #mapCopyReport{background:#f1d19a;color:#523719;border:1px solid #b58a4c;border-radius:8px;padding:5px 7px;font-size:11px;font-weight:800;white-space:nowrap;min-height:27px}
@@ -188,10 +188,10 @@
     reportText.value = reportParts[partIndex] || '';
     reportText.scrollTop = 0;
     $('mapReportCopy').disabled = !reportText.value;
-    $('mapReportCopy').textContent = formatSelector.value === 'discord'
-      ? 'Copy Full Report'
-      : reportParts.length > 1
-        ? 'Copy Part ' + (partIndex + 1) + '/' + reportParts.length
+    $('mapReportCopy').textContent = reportParts.length > 1
+      ? 'Copy Part ' + (partIndex + 1) + '/' + reportParts.length
+      : formatSelector.value === 'discord'
+        ? 'Copy Full Report'
         : 'Copy All';
   }
   partSelector.onchange = showReportPart;
@@ -241,7 +241,7 @@
     });
     try {
       reportParts = isDiscord
-        ? [fullReport] // Discord converts messages over its limit to a text attachment.
+        ? reportAPI.splitReportForDiscord(fullReport, 1900)
         : reportAPI.splitReportForKingshot(fullReport, 480);
     } catch (error) {
       reportParts = [];
