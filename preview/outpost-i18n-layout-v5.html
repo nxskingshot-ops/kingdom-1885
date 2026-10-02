@@ -22,8 +22,28 @@ const script=doc.createElement('script');
 script.src=new URL('./outpost-viewer-an-v1.js?build=discord-full-report-v11',location.href).href;
 // Hide an extra NEXUS shell, if the embedded map contains one.
 const nestedStyle=doc.createElement('style');
-nestedStyle.textContent='.shared{display:none!important}body:has(>.shared) #bar{display:none!important}body:has(>.shared)>iframe{height:100%!important;flex:1 1 auto!important}/* NEXUS test: no second title strip; compact controls float over the map. */#app{grid-template-rows:0 minmax(0,1fr) 42px!important;--toolbar-h:0px!important}#app>.top{display:none!important}#mapTools{position:absolute!important;left:auto!important;right:6px!important;top:6px!important;width:auto!important;height:auto!important;min-height:0!important;padding:0!important;gap:4px!important;background:transparent!important;border:0!important;box-shadow:none!important}#mapTools .mapbrand,#mapTools #healthBadge{display:none!important}#mapTools button{min-height:27px!important;padding:4px 6px!important}';
+nestedStyle.textContent='.shared{display:none!important}body:has(>.shared) #bar{display:none!important}body:has(>.shared)>iframe{height:100%!important;flex:1 1 auto!important}/* NEXUS: keep the map primary and reveal details only when needed. */#app{grid-template-rows:0 minmax(0,1fr) 42px!important;--toolbar-h:0px!important}#app>.top{display:none!important}#mapTools{position:absolute!important;left:auto!important;right:6px!important;top:6px!important;width:auto!important;height:auto!important;min-height:0!important;padding:0!important;gap:4px!important;background:transparent!important;border:0!important;box-shadow:none!important}#mapTools .mapbrand,#mapTools #healthBadge{display:none!important}#mapTools button{min-height:27px!important;padding:4px 6px!important}body.nexus-simple-outposts #app{grid-template-columns:minmax(190px,24%) minmax(0,1fr) 0!important}body.nexus-simple-outposts #app>.right{display:none!important}body.nexus-simple-outposts.nexus-details-open #app{grid-template-columns:minmax(190px,24%) minmax(0,1fr) minmax(220px,24%)!important}body.nexus-simple-outposts.nexus-details-open #app>.right{display:block!important}@media(max-width:760px){body.nexus-simple-outposts #app{grid-template-columns:0 minmax(0,1fr) 0!important}body.nexus-simple-outposts #app>.left{display:none!important}body.nexus-simple-outposts.nexus-details-open #app{grid-template-columns:0 minmax(0,1fr) minmax(210px,38%)!important}}';
 doc.head.appendChild(nestedStyle);
+// Simple Outpost Intelligence: the map stays primary. The existing details/filter
+// panel opens only after a marker/list selection and can be closed without
+// changing any map, data, filter, or report logic.
+doc.body.classList.add('nexus-simple-outposts');
+const detailsPanel=doc.querySelector('#app>.right');
+if(detailsPanel){
+ const close=document.createElement('button');
+ close.type='button'; close.id='nexusDetailsClose'; close.textContent='×';
+ close.setAttribute('aria-label','Close outpost details');
+ close.title='Close outpost details';
+ close.style.cssText='position:absolute;z-index:5;right:6px;top:5px;width:28px;height:28px;border:1px solid #b58a4c;border-radius:8px;background:#f1d19a;color:#523719;font-size:20px;font-weight:800;line-height:22px';
+ detailsPanel.style.position='relative';
+ detailsPanel.appendChild(close);
+ close.addEventListener('click',()=>doc.body.classList.remove('nexus-details-open'));
+ doc.addEventListener('click',event=>{
+  if(event.target?.closest?.('#nexusDetailsClose'))return;
+  const hit=event.target?.closest?.('.marker,[data-id],[data-outpost-id],.list-item,.outpost-item');
+  if(hit)doc.body.classList.add('nexus-details-open');
+ },true);
+}
 // The map's own fullscreen icon must not fullscreen ONLY the nested iframe:
 // that would hide the NEXUS header/menu. Forward the same user tap to the
 // top-level NEXUS shell, while leaving all map tools and map data untouched.
