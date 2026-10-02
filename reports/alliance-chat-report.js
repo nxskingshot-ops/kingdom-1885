@@ -141,25 +141,29 @@
     }
     if (report.length <= maxCharacters) return [report];
     const lines = report.split('\n');
-    const header = lines.slice(0, 3);
-    const footer = lines.slice(-3);
-    if (header[0] !== '**NEXUS APP · OUTPOST REPORT**' ||
-        footer[2] !== 'Provided by Nexus App' || !footer[0].startsWith('**Source updated:** ')) {
-      throw new TypeError('Discord report header or footer missing');
+    if (lines[0] !== '**NEXUS APP · OUTPOST REPORT**' ||
+        lines[2] !== '' ||
+        lines[lines.length - 4] !== '' ||
+        lines[lines.length - 1] !== 'Provided by Nexus App' ||
+        !lines[lines.length - 3].startsWith('**Source updated:** ') ||
+        !lines[lines.length - 2].startsWith('**Verification:** ')) {
+      throw new TypeError('Discord report structure invalid');
     }
-    const entries = lines.slice(4, -4); // exclude the blank separator before source status
+    const header = lines.slice(0, 2);
+    const entries = lines.slice(3, -4);
+    const footer = lines.slice(-3);
     if (!entries.length) throw new RangeError('no report entries to split');
-    const groups = [];
     let guess = 1;
     for (let attempt = 0; attempt < 30; attempt++) {
       const pages = [];
       let active = [];
       const make = (rows, index) =>
-        [header[0], header[1] + ' (PART ' + (index + 1) + '/' + guess + ')', header[2], '',
+        [header[0], header[1] + ' (PART ' + (index + 1) + '/' + guess + ')', '',
           ...rows, '', ...footer].join('\n');
       for (const entry of entries) {
-        if (make([...active, entry], pages.length).length <= maxCharacters) active.push(entry);
-        else {
+        if (make([...active, entry], pages.length).length <= maxCharacters) {
+          active.push(entry);
+        } else {
           if (!active.length) throw new RangeError('one complete Discord entry exceeds character limit');
           pages.push(active);
           active = [entry];
@@ -169,9 +173,7 @@
         }
       }
       if (active.length) pages.push(active);
-      if (pages.length === guess) {
-        return pages.map((rows, index) => make(rows,index));
-      }
+      if (pages.length === guess) return pages.map((rows, index) => make(rows, index));
       guess = pages.length;
     }
     throw new RangeError('could not split Discord report safely');
