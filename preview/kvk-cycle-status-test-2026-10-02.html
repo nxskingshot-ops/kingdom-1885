@@ -7,25 +7,55 @@
 <style>
 :root{font-family:system-ui,-apple-system,sans-serif;color:#4b351f;background:#e8d4ac}
 *{box-sizing:border-box}body{margin:0;min-height:100vh;background:linear-gradient(140deg,#eee0c0,#dcc18d)}
-header{min-height:105px;padding:12px 16px;background:linear-gradient(105deg,#302218,#624525,#302218);border-bottom:2px solid #c69b53;color:#fbe8c0;display:flex;align-items:center;gap:13px}
-.crest{width:62px;height:62px;border:2px solid #d5b26d;border-radius:10px;display:grid;place-items:center;font-size:34px;background:#6d4a27}
-.brand strong{display:block;font:700 25px Georgia,serif}.brand small{color:#d4b782;font-weight:700;letter-spacing:.8px}.motto{margin-top:5px;padding:5px 8px;border:1px solid #bb965f;border-radius:6px;background:#94704455;font:italic 600 12px Georgia,serif}
-main{max-width:1150px;margin:auto;padding:18px 14px 40px}
+header{min-height:78px;padding:8px 12px;background:linear-gradient(105deg,#302218,#624525,#302218);border-bottom:2px solid #c69b53;color:#fbe8c0;display:flex;align-items:center;gap:13px}
+.crest{width:48px;height:48px;border:2px solid #d5b26d;border-radius:10px;display:grid;place-items:center;font-size:34px;background:#6d4a27}
+.brand strong{display:block;font:700 21px Georgia,serif}.brand small{color:#d4b782;font-weight:700;letter-spacing:.8px}.motto{margin-top:5px;padding:5px 8px;border:1px solid #bb965f;border-radius:6px;background:#94704455;font:italic 600 12px Georgia,serif}
+main{max-width:1150px;margin:auto;padding:10px 12px 24px}
 .demo{font-size:12px;color:#76583a;text-align:center;margin:0 0 10px}
-.panel{background:#f7edda;border:2px solid #bc985f;border-radius:12px;padding:16px;box-shadow:0 4px 18px #5b3f1e30}
-h2{font:700 20px Georgia,serif;color:#764d20;margin:0 0 6px}.sub{font-size:12px;color:#785d3b}
+.panel{background:#f7edda;border:2px solid #bc985f;border-radius:12px;padding:12px;box-shadow:0 4px 18px #5b3f1e30}
+h2{font:700 17px Georgia,serif;color:#764d20;margin:0 0 6px}.sub{font-size:12px;color:#785d3b}
 .cycle-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}.status{border:1px solid #a87c37;background:#f0d59b;color:#4a3217;border-radius:999px;padding:7px 11px;font-weight:800}
-.opponent{margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.box{background:linear-gradient(#fff8e9,#f0dcb4);border:1px solid #c5a36e;border-radius:9px;padding:12px}.box span{display:block;font-size:11px;color:#785d3b;font-weight:700}.box b{font:700 20px Georgia,serif;color:#845722}
-.timeline{margin-top:17px}.line{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;align-items:start}.step{text-align:center;position:relative;padding-top:26px}.step:before{content:"";position:absolute;top:9px;left:50%;right:-50%;height:3px;background:#cdb485}.step:last-child:before{display:none}.dot{position:absolute;top:2px;left:50%;transform:translateX(-50%);width:17px;height:17px;border-radius:50%;background:#ead4a8;border:3px solid #a67f45;z-index:2}.step.active .dot{background:#d59b2f;border-color:#7c5721;box-shadow:0 0 0 3px #ecd29c}.step strong{display:block;font:700 15px Georgia,serif;color:#67431e}.step small{display:block;color:#7a6041;margin-top:2px}.next{margin-top:16px;padding:10px 12px;border-left:4px solid #a27a38;background:#f3e3c2;border-radius:6px;font-size:13px}
-.data-strip{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}.metric{background:#fff8e8;border:1px solid #d1ae75;border-radius:8px;padding:11px}.metric span{display:block;color:#785d3b;font-size:11px;font-weight:700}.metric b{display:block;margin-top:4px;font:700 16px Georgia,serif;color:#67431e}
-.note{margin-top:12px;font-size:11px;color:#785d3b}.faded{opacity:.66}
-@media(max-width:600px){header{padding:9px}.crest{width:50px;height:50px;font-size:28px}.brand strong{font-size:20px}.motto{font-size:10px}.opponent,.data-strip{grid-template-columns:1fr}.step strong{font-size:13px}.step small{font-size:10px}}
+.opponent{margin-top:9px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.box{background:linear-gradient(#fff8e9,#f0dcb4);border:1px solid #c5a36e;border-radius:9px;padding:8px 10px}.box span{display:block;font-size:11px;color:#785d3b;font-weight:700}.box b{font:700 17px Georgia,serif;color:#845722}
+.timeline{margin-top:10px}.line{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;align-items:start}.step{text-align:center;position:relative;padding-top:22px}.step:before{content:"";position:absolute;top:9px;left:50%;right:-50%;height:3px;background:#cdb485}.step:last-child:before{display:none}.dot{position:absolute;top:2px;left:50%;transform:translateX(-50%);width:17px;height:17px;border-radius:50%;background:#ead4a8;border:3px solid #a67f45;z-index:2}.step.active .dot{background:#d59b2f;border-color:#7c5721;box-shadow:0 0 0 3px #ecd29c}.step strong{display:block;font:700 13px Georgia,serif;color:#67431e}.step small{display:block;color:#7a6041;margin-top:2px}.next{margin-top:9px;padding:7px 10px;border-left:4px solid #a27a38;background:#f3e3c2;border-radius:6px;font-size:13px}
+.data-strip{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px}.metric{background:#fff8e8;border:1px solid #d1ae75;border-radius:8px;padding:8px 10px}.metric span{display:block;color:#785d3b;font-size:11px;font-weight:700}.metric b{display:block;margin-top:4px;font:700 16px Georgia,serif;color:#67431e}
+.note{margin-top:8px;font-size:11px;color:#785d3b}.faded{opacity:.66}
+@media(max-width:600px){header{padding:7px 8px}.crest{width:50px;height:50px;font-size:28px}.brand strong{font-size:20px}.motto{font-size:10px}.opponent,.data-strip{grid-template-columns:1fr}.step strong{font-size:13px}.step small{font-size:10px}}
+
+@media (orientation:landscape) and (max-height:520px){
+  header{min-height:64px;padding:6px 10px}
+  .crest{width:42px;height:42px;font-size:24px}
+  .brand strong{font-size:18px}
+  .brand small{font-size:10px}
+  .motto{font-size:9px;padding:3px 6px;margin-top:2px}
+  main{padding:6px 10px 14px}
+  .demo{font-size:10px;margin-bottom:6px}
+  .panel{padding:9px 10px}
+  h2{font-size:15px;margin-bottom:2px}
+  .sub{font-size:10px}
+  .status{padding:5px 8px;font-size:11px}
+  .opponent{margin-top:6px;gap:7px}
+  .box{padding:6px 8px}
+  .box span{font-size:9px}
+  .box b{font-size:15px}
+  .timeline{margin-top:6px}
+  .step{padding-top:18px}
+  .step:before{top:7px}
+  .dot{top:0;width:14px;height:14px;border-width:3px}
+  .step strong{font-size:12px}
+  .step small{font-size:9px}
+  .next{margin-top:6px;padding:6px 8px;font-size:11px}
+  .data-strip{margin-top:6px}
+  .metric{padding:6px 8px}
+  .metric span{font-size:9px}
+  .metric b{font-size:13px}
+  .note{display:none}
+}
 </style>
 </head>
 <body>
 <header>
-  <div class="crest">🛡️</div>
+  <div class="crest">NXS</div>
   <div class="brand">
     <strong>Nexus App</strong>
     <small>KINGDOM #1885 · NXS</small>
