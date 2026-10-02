@@ -2,124 +2,175 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Nexus App · KvK Cycle Status Test</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Nexus App · KvK Prep Cycle Test</title>
 <style>
-:root{font-family:system-ui,-apple-system,sans-serif;color:#4b351f;background:#e8d4ac}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;background:linear-gradient(140deg,#eee0c0,#dcc18d)}
-header{min-height:78px;padding:8px 12px;background:linear-gradient(105deg,#302218,#624525,#302218);border-bottom:2px solid #c69b53;color:#fbe8c0;display:flex;align-items:center;gap:13px}
-.crest{width:48px;height:48px;border:2px solid #d5b26d;border-radius:10px;display:grid;place-items:center;font-size:34px;background:#6d4a27}
-.brand strong{display:block;font:700 21px Georgia,serif}.brand small{color:#d4b782;font-weight:700;letter-spacing:.8px}.motto{margin-top:5px;padding:5px 8px;border:1px solid #bb965f;border-radius:6px;background:#94704455;font:italic 600 12px Georgia,serif}
-main{max-width:1150px;margin:auto;padding:10px 12px 24px}
-.demo{font-size:12px;color:#76583a;text-align:center;margin:0 0 10px}
-.panel{background:#f7edda;border:2px solid #bc985f;border-radius:12px;padding:9px 10px;box-shadow:0 4px 18px #5b3f1e30}
-h2{font:700 15px Georgia,serif;color:#764d20;margin:0 0 6px}.sub{font-size:12px;color:#785d3b}
-.cycle-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}.status{border:1px solid #a87c37;background:#f0d59b;color:#4a3217;border-radius:999px;padding:7px 11px;font-weight:800}
-.opponent{margin-top:6px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.box{background:linear-gradient(#fff8e9,#f0dcb4);border:1px solid #c5a36e;border-radius:8px;padding:5px 8px}.box span{display:block;font-size:11px;color:#785d3b;font-weight:700}.box b{font:700 15px Georgia,serif;color:#845722}
-.timeline{margin-top:6px}.line{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;align-items:start}.step{text-align:center;position:relative;padding-top:18px}.step:before{content:"";position:absolute;top:9px;left:50%;right:-50%;height:3px;background:#cdb485}.step:last-child:before{display:none}.dot{position:absolute;top:2px;left:50%;transform:translateX(-50%);width:17px;height:17px;border-radius:50%;background:#ead4a8;border:3px solid #a67f45;z-index:2}.step.active .dot{background:#d59b2f;border-color:#7c5721;box-shadow:0 0 0 3px #ecd29c}.step strong{display:block;font:700 12px Georgia,serif;color:#67431e}.step small{display:block;color:#7a6041;margin-top:2px}.next{margin-top:6px;padding:5px 8px;border-left:4px solid #a27a38;background:#f3e3c2;border-radius:6px;font-size:13px}
-.data-strip{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:6px}.metric{background:#fff8e8;border:1px solid #d1ae75;border-radius:8px;padding:6px 8px}.metric span{display:block;color:#785d3b;font-size:11px;font-weight:700}.metric b{display:block;margin-top:4px;font:700 16px Georgia,serif;color:#67431e}
-.note{margin-top:8px;font-size:11px;color:#785d3b}.faded{opacity:.66}
-@media(max-width:600px){header{padding:7px 8px}.crest{width:50px;height:50px;font-size:28px}.brand strong{font-size:20px}.motto{font-size:10px}.opponent,.data-strip{grid-template-columns:1fr}.step strong{font-size:13px}.step small{font-size:10px}}
-
-@media (orientation:landscape) and (max-height:520px){
-  header{min-height:64px;padding:6px 10px}
-  .crest{width:42px;height:42px;font-size:24px}
-  .brand strong{font-size:18px}
-  .brand small{font-size:10px}
-  .motto{font-size:9px;padding:3px 6px;margin-top:2px}
-  main{padding:4px 8px 10px}
-  .demo{font-size:10px;margin-bottom:6px}
-  .panel{padding:6px 8px}
-  h2{font-size:13px;margin-bottom:1px}
-  .sub{font-size:10px}
-  .status{padding:5px 8px;font-size:11px}
-  .opponent{margin-top:4px;gap:6px}
-  .box{padding:6px 8px}
-  .box span{font-size:9px}
-  .box b{font-size:15px}
-  .timeline{margin-top:4px}
-  .step{padding-top:18px}
-  .step:before{top:7px}
-  .dot{top:0;width:14px;height:14px;border-width:3px}
-  .step strong{font-size:12px}
-  .step small{font-size:9px}
-  .next{margin-top:4px;padding:4px 7px;font-size:10px}
-  .data-strip{margin-top:4px}
-  .metric{padding:6px 8px}
-  .metric span{font-size:9px}
-  .metric b{font-size:13px}
-  .note{display:none}
-}
-
-/* Use the approved NEXUS shared-brand header in the standalone KvK dashboard. */
-.nxs-header{display:flex;flex-direction:row;align-items:center;gap:14px;justify-content:space-between;min-height:109px;padding:10px 14px;background:linear-gradient(105deg,#302218,#624525,#302218);border-bottom:2px solid #c69b53;color:#fbe8c0}
-.nxs-brand{flex:1;min-width:0;display:flex;align-items:center;gap:13px}
-.nxs-brand-crest{width:70px;height:70px;flex:none;object-fit:contain;border-radius:9px}
-.nxs-identity{min-width:0}
-.nxs-identity strong{display:block;font:700 25px Georgia,serif;color:#fbe8c0}
-.nxs-identity small,.section-caption{display:block;color:#d4b782;font:700 10px system-ui;letter-spacing:1px}
-.nxs-motto{margin:5px 0 0;padding:6px 9px;border:1px solid #bb965f;border-radius:6px;background:#94704455;color:#fbe8c0;font:italic 600 13px/1.35 Georgia,serif}
-.header-actions{display:flex;flex-direction:column;gap:5px;align-items:flex-end;min-width:0;flex-shrink:1;color:#fbe8c0}
-.header-actions>b{font:700 17px Georgia,serif;white-space:nowrap}
-.header-links{display:flex;gap:7px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
-.nxs-back{display:inline-block;background:#f0cf8f;color:#32200c;border:1px solid #ad833f;border-radius:8px;padding:8px 10px;font:700 12px system-ui;text-decoration:none;white-space:nowrap}
-.nxs-back:focus-visible{outline:3px solid #ffe09b;outline-offset:2px}
-@media(max-width:650px){.nxs-header{min-height:100px;padding:8px;gap:7px}.nxs-brand{gap:7px}.nxs-brand-crest{width:54px;height:54px}.nxs-identity strong{font-size:19px}.nxs-identity small{font-size:8px;letter-spacing:0}.nxs-motto{font-size:10px;padding:4px;margin-top:3px}.header-actions>b{font-size:12px}.section-caption{font-size:8px}.nxs-back{font-size:11px;padding:7px 9px}}
-@media(max-width:400px){.section-caption,.header-actions>b{display:none}.nxs-motto{font-size:9px}.header-actions{max-width:140px}}
-
-
-/* Test-page spacing only; shared header above is copied from the approved Nexus App header. */
-@media (orientation:landscape) and (max-height:520px){.nxs-header{min-height:70px}.nxs-brand-crest{width:48px;height:48px}.nxs-identity strong{font-size:18px}.nxs-motto{font-size:9px}.header-actions>b{font-size:11px}}
+:root{font-family:system-ui,-apple-system,sans-serif;color:#4b351f;background:#e8d4ac;--paper:#f8edda;--paper2:#fff8e9;--gold:#b88b48;--line:#c5a069;--brown:#3b2817;--muted:#795d3d;--green:#557342;--red:#a64a3b}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:linear-gradient(140deg,#eee0c0,#dcc18d);color:var(--brown)}
+body{overflow-x:hidden}.shared{height:76px;display:flex;align-items:center;gap:10px;padding:7px 10px;background:linear-gradient(105deg,#302218,#624525,#302218);color:#fbe8c0;border-bottom:2px solid #c69b53;position:sticky;top:0;z-index:20;box-shadow:0 3px 12px #0003}
+.shared img{width:50px;height:50px;object-fit:contain;border-radius:8px;flex:none}.identity{min-width:0;flex:1}.identity b{display:block;font:700 21px Georgia,serif;white-space:nowrap}.identity small{display:block;color:#d4b782;font-size:9px;font-weight:800;letter-spacing:.8px;white-space:nowrap}
+.menu{width:43px;height:43px;padding:0;border:1px solid #d5ad6c;border-radius:10px;background:#efcd8d;color:#34220f;font-size:25px;font-weight:900;line-height:1;flex:none}
+.subnav{display:flex;gap:6px;padding:5px 8px;background:#3a2a1b;border-bottom:1px solid #c5a069;overflow-x:auto;white-space:nowrap;position:sticky;top:76px;z-index:19}
+.subnav button{border:1px solid #9b7134;border-radius:7px;background:#dfbf83;color:#432c15;padding:6px 9px;font-weight:750;font-size:11px}.subnav button.active{background:#fff0c6;border-color:#f2ca84}
+main{max-width:1250px;margin:auto;padding:9px 10px 30px}.preview-note{text-align:center;font-size:10px;font-weight:800;letter-spacing:.6px;color:#755a38;margin:1px 0 7px}
+.panel{background:var(--paper);border:2px solid #bc985f;border-radius:12px;padding:10px;margin:0 0 10px;box-shadow:0 4px 18px #5b3f1e25}
+h2,h3{font-family:Georgia,serif;color:#6c451e;margin:0}h2{font-size:18px}h3{font-size:15px}.muted{color:var(--muted);font-size:11px}.tag{display:inline-flex;align-items:center;gap:5px;border:1px solid #b58a48;border-radius:999px;padding:5px 8px;background:#f1d797;font-size:10px;font-weight:850;white-space:nowrap}
+.cycle-head{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;flex-wrap:wrap}.cycle-meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:7px}.box,.mini{background:linear-gradient(#fff8e9,#f0dcb4);border:1px solid #c5a36e;border-radius:8px;padding:7px 9px;min-width:0}.box span,.mini span{display:block;font-size:9px;color:#765a38;font-weight:850;letter-spacing:.4px}.box b,.mini b{display:block;margin-top:2px;font:700 15px Georgia,serif;color:#6a441f}
+.timeline{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin-top:9px;background:#f5e4c2;border-radius:8px;padding:7px 5px}.step{text-align:center;position:relative;padding-top:16px}.step:before{content:"";position:absolute;top:6px;left:50%;right:-50%;height:3px;background:#cdb485}.step:last-child:before{display:none}.dot{position:absolute;top:0;left:50%;transform:translateX(-50%);width:13px;height:13px;border-radius:50%;background:#f4e5c4;border:3px solid #a67f45;z-index:2}.active .dot{background:#d59b2f;box-shadow:0 0 0 2px #ecd29c}.step strong{display:block;font:700 12px Georgia,serif}.step small{display:block;font-size:9px;color:#765b3b;margin-top:2px}
+.strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:8px}.mini b{font-size:13px}.mini em{display:block;font-style:normal;font-size:9px;color:#7b6040;margin-top:2px}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:8px}.source-badges{display:flex;gap:5px;flex-wrap:wrap}.source-badge{font-size:9px;font-weight:800;border-radius:999px;padding:4px 7px;border:1px solid #b89459;background:#fff4d8}.official{background:#e8f0df;border-color:#90aa78}.community{background:#f5e4bd;border-color:#c79b54}
+.days{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}.day{background:linear-gradient(#fff9ed,#f2dfbb);border:1px solid #c9a66d;border-radius:9px;padding:8px;min-width:0}.day .daytop{display:flex;justify-content:space-between;gap:5px;align-items:flex-start;border-bottom:1px solid #dcc49d;padding-bottom:6px;margin-bottom:6px}.day strong{font:700 15px Georgia,serif;color:#67431e}.day .date{font-size:9px;color:#775d3c;text-align:right}.focus{font-size:10px;font-weight:850;color:#67431e;margin-bottom:6px}.items{display:flex;flex-direction:column;gap:4px}.item{font-size:9px;line-height:1.25;background:#fff9edb8;border-radius:5px;padding:4px 5px}.item b{color:#6d441c}.strategy{margin-top:6px;padding:5px;border-left:3px solid #a77b39;background:#f7e7c8;border-radius:4px;font-size:9px;line-height:1.3}
+.buff-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.buff{background:#fff8e9;border:1px solid #c9a66d;border-radius:9px;padding:8px;min-width:0}.buff .when{font-size:9px;font-weight:850;color:#795c39}.buff b{display:block;font:700 14px Georgia,serif;color:#68431d;margin:2px 0}.buff p{font-size:9px;color:#705638;margin:2px 0}.buff .role{margin-top:5px;padding-top:5px;border-top:1px solid #dec49a;font-size:9px}.buff.battle{background:#f0e1bf}
+.info-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.info{background:#fff8e9;border:1px solid #c9a66d;border-radius:8px;padding:8px}.info b{display:block;font:700 13px Georgia,serif;margin-bottom:3px}.info p{font-size:9px;line-height:1.35;margin:0;color:#705638}
+.legend{font-size:9px;color:#745938;margin-top:7px;line-height:1.4}.warn{color:#924331;font-weight:800}
+@media(max-width:950px){.days{grid-template-columns:repeat(2,minmax(0,1fr))}.buff-grid,.info-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.strip{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.shared{height:64px}.shared img{width:42px;height:42px}.identity b{font-size:17px}.identity small{font-size:8px}.menu{width:38px;height:38px}.subnav{top:64px}.cycle-meta,.strip,.buff-grid,.info-grid,.days{grid-template-columns:1fr}.timeline{grid-template-columns:repeat(4,minmax(80px,1fr));overflow-x:auto}.panel{padding:8px}}
+@media(orientation:landscape) and (max-height:520px){.shared{height:54px;padding:4px 8px}.shared img{width:38px;height:38px}.identity b{font-size:17px}.identity small{font-size:8px}.menu{width:36px;height:36px;font-size:21px}.subnav{top:54px;padding:3px 6px}.subnav button{padding:4px 8px}.days{grid-template-columns:repeat(5,minmax(0,1fr))}.buff-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.info-grid{grid-template-columns:repeat(3,minmax(0,1fr))}main{padding-top:5px}.panel{padding:7px;margin-bottom:7px}h2{font-size:15px}.preview-note{margin-bottom:4px}.day{padding:6px}.item,.strategy,.buff p,.buff .role,.info p{font-size:8px}}
 </style>
 </head>
 <body>
-<header class="nxs-header" aria-label="NEXUS Kingdom header"><div class="nxs-brand"><img class="nxs-brand-crest" src="data:image/webp;base64,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" alt="Nexus NXS crest"><div class="nxs-identity"><strong>Nexus · NXS</strong><small>KINGDOM #1885 · ALLIANCE OPERATIONS</small><p class="nxs-motto">Nexus — many paths, many strengths, one force.</p></div></div><div class="header-actions"><span class="section-caption">CURRENT SECTION</span><b>KvK Prep</b><div class="header-links"><a id="backToHub" class="nxs-back" href="./kingdom-hub-scouting-v6.html?view=map">← Back to NEXUS</a></div></div></header>
+<header class="shared" aria-label="Nexus App header">
+  <img src="data:image/webp;base64,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" alt="Nexus NXS crest">
+  <div class="identity"><b>Nexus · NXS</b><small>KINGDOM #1885 · ALLIANCE OPERATIONS</small></div>
+  <button class="menu" type="button" aria-label="NEXUS menu">☰</button>
+</header>
+<nav class="subnav" aria-label="KvK Prep sections">
+  <button class="active" type="button">⚔ Dashboard</button>
+  <button type="button">🛡 KvK Controlling</button>
+  <button type="button">📊 Alliance Comparison</button>
+  <button type="button">📈 Alliance Trends</button>
+</nav>
 <main>
-<p class="demo">TEST PREVIEW ONLY · does not change the live Nexus App</p>
+<div class="preview-note">TEST PREVIEW ONLY · LIVE NEXUS APP UNCHANGED</div>
+
 <section class="panel">
   <div class="cycle-head">
-    <div>
-      <h2>Kingdom of Power · Current Cycle</h2>
-      <div class="sub">KvK Prep status overview</div>
-    </div>
-    <div class="status">🟡 PRE-MATCHMAKING</div>
+    <div><h2>Kingdom of Power · Current Cycle</h2><div class="muted">Kingdom #1885 · verified phase timing + planning layer</div></div>
+    <div class="tag">🟡 PRE-MATCHMAKING</div>
   </div>
-
-  <div class="opponent">
+  <div class="cycle-meta">
     <div class="box"><span>OUR KINGDOM</span><b>#1885</b></div>
     <div class="box"><span>OPPONENT</span><b>Not matched yet</b></div>
   </div>
-
   <div class="timeline">
-    <div class="line">
-      <div class="step active">
-        <div class="dot"></div>
-        <strong>Matchmaking</strong>
-        <small>03–04 Oct</small>
-      </div>
-      <div class="step">
-        <div class="dot"></div>
-        <strong>Preparation</strong>
-        <small>05–09 Oct</small>
-      </div>
-      <div class="step">
-        <div class="dot"></div>
-        <strong>Battle</strong>
-        <small>10 Oct</small>
-      </div>
-    </div>
+    <div class="step active"><div class="dot"></div><strong>Matchmaking</strong><small>03–04 Oct</small></div>
+    <div class="step"><div class="dot"></div><strong>Preparation</strong><small>05 Oct → 10 Oct · 10:00 UTC</small></div>
+    <div class="step"><div class="dot"></div><strong>Battle</strong><small>10 Oct · 10:00–22:00 UTC</small></div>
+    <div class="step"><div class="dot"></div><strong>Field Triage</strong><small>after Battle</small></div>
   </div>
-
-  <div class="next"><b>Next:</b> Matchmaking starts 03 Oct · 00:00 UTC</div>
-
-  <div class="data-strip">
-    <div class="metric faded"><span>NXS PREP POINTS</span><b>Starts 05 Oct</b></div>
-    <div class="metric faded"><span>RELATIVE PREP EFFICIENCY</span><b>Awaiting Prep data</b></div>
+  <div class="strip">
+    <div class="mini"><span>NEXT</span><b>Matchmaking</b><em>03 Oct · 00:00 UTC</em></div>
+    <div class="mini"><span>PREP DURATION</span><b>5 days + 10 h</b><em>official Kingshot timing</em></div>
+    <div class="mini"><span>NXS PREP POINTS</span><b>Starts 05 Oct</b><em>live values not available yet</em></div>
+    <div class="mini"><span>RELATIVE PREP EFFICIENCY</span><b>Awaiting data</b><em>needs verified Prep-point totals</em></div>
   </div>
-
-  <div class="note">Concept only: one compact status card at the top of the existing KvK Prep tab. No new tab, no new button, no change to existing dashboard sections.</div>
 </section>
+
+<section class="panel">
+  <div class="section-head">
+    <div><h2>Prep Day Guide · 05–10 Oct</h2><div class="muted">Daily scoring sources + practical save/use strategy</div></div>
+    <div class="source-badges"><span class="source-badge official">Official timing</span><span class="source-badge community">Scoring / strategy reference</span></div>
+  </div>
+  <div class="days">
+    <article class="day">
+      <div class="daytop"><strong>Day 1</strong><span class="date">Mon<br>05 Oct</span></div>
+      <div class="focus">🏗 City Construction</div>
+      <div class="items">
+        <div class="item"><b>Charms:</b> +70 / max-score point</div>
+        <div class="item"><b>Truegold:</b> 2,000 each · TG Dust 1,000</div>
+        <div class="item"><b>Tempered TG:</b> 30,000 each (TG8+)</div>
+        <div class="item"><b>Speedups:</b> 30 / minute · build, research, train, Master Skills</div>
+        <div class="item"><b>Intel:</b> 6,000 / mission</div>
+      </div>
+      <div class="strategy"><b>NXS plan:</b> Use building/research value here; avoid burning major troop-training stock if Day 4 gives better strategic value.</div>
+    </article>
+
+    <article class="day">
+      <div class="daytop"><strong>Day 2</strong><span class="date">Tue<br>06 Oct</span></div>
+      <div class="focus">📚 Basic Skills Up</div>
+      <div class="items">
+        <div class="item"><b>Truegold:</b> 2,000 · TG Dust 1,000 · Tempered TG 30,000</div>
+        <div class="item"><b>Speedups:</b> 30 / minute</div>
+        <div class="item"><b>Hero Roulette:</b> 8,000 / spin</div>
+        <div class="item"><b>Hero shards:</b> Rare 350 · Epic 1,220 · Mythic 3,040</div>
+        <div class="item"><b>Master Emblem:</b> 6,000 · Manuscript 60</div>
+        <div class="item"><b>Gathering:</b> resource collection scores</div>
+      </div>
+      <div class="strategy"><b>NXS plan:</b> Strong day for roulette, hero shards, research/build progression and planned gathering returns.</div>
+    </article>
+
+    <article class="day">
+      <div class="daytop"><strong>Day 3</strong><span class="date">Wed<br>07 Oct</span></div>
+      <div class="focus">🐾 Pet Training</div>
+      <div class="items">
+        <div class="item"><b>Pet advancement:</b> 50 / score</div>
+        <div class="item"><b>Advanced Taming Mark:</b> 15,000 each</div>
+        <div class="item"><b>Common Taming Mark:</b> 1,150 each</div>
+        <div class="item"><b>Charms:</b> +70 / max-score point</div>
+        <div class="item"><b>Roulette:</b> 8,000 · shards 350 / 1,220 / 3,040</div>
+        <div class="item"><b>Intel:</b> 6,000 · Master Emblem 6,000 · Manuscript 60</div>
+      </div>
+      <div class="strategy"><b>NXS plan:</b> Pet resources are the headline spend. Hero resources and Intel also score; no essential Kingdom buff is required by the community schedule.</div>
+    </article>
+
+    <article class="day">
+      <div class="daytop"><strong>Day 4</strong><span class="date">Thu<br>08 Oct</span></div>
+      <div class="focus">⚔ Hero Development / Troops</div>
+      <div class="items">
+        <div class="item"><b>Charms:</b> +70 / max-score point</div>
+        <div class="item"><b>Forgehammer:</b> 4,000 each</div>
+        <div class="item"><b>Widget:</b> 8,000 each</div>
+        <div class="item"><b>Mithril:</b> 40,000 each</div>
+        <div class="item"><b>Troops:</b> Lv1–11 = 3 → 75 points each</div>
+        <div class="item"><b>Gathering:</b> resource collection scores</div>
+      </div>
+      <div class="strategy"><b>NXS plan:</b> Major troop-training day. Pair with Mobilize and the best available training position before large queues finish.</div>
+    </article>
+
+    <article class="day">
+      <div class="daytop"><strong>Day 5</strong><span class="date">Fri → Sat<br>09 Oct → 10 Oct 10:00</span></div>
+      <div class="focus">🔥 Power Boost</div>
+      <div class="items">
+        <div class="item"><b>Pets:</b> advancement 50 · Adv Mark 15,000 · Common 1,150</div>
+        <div class="item"><b>Mithril:</b> 40,000 · Gov. Gear max score +36</div>
+        <div class="item"><b>Forgehammer:</b> 4,000 · Widget 8,000</div>
+        <div class="item"><b>Truegold:</b> 2,000 · TG Dust 1,000 · Tempered TG 30,000</div>
+        <div class="item"><b>Speedups:</b> 30 / minute · Intel 6,000</div>
+        <div class="item"><b>Gathering:</b> resource collection scores</div>
+      </div>
+      <div class="strategy"><b>NXS plan:</b> Broad final-push day. Use remaining high-value resources deliberately rather than spending them earlier without a scoring match.</div>
+    </article>
+  </div>
+  <div class="legend"><span class="warn">Important:</span> Point tables can change with game updates and kingdom progression (e.g. War Academy / TG8). Verify the live in-game task list before major spending.</div>
+</section>
+
+<section class="panel">
+  <div class="section-head">
+    <div><h2>Kingdom Buff Plan</h2><div class="muted">Community planning schedule · verify availability and exact activation time in-game</div></div>
+    <span class="source-badge community">Community strategy</span>
+  </div>
+  <div class="buff-grid">
+    <article class="buff"><div class="when">DAY 1 · 05 OCT</div><b>🏗 Ground Works</b><p>+10% Construction Speed · 24h.</p><div class="role"><b>Position:</b> Chief Minister recommended for major builders.</div></article>
+    <article class="buff"><div class="when">DAY 2 · 06 OCT</div><b>📚 Fresh Ideas</b><p>+10% Research Speed · 24h.</p><div class="role"><b>Position:</b> Chief Minister recommended for major research upgrades.</div></article>
+    <article class="buff"><div class="when">DAY 3 · 07 OCT</div><b>🐾 No essential Prep buff</b><p>Pet / hero-resource day. Preserve Kingdom skills unless a local plan requires otherwise.</p><div class="role"><b>Position:</b> Assign situationally.</div></article>
+    <article class="buff"><div class="when">DAY 4 · 08 OCT</div><b>⚔ Mobilize</b><p>+30% Training Speed · 24h.</p><div class="role"><b>Position:</b> Noble Advisor preferred; Chief Minister is a fallback.</div></article>
+    <article class="buff"><div class="when">DAY 5 · 09 OCT</div><b>🔥 Ground Works + Fresh Ideas + Mobilize</b><p>Community plan uses the three main growth buffs for the broad final push.</p><div class="role"><b>Position:</b> Coordinate applications around the largest queued upgrades.</div></article>
+    <article class="buff battle"><div class="when">BATTLE PREP · BEFORE 10 OCT 10:00 UTC</div><b>❤️ Community Healing</b><p>+50% Healing Speed · 24h. Schedule it so the buff overlaps the Battle Phase.</p><div class="role"><b>Scheduling:</b> Community guide states King Skills can be scheduled up to 48h in advance.</div></article>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="section-head"><div><h2>Prep Mechanics & Rewards</h2><div class="muted">Useful rules to surface in the KvK Prep dashboard</div></div><span class="source-badge official">Official + reference data</span></div>
+  <div class="info-grid">
+    <div class="info"><b>🏆 Preparation result</b><p>The kingdom with more total Preparation points wins the phase. The Prep winner attacks during Battle; the Prep loser defends.</p></div>
+    <div class="info"><b>🎯 Duel Group bonus</b><p>A Kingdom Preparation Point Bonus earned by finishing 1st in a daily Duel Group becomes active in the next phase/day, not retroactively.</p></div>
+    <div class="info"><b>🎁 Daily rewards</b><p>Three personal reward chests are available each Prep day. Reference data says the final chest usually requires 200,000 points.</p></div>
+    <div class="info"><b>🏅 State Medals</b><p>Reference data describes one State Medal per Prep day (5 total), with the sixth earned by participating in the Battle Phase.</p></div>
+    <div class="info"><b>⚔ Battle timing</b><p>Battle starts Saturday 10 Oct at 10:00 UTC and runs to 22:00 UTC. The live app should switch the cycle status automatically once that phase begins.</p></div>
+    <div class="info"><b>📊 Nexus App data layer</b><p>Opponent, Prep scores, daily rankings and Relative Prep Efficiency stay empty until verified values are entered/imported. No invented live values.</p></div>
+  </div>
+</section>
+
 </main>
 </body>
 </html>
