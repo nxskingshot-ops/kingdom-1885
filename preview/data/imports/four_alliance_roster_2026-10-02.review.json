@@ -95,9 +95,19 @@
         "R2": 15,
         "R1": 5
       },
-      "power_m": null,
-      "castles": null,
-      "verification": "rank counts verified from screenshot headers; power/castle aggregation pending",
+      "power_m": 9833.6,
+      "castles": {
+        "27": 5,
+        "28": 2,
+        "29": 6,
+        "30": 20,
+        "TG1": 14,
+        "TG2": 27,
+        "TG3": 17,
+        "TG4": 8,
+        "TG5": 1
+      },
+      "verification": "Complete 100-member manual transcription from 2026-10-02 screenshot set; displayed powers sum to 9833.6M and castle/TG distribution sums to 100. Previous 2026-09-29 comparison uses displayed-member sum 9706.3M because prior 9711.322485M value came from alliance ranking and is not directly comparable.",
       "previous_snapshot_date": "2026-09-29",
       "previous_member_count": 99,
       "member_delta": 1,
@@ -114,7 +124,17 @@
         "R3": 0,
         "R2": 1,
         "R1": 0
-      }
+      },
+      "power_basis": "sum_of_displayed_member_power_rounded_0.1M",
+      "previous_displayed_member_power_sum_m": 9706.3,
+      "displayed_power_delta_m": 127.3,
+      "previous_ranking_power_m": 9711.322485,
+      "ranking_power_comparison_status": "not_comparable_without_2026-10-02_alliance_ranking_total",
+      "castle_tg_count": 67,
+      "previous_castle_tg_count": 66,
+      "castle_tg_delta": 1,
+      "castle_25_plus_count": 100,
+      "previous_castle_25_plus_count": 99
     },
     "MYM": {
       "member_count": 99,
@@ -151,10 +171,11 @@
     "member_count_sum_matches_rank_headers": true,
     "app_data_switched": false,
     "supabase_nxs_imported": false,
-    "notes": "Member/rank comparison is complete for all four alliances. NXS aggregate power and FRA power/castle distribution are complete. OoO/MYM power totals and castle/TG distributions, plus NXS castle/TG distribution, remain under review; do not switch live app data or import NXS into protected KvK tables yet.",
+    "notes": "Member/rank comparison complete for all four alliances. NXS aggregate power, FRA power/castles, and OoO power/castles are complete. MYM power/castles and NXS castle/TG distribution remain under review; do not switch live app data or import NXS into protected KvK tables yet.",
     "member_and_rank_comparison_complete": true,
     "power_and_castle_comparison_complete": false,
     "nxs_power_comparison_complete": true,
-    "fra_power_and_castles_complete": true
+    "fra_power_and_castles_complete": true,
+    "ooo_power_and_castles_complete": true
   }
 }
