@@ -16,7 +16,24 @@
       },
       "power_m": null,
       "castles": null,
-      "verification": "rank counts verified from screenshot headers; power/castle aggregation pending"
+      "verification": "rank counts verified from screenshot headers; power/castle aggregation pending",
+      "previous_snapshot_date": "2026-09-29",
+      "previous_member_count": 96,
+      "member_delta": 0,
+      "previous_ranks": {
+        "R5": 1,
+        "R4": 9,
+        "R3": 82,
+        "R2": 3,
+        "R1": 1
+      },
+      "rank_delta": {
+        "R5": 0,
+        "R4": 0,
+        "R3": 1,
+        "R2": -1,
+        "R1": 0
+      }
     },
     "FRA": {
       "member_count": 99,
@@ -29,7 +46,24 @@
       },
       "power_m": null,
       "castles": null,
-      "verification": "rank counts verified from screenshot headers; power/castle aggregation pending"
+      "verification": "rank counts verified from screenshot headers; power/castle aggregation pending",
+      "previous_snapshot_date": "2026-09-29",
+      "previous_member_count": 98,
+      "member_delta": 1,
+      "previous_ranks": {
+        "R5": 1,
+        "R4": 11,
+        "R3": 86,
+        "R2": 0,
+        "R1": 0
+      },
+      "rank_delta": {
+        "R5": 0,
+        "R4": 0,
+        "R3": -1,
+        "R2": 0,
+        "R1": 2
+      }
     },
     "OoO": {
       "member_count": 100,
@@ -42,7 +76,24 @@
       },
       "power_m": null,
       "castles": null,
-      "verification": "rank counts verified from screenshot headers; power/castle aggregation pending"
+      "verification": "rank counts verified from screenshot headers; power/castle aggregation pending",
+      "previous_snapshot_date": "2026-09-29",
+      "previous_member_count": 99,
+      "member_delta": 1,
+      "previous_ranks": {
+        "R5": 1,
+        "R4": 13,
+        "R3": 66,
+        "R2": 14,
+        "R1": 5
+      },
+      "rank_delta": {
+        "R5": 0,
+        "R4": 0,
+        "R3": 0,
+        "R2": 1,
+        "R1": 0
+      }
     },
     "MYM": {
       "member_count": 99,
@@ -55,13 +106,32 @@
       },
       "power_m": null,
       "castles": null,
-      "verification": "rank counts verified from screenshot headers; power/castle aggregation pending"
+      "verification": "rank counts verified from screenshot headers; power/castle aggregation pending",
+      "previous_snapshot_date": "2026-09-29",
+      "previous_member_count": 100,
+      "member_delta": -1,
+      "previous_ranks": {
+        "R5": 1,
+        "R4": 10,
+        "R3": 87,
+        "R2": 2,
+        "R1": 0
+      },
+      "rank_delta": {
+        "R5": 0,
+        "R4": 0,
+        "R3": -2,
+        "R2": 1,
+        "R1": 0
+      }
     }
   },
   "validation": {
     "member_count_sum_matches_rank_headers": true,
     "app_data_switched": false,
     "supabase_nxs_imported": false,
-    "notes": "Do not point Alliance Trends/Comparison to this staging file and do not import NXS into protected KvK tables until player-level transcription and previous-snapshot matching are complete."
+    "notes": "Member/rank comparison 2026-09-29 → 2026-10-02 is complete. Power and castle/TG aggregation remains under review; do not switch live app data or import NXS into protected KvK tables yet.",
+    "member_and_rank_comparison_complete": true,
+    "power_and_castle_comparison_complete": false
   }
 }
