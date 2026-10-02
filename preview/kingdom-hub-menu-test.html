@@ -65,34 +65,51 @@ html:fullscreen body{padding:env(safe-area-inset-top) env(safe-area-inset-right)
 #nexusMenu #languageTestRow button{margin:0;padding:9px 5px;text-align:center}
 @media (orientation:landscape) and (min-width:680px){
  #nexusMenu{
-  width:min(560px,calc(100vw - 20px));
-  max-height:calc(100dvh - 46px);
+  width:min(590px,calc(100vw - 18px));
+  max-height:calc(100dvh - 44px);
   padding:6px;
   overflow:hidden;
   display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
+  grid-template-columns:1.15fr 1fr;
+  grid-template-areas:
+   "kingdom scouting"
+   "management access"
+   "app app";
   gap:5px;
   align-content:start;
  }
  .nexus-menu-group{padding:5px;margin:0;min-width:0}
  .nexus-menu-group-title{font-size:9px;margin-bottom:4px;letter-spacing:.9px}
- .nexus-menu-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
- .nexus-menu-group[data-group="kingdom"]{grid-column:1}
- .nexus-menu-group[data-group="scouting"]{grid-column:2}
- .nexus-menu-group[data-group="management"]{grid-column:1}
- .nexus-menu-group[data-group="access"]{grid-column:2}
- .nexus-menu-group[data-group="app"]{grid-column:1 / -1}
+ .nexus-menu-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
+ .nexus-menu-group[data-group="kingdom"]{grid-area:kingdom}
+ .nexus-menu-group[data-group="scouting"]{grid-area:scouting}
+ .nexus-menu-group[data-group="management"]{grid-area:management}
+ .nexus-menu-group[data-group="access"]{grid-area:access}
+ .nexus-menu-group[data-group="app"]{grid-area:app}
  .nexus-menu-group[data-group="kingdom"] .nexus-menu-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .nexus-menu-group[data-group="management"] .nexus-menu-grid,
+ .nexus-menu-group[data-group="scouting"] .nexus-menu-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .nexus-menu-group[data-group="access"] .nexus-menu-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
  .nexus-menu-group[data-group="app"] .nexus-menu-grid{grid-template-columns:repeat(5,minmax(0,1fr))}
  #nexusMenu .nexus-menu-grid>button{
-  padding:6px 7px;
-  min-height:32px;
+  padding:7px 7px;
+  min-height:40px;
+  height:40px;
   font-size:10px;
-  line-height:1.15;
+  line-height:1.12;
   white-space:normal;
   overflow-wrap:anywhere;
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
  }
- #nexusMenu #languageTestRow button{padding:6px 4px;font-size:10px;min-height:32px}
+ #nexusMenu .nexus-menu-group[data-group="access"] .nexus-menu-grid>button,
+ #nexusMenu .nexus-menu-group[data-group="app"] .nexus-menu-grid>button{
+  justify-content:center;
+  text-align:center;
+ }
+ #nexusMenu #languageTestRow{height:40px;align-items:stretch}
+ #nexusMenu #languageTestRow button{padding:5px 4px;font-size:10px;min-height:40px;height:40px}
 }
 
 #nexusFeedback{position:fixed;z-index:2147483500;inset:0;background:#000b;display:flex;align-items:center;justify-content:center;padding:12px}
