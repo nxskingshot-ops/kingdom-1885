@@ -4,7 +4,7 @@
 <style>
 :root{color-scheme:dark}body{margin:0;background:#101319;color:#f2ead9;font-family:system-ui,-apple-system,sans-serif}header{padding:18px 16px;background:#171c25;border-bottom:1px solid #9d7a35;position:sticky;top:0;z-index:3}h1{margin:0;color:#d9b45d;font-size:22px}small,.muted{color:#aaa}.wrap{padding:14px;max-width:900px;margin:auto}.note{background:#221f18;border-left:3px solid #d9b45d;padding:12px;margin:10px 0 14px}.controls{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.controls button,.controls input,.controls select{background:#191f29;color:#f2ead9;border:1px solid #5c4b2b;border-radius:10px;padding:10px}.controls input{flex:1;min-width:160px}.controls button.active{border-color:#d9b45d;color:#d9b45d}.card{background:#191f29;border:1px solid #5c4b2b;border-radius:14px;padding:13px;margin:9px 0}.top{display:flex;justify-content:space-between;gap:10px}.badge{background:#2b3443;border-radius:999px;padding:4px 9px;font-weight:700}.meta{font-size:13px;color:#cfc6b3;margin-top:7px}.owner{margin-top:7px;font-weight:700}.verified{color:#8fd19e}.count{margin:8px 0;color:#d9b45d;font-weight:700}.report{white-space:pre-wrap;background:#0e1117;border:1px solid #5c4b2b;border-radius:12px;padding:12px;margin-top:10px;font-size:13px}.section{margin-top:18px;color:#d9b45d;font-weight:800}
 </style></head>
-<body><header><h1>Nexus App · Territory Test</h1><small>Kingdom #1885 · isolated test build · main app untouched</small></header>
+<body><header><h1>Nexus App · Territory Test</h1><small>Kingdom #1885 · isolated test build · main app untouched</small><div id="serverClock" style="margin-top:6px;color:#d9b45d;font-weight:800">🕒 Server Time · --:--:-- UTC</div></header>
 <div class="wrap">
 <div class="note"><b>Territory Intelligence</b><br>Outposts and alliance buildings stay separate. Verified data can be filtered and turned into a copy-ready alliance-chat report.</div>
 <div class="controls"><button id="outBtn" class="active">Outposts</button><button id="buildBtn">Alliance Buildings</button></div>
@@ -13,6 +13,10 @@
 <div id="report" class="report" style="display:none"></div><div class="count" id="count"></div><div id="list"></div></div>
 <script>
 const O=[];
+function serverNow(){return new Date()}
+function utcStamp(d=serverNow()){const p=n=>String(n).padStart(2,"0");return `${p(d.getUTCDate())}.${p(d.getUTCMonth()+1)}.${d.getUTCFullYear()} – ${p(d.getUTCHours())}:${p(d.getUTCMinutes())}:${p(d.getUTCSeconds())} UTC`}
+function updateServerClock(){serverClock.textContent=`🕒 Server Time · ${utcStamp()}`}
+updateServerClock();setInterval(updateServerClock,1000);
 function add(name,level,buff,value,rows){rows.forEach(([x,y,owner])=>O.push({name,level,x,y,buff,value,owner,status:"Verified"}))}
 add("Builder's Guild",1,"Construction Speed","+5%",[[1068,138,"FRA"],[537,138,"FRA Akademie"],[138,138,"NxS Akademie"],[138,666,"MYM Akademie"],[138,1038,"OoO"],[666,1068,"OUR"],[1068,567,"NXS"],[1068,1068,"MYM"]]);
 add("Builder's Guild",3,"Construction Speed","+8%",[[486,327,"OoO"],[768,867,"RKD"],[867,567,"NXS"],[327,666,"MYM"]]);
@@ -56,10 +60,10 @@ function render(){
 }
 function switchMode(m){mode=m;q.value="";options();report.style.display="none";copyBtn.style.display="none";render()}
 function makeReport(){
- const rows=filtered(),stamp="02.10.2026";
+ const rows=filtered(),stamp=utcStamp();
  let t=mode==="outposts"?`📍 KINGDOM #1885 — OUTPOST REPORT\nFilter: ${owner.value||"All alliances"} · ${rows.length} Outposts\n`:`🏰 NXS — ALLIANCE BUILDINGS REPORT\n${rows.length} Buildings\n`;
  t+=rows.map(x=>mode==="outposts"?`${x.name} L${x.level} | ${x.x},${x.y} | ${x.owner}`:`${x.name} | ${x.x},${x.y} | ${x.detail}`).join("\n");
- t+=`\n\nData status: ${stamp}\nProvided by Nexus App`;
+ t+=`\n\nData status: ${stamp}\nTime reference: UTC (Server Time)\nProvided by Nexus App`;
  report.textContent=t;report.style.display="block";copyBtn.style.display="inline-block";
 }
 outBtn.onclick=()=>switchMode("outposts");buildBtn.onclick=()=>switchMode("buildings");q.oninput=render;owner.onchange=render;kind.onchange=render;reportBtn.onclick=makeReport;copyBtn.onclick=async()=>{await navigator.clipboard.writeText(report.textContent);copyBtn.textContent="✓ Copied";setTimeout(()=>copyBtn.textContent="Copy report",1200)};options();render();
