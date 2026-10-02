@@ -34,11 +34,18 @@ Goal: Stabilization and go-live readiness. No new major features unless they dir
    - Add “What’s new?”
    - Prefer context-sensitive help for the currently open area
 
-4. Central login UX
+4. Design & layout fixes
+   - Collect remaining visual/layout issues from current tester build
+   - Fix spacing, alignment, overflow, clipping, broken responsive behavior, and inconsistent card/button sizing
+   - Check portrait and landscape layouts
+   - Preserve approved/frozen designs and working functions; make only scoped fixes
+   - Re-test affected areas after every layout change
+
+5. Central login UX
    - Evaluate / implement a clear central login entry point
    - Avoid forcing users to discover login through KvK Prep
 
-5. Full app smoke test
+6. Full app smoke test
    - Open/close/back for every main menu item
    - Portrait + landscape
    - Scrolling
@@ -51,23 +58,23 @@ Goal: Stabilization and go-live readiness. No new major features unless they dir
    - KvK
    - True Power
 
-6. PWA / update / cache test
+7. PWA / update / cache test
    - Install/start behavior
    - Home-screen icon
    - Full-screen start
    - Update notification
    - Ensure testers reliably receive the newest version
 
-7. DE / EN / FR consistency check
+8. DE / EN / FR consistency check
    - Fix obvious mixed-language labels
    - Fix clipped/overflowing text
    - Keep embedded areas consistent where practical
 
-8. Final go-live checklist & backup
+9. Final go-live checklist & backup
    - Freeze approved UI
    - Final backup branch / commit
    - Set version number
    - Prepare tester / go-live announcement
    - List any remaining blockers
 
-Rule for tomorrow: no feature creep. Focus on stability, permissions, data reliability, help/search, and go-live readiness.
+Rule for tomorrow: no feature creep. Focus on stability, permissions, data reliability, help/search, design/layout cleanup, and go-live readiness.
