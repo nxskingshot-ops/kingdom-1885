@@ -398,9 +398,12 @@ function defaultNexusGrant(row){
 }
 function renderNexusAccessRequests(rows){
  nexusAccessAdminList.textContent='';
- if(!rows.length){nexusAccessAdminStatus.textContent='✓ No pending requests.';return;}
- nexusAccessAdminStatus.textContent=rows.length+' pending request'+(rows.length===1?'':'s')+'.';
- rows.forEach(row=>{
+ const pending=rows.filter(r=>r.status==='pending');
+ const approved=rows.filter(r=>r.status==='approved').slice(-5).reverse();
+ if(!pending.length&&!approved.length){nexusAccessAdminStatus.textContent='✓ No access requests.';return;}
+ nexusAccessAdminStatus.textContent=pending.length+' pending request'+(pending.length===1?'':'s')+'.';
+
+ pending.forEach(row=>{
   const card=document.createElement('div');card.className='nexus-access-row';
   const title=document.createElement('strong');title.textContent=row.gamer_tag+' · '+row.alliance;
   const meta=document.createElement('div');meta.className='nexus-access-meta';meta.textContent='Player ID: '+row.player_id+' · '+new Date(row.requested_at).toLocaleString();
@@ -420,18 +423,32 @@ function renderNexusAccessRequests(rows){
   reject.onclick=()=>reviewNexusAccessRequest(row.id,'reject','',[grant,approve,reject],card);
   actions.append(grant,approve,reject);card.append(title,meta,actions);nexusAccessAdminList.append(card);
  });
+
+ if(approved.length){
+  const label=document.createElement('div');label.className='nexus-access-meta';label.style.marginTop='14px';label.textContent='Recently approved';
+  nexusAccessAdminList.append(label);
+  approved.forEach(row=>{
+   const card=document.createElement('div');card.className='nexus-access-row';
+   const title=document.createElement('strong');title.textContent=row.gamer_tag+' · '+row.alliance;
+   const meta=document.createElement('div');meta.className='nexus-access-meta';meta.textContent='Player ID: '+row.player_id+' · Role: '+(row.granted_role||'—');
+   const actions=document.createElement('div');actions.className='nexus-access-row-actions';
+   const reset=document.createElement('button');reset.type='button';reset.textContent='🔑 Reset login';
+   reset.onclick=()=>reviewNexusAccessRequest(row.id,'reset','',[reset],card);
+   actions.append(reset);card.append(title,meta,actions);nexusAccessAdminList.append(card);
+  });
+ }
 }
 async function loadNexusAccessRequests(){
  nexusAccessAdminStatus.textContent='Loading…';nexusAccessAdminList.textContent='';
  try{
   if(!await checkNexusAccessAdmin())throw new Error('R4 / R5 / Admin access required.');
   const client=await getNexusAccessAdminClient();
-  const {data,error}=await client.from('nexus_access_requests').select('id,gamer_tag,player_id,alliance,status,requested_at').eq('status','pending').order('requested_at',{ascending:true});
+  const {data,error}=await client.from('nexus_access_requests').select('id,gamer_tag,player_id,alliance,status,requested_at,granted_role').in('status',['pending','approved']).order('requested_at',{ascending:true});
   if(error)throw error;renderNexusAccessRequests(data||[]);
  }catch(err){nexusAccessAdminStatus.textContent=err instanceof Error?err.message:'Unable to load access requests.';}
 }
 async function reviewNexusAccessRequest(id,action,grant,controls,card){
- controls.forEach(b=>b.disabled=true);nexusAccessAdminStatus.textContent=action==='approve'?'Creating access…':'Rejecting…';
+ controls.forEach(b=>b.disabled=true);nexusAccessAdminStatus.textContent=action==='approve'?'Creating access…':action==='reset'?'Resetting login…':'Rejecting…';
  try{
   const client=await getNexusAccessAdminClient();
   const {data:{session},error:sessionError}=await client.auth.getSession();
@@ -442,9 +459,9 @@ async function reviewNexusAccessRequest(id,action,grant,controls,card){
   });
   const result=await response.json();
   if(!response.ok)throw new Error(result.error||'Review failed.');
-  if(action==='approve'){
+  if(action==='approve'||action==='reset'){
    const box=document.createElement('div');box.className='nexus-access-credentials';
-   const heading=document.createElement('b');heading.textContent='✓ Access created — share these login details privately:';
+   const heading=document.createElement('b');heading.textContent=action==='reset'?'✓ New login details — share privately:':'✓ Access created — share these login details privately:';
    const email=document.createElement('code');email.textContent='Email: '+result.email;
    const password=document.createElement('code');password.textContent='Password: '+result.password;
    const copy=document.createElement('button');copy.type='button';copy.textContent='Copy login details';
@@ -454,7 +471,7 @@ async function reviewNexusAccessRequest(id,action,grant,controls,card){
     catch{nexusAccessAdminStatus.textContent='Clipboard unavailable. Copy the shown details manually.';}
    };
    box.append(heading,email,password,copy);card.replaceChildren(box);
-   nexusAccessAdminStatus.textContent='✓ Access approved and login created.';
+   nexusAccessAdminStatus.textContent=action==='reset'?'✓ Login reset. Old password no longer works.':'✓ Access approved and login created.';
   }else{
    card.remove();nexusAccessAdminStatus.textContent='✓ Request rejected.';
    if(!nexusAccessAdminList.children.length)nexusAccessAdminStatus.textContent='✓ No pending requests.';
