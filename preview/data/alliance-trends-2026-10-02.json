@@ -1,0 +1,162 @@
+{
+  "schema_version": 1,
+  "snapshot_date": "2026-10-02",
+  "status": "provisional_manual_transcription",
+  "notes": "Aggregates from user-supplied Kingshot roster screenshots. Displayed player power is rounded to 0.1M, so totals are approximate. Raw player-level records are not published. Power changes compare like-for-like displayed member-power sums except where explicitly noted.",
+  "alliances": {
+    "NXS": {
+      "snapshot_date": "2026-10-02",
+      "member_count": 96,
+      "power_m": 11498.4,
+      "castle_tg_count": 89,
+      "castle_25_plus_count": 96,
+      "ranks": {
+        "R5": 1,
+        "R4": 9,
+        "R3": 83,
+        "R2": 2,
+        "R1": 1
+      },
+      "castles": {
+        "29": 2,
+        "30": 5,
+        "TG1": 9,
+        "TG2": 34,
+        "TG3": 30,
+        "TG4": 10,
+        "TG5": 6
+      },
+      "latest_change": {
+        "from_date": "2026-09-29",
+        "to_date": "2026-10-02",
+        "previous_member_count": 96,
+        "current_member_count": 96,
+        "member_delta": 0,
+        "previous_power_m": 11335.7,
+        "current_power_m": 11498.4,
+        "net_power_change_m": 162.7,
+        "previous_castle_tg_count": 88,
+        "current_castle_tg_count": 89,
+        "castle_tg_delta": 1
+      }
+    },
+    "MYM": {
+      "snapshot_date": "2026-10-02",
+      "member_count": 99,
+      "power_m": 9041.8,
+      "castle_tg_count": 62,
+      "castle_25_plus_count": 98,
+      "ranks": {
+        "R5": 1,
+        "R4": 10,
+        "R3": 85,
+        "R2": 3,
+        "R1": 0
+      },
+      "castles": {
+        "23": 1,
+        "27": 4,
+        "28": 4,
+        "29": 7,
+        "30": 21,
+        "TG1": 14,
+        "TG2": 25,
+        "TG3": 16,
+        "TG4": 3,
+        "TG5": 4
+      },
+      "latest_change": {
+        "from_date": "2026-09-29",
+        "to_date": "2026-10-02",
+        "previous_member_count": 100,
+        "current_member_count": 99,
+        "member_delta": -1,
+        "previous_power_m": 8968.9,
+        "current_power_m": 9041.8,
+        "net_power_change_m": 72.9,
+        "previous_castle_tg_count": 62,
+        "current_castle_tg_count": 62,
+        "castle_tg_delta": 0
+      }
+    },
+    "FRA": {
+      "snapshot_date": "2026-10-02",
+      "member_count": 99,
+      "power_m": 7752.6,
+      "castle_tg_count": 44,
+      "castle_25_plus_count": 98,
+      "ranks": {
+        "R5": 1,
+        "R4": 11,
+        "R3": 85,
+        "R2": 0,
+        "R1": 2
+      },
+      "castles": {
+        "18": 1,
+        "26": 3,
+        "27": 3,
+        "28": 16,
+        "29": 10,
+        "30": 22,
+        "TG1": 20,
+        "TG2": 16,
+        "TG3": 6,
+        "TG4": 1,
+        "TG5": 1
+      },
+      "latest_change": {
+        "from_date": "2026-09-29",
+        "to_date": "2026-10-02",
+        "previous_member_count": 98,
+        "current_member_count": 99,
+        "member_delta": 1,
+        "previous_power_m": 7559.3,
+        "current_power_m": 7752.6,
+        "net_power_change_m": 193.3,
+        "previous_castle_tg_count": 40,
+        "current_castle_tg_count": 44,
+        "castle_tg_delta": 4
+      }
+    },
+    "OoO": {
+      "snapshot_date": "2026-10-02",
+      "member_count": 100,
+      "power_m": 9833.6,
+      "castle_tg_count": 67,
+      "castle_25_plus_count": 100,
+      "ranks": {
+        "R5": 1,
+        "R4": 13,
+        "R3": 66,
+        "R2": 15,
+        "R1": 5
+      },
+      "castles": {
+        "27": 5,
+        "28": 2,
+        "29": 6,
+        "30": 20,
+        "TG1": 14,
+        "TG2": 27,
+        "TG3": 17,
+        "TG4": 8,
+        "TG5": 1
+      },
+      "latest_change": {
+        "from_date": "2026-09-29",
+        "to_date": "2026-10-02",
+        "previous_member_count": 99,
+        "current_member_count": 100,
+        "member_delta": 1,
+        "previous_power_m": 9706.3,
+        "current_power_m": 9833.6,
+        "net_power_change_m": 127.3,
+        "previous_castle_tg_count": 66,
+        "current_castle_tg_count": 67,
+        "castle_tg_delta": 1
+      }
+    }
+  },
+  "comparison_policy": "Cross-alliance changes use the dated 2026-09-29 baseline and 2026-10-02 screenshot aggregates. OoO uses displayed-member power sum for both dates; its separate 2026-09-29 alliance-ranking total is intentionally not used for the delta."
+}
