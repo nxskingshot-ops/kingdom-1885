@@ -75,17 +75,19 @@ html:fullscreen body{padding:env(safe-area-inset-top) env(safe-area-inset-right)
    "kingdom scouting"
    "management access"
    "app app";
+  grid-template-rows:max-content max-content max-content;
   gap:5px;
   align-content:start;
+  align-items:start;
  }
- .nexus-menu-group{padding:5px;margin:0;min-width:0}
+ .nexus-menu-group{padding:5px;margin:0;min-width:0;align-self:start;height:auto}
  .nexus-menu-group-title{font-size:9px;margin-bottom:4px;letter-spacing:.9px}
  .nexus-menu-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
  .nexus-menu-group[data-group="kingdom"]{grid-area:kingdom}
  .nexus-menu-group[data-group="scouting"]{grid-area:scouting}
  .nexus-menu-group[data-group="management"]{grid-area:management}
  .nexus-menu-group[data-group="access"]{grid-area:access}
- .nexus-menu-group[data-group="app"]{grid-area:app}
+ .nexus-menu-group[data-group="app"]{grid-area:app;height:auto}
  .nexus-menu-group[data-group="kingdom"] .nexus-menu-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
  .nexus-menu-group[data-group="management"] .nexus-menu-grid,
  .nexus-menu-group[data-group="scouting"] .nexus-menu-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -170,21 +172,6 @@ body.kvk.kvk-comparison #allianceComparison,body.kvk.kvk-trends #allianceTrends{
 /* Scouting entries remain vertically stacked even in landscape's two-column menu. */
 #nexusMenu #liveScoutButton,#nexusMenu #scoutButton{width:100%}
 /* Landscape phone: two compact columns instead of a long scrolling list. */
-@media (orientation:landscape) and (min-width:680px){
- #nexusMenu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:min-content;align-content:start;gap:5px;width:min(430px,calc(100vw - 28px));max-height:calc(100dvh - 62px);overflow-y:auto;overscroll-behavior:contain}
- #nexusMenu button{min-width:0;margin:0;padding:8px 9px;white-space:normal;overflow-wrap:anywhere;font-size:12px;align-self:start}
- /* Compact two-column landscape menu. Keep LIVE and DEMO vertically adjacent in the right column. */
- #nexusMenu #mapButton{grid-column:1;grid-row:1}
- #nexusMenu #editorLaunch{grid-column:2;grid-row:1}
- #nexusMenu #kvkButton{grid-column:1;grid-row:2}
- #nexusMenu #liveScoutButton{grid-column:2;grid-row:2}
- #nexusMenu #focusButton{grid-column:1;grid-row:3}
- #nexusMenu #scoutButton{grid-column:2;grid-row:3}
- #nexusMenu #fullscreenButton{grid-column:1;grid-row:4}
- #nexusMenu #nexusContact{grid-column:2;grid-row:4}
- #nexusMenu button:disabled:nth-of-type(1){grid-column:1;grid-row:5}
- #nexusMenu #nexusAboutLaunch{grid-column:2;grid-row:5}
-}
 
 #truePower{display:none}
 body.truePower #map,body.truePower #kvk,body.truePower #kvkControlling,body.truePower #allianceComparison,body.truePower #allianceTrends,body.truePower #scouting,body.truePower #liveScouting{display:none!important}
