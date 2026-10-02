@@ -14,9 +14,9 @@
         "R2": 2,
         "R1": 1
       },
-      "power_m": null,
+      "power_m": 11498.4,
       "castles": null,
-      "verification": "rank counts verified from screenshot headers; power/castle aggregation pending",
+      "verification": "Member/rank counts verified from screenshot headers; total power 11,498.4M transcribed from the complete 2026-10-02 NXS roster screenshot set. Castle/TG aggregation still pending.",
       "previous_snapshot_date": "2026-09-29",
       "previous_member_count": 96,
       "member_delta": 0,
@@ -33,7 +33,9 @@
         "R3": 1,
         "R2": -1,
         "R1": 0
-      }
+      },
+      "previous_power_m": 11335.7,
+      "power_delta_m": 162.7
     },
     "FRA": {
       "member_count": 99,
@@ -130,8 +132,9 @@
     "member_count_sum_matches_rank_headers": true,
     "app_data_switched": false,
     "supabase_nxs_imported": false,
-    "notes": "Member/rank comparison 2026-09-29 → 2026-10-02 is complete. Power and castle/TG aggregation remains under review; do not switch live app data or import NXS into protected KvK tables yet.",
+    "notes": "Member/rank comparison 2026-09-29 → 2026-10-02 is complete. NXS aggregate power comparison is complete (+162.7M). FRA/OoO/MYM power totals and all castle/TG distributions remain under review; do not switch live app data or import NXS into protected KvK tables yet.",
     "member_and_rank_comparison_complete": true,
-    "power_and_castle_comparison_complete": false
+    "power_and_castle_comparison_complete": false,
+    "nxs_power_comparison_complete": true
   }
 }
