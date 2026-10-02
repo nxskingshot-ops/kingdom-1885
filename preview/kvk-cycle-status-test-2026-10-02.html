@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nexus App · KvK Cycle Status Test</title>
+<style>
+:root{font-family:system-ui,-apple-system,sans-serif;color:#4b351f;background:#e8d4ac}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:linear-gradient(140deg,#eee0c0,#dcc18d)}
+header{min-height:105px;padding:12px 16px;background:linear-gradient(105deg,#302218,#624525,#302218);border-bottom:2px solid #c69b53;color:#fbe8c0;display:flex;align-items:center;gap:13px}
+.crest{width:62px;height:62px;border:2px solid #d5b26d;border-radius:10px;display:grid;place-items:center;font-size:34px;background:#6d4a27}
+.brand strong{display:block;font:700 25px Georgia,serif}.brand small{color:#d4b782;font-weight:700;letter-spacing:.8px}.motto{margin-top:5px;padding:5px 8px;border:1px solid #bb965f;border-radius:6px;background:#94704455;font:italic 600 12px Georgia,serif}
+main{max-width:1150px;margin:auto;padding:18px 14px 40px}
+.demo{font-size:12px;color:#76583a;text-align:center;margin:0 0 10px}
+.panel{background:#f7edda;border:2px solid #bc985f;border-radius:12px;padding:16px;box-shadow:0 4px 18px #5b3f1e30}
+h2{font:700 20px Georgia,serif;color:#764d20;margin:0 0 6px}.sub{font-size:12px;color:#785d3b}
+.cycle-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}.status{border:1px solid #a87c37;background:#f0d59b;color:#4a3217;border-radius:999px;padding:7px 11px;font-weight:800}
+.opponent{margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.box{background:linear-gradient(#fff8e9,#f0dcb4);border:1px solid #c5a36e;border-radius:9px;padding:12px}.box span{display:block;font-size:11px;color:#785d3b;font-weight:700}.box b{font:700 20px Georgia,serif;color:#845722}
+.timeline{margin-top:17px}.line{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;align-items:start}.step{text-align:center;position:relative;padding-top:26px}.step:before{content:"";position:absolute;top:9px;left:50%;right:-50%;height:3px;background:#cdb485}.step:last-child:before{display:none}.dot{position:absolute;top:2px;left:50%;transform:translateX(-50%);width:17px;height:17px;border-radius:50%;background:#ead4a8;border:3px solid #a67f45;z-index:2}.step.active .dot{background:#d59b2f;border-color:#7c5721;box-shadow:0 0 0 3px #ecd29c}.step strong{display:block;font:700 15px Georgia,serif;color:#67431e}.step small{display:block;color:#7a6041;margin-top:2px}.next{margin-top:16px;padding:10px 12px;border-left:4px solid #a27a38;background:#f3e3c2;border-radius:6px;font-size:13px}
+.data-strip{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}.metric{background:#fff8e8;border:1px solid #d1ae75;border-radius:8px;padding:11px}.metric span{display:block;color:#785d3b;font-size:11px;font-weight:700}.metric b{display:block;margin-top:4px;font:700 16px Georgia,serif;color:#67431e}
+.note{margin-top:12px;font-size:11px;color:#785d3b}.faded{opacity:.66}
+@media(max-width:600px){header{padding:9px}.crest{width:50px;height:50px;font-size:28px}.brand strong{font-size:20px}.motto{font-size:10px}.opponent,.data-strip{grid-template-columns:1fr}.step strong{font-size:13px}.step small{font-size:10px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="crest">🛡️</div>
+  <div class="brand">
+    <strong>Nexus App</strong>
+    <small>KINGDOM #1885 · NXS</small>
+    <div class="motto">Nexus — many paths, many strengths, one force.</div>
+  </div>
+</header>
+<main>
+<p class="demo">TEST PREVIEW ONLY · does not change the live Nexus App</p>
+<section class="panel">
+  <div class="cycle-head">
+    <div>
+      <h2>Kingdom of Power · Current Cycle</h2>
+      <div class="sub">KvK Prep status overview</div>
+    </div>
+    <div class="status">🟡 PRE-MATCHMAKING</div>
+  </div>
+
+  <div class="opponent">
+    <div class="box"><span>OUR KINGDOM</span><b>#1885</b></div>
+    <div class="box"><span>OPPONENT</span><b>Not matched yet</b></div>
+  </div>
+
+  <div class="timeline">
+    <div class="line">
+      <div class="step active">
+        <div class="dot"></div>
+        <strong>Matchmaking</strong>
+        <small>03–04 Oct</small>
+      </div>
+      <div class="step">
+        <div class="dot"></div>
+        <strong>Preparation</strong>
+        <small>05–09 Oct</small>
+      </div>
+      <div class="step">
+        <div class="dot"></div>
+        <strong>Battle</strong>
+        <small>10 Oct</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="next"><b>Next:</b> Matchmaking starts 03 Oct · 00:00 UTC</div>
+
+  <div class="data-strip">
+    <div class="metric faded"><span>NXS PREP POINTS</span><b>Starts 05 Oct</b></div>
+    <div class="metric faded"><span>RELATIVE PREP EFFICIENCY</span><b>Awaiting Prep data</b></div>
+  </div>
+
+  <div class="note">Concept only: one compact status card at the top of the existing KvK Prep tab. No new tab, no new button, no change to existing dashboard sections.</div>
+</section>
+</main>
+</body>
+</html>
