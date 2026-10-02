@@ -16,16 +16,26 @@ html,body{height:100%;min-height:0}body{display:block;min-height:0}iframe#kingdo
 #nexusLangTrial button{font:700 12px system-ui;min-height:33px;min-width:39px;border:1px solid #ae814c;border-radius:5px;background:#ecd1a2;color:#38220c;padding:5px}
 #nexusLangTrial button[aria-pressed="true"]{background:#fff3d0;outline:2px solid #f6d38b}
 #nexusLangTrial[hidden]{display:none}
+#outpostIntelViewportActions{position:fixed;z-index:2147483647;right:max(12px,env(safe-area-inset-right));bottom:max(12px,env(safe-area-inset-bottom));display:flex;gap:8px;padding:8px;background:#2b2015;border:1px solid #c7a265;border-radius:10px;box-shadow:0 4px 18px #0009}
+#outpostIntelViewportActions[hidden]{display:none!important}
+#outpostIntelViewportActions button{padding:9px 12px;border-radius:7px;border:1px solid #a5814b;background:#efd09b;color:#332111;font-weight:700}
 </style></head><body>
 
 <div id="loading" role="status">Loading Kingdom #1885…</div><div id="nexusLangTrial" role="group" aria-label="Preview language"><button type="button" data-language="en" aria-pressed="true">EN</button><button type="button" data-language="de" aria-pressed="false">DE</button><button type="button" data-language="fr" aria-pressed="false">FR</button></div>
-<iframe id="kingdom" src="../index.html?kingdom-preview=an-viewer-v1&single-header=3" title="Kingdom #1885 Outpost Map" allow="fullscreen"></iframe><nav id="outpostPrimaryNav" aria-label="Outpost navigation"><button type="button" data-tab="map" aria-current="page">🗺 Map</button><button type="button" data-tab="list">☷ List</button><button type="button" data-tab="statistics">▤ Statistics</button><button type="button" data-tab="intelligence">⌕ Intelligence</button></nav>
+<iframe id="kingdom" src="../index.html?kingdom-preview=an-viewer-v1&single-header=3" title="Kingdom #1885 Outpost Map" allow="fullscreen"></iframe><nav id="outpostPrimaryNav" aria-label="Outpost navigation"><button type="button" data-tab="map" aria-current="page">🗺 Map</button><button type="button" data-tab="list">☷ List</button><button type="button" data-tab="statistics">▤ Statistics</button><button type="button" data-tab="intelligence">⌕ Intelligence</button></nav><div id="outpostIntelViewportActions" hidden><button type="button" id="outpostIntelViewportReport">▤ Reports</button><button type="button" id="outpostIntelViewportClose">Close</button></div>
 <script>
 const frame=document.getElementById('kingdom'),status=document.getElementById('loading');
 const primaryNav=document.getElementById('outpostPrimaryNav');
+const intelViewportActions=document.getElementById('outpostIntelViewportActions');
+const intelViewportReport=document.getElementById('outpostIntelViewportReport');
+const intelViewportClose=document.getElementById('outpostIntelViewportClose');
+function setIntelViewportActions(show){intelViewportActions.hidden=!show}
+intelViewportReport.addEventListener('click',()=>{const d=frame.contentDocument;d?.getElementById('outpostIntelReport')?.click();setIntelViewportActions(false)});
+intelViewportClose.addEventListener('click',()=>{const d=frame.contentDocument;d?.getElementById('outpostIntelClose')?.click();setIntelViewportActions(false);const mapTab=primaryNav.querySelector('[data-tab="map"]');for(const x of primaryNav.querySelectorAll('button'))x.removeAttribute('aria-current');mapTab?.setAttribute('aria-current','page')});
 function clickInnerTab(kind){
  const d=frame.contentDocument;if(!d)return;
- if(kind==='intelligence'){d.getElementById('outpostIntelButton')?.click();return;}
+ if(kind==='intelligence'){d.getElementById('outpostIntelButton')?.click();setIntelViewportActions(true);return;}
+ setIntelViewportActions(false);
  const rx={map:/^(?:🗺️?\s*)?(Map|Karte|Carte)$/i,list:/^(?:[☷≡📋]\s*)?(List|Liste)$/i,statistics:/(Statistics|Statistik|Statistiques)$/i}[kind];
  const target=[...d.querySelectorAll('button,[role="button"],[role="tab"]')].find(el=>rx?.test((el.textContent||'').trim()));
  target?.click();
@@ -124,7 +134,7 @@ function enforceSingleHeader(){
 script.onload=()=>{status.hidden=true;enforceSingleHeader();
  const d=frame.contentDocument;
  const unified=d.createElement('style');
- unified.textContent='body.nexus-simple-outposts #app{height:100%!important;max-height:100%!important;overflow:hidden!important}body.nexus-simple-outposts #outpostIntelOverlay{position:fixed!important;inset:8px!important;padding:0!important;align-items:stretch!important;justify-content:stretch!important;overflow:hidden!important}body.nexus-simple-outposts #outpostIntelPanel{width:100%!important;max-width:none!important;height:100%!important;max-height:100%!important;border-radius:10px!important;display:flex!important;flex-direction:column!important;overflow:hidden!important;padding-bottom:76px!important;position:relative!important}body.nexus-simple-outposts #outpostIntelHistory{min-height:0!important;overflow:auto!important;flex:1 1 auto!important}.intelActions{position:absolute!important;left:12px!important;right:12px!important;bottom:12px!important;margin:0!important;flex:0 0 auto!important;background:#2b2015!important;padding:8px 0 4px!important;z-index:5!important}';
+ unified.textContent='body.nexus-simple-outposts #app{height:100%!important;max-height:100%!important;overflow:hidden!important}body.nexus-simple-outposts #outpostIntelOverlay{position:fixed!important;inset:8px!important;padding:0!important;align-items:stretch!important;justify-content:stretch!important;overflow:hidden!important}body.nexus-simple-outposts #outpostIntelPanel{width:100%!important;max-width:none!important;height:100%!important;max-height:100%!important;border-radius:10px!important;display:flex!important;flex-direction:column!important;overflow:hidden!important;padding-bottom:76px!important;position:relative!important}body.nexus-simple-outposts #outpostIntelHistory{min-height:0!important;overflow:auto!important;flex:1 1 auto!important}.intelActions{display:none!important}';
  d.head.appendChild(unified);
  requestAnimationFrame(()=>{enforceSingleHeader();fillOnStartup()});setTimeout(()=>{enforceSingleHeader();selectNativeCover()},1200);setTimeout(()=>{const d=frame.contentDocument;if(!d)return;for(const b of d.querySelectorAll('button,[role="button"]')){const s=[b.id,b.getAttribute('aria-label'),b.getAttribute('title'),b.textContent].filter(Boolean).join(' ');if(/full[\\s-]?screen|vollbild|⛶|⤢/i.test(s))b.style.setProperty('display','none','important');}const intel=d.getElementById('outpostIntelButton');if(intel)intel.style.setProperty('display','none','important');},350)};
 script.onerror=()=>{status.textContent='Live controls unavailable · reload to retry'};
