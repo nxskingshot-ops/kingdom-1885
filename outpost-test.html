@@ -2,15 +2,38 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Nexus App — Outpost Test</title>
 <style>
-:root{color-scheme:dark}body{margin:0;background:#101319;color:#f2ead9;font-family:system-ui,-apple-system,sans-serif}header{padding:22px 18px;background:#171c25;border-bottom:1px solid #9d7a35}h1{margin:0;color:#d9b45d;font-size:22px}small{color:#aaa}.wrap{padding:16px;max-width:760px;margin:auto}.card{background:#191f29;border:1px solid #5c4b2b;border-radius:14px;padding:14px;margin:10px 0}.top{display:flex;justify-content:space-between;gap:10px}.badge{background:#2b3443;border-radius:999px;padding:4px 9px;font-weight:700}.status{font-size:13px;color:#cfc6b3;margin-top:8px}.note{background:#221f18;border-left:3px solid #d9b45d;padding:12px;margin:14px 0}.muted{opacity:.7}</style></head>
-<body><header><h1>Nexus App · Outpost Test</h1><small>Kingdom #1885 · isolated test build</small></header>
-<div class="wrap"><div class="note"><b>NXS current snapshot</b><br>12 occupied outpost entries captured from the supplied screenshot. Names and coordinates remain unverified until map matching.</div>
-<div id="list"></div></div>
+:root{color-scheme:dark}body{margin:0;background:#101319;color:#f2ead9;font-family:system-ui,-apple-system,sans-serif}header{padding:20px 16px;background:#171c25;border-bottom:1px solid #9d7a35;position:sticky;top:0;z-index:3}h1{margin:0;color:#d9b45d;font-size:22px}small,.muted{color:#aaa}.wrap{padding:14px;max-width:900px;margin:auto}.note{background:#221f18;border-left:3px solid #d9b45d;padding:12px;margin:10px 0 14px}.controls{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.controls button,.controls input,.controls select{background:#191f29;color:#f2ead9;border:1px solid #5c4b2b;border-radius:10px;padding:10px}.controls input{flex:1;min-width:170px}.controls button.active{border-color:#d9b45d;color:#d9b45d}.card{background:#191f29;border:1px solid #5c4b2b;border-radius:14px;padding:13px;margin:9px 0}.top{display:flex;justify-content:space-between;gap:10px}.badge{background:#2b3443;border-radius:999px;padding:4px 9px;font-weight:700}.meta{font-size:13px;color:#cfc6b3;margin-top:7px}.owner{margin-top:7px;font-weight:700}.verified{color:#8fd19e}.unverified{color:#e5bd6a}.count{margin:8px 0;color:#d9b45d;font-weight:700}</style></head>
+<body><header><h1>Nexus App · Outpost Test</h1><small>Kingdom #1885 · isolated test build · main app untouched</small></header>
+<div class="wrap">
+<div class="note"><b>Outpost Master Map</b><br>Fixed Kingshot outpost positions are preloaded with type, level, X:Y and buff. Ownership in #1885 remains separate and must be verified from in-game data.</div>
+<div class="controls"><button id="masterBtn" class="active">Master list</button><button id="nxsBtn">NXS snapshot</button></div>
+<div id="filters" class="controls"><input id="q" placeholder="Search name or X:Y…"><select id="type"><option value="">All types</option></select><select id="level"><option value="">All levels</option><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
+<div class="count" id="count"></div><div id="list"></div></div>
 <script>
-const rows=[
-[1,"Vulnerable","00:12:20"],[3,"Vulnerable","15:00:58"],[1,"Vulnerable","18:03:01"],[4,"Vulnerable","21:19:36"],
-[2,"Inactive / Protected","02:24:17"],[2,"Inactive / Protected","2d 02:28:47"],[1,"Inactive / Protected","2d 12:07:43"],
-[4,"Protected","05:20:18"],[2,"Protected","14:39:58"],[2,"Protected","1d 09:45:54"],[2,"Bonus incompatible / Protected","1d 13:47:52"],[1,"Protected","2d 10:44:15"]
-];
-document.querySelector("#list").innerHTML=rows.map((r,i)=>`<div class="card"><div class="top"><b>NXS Outpost ${String(i+1).padStart(2,"0")}</b><span class="badge">L${r[0]}</span></div><div class="status">${r[1]} · ${r[2]}</div><div class="muted">Name: unverified · Coordinates: unverified</div></div>`).join("");
+const M=[];
+function add(name,level,buff,value,coords){coords.forEach(([x,y])=>M.push({name,level,x,y,buff,value,owner:"Unverified"}))}
+add("Builder's Guild",1,"Construction Speed","+5%",[[1068,138],[537,138],[138,138],[138,666],[138,1038],[666,1068],[1068,567],[1068,1068]]);
+add("Builder's Guild",3,"Construction Speed","+8%",[[486,327],[768,867],[867,567],[327,666]]);
+add("Scholar's Tower",1,"Research Speed","+5%",[[957,237],[666,267],[237,237],[267,537],[237,957],[537,936],[936,537],[957,957]]);
+add("Scholar's Tower",3,"Research Speed","+8%",[[867,327],[327,327],[327,867],[867,867]]);
+add("Drill Camp",2,"Training Speed","+5%",[[237,486],[138,747],[486,957],[768,1038],[957,747],[1068,486],[486,138],[768,237]]);
+add("Harvest Altar",1,"Resource Production","+5%",[[1068,237],[768,138],[237,138],[138,327],[138,957],[327,1038],[1068,747],[957,1068]]);
+add("Forager Grove",1,"Gathering Speed","+5%",[[957,138],[537,87],[138,237],[87,666],[267,1068],[636,1137],[1137,567],[1068,936]]);
+add("Frontier Lodge",3,"Squads March Speed","+15%",[[768,327],[327,567],[486,867],[867,666]]);
+add("Arsenal",2,"Attack","+5%",[[867,138],[366,138],[138,438],[138,867],[438,1068],[1068,327],[1068,867],[867,1068]]);
+add("Arsenal",4,"Attack","+8%",[[816,486],[387,486],[588,867]]);
+add("Armory",2,"Squad Defense","+10%",[[666,138],[438,267],[138,537],[237,768],[537,1038],[738,957],[1068,666],[957,438]]);
+add("Armory",4,"Squad Defense","+20%",[[816,717],[387,717],[588,327]]);
+const NXS=[[1,"Vulnerable","00:12:20"],[3,"Vulnerable","15:00:58"],[1,"Vulnerable","18:03:01"],[4,"Vulnerable","21:19:36"],[2,"Inactive / Protected","02:24:17"],[2,"Inactive / Protected","2d 02:28:47"],[1,"Inactive / Protected","2d 12:07:43"],[4,"Protected","05:20:18"],[2,"Protected","14:39:58"],[2,"Protected","1d 09:45:54"],[2,"Bonus incompatible / Protected","1d 13:47:52"],[1,"Protected","2d 10:44:15"]];
+const types=[...new Set(M.map(x=>x.name))]; type.innerHTML+=[...types].sort().map(x=>'<option>'+x+'</option>').join('');
+let mode="master";
+function render(){
+ masterBtn.classList.toggle("active",mode==="master");nxsBtn.classList.toggle("active",mode==="nxs");filters.style.display=mode==="master"?"flex":"none";
+ if(mode==="nxs"){count.textContent="12 NXS occupied entries · exact outpost matching pending";list.innerHTML=NXS.map((r,i)=>`<div class="card"><div class="top"><b>NXS Outpost ${String(i+1).padStart(2,"0")}</b><span class="badge">L${r[0]}</span></div><div class="meta">${r[1]} · ${r[2]}</div><div class="owner unverified">Exact name / X:Y: not yet verified</div></div>`).join("");return}
+ const s=q.value.toLowerCase().replace(/\s/g,""); const t=type.value,l=level.value;
+ const rows=M.filter(o=>(!t||o.name===t)&&(!l||String(o.level)===l)&&(!s||o.name.toLowerCase().includes(s)||(`${o.x}:${o.y}`).includes(s)||(`${o.x},${o.y}`).includes(s)));
+ count.textContent=`${rows.length} of ${M.length} fixed outposts`;
+ list.innerHTML=rows.sort((a,b)=>a.y-b.y||a.x-b.x).map(o=>`<div class="card"><div class="top"><b>${o.name}</b><span class="badge">L${o.level}</span></div><div class="meta">📍 X:${o.x} · Y:${o.y} &nbsp;|&nbsp; ${o.buff} ${o.value}</div><div class="owner unverified">#1885 owner: Unverified</div></div>`).join("");
+}
+masterBtn.onclick=()=>{mode="master";render()};nxsBtn.onclick=()=>{mode="nxs";render()};q.oninput=render;type.onchange=render;level.onchange=render;render();
 </script></body></html>
