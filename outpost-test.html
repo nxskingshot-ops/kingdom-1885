@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nexus App — Territory Test</title>
+<style>
+:root{color-scheme:dark}body{margin:0;background:#101319;color:#f2ead9;font-family:system-ui,-apple-system,sans-serif}header{padding:18px 16px;background:#171c25;border-bottom:1px solid #9d7a35;position:sticky;top:0;z-index:3}h1{margin:0;color:#d9b45d;font-size:22px}small,.muted{color:#aaa}.wrap{padding:14px;max-width:900px;margin:auto}.note{background:#221f18;border-left:3px solid #d9b45d;padding:12px;margin:10px 0 14px}.controls{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.controls button,.controls input,.controls select{background:#191f29;color:#f2ead9;border:1px solid #5c4b2b;border-radius:10px;padding:10px}.controls input{flex:1;min-width:160px}.controls button.active{border-color:#d9b45d;color:#d9b45d}.card{background:#191f29;border:1px solid #5c4b2b;border-radius:14px;padding:13px;margin:9px 0}.top{display:flex;justify-content:space-between;gap:10px}.badge{background:#2b3443;border-radius:999px;padding:4px 9px;font-weight:700}.meta{font-size:13px;color:#cfc6b3;margin-top:7px}.owner{margin-top:7px;font-weight:700}.verified{color:#8fd19e}.count{margin:8px 0;color:#d9b45d;font-weight:700}.report{white-space:pre-wrap;background:#0e1117;border:1px solid #5c4b2b;border-radius:12px;padding:12px;margin-top:10px;font-size:13px}.section{margin-top:18px;color:#d9b45d;font-weight:800}.history{margin-top:9px;padding-top:8px;border-top:1px solid #343b48;font-size:12px;color:#d8cfbd}.planned{color:#e9c56d;font-weight:700}.confirmed{color:#8fd19e;font-weight:700}
+</style></head>
+<body><header><h1>Nexus App · Territory Test</h1><small>Kingdom #1885 · isolated test build · main app untouched</small><div id="serverClock" style="margin-top:6px;color:#d9b45d;font-weight:800">🕒 Server Time · --:--:-- UTC</div></header>
+<div class="wrap">
+<div class="note"><b>Territory Intelligence</b><br>Outposts and alliance buildings stay separate. Verified data can be filtered and turned into a copy-ready alliance-chat report.</div>
+<div class="controls"><button id="outBtn" class="active">Outposts</button><button id="buildBtn">Alliance Buildings</button></div>
+<div id="filters" class="controls"><input id="q" placeholder="Search name, alliance or X:Y…"><select id="owner"><option value="">All alliances</option></select><select id="kind"><option value="">All types</option></select></div>
+<div class="controls"><button id="reportBtn">📋 Generate report</button><button id="copyBtn" style="display:none">Copy report</button></div>
+<div id="report" class="report" style="display:none"></div><div class="count" id="count"></div><div id="list"></div></div>
+<script>
+const O=[];
+function serverNow(){return new Date()}
+function utcStamp(d=serverNow()){const p=n=>String(n).padStart(2,"0");return `${p(d.getUTCDate())}.${p(d.getUTCMonth()+1)}.${d.getUTCFullYear()} – ${p(d.getUTCHours())}:${p(d.getUTCMinutes())}:${p(d.getUTCSeconds())} UTC`}
+function updateServerClock(){serverClock.textContent=`🕒 Server Time · ${utcStamp()}`}
+updateServerClock();setInterval(updateServerClock,1000);
+function add(name,level,buff,value,rows){rows.forEach(([x,y,owner])=>O.push({name,level,x,y,buff,value,owner,status:"Verified"}))}
+add("Builder's Guild",1,"Construction Speed","+5%",[[1068,138,"FRA"],[537,138,"FRA Akademie"],[138,138,"NxS Akademie"],[138,666,"MYM Akademie"],[138,1038,"OoO"],[666,1068,"OUR"],[1068,567,"NXS"],[1068,1068,"MYM"]]);
+add("Builder's Guild",3,"Construction Speed","+8%",[[486,327,"OoO"],[768,867,"RKD"],[867,567,"NXS"],[327,666,"MYM"]]);
+add("Scholar's Tower",1,"Research Speed","+5%",[[957,237,"FRA"],[666,267,"FRA Akademie"],[237,237,"NxS Akademie"],[267,537,"OoO"],[237,957,"oOo Akademie"],[537,936,"RKD"],[936,537,"NXS"],[957,957,"MYM"]]);
+add("Scholar's Tower",3,"Research Speed","+8%",[[867,327,"FRA"],[327,327,"MYM"],[327,867,"OoO"],[867,867,"MYM"]]);
+add("Drill Camp",2,"Training Speed","+5%",[[237,486,"MYM"],[138,747,"RKD"],[486,957,"OoO"],[768,1038,"MYM"],[957,747,"NXS"],[1068,486,"NXS"],[486,138,"NxS Akademie"],[768,237,"FRA Akademie"]]);
+add("Harvest Altar",1,"Resource Production","+5%",[[1068,237,"FRA"],[768,138,"FRA Akademie"],[237,138,"NxS Akademie"],[138,327,"INA"],[138,957,"OUR"],[327,1038,"OoO"],[1068,747,"NXS"],[957,1068,"MYM"]]);
+add("Forager Grove",1,"Gathering Speed","+5%",[[957,138,"FRA"],[537,87,"FRA Akademie"],[138,237,"INA"],[87,666,"MYM Akademie"],[267,1068,"OoO"],[636,1137,"OUR"],[1137,567,"NXS"],[1068,936,"MYM"]]);
+add("Frontier Lodge",3,"Squads March Speed","+15%",[[768,327,"FRA Akademie"],[327,567,"MYM"],[486,867,"OoO"],[867,666,"FRA"]]);
+add("Arsenal",2,"Attack","+5%",[[867,138,"FRA"],[366,138,"NxS Akademie"],[138,438,"MYM Akademie"],[138,867,"INA"],[438,1068,"OoO"],[1068,327,"FRA Akademie"],[1068,867,"NXS"],[867,1068,"MYM"]]);
+add("Arsenal",4,"Attack","+8%",[[816,486,"NXS"],[387,486,"OoO"],[588,867,"AXL"]]);
+add("Armory",2,"Squad Defense","+10%",[[666,138,"FRA"],[438,267,"NxS Akademie"],[138,537,"MYM Akademie"],[237,768,"RKD"],[537,1038,"OoO"],[738,957,"MYM"],[1068,666,"NXS"],[957,438,"NXS"]]);
+add("Armory",4,"Squad Defense","+20%",[[816,717,"RKD"],[387,717,"OoO"],[588,327,"NXS"]]);
+
+const H=[
+{outpost:"Drill Camp",level:2,x:957,y:747,from:"NXS",to:"FRA",status:"Planned",authorized:"Yes",reported:"Mona (FRA)",time:"02.10.2026 – 09:19 UTC"},
+{outpost:"Scholar's Tower",level:3,x:867,y:327,from:"FRA",to:"NXS",status:"Planned",authorized:"Yes",reported:"Linus (NXS)",time:"02.10.2026 – time not recorded (UTC)"}
+];
+function historyFor(x){return H.filter(h=>h.outpost===x.name&&h.level===x.level&&h.x===x.x&&h.y===x.y)}
+function historyHtml(x){const h=historyFor(x);if(!h.length)return "";return '<div class="history"><b>Ownership History</b><br>'+h.map(e=>'<span class="'+e.status.toLowerCase()+'">'+e.from+' → '+e.to+' · '+e.status+'</span><br>'+e.time+' · '+e.reported+(e.authorized?' · Authorized: '+e.authorized:'')).join('<br><br>')+'</div>'}
+const B=[
+{name:"Badland Headquarters",category:"Alliance HQ",x:843,y:277,owner:"NXS",detail:"Not occupied"},
+{name:"Plains Headquarters",category:"Alliance HQ",x:755,y:552,owner:"NXS",detail:"Not occupied"},
+{name:"Hunting Trap 1",category:"Event Building",x:747,y:561,owner:"NXS",detail:"Cooldown"},
+{name:"Hunting Trap 2",category:"Event Building",x:746,y:542,owner:"NXS",detail:"Cooldown"},
+{name:"Large Iron Mine",category:"Protected Resource Node",x:733,y:550,owner:"NXS",detail:"Temporary / dynamic"},
+{name:"Golden Guardian",category:"Prestige Building",x:758,y:568,owner:"NXS",detail:"Built"},
+{name:"Conqueror",category:"Prestige Building",x:756,y:544,owner:"NXS",detail:"Built"},
+{name:"Alliance Banner",category:"Alliance Banner",x:883,y:317,owner:"NXS",detail:"Under construction · 187/285 built"}
+];
+let mode="outposts";
+function options(){
+ const rows=mode==="outposts"?O:B;
+ owner.innerHTML='<option value="">All alliances</option>'+[...new Set(rows.map(x=>x.owner))].sort().map(x=>'<option>'+x+'</option>').join('');
+ kind.innerHTML='<option value="">All types</option>'+[...new Set(rows.map(x=>mode==="outposts"?x.name:x.category))].sort().map(x=>'<option>'+x+'</option>').join('');
+}
+function filtered(){
+ const rows=mode==="outposts"?O:B,s=q.value.toLowerCase().replace(/\s/g,""),ow=owner.value,k=kind.value;
+ return rows.filter(x=>(!ow||x.owner===ow)&&(!k||(mode==="outposts"?x.name:x.category)===k)&&(!s||x.name.toLowerCase().includes(s)||x.owner.toLowerCase().includes(s)||(`${x.x}:${x.y}`).includes(s)||(`${x.x},${x.y}`).includes(s)));
+}
+function render(){
+ outBtn.classList.toggle("active",mode==="outposts");buildBtn.classList.toggle("active",mode==="buildings");
+ const rows=filtered(); count.textContent=mode==="outposts"?`${rows.length} of 74 verified outposts`:`${rows.length} NXS alliance buildings shown`;
+ list.innerHTML=rows.sort((a,b)=>a.name.localeCompare(b.name)||a.x-b.x).map(x=>mode==="outposts"?
+ `<div class="card"><div class="top"><b>${x.name}</b><span class="badge">L${x.level}</span></div><div class="meta">📍 X:${x.x} · Y:${x.y} &nbsp;|&nbsp; ${x.buff} ${x.value}</div><div class="owner verified">${x.owner} · ✓ Verified</div>${historyHtml(x)}</div>`:
+ `<div class="card"><div class="top"><b>${x.name}</b><span class="badge">${x.category}</span></div><div class="meta">📍 X:${x.x} · Y:${x.y}</div><div class="owner">${x.owner} · ${x.detail}</div></div>`).join("");
+}
+function switchMode(m){mode=m;q.value="";options();report.style.display="none";copyBtn.style.display="none";render()}
+function makeReport(){
+ const rows=filtered(),stamp=utcStamp();
+ let t=mode==="outposts"?`📍 KINGDOM #1885 — OUTPOST REPORT\nFilter: ${owner.value||"All alliances"} · ${rows.length} Outposts\n`:`🏰 NXS — ALLIANCE BUILDINGS REPORT\n${rows.length} Buildings\n`;
+ t+=rows.map(x=>mode==="outposts"?`${x.name} L${x.level} | ${x.x},${x.y} | ${x.owner}`:`${x.name} | ${x.x},${x.y} | ${x.detail}`).join("\n");
+ t+=`\n\nData status: ${stamp}\nTime reference: UTC (Server Time)\nProvided by Nexus App`;
+ report.textContent=t;report.style.display="block";copyBtn.style.display="inline-block";
+}
+outBtn.onclick=()=>switchMode("outposts");buildBtn.onclick=()=>switchMode("buildings");q.oninput=render;owner.onchange=render;kind.onchange=render;reportBtn.onclick=makeReport;copyBtn.onclick=async()=>{await navigator.clipboard.writeText(report.textContent);copyBtn.textContent="✓ Copied";setTimeout(()=>copyBtn.textContent="Copy report",1200)};options();render();
+</script></body></html>
