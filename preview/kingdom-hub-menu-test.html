@@ -464,13 +464,23 @@ async function reviewNexusAccessRequest(id,action,grant,controls,card){
    const heading=document.createElement('b');heading.textContent=action==='reset'?'✓ New login details — share privately:':'✓ Access created — share these login details privately:';
    const email=document.createElement('code');email.textContent='Email: '+result.email;
    const password=document.createElement('code');password.textContent='Password: '+result.password;
-   const copy=document.createElement('button');copy.type='button';copy.textContent='Copy login details';
+   const copyEmail=document.createElement('button');copyEmail.type='button';copyEmail.textContent='📧 Copy email';
+   copyEmail.onclick=async()=>{
+    try{await navigator.clipboard.writeText(result.email);nexusAccessAdminStatus.textContent='✓ Email copied.';}
+    catch{nexusAccessAdminStatus.textContent='Clipboard unavailable.';}
+   };
+   const copyPassword=document.createElement('button');copyPassword.type='button';copyPassword.textContent='🔑 Copy password';
+   copyPassword.onclick=async()=>{
+    try{await navigator.clipboard.writeText(result.password);nexusAccessAdminStatus.textContent='✓ Password copied.';}
+    catch{nexusAccessAdminStatus.textContent='Clipboard unavailable.';}
+   };
+   const copy=document.createElement('button');copy.type='button';copy.textContent='📋 Copy both';
    copy.onclick=async()=>{
     const msg='Nexus App access\nEmail: '+result.email+'\nPassword: '+result.password+'\nPlease keep these details private.';
     try{await navigator.clipboard.writeText(msg);nexusAccessAdminStatus.textContent='✓ Login details copied.';}
     catch{nexusAccessAdminStatus.textContent='Clipboard unavailable. Copy the shown details manually.';}
    };
-   box.append(heading,email,password,copy);card.replaceChildren(box);
+   box.append(heading,email,password,copyEmail,copyPassword,copy);card.replaceChildren(box);
    nexusAccessAdminStatus.textContent=action==='reset'?'✓ Login reset. Old password no longer works.':'✓ Access approved and login created.';
   }else{
    card.remove();nexusAccessAdminStatus.textContent='✓ Request rejected.';
