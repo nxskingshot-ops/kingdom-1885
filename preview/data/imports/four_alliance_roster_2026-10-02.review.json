@@ -46,9 +46,21 @@
         "R2": 0,
         "R1": 2
       },
-      "power_m": null,
-      "castles": null,
-      "verification": "rank counts verified from screenshot headers; power/castle aggregation pending",
+      "power_m": 7752.6,
+      "castles": {
+        "18": 1,
+        "26": 3,
+        "27": 3,
+        "28": 16,
+        "29": 10,
+        "30": 22,
+        "TG1": 20,
+        "TG2": 16,
+        "TG3": 6,
+        "TG4": 1,
+        "TG5": 1
+      },
+      "verification": "Complete 99-member manual transcription from 2026-10-02 screenshot set; displayed power values summed to 7752.6M; castle/TG distribution sums to 99.",
       "previous_snapshot_date": "2026-09-29",
       "previous_member_count": 98,
       "member_delta": 1,
@@ -65,7 +77,14 @@
         "R3": -1,
         "R2": 0,
         "R1": 2
-      }
+      },
+      "previous_power_m": 7559.3,
+      "power_delta_m": 193.3,
+      "castle_tg_count": 44,
+      "previous_castle_tg_count": 40,
+      "castle_tg_delta": 4,
+      "castle_25_plus_count": 98,
+      "previous_castle_25_plus_count": 97
     },
     "OoO": {
       "member_count": 100,
@@ -132,9 +151,10 @@
     "member_count_sum_matches_rank_headers": true,
     "app_data_switched": false,
     "supabase_nxs_imported": false,
-    "notes": "Member/rank comparison 2026-09-29 → 2026-10-02 is complete. NXS aggregate power comparison is complete (+162.7M). FRA/OoO/MYM power totals and all castle/TG distributions remain under review; do not switch live app data or import NXS into protected KvK tables yet.",
+    "notes": "Member/rank comparison is complete for all four alliances. NXS aggregate power and FRA power/castle distribution are complete. OoO/MYM power totals and castle/TG distributions, plus NXS castle/TG distribution, remain under review; do not switch live app data or import NXS into protected KvK tables yet.",
     "member_and_rank_comparison_complete": true,
     "power_and_castle_comparison_complete": false,
-    "nxs_power_comparison_complete": true
+    "nxs_power_comparison_complete": true,
+    "fra_power_and_castles_complete": true
   }
 }
