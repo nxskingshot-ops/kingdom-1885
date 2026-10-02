@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Nexus App — Territory Test</title>
 <style>
-:root{color-scheme:dark}body{margin:0;background:#101319;color:#f2ead9;font-family:system-ui,-apple-system,sans-serif}header{padding:18px 16px;background:#171c25;border-bottom:1px solid #9d7a35;position:sticky;top:0;z-index:3}h1{margin:0;color:#d9b45d;font-size:22px}small,.muted{color:#aaa}.wrap{padding:14px;max-width:900px;margin:auto}.note{background:#221f18;border-left:3px solid #d9b45d;padding:12px;margin:10px 0 14px}.controls{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.controls button,.controls input,.controls select{background:#191f29;color:#f2ead9;border:1px solid #5c4b2b;border-radius:10px;padding:10px}.controls input{flex:1;min-width:160px}.controls button.active{border-color:#d9b45d;color:#d9b45d}.card{background:#191f29;border:1px solid #5c4b2b;border-radius:14px;padding:13px;margin:9px 0}.top{display:flex;justify-content:space-between;gap:10px}.badge{background:#2b3443;border-radius:999px;padding:4px 9px;font-weight:700}.meta{font-size:13px;color:#cfc6b3;margin-top:7px}.owner{margin-top:7px;font-weight:700}.verified{color:#8fd19e}.count{margin:8px 0;color:#d9b45d;font-weight:700}.report{white-space:pre-wrap;background:#0e1117;border:1px solid #5c4b2b;border-radius:12px;padding:12px;margin-top:10px;font-size:13px}.section{margin-top:18px;color:#d9b45d;font-weight:800}
+:root{color-scheme:dark}body{margin:0;background:#101319;color:#f2ead9;font-family:system-ui,-apple-system,sans-serif}header{padding:18px 16px;background:#171c25;border-bottom:1px solid #9d7a35;position:sticky;top:0;z-index:3}h1{margin:0;color:#d9b45d;font-size:22px}small,.muted{color:#aaa}.wrap{padding:14px;max-width:900px;margin:auto}.note{background:#221f18;border-left:3px solid #d9b45d;padding:12px;margin:10px 0 14px}.controls{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.controls button,.controls input,.controls select{background:#191f29;color:#f2ead9;border:1px solid #5c4b2b;border-radius:10px;padding:10px}.controls input{flex:1;min-width:160px}.controls button.active{border-color:#d9b45d;color:#d9b45d}.card{background:#191f29;border:1px solid #5c4b2b;border-radius:14px;padding:13px;margin:9px 0}.top{display:flex;justify-content:space-between;gap:10px}.badge{background:#2b3443;border-radius:999px;padding:4px 9px;font-weight:700}.meta{font-size:13px;color:#cfc6b3;margin-top:7px}.owner{margin-top:7px;font-weight:700}.verified{color:#8fd19e}.count{margin:8px 0;color:#d9b45d;font-weight:700}.report{white-space:pre-wrap;background:#0e1117;border:1px solid #5c4b2b;border-radius:12px;padding:12px;margin-top:10px;font-size:13px}.section{margin-top:18px;color:#d9b45d;font-weight:800}.history{margin-top:9px;padding-top:8px;border-top:1px solid #343b48;font-size:12px;color:#d8cfbd}.planned{color:#e9c56d;font-weight:700}.confirmed{color:#8fd19e;font-weight:700}
 </style></head>
 <body><header><h1>Nexus App · Territory Test</h1><small>Kingdom #1885 · isolated test build · main app untouched</small><div id="serverClock" style="margin-top:6px;color:#d9b45d;font-weight:800">🕒 Server Time · --:--:-- UTC</div></header>
 <div class="wrap">
@@ -31,6 +31,12 @@ add("Arsenal",4,"Attack","+8%",[[816,486,"NXS"],[387,486,"OoO"],[588,867,"AXL"]]
 add("Armory",2,"Squad Defense","+10%",[[666,138,"FRA"],[438,267,"NxS Akademie"],[138,537,"MYM Akademie"],[237,768,"RKD"],[537,1038,"OoO"],[738,957,"MYM"],[1068,666,"NXS"],[957,438,"NXS"]]);
 add("Armory",4,"Squad Defense","+20%",[[816,717,"RKD"],[387,717,"OoO"],[588,327,"NXS"]]);
 
+const H=[
+{outpost:"Drill Camp",level:2,x:957,y:747,from:"NXS",to:"FRA",status:"Planned",authorized:"Yes",reported:"Mona (FRA)",time:"02.10.2026 – 09:19 UTC"},
+{outpost:"Scholar's Tower",level:3,x:867,y:327,from:"FRA",to:"NXS",status:"Planned",authorized:"Pending confirmation",reported:"Linus (NXS)",time:"02.10.2026 – UTC time pending"}
+];
+function historyFor(x){return H.filter(h=>h.outpost===x.name&&h.level===x.level&&h.x===x.x&&h.y===x.y)}
+function historyHtml(x){const h=historyFor(x);if(!h.length)return "";return '<div class="history"><b>Ownership History</b><br>'+h.map(e=>'<span class="'+e.status.toLowerCase()+'">'+e.from+' → '+e.to+' · '+e.status+'</span><br>'+e.time+' · '+e.reported+(e.authorized?' · Authorized: '+e.authorized:'')).join('<br><br>')+'</div>'}
 const B=[
 {name:"Badland Headquarters",category:"Alliance HQ",x:843,y:277,owner:"NXS",detail:"Not occupied"},
 {name:"Plains Headquarters",category:"Alliance HQ",x:755,y:552,owner:"NXS",detail:"Not occupied"},
@@ -55,7 +61,7 @@ function render(){
  outBtn.classList.toggle("active",mode==="outposts");buildBtn.classList.toggle("active",mode==="buildings");
  const rows=filtered(); count.textContent=mode==="outposts"?`${rows.length} of 74 verified outposts`:`${rows.length} NXS alliance buildings shown`;
  list.innerHTML=rows.sort((a,b)=>a.name.localeCompare(b.name)||a.x-b.x).map(x=>mode==="outposts"?
- `<div class="card"><div class="top"><b>${x.name}</b><span class="badge">L${x.level}</span></div><div class="meta">📍 X:${x.x} · Y:${x.y} &nbsp;|&nbsp; ${x.buff} ${x.value}</div><div class="owner verified">${x.owner} · ✓ Verified</div></div>`:
+ `<div class="card"><div class="top"><b>${x.name}</b><span class="badge">L${x.level}</span></div><div class="meta">📍 X:${x.x} · Y:${x.y} &nbsp;|&nbsp; ${x.buff} ${x.value}</div><div class="owner verified">${x.owner} · ✓ Verified</div>${historyHtml(x)}</div>`:
  `<div class="card"><div class="top"><b>${x.name}</b><span class="badge">${x.category}</span></div><div class="meta">📍 X:${x.x} · Y:${x.y}</div><div class="owner">${x.owner} · ${x.detail}</div></div>`).join("");
 }
 function switchMode(m){mode=m;q.value="";options();report.style.display="none";copyBtn.style.display="none";render()}
