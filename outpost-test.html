@@ -33,7 +33,7 @@ add("Armory",4,"Squad Defense","+20%",[[816,717,"RKD"],[387,717,"OoO"],[588,327,
 
 const H=[
 {outpost:"Drill Camp",level:2,x:957,y:747,from:"NXS",to:"FRA",status:"Planned",authorized:"Yes",reported:"Mona (FRA)",time:"02.10.2026 – 09:19 UTC"},
-{outpost:"Scholar's Tower",level:3,x:867,y:327,from:"FRA",to:"NXS",status:"Planned",authorized:"Pending confirmation",reported:"Linus (NXS)",time:"02.10.2026 – UTC time pending"}
+{outpost:"Scholar's Tower",level:3,x:867,y:327,from:"FRA",to:"NXS",status:"Planned",authorized:"Yes",reported:"Linus (NXS)",time:"02.10.2026 – UTC time pending"}
 ];
 function historyFor(x){return H.filter(h=>h.outpost===x.name&&h.level===x.level&&h.x===x.x&&h.y===x.y)}
 function historyHtml(x){const h=historyFor(x);if(!h.length)return "";return '<div class="history"><b>Ownership History</b><br>'+h.map(e=>'<span class="'+e.status.toLowerCase()+'">'+e.from+' → '+e.to+' · '+e.status+'</span><br>'+e.time+' · '+e.reported+(e.authorized?' · Authorized: '+e.authorized:'')).join('<br><br>')+'</div>'}
