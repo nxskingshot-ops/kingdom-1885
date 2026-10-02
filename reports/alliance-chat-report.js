@@ -38,7 +38,8 @@
       if (!title || !Number.isInteger(level) || level < 1 || !Number.isInteger(x) || !Number.isInteger(y) || x < 0 || y < 0) {
         throw new TypeError(`incomplete outpost at ${index}; never guess missing data`);
       }
-      const alliance = clean(row.alliance);\n      return { title, level, x, y, text: `${title} L${level} · ${x},${y}${includeAlliance && alliance ? ' · ' + alliance : ''}` };
+      const alliance = clean(row.alliance);
+      return { title, level, x, y, text: `${title} L${level} · ${x},${y}${includeAlliance && alliance ? ' · ' + alliance : ''}` };
     });
     // Level descending, then building name, then coordinates. Never mutate the source.
     items.sort((a, b) => b.level - a.level ||
