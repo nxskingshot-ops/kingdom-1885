@@ -36,7 +36,7 @@ async function verify(){
  const {data:{user},error}=await db.auth.getUser();
  if(error||!user){locked();return;}
  const {data:member,error:membershipError}=await db.from('nxs_memberships').select('role,active,expires_at').eq('user_id',user.id).maybeSingle();
- if(membershipError||!member?.active||!['r4','admin'].includes(member.role)||(member.expires_at&&Date.parse(member.expires_at)<=Date.now())){locked('An active R4/admin account is required.');return;}
+ if(membershipError||!member?.active||!['r4','r5','admin','outpost_manager'].includes(member.role)||(member.expires_at&&Date.parse(member.expires_at)<=Date.now())){locked('An active R4 / R5 / Outpost Manager / Admin account is required.');return;}
  authorized=true;$('login').hidden=true;$('board').hidden=false;await refresh();
  }catch(error){locked('Unable to confirm editor access: '+error.message)}
 }
