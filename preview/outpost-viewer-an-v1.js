@@ -174,7 +174,7 @@
   const overlay = document.createElement('div');
   overlay.id = 'mapReportOverlay';
   overlay.hidden = true;
-  overlay.innerHTML = '<div id="mapReportPanel" role="dialog" aria-modal="true" aria-label="Public outpost report"><h3>Outpost Report</h3><div id="mapReportBody"><label for="mapReportAlliance">Alliance or quadrant</label><select id="mapReportAlliance"></select><div id="mapReportFormatRow"><label for="mapReportFormat">Format</label><select id="mapReportFormat" aria-label="Export format"><option value="kingshot">Kingshot · Compact</option><option value="discord">Discord · Detailed</option></select></div><div id="mapReportPageRow"><label for="mapReportText">Preview</label><select id="mapReportPart" aria-label="Report part" hidden></select></div><textarea id="mapReportText" readonly></textarea></div><div id="mapReportFooter"><small id="mapReportInfo" role="status">Published records only · Unverified</small><div id="mapReportActions"><button type="button" id="mapReportCopy">Copy All</button><button type="button" id="mapReportClose">Close</button></div></div></div>';
+  overlay.innerHTML = '<div id="mapReportPanel" role="dialog" aria-modal="true" aria-label="Public outpost report"><h3>Outpost Report</h3><div id="mapReportBody"><label for="mapReportAlliance">Alliance or quadrant</label><select id="mapReportAlliance"></select><div id="mapReportFormatRow"><label for="mapReportFormat">Format</label><select id="mapReportFormat" aria-label="Export format"><option value="kingshot">Kingshot · Compact</option><option value="discord">Discord · Detailed</option></select></div><div id="mapReportPageRow"><label for="mapReportText">Preview</label><select id="mapReportPart" aria-label="Report part" hidden></select></div><textarea id="mapReportText" readonly></textarea></div><div id="mapReportFooter"><small id="mapReportInfo" role="status">Published records · Verified</small><div id="mapReportActions"><button type="button" id="mapReportCopy">Copy All</button><button type="button" id="mapReportClose">Close</button></div></div></div>';
   document.body.appendChild(overlay);
   const selector = $('mapReportAlliance');
   const reportText = $('mapReportText');
@@ -236,7 +236,7 @@
       sector: sectorLabel,
       outposts: selected,
       sourceUpdatedAt: updatedAt,
-      verified: false,
+      verified: true,
       kingshotCompact: !isDiscord
     });
     try {
@@ -263,7 +263,7 @@
     reportInfo.textContent = (isDiscord
       ? 'Discord: full report (' + fullReport.length + ' characters). Longer messages may be attached as a .txt file. '
       : 'Kingshot: up to 480 characters per part. ') +
-      (name ? 'Quadrant assignment provisional. ' : '') + 'Published outposts · Unverified.';
+      (name ? 'Quadrant assignment provisional. ' : '') + 'Published outposts · Verified.';
   }
   reportButton.onclick = () => {
     if (!hasLiveSnapshot || !reportAPI) return;
