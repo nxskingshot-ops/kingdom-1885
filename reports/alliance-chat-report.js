@@ -14,18 +14,18 @@
     const d = input instanceof Date ? input : new Date(input);
     if (!Number.isFinite(d.getTime())) return null;
     const p = new Intl.DateTimeFormat('en-GB', {
-      timeZone: 'Europe/Berlin', day: '2-digit', month: '2-digit', year: '2-digit',
+      timeZone: 'UTC', day: '2-digit', month: '2-digit', year: 'numeric',
       hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
     }).formatToParts(d);
     const parts = Object.fromEntries(p.map(e => [e.type, e.value]));
-    return `${parts.day}.${parts.month}.${parts.year}/${parts.hour}:${parts.minute}`;
+    return `${parts.day}.${parts.month}.${parts.year} · ${parts.hour}:${parts.minute} UTC`;
   }
   function footer({sourceUpdatedAt, verified}) {
     const time = stamp(sourceUpdatedAt);
     // The date is the actual source record time, never Date.now() / report creation time.
     return `${time || 'Data: Date/time unknown'} | ${verified === true ? 'Verified' : 'Unverified'}\nProvided by Nexus App`;
   }
-  function makeOutpostReport({sector, outposts, sourceUpdatedAt = null, verified = false, kingshotCompact = false} = {}) {
+  function makeOutpostReport({sector, outposts, sourceUpdatedAt = null, verified = false, kingshotCompact = false, includeAlliance = false} = {}) {
     if (!Array.isArray(outposts)) throw new TypeError('outposts must be an array');
     const name = clean(sector).toUpperCase();
     if (!name) throw new TypeError('sector is required');
@@ -38,7 +38,7 @@
       if (!title || !Number.isInteger(level) || level < 1 || !Number.isInteger(x) || !Number.isInteger(y) || x < 0 || y < 0) {
         throw new TypeError(`incomplete outpost at ${index}; never guess missing data`);
       }
-      return { title, level, x, y, text: `${title} L${level}: ${x},${y}` };
+      const alliance = clean(row.alliance);\n      return { title, level, x, y, text: `${title} L${level} · ${x},${y}${includeAlliance && alliance ? ' · ' + alliance : ''}` };
     });
     // Level descending, then building name, then coordinates. Never mutate the source.
     items.sort((a, b) => b.level - a.level ||
@@ -146,7 +146,7 @@
         footer[2] !== 'Provided by Nexus App' || !footer[0].startsWith('**Source updated:** ')) {
       throw new TypeError('Discord report header or footer missing');
     }
-    const entries = lines.slice(3, -4); // exclude the blank separator before source status
+    const entries = lines.slice(4, -4); // exclude the blank separator before source status
     if (!entries.length) throw new RangeError('no report entries to split');
     const groups = [];
     let guess = 1;
@@ -154,7 +154,7 @@
       const pages = [];
       let active = [];
       const make = (rows, index) =>
-        [header[0], header[1] + ' (PART ' + (index + 1) + '/' + guess + ')', '',
+        [header[0], header[1] + ' (PART ' + (index + 1) + '/' + guess + ')', header[2], '',
           ...rows, '', ...footer].join('\n');
       for (const entry of entries) {
         if (make([...active, entry], pages.length).length <= maxCharacters) active.push(entry);
