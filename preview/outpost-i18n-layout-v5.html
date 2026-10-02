@@ -6,23 +6,37 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#140e0a}
 iframe{border:0;width:100%;height:100%;display:block}
 #loading{position:fixed;z-index:2147483647;top:9px;right:9px;padding:7px 11px;background:#281c13ee;color:#ffe8bc;border:1px solid #d4a458;border-radius:8px;font:12px system-ui}
 #loading[hidden]{display:none}
+#nexusOutpostNav{position:fixed;z-index:2147483645;left:0;right:0;bottom:0;height:42px;display:grid;grid-template-columns:repeat(5,1fr);background:#3a2415;border-top:1px solid #9b6b36;color:#f8e1b7;font:700 12px system-ui}
+#nexusOutpostNav button{border:0;border-right:1px solid #684525;background:transparent;color:inherit;font:inherit;padding:4px 2px}
+#nexusOutpostNav button:last-child{border-right:0}
+#nexusOutpostNav button[aria-current="page"]{background:#4c301b;color:#fff1c9}
 
 #nexusLangTrial{position:fixed;z-index:2147483646;left:max(9px,env(safe-area-inset-left));bottom:max(9px,env(safe-area-inset-bottom));display:flex;gap:3px;border:1px solid #bd9259;border-radius:9px;padding:4px;background:#302115ed;box-shadow:0 2px 10px #0009}
 #nexusLangTrial button{font:700 12px system-ui;min-height:33px;min-width:39px;border:1px solid #ae814c;border-radius:5px;background:#ecd1a2;color:#38220c;padding:5px}
 #nexusLangTrial button[aria-pressed="true"]{background:#fff3d0;outline:2px solid #f6d38b}
 #nexusLangTrial[hidden]{display:none}
 </style></head><body>
-<div id="loading" role="status">Loading Kingdom #1885…</div><div id="nexusLangTrial" role="group" aria-label="Preview language"><button type="button" data-language="en" aria-pressed="true">EN</button><button type="button" data-language="de" aria-pressed="false">DE</button><button type="button" data-language="fr" aria-pressed="false">FR</button></div>
+<nav id="nexusOutpostNav" aria-label="Outpost navigation"><button type="button" data-outpost-nav="map" aria-current="page">🗺 Map</button><button type="button" data-outpost-nav="list">☷ List</button><button type="button" data-outpost-nav="statistics">▤ Statistics</button><button type="button" data-outpost-nav="intelligence">⌕ Intelligence</button><button type="button" data-outpost-nav="settings">⚙ Settings</button></nav>\n<div id="loading" role="status">Loading Kingdom #1885…</div><div id="nexusLangTrial" role="group" aria-label="Preview language"><button type="button" data-language="en" aria-pressed="true">EN</button><button type="button" data-language="de" aria-pressed="false">DE</button><button type="button" data-language="fr" aria-pressed="false">FR</button></div>
 <iframe id="kingdom" src="../index.html?kingdom-preview=an-viewer-v1&single-header=3" title="Kingdom #1885 Outpost Map" allow="fullscreen"></iframe>
 <script>
 const frame=document.getElementById('kingdom'),status=document.getElementById('loading');
+const fixedNav=document.getElementById('nexusOutpostNav');
+function routeOutpostNav(kind){
+ const doc=frame.contentDocument;if(!doc)return;
+ if(kind==='intelligence'){doc.getElementById('outpostIntelButton')?.click();return;}
+ const aliases={map:/^\\s*(?:🗺️?\\s*)?(Map|Karte|Carte)\\s*$/i,list:/^\\s*(?:[☷≡📋]\\s*)?(List|Liste)\\s*$/i,statistics:/(Statistics|Statistik|Statistiques)\\s*$/i,settings:/(Settings|Einstellungen|Paramètres)\\s*$/i};
+ const rx=aliases[kind];if(!rx)return;
+ const target=[...doc.querySelectorAll('button,[role="button"],[role="tab"]')].find(el=>rx.test(el.textContent||''));
+ target?.click();
+}
+fixedNav.addEventListener('click',event=>{const b=event.target.closest('[data-outpost-nav]');if(!b)return;routeOutpostNav(b.dataset.outpostNav);for(const x of fixedNav.querySelectorAll('button'))x.removeAttribute('aria-current');b.setAttribute('aria-current','page');});
 frame.addEventListener('load',()=>{try{
 const doc=frame.contentDocument;if(!doc||!doc.body)throw Error('map unavailable');
 const script=doc.createElement('script');
-script.src=new URL('./outpost-viewer-an-v1.js?build=outpost-intelligence-v21-rollback',location.href).href;
+script.src=new URL('./outpost-viewer-an-v1.js?build=outpost-intelligence-v22-fixednav',location.href).href;
 // Hide an extra NEXUS shell, if the embedded map contains one.
 const nestedStyle=doc.createElement('style');
-nestedStyle.textContent='.shared{display:none!important}body:has(>.shared) #bar{display:none!important}body:has(>.shared)>iframe{height:100%!important;flex:1 1 auto!important}/* NEXUS: keep the map primary and reveal details only when needed. */#app{grid-template-rows:0 minmax(0,1fr) 42px!important;--toolbar-h:0px!important}#app>.top{display:none!important}#mapTools{position:absolute!important;left:auto!important;right:6px!important;top:6px!important;width:auto!important;height:auto!important;min-height:0!important;padding:0!important;gap:4px!important;background:transparent!important;border:0!important;box-shadow:none!important}#mapTools .mapbrand,#mapTools #healthBadge{display:none!important}#mapTools button{min-height:27px!important;padding:4px 6px!important}body.nexus-simple-outposts #app{grid-template-columns:minmax(190px,24%) minmax(0,1fr) 0!important}body.nexus-simple-outposts #app>.right,body.nexus-simple-outposts #app>.nexus-details-panel{display:none!important}.nexus-details-panel .nexus-details-filters{display:none!important}body.nexus-simple-outposts.nexus-details-open #app{grid-template-columns:minmax(190px,24%) minmax(0,1fr) minmax(220px,24%)!important}body.nexus-simple-outposts.nexus-details-open #app>.right,body.nexus-simple-outposts.nexus-details-open #app>.nexus-details-panel{display:block!important}@media(max-width:760px){body.nexus-simple-outposts #app{grid-template-columns:0 minmax(0,1fr) 0!important}body.nexus-simple-outposts #app>.left{display:none!important}body.nexus-simple-outposts.nexus-details-open #app{grid-template-columns:0 minmax(0,1fr) minmax(210px,38%)!important}}';
+nestedStyle.textContent='.shared{display:none!important}body:has(>.shared) #bar{display:none!important}#app>.bottom,#app>.bottom-nav,#app>#bottomNav,#app>#bottomBar{display:none!important}body:has(>.shared)>iframe{height:100%!important;flex:1 1 auto!important}/* NEXUS: keep the map primary and reveal details only when needed. */#app{grid-template-rows:0 minmax(0,1fr) 42px!important;--toolbar-h:0px!important}#app>.top{display:none!important}#mapTools{position:absolute!important;left:auto!important;right:6px!important;top:6px!important;width:auto!important;height:auto!important;min-height:0!important;padding:0!important;gap:4px!important;background:transparent!important;border:0!important;box-shadow:none!important}#mapTools .mapbrand,#mapTools #healthBadge{display:none!important}#mapTools button{min-height:27px!important;padding:4px 6px!important}body.nexus-simple-outposts #app{grid-template-columns:minmax(190px,24%) minmax(0,1fr) 0!important}body.nexus-simple-outposts #app>.right,body.nexus-simple-outposts #app>.nexus-details-panel{display:none!important}.nexus-details-panel .nexus-details-filters{display:none!important}body.nexus-simple-outposts.nexus-details-open #app{grid-template-columns:minmax(190px,24%) minmax(0,1fr) minmax(220px,24%)!important}body.nexus-simple-outposts.nexus-details-open #app>.right,body.nexus-simple-outposts.nexus-details-open #app>.nexus-details-panel{display:block!important}@media(max-width:760px){body.nexus-simple-outposts #app{grid-template-columns:0 minmax(0,1fr) 0!important}body.nexus-simple-outposts #app>.left{display:none!important}body.nexus-simple-outposts.nexus-details-open #app{grid-template-columns:0 minmax(0,1fr) minmax(210px,38%)!important}}';
 doc.head.appendChild(nestedStyle);
 // Simple Outpost Intelligence: the map stays primary. The existing details/filter
 // panel opens only after a marker/list selection and can be closed without
