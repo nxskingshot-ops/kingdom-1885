@@ -37,7 +37,10 @@
         "net_power_change_m": 162.7,
         "previous_castle_tg_count": 88,
         "current_castle_tg_count": 89,
-        "castle_tg_delta": 1
+        "castle_tg_delta": 1,
+        "risk_score": 146.3,
+        "risk_label": "Critical",
+        "risk_method": "Internal NXS planning indicator; not an official Kingshot matchmaking formula and not comparable to other alliances without equivalent inputs."
       }
     },
     "MYM": {
@@ -158,5 +161,65 @@
       }
     }
   },
-  "comparison_policy": "Cross-alliance changes use the dated 2026-09-29 baseline and 2026-10-02 screenshot aggregates. OoO uses displayed-member power sum for both dates; its separate 2026-09-29 alliance-ranking total is intentionally not used for the delta."
+  "comparison_policy": "Cross-alliance changes use the dated 2026-09-29 baseline and 2026-10-02 screenshot aggregates. OoO uses displayed-member power sum for both dates; its separate 2026-09-29 alliance-ranking total is intentionally not used for the delta.",
+  "four_alliance_totals": {
+    "current_power_m": 38126.4,
+    "previous_power_m": 37570.2,
+    "net_power_change_m": 556.2,
+    "power_growth_pct": 1.48,
+    "current_members": 394,
+    "previous_members": 393,
+    "member_delta": 1,
+    "current_truegold_count": 262,
+    "previous_truegold_count": 256,
+    "truegold_delta": 6
+  },
+  "derived_comparison": {
+    "NXS": {
+      "power_change_m": 162.7,
+      "power_growth_pct": 1.44,
+      "member_delta": 0,
+      "truegold_delta": 1,
+      "power_share_four_pct": 30.16,
+      "member_share_four_pct": 24.37,
+      "power_per_member_m": 119.77,
+      "truegold_rate_pct": 92.7
+    },
+    "MYM": {
+      "power_change_m": 72.9,
+      "power_growth_pct": 0.81,
+      "member_delta": -1,
+      "truegold_delta": 0,
+      "power_share_four_pct": 23.72,
+      "member_share_four_pct": 25.13,
+      "power_per_member_m": 91.33,
+      "truegold_rate_pct": 62.6
+    },
+    "FRA": {
+      "power_change_m": 193.3,
+      "power_growth_pct": 2.56,
+      "member_delta": 1,
+      "truegold_delta": 4,
+      "power_share_four_pct": 20.33,
+      "member_share_four_pct": 25.13,
+      "power_per_member_m": 78.31,
+      "truegold_rate_pct": 44.4
+    },
+    "OoO": {
+      "power_change_m": 127.3,
+      "power_growth_pct": 1.31,
+      "member_delta": 1,
+      "truegold_delta": 1,
+      "power_share_four_pct": 25.79,
+      "member_share_four_pct": 25.38,
+      "power_per_member_m": 98.34,
+      "truegold_rate_pct": 67
+    }
+  },
+  "comparison_notes": [
+    "Power growth compares displayed member-power sums on both dates for OoO; the separate 29 Sep alliance-ranking power total is excluded from growth calculations.",
+    "Truegold change is a net count change between snapshots, not a count of individual upgrade events.",
+    "Cross-alliance matchmaking-risk scores are not calculated because only NXS has the internal risk model inputs.",
+    "Relative KvK Prep Efficiency remains unavailable until verified prep-point and server-total inputs are entered."
+  ]
 }
