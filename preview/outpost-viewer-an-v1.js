@@ -87,7 +87,7 @@
     busy = true;
     status('↻ Refreshing…');
     try {
-      const response = await fetch(API + '/rest/v1/public_outposts?select=id,source_key,alliance,structure_type,level,coord_x,coord_y,updated_at&published=eq.true&order=id.asc', {
+      const response = await fetch(API + '/rest/v1/public_outposts_verified_20261002?select=id,source_key,alliance,structure_type,level,coord_x,coord_y,updated_at&published=eq.true&order=id.asc', {
         method: 'GET',
         headers: {apikey: KEY, 'Cache-Control': 'no-cache'},
         cache: 'no-store',
