@@ -292,6 +292,24 @@
     updateReport();
     overlay.hidden = false;
   };
+  // Compact Outpost Intelligence entry point. Existing report dialog remains unchanged.
+  const intelButton=document.createElement('button');
+  intelButton.type='button';intelButton.id='outpostIntelButton';intelButton.textContent='🧠 Intelligence';
+  intelButton.title='Outpost Intelligence';
+  controls.insertBefore(intelButton,reportButton);
+  reportButton.style.display='none';
+  const intel=document.createElement('div');intel.id='outpostIntelOverlay';intel.hidden=true;
+  intel.innerHTML='<div id="outpostIntelPanel"><h3>🧠 Outpost Intelligence</h3><h4>Alliance Overview</h4><div id="outpostIntelSummary"></div><h4>Ownership Changes</h4><div id="outpostIntelHistory">Loading…</div><div class="intelActions"><button type="button" id="outpostIntelReport">▤ Reports</button><button type="button" id="outpostIntelClose">Close</button></div></div>';
+  document.body.appendChild(intel);
+  const intelStyle=document.createElement('style');
+  intelStyle.textContent='#outpostIntelOverlay{position:fixed;inset:0;z-index:9998;background:rgba(16,12,9,.72);display:flex;align-items:center;justify-content:center;padding:12px}#outpostIntelOverlay[hidden]{display:none}#outpostIntelPanel{width:min(560px,100%);max-height:calc(100dvh - 24px);overflow:auto;box-sizing:border-box;background:#2b2015;color:#ffe9bf;border:1px solid #c7a265;border-radius:12px;padding:12px;font:13px system-ui}#outpostIntelPanel h3{margin:0 0 10px;font:700 19px Georgia,serif}#outpostIntelPanel h4{margin:12px 0 6px;color:#f1d19a}#outpostIntelSummary{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:6px}#outpostIntelSummary span,#outpostIntelHistory div{display:block;border:1px solid #76552e;border-radius:7px;padding:7px;background:#1b140e}.intelActions{display:flex;justify-content:flex-end;gap:7px;margin-top:12px}.intelActions button,#outpostIntelButton{padding:7px 9px;border-radius:7px;border:1px solid #a5814b;background:#efd09b;color:#332111;font-weight:700}';
+  document.head.appendChild(intelStyle);
+  function showIntelSummary(){const counts={};DATA.forEach(item=>{counts[item.alliance]=(counts[item.alliance]||0)+1});$('outpostIntelSummary').innerHTML=Object.entries(counts).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0])).map(([name,count])=>'<span><b>'+name+'</b> · '+count+'</span>').join('');}
+  const openReport=reportButton.onclick;
+  intelButton.onclick=()=>{if(!hasLiveSnapshot)return;showIntelSummary();intel.hidden=false;};
+  $('outpostIntelClose').onclick=()=>{intel.hidden=true;};
+  $('outpostIntelReport').onclick=()=>{intel.hidden=true;openReport();};
+  intel.addEventListener('click',event=>{if(event.target===intel)intel.hidden=true;});
   selector.onchange = updateReport;
   $('mapReportClose').onclick = closeReport;
   overlay.addEventListener('click', event => { if (event.target === overlay) closeReport(); });
