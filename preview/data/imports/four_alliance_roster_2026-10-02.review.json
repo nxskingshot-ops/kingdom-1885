@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "snapshot_date": "2026-10-02",
-  "status": "REVIEW_REQUIRED",
+  "status": "ARCHIVED – COMPLETE",
   "source": "User-supplied Kingshot alliance roster screenshots in ChatGPT conversation, 2026-10-02",
   "publication_policy": "Aggregate-only staging record. No individual player names or player-level power values are published here.",
   "alliances": {
@@ -15,8 +15,16 @@
         "R1": 1
       },
       "power_m": 11498.4,
-      "castles": null,
-      "verification": "Member/rank counts verified from screenshot headers; total power 11,498.4M transcribed from the complete 2026-10-02 NXS roster screenshot set. Castle/TG aggregation still pending.",
+      "castles": {
+        "29": 2,
+        "30": 5,
+        "TG1": 9,
+        "TG2": 34,
+        "TG3": 30,
+        "TG4": 10,
+        "TG5": 6
+      },
+      "verification": "Complete 96-member 2026-10-02 aggregate: total power 11498.4M; castle/TG distribution sums to 96; rank counts match screenshot headers.",
       "previous_snapshot_date": "2026-09-29",
       "previous_member_count": 96,
       "member_delta": 0,
@@ -35,7 +43,12 @@
         "R1": 0
       },
       "previous_power_m": 11335.7,
-      "power_delta_m": 162.7
+      "power_delta_m": 162.7,
+      "castle_tg_count": 89,
+      "previous_castle_tg_count": 88,
+      "castle_tg_delta": 1,
+      "castle_25_plus_count": 96,
+      "previous_castle_25_plus_count": 96
     },
     "FRA": {
       "member_count": 99,
@@ -145,9 +158,20 @@
         "R2": 3,
         "R1": 0
       },
-      "power_m": null,
-      "castles": null,
-      "verification": "rank counts verified from screenshot headers; power/castle aggregation pending",
+      "power_m": 9041.8,
+      "castles": {
+        "23": 1,
+        "27": 4,
+        "28": 4,
+        "29": 7,
+        "30": 21,
+        "TG1": 14,
+        "TG2": 25,
+        "TG3": 16,
+        "TG4": 3,
+        "TG5": 4
+      },
+      "verification": "Complete 99-member manual transcription from 2026-10-02 screenshot set; displayed powers sum to 9041.8M and castle/TG distribution sums to 99.",
       "previous_snapshot_date": "2026-09-29",
       "previous_member_count": 100,
       "member_delta": -1,
@@ -164,18 +188,27 @@
         "R3": -2,
         "R2": 1,
         "R1": 0
-      }
+      },
+      "previous_power_m": 8968.9,
+      "power_delta_m": 72.9,
+      "castle_tg_count": 62,
+      "previous_castle_tg_count": 62,
+      "castle_tg_delta": 0,
+      "castle_25_plus_count": 98,
+      "previous_castle_25_plus_count": 99
     }
   },
   "validation": {
     "member_count_sum_matches_rank_headers": true,
     "app_data_switched": false,
     "supabase_nxs_imported": false,
-    "notes": "Member/rank comparison complete for all four alliances. NXS aggregate power, FRA power/castles, and OoO power/castles are complete. MYM power/castles and NXS castle/TG distribution remain under review; do not switch live app data or import NXS into protected KvK tables yet.",
+    "notes": "Four-alliance aggregate comparison 2026-09-29 → 2026-10-02 is complete. Safe to publish aggregate Alliance Comparison/Trends data. NXS protected player-level KvK Controlling import remains separate and is not part of this aggregate release.",
     "member_and_rank_comparison_complete": true,
-    "power_and_castle_comparison_complete": false,
+    "power_and_castle_comparison_complete": true,
     "nxs_power_comparison_complete": true,
     "fra_power_and_castles_complete": true,
-    "ooo_power_and_castles_complete": true
+    "ooo_power_and_castles_complete": true,
+    "mym_power_and_castles_complete": true,
+    "nxs_castles_complete": true
   }
 }
