@@ -7,7 +7,7 @@
 <div class="tabs" role="tablist" aria-label="Analysis perspective"><button role="tab" id="kvk" aria-selected="true">🛡 KvK Controlling</button><button role="tab" id="competitive" aria-selected="false">🔭 Competitive Intelligence</button></div>
 <div class="controls" aria-label="Analysis filters"><button class="alliance" data-a="ALL" aria-pressed="true">All Alliances</button><button class="alliance" data-a="NXS" aria-pressed="false">NXS</button><button class="alliance" data-a="MYM" aria-pressed="false">MYM</button><button class="alliance" data-a="FRA" aria-pressed="false">FRA</button><button class="alliance" data-a="OoO" aria-pressed="false">OoO</button><label for="period">Time period</label><select id="period"><option value="7">7 days</option><option value="30" selected>30 days</option><option value="90">90 days</option><option value="all">All time</option></select></div>
 <div class="announce" id="info">No verified records have been connected yet. Example figures from the design image are deliberately not presented as real data.</div>
-<section class="grid4" aria-label="Key metrics"><div class="panel metric"><div class="label">TOTAL POWER</div><strong id="power">—</strong><div class="desc">Recorded alliance power</div></div><div class="panel metric"><div class="label">CASTLES ≥ LV 25</div><strong id="castles">—</strong><div class="desc">Count from available roster</div></div><div class="panel metric"><div class="label">POWER GROWTH</div><strong id="growth">—</strong><div class="desc" id="growthPeriod">Change over 30 days</div></div><div class="panel metric"><div class="label">MATCHMAKING RISK</div><strong id="risk">—</strong><div class="desc">Needs defined agreement thresholds</div></div></section>
+<section class="grid4" aria-label="Key metrics"><div class="panel metric"><div class="label" id="powerLabel">TOTAL POWER</div><strong id="power">—</strong><div class="desc">Recorded alliance power</div></div><div class="panel metric"><div class="label" id="castlesLabel">CASTLES ≥ LV 25</div><strong id="castles">—</strong><div class="desc">Count from available roster</div></div><div class="panel metric"><div class="label" id="growthLabel">POWER GROWTH</div><strong id="growth">—</strong><div class="desc" id="growthPeriod">Change over 30 days</div></div><div class="panel metric"><div class="label" id="riskLabel">MATCHMAKING RISK</div><strong id="risk">—</strong><div class="desc">Needs defined agreement thresholds</div></div></section>
 <section class="grid2" id="competitivePanel"><div class="panel"><h2>Power Development</h2><small>Recorded power over time by alliance</small><div id="powerChart" class="plot">Waiting for dated power snapshots.</div><div class="legend"><span><b style="background:var(--green)"></b>NXS</span><span><b style="background:var(--blue)"></b>MYM</span><span><b style="background:var(--gold)"></b>FRA</span><span><b style="background:var(--purple)"></b>OoO</span></div></div><div class="panel"><h2>Castle Upgrades</h2><small>Recorded castle-level changes</small><div id="upgradeChart" class="plot">Waiting for repeated castle-level snapshots.</div></div></section>
 <section class="grid2" id="kvkPanel"><div class="panel"><h2>Agreement Compliance</h2><small>Only documented deviations from the agreed KvK rules</small><div class="scroll"><table><thead><tr><th>Alliance</th><th>Power change</th><th>Truegold net change</th><th>Confirmed deviations</th><th>Status</th></tr></thead><tbody id="compliance"></tbody></table></div><div class="foot">An increase is not automatically a violation. Exceptions and documented rules must be checked first.</div></div><div class="panel"><h2>Matchmaking Risk · Known Scores</h2><small>Internal NXS risk status · not a cross-alliance percentage</small><div class="risk"><div class="donut" data-status="unassessed" role="img" aria-label="Risk not assessed"><span>Not assessed</span></div><ul id="riskList"></ul></div><div class="foot">No risk shares are calculated without verified inputs and a documented calculation method.</div></div></section><section class="panel" id="efficiencyPanel"><h2>Relative KvK Prep Efficiency</h2><small>Verified prep-point share compared with verified server power share</small><div class="scroll"><table><thead><tr><th>Alliance</th><th>Prep points</th><th>Prep share</th><th>Power share</th><th>Relative efficiency</th></tr></thead><tbody id="efficiencyRows"></tbody></table></div><div class="foot" id="efficiencyFoot">Awaiting a verified end-of-prep snapshot. Formula: (Alliance Prep Point Share ÷ Alliance Power Share) × 100. Governance thresholds are not part of this calculation.</div>
 <details class="eff-entry" id="efficiencyEntry"><summary>＋ Enter end-of-prep snapshot</summary><div class="eff-form">
@@ -73,8 +73,8 @@ function sortMetric(entries){return [...entries].sort((a,b)=>{const av=a.value,b
 const formatPeriod=()=>($('period').value==='all'?'all recorded dates':$('period').value+' days');
 function getVisible(){const ids=selected==='ALL'?names:[selected];const rows=ids.filter(n=>snapshots.alliances[n]).map(n=>({...snapshots.alliances[n],name:n}));return {ids,rows};}
 function render(){
- const isControlling=perspective==='kvk',isTrends=sectionMode==='trends';
- const activeMetrics=isControlling?['growth','risk']:isTrends?['power','growth']:['power','castles'];
+ const isControlling=perspective==='kvk',isTrends=sectionMode==='trends',isComparison=sectionMode==='comparison';
+ const activeMetrics=isControlling?['growth','risk']:isTrends?['power','growth']:isComparison?['power','castles','growth','risk']:['power','castles'];
  for(const id of ['power','castles','growth','risk'])$(id).closest('.metric').hidden=!activeMetrics.includes(id);
  document.querySelector('.grid4').dataset.metricCount=activeMetrics.length;
  document.querySelector('.heading small').textContent=isControlling?'KvK monitoring · agreement checks and NXS internal risk':isTrends?'Dated power changes · recorded history only':'Four-alliance baseline · power, castles and Truegold';
@@ -91,24 +91,41 @@ function render(){
  $('power').textContent=has&&comparable&&powerCoverage?formatPower(totalPower):'—';
  $('castles').textContent=has&&comparable&&castleCoverage?count(totalCastles):'—';
  $('growth').textContent='—';$('risk').textContent='—';
+ $('powerLabel').textContent='TOTAL POWER';
+ $('castlesLabel').textContent='CASTLES ≥ LV 25';
+ $('growthLabel').textContent='POWER GROWTH';
+ $('riskLabel').textContent='MATCHMAKING RISK';
+ if(isComparison&&has){
+   const members=rows.reduce((s,r)=>s+(Number(r.member_count)||0),0);
+   const tg=rows.reduce((s,r)=>s+(Number(r.castle_tg_count)||0),0);
+   $('castlesLabel').textContent='MEMBERS';
+   $('castles').textContent=members.toLocaleString('en-US');
+   $('castles').nextElementSibling.textContent=selected==='ALL'?'Tracked members across four alliances':'Current tracked roster size';
+   $('growthLabel').textContent='POWER / MEMBER';
+   $('growth').textContent=members>0?(totalPower/members).toLocaleString('en-US',{maximumFractionDigits:2})+'M':'—';
+   $('growthPeriod').textContent='Current average power per member';
+   $('riskLabel').textContent='TRUEGOLD RATE';
+   $('risk').textContent=members>0?(tg/members*100).toLocaleString('en-US',{maximumFractionDigits:1})+'%':'—';
+   $('risk').nextElementSibling.textContent='Members currently at Truegold level';
+ }
  const visibleChanges=rows.map(r=>r.latest_change).filter(Boolean);
  const aggregateGrowth=visibleChanges.reduce((s,ch)=>s+(Number(ch.net_power_change_m)||0),0);
- if(visibleChanges.length){
+ if(visibleChanges.length&&!isComparison){
    $('growth').textContent=(aggregateGrowth>0?'+':'')+aggregateGrowth.toLocaleString('en-US',{maximumFractionDigits:1})+'M';
  }
  const nxsChange=snapshots.alliances.NXS?.latest_change;
- if((selected==='ALL'||selected==='NXS')&&Number.isFinite(Number(nxsChange?.risk_score))){
+ if(!isComparison&&(selected==='ALL'||selected==='NXS')&&Number.isFinite(Number(nxsChange?.risk_score))){
    $('risk').textContent='NXS: '+Number(nxsChange.risk_score).toLocaleString('en-US',{maximumFractionDigits:2})+' · '+(nxsChange.risk_label||'Unassessed');
  }
- $('risk').nextElementSibling.textContent=(selected==='ALL'||selected==='NXS')?'NXS internal planning indicator · 2 Oct · other alliances not equivalently scored':'No comparable internal risk assessment available';
- $('growthPeriod').textContent=visibleChanges.length?(selected==='ALL'?'Combined net power change · 29 Sep → 2 Oct':'Net power change · 29 Sep → 2 Oct'):'Awaiting a comparable dated snapshot';
+ if(!isComparison)$('risk').nextElementSibling.textContent=(selected==='ALL'||selected==='NXS')?'NXS internal planning indicator · 2 Oct · other alliances not equivalently scored':'No comparable internal risk assessment available';
+ if(!isComparison)$('growthPeriod').textContent=visibleChanges.length?(selected==='ALL'?'Combined net power change · 29 Sep → 2 Oct':'Net power change · 29 Sep → 2 Oct'):'Awaiting a comparable dated snapshot';
  $('lastUpdate').textContent='Snapshot: '+snapshots.snapshot_date+' · '+rows.length+'/4 alliance rosters';
  $('power').nextElementSibling.textContent=has?(powerCoverage===4?'4 contemporaneous alliance power totals':'Power coverage: '+powerCoverage+'/4 alliances'):'Recorded alliance power';
  $('castles').nextElementSibling.textContent=has?'Truegold/current castle coverage '+castleCoverage+'/4 alliances':'Count from available roster';
  let info=isControlling
   ?'KvK Controlling · Four-alliance change comparison from 29 Sep to 2 Oct. NXS risk is an internal planning indicator only; no cross-alliance risk ranking is calculated.'
   :isTrends?'Alliance Trends · Comparable 29 Sep → 2 Oct changes are available for all four tracked alliances.'
-  :'Alliance Comparison · Current 2 Oct power, membership and Truegold structure across NXS, MYM, FRA and OoO.';
+  :'Alliance Comparison · Current 2 Oct power, roster size, power per member and Truegold rate across NXS, MYM, FRA and OoO.';
  if(missing.length)info+=' Missing: '+missing.map(x=>display[x]).join(', ')+'.';
  if(dates.length>1)info+=' Snapshot dates differ ('+dates.join(' / ')+'); combined totals are hidden.';
  if(selected==='OoO')info+=' OoO power growth uses displayed member-power sums on both dates; the separate 29 Sep alliance-ranking total is excluded.';
