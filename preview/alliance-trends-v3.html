@@ -14,7 +14,7 @@
 /* Provisional aggregates only. Never expose individual member rows through this public preview. */
 (async function(){
 'use strict';
-const dataUrl='./data/alliance-trends-2026-09-29.json?rev=20260929-risk-and-sorting-3';
+const dataUrl='./data/alliance-trends-2026-10-02.json?rev=20261002-four-rosters-1';
 let snapshots;
 try{const response=await fetch(dataUrl,{cache:'no-store'});if(!response.ok)throw Error('Snapshot HTTP '+response.status);snapshots=await response.json();}
 catch(err){document.getElementById('info').textContent='Snapshot data currently unavailable. The dashboard is showing safe empty states.';console.warn('Alliance snapshot',err);return;}
