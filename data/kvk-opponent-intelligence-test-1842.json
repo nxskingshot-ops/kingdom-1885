@@ -1,0 +1,220 @@
+{
+  "version": 1,
+  "test_only": true,
+  "source_kingdom": 1842,
+  "observed_at": "2026-10-03",
+  "purpose": "Validate which opponent-intelligence fields can be filled from public sources before requesting in-game screenshots.",
+  "public_sources": [
+    "Kingshot Pulse",
+    "Kingshot Guide / comparable public kingdom trackers",
+    "Kingshot Atlas / StratForge where indexed"
+  ],
+  "kingdom_level_available": {
+    "total_power": "46.08B",
+    "governors_total": 1447,
+    "governors_on_map": 1335,
+    "active_7d": 949,
+    "active_7d_rate_percent": 65.6,
+    "alliances": 465,
+    "power_gain_7d": "73.91M",
+    "top100_governor_power": "15.39B",
+    "top100_troop_power": "9.11B",
+    "top100_hero_total": "2.40B",
+    "top100_hero_equipment": "894M",
+    "top100_pet_power": "792M",
+    "top100_governor_charms": "786M",
+    "top100_governor_gear": "740M",
+    "top100_building_power": "635M",
+    "top100_research_power": "438M",
+    "top100_mystic_trial_total": "109K",
+    "truegold_distribution": {
+      "TG5": 13,
+      "TG4": 28,
+      "TG3": 77,
+      "TG2": 93,
+      "TG1": 68
+    },
+    "kvk_record": {
+      "wins": 1,
+      "losses": 3,
+      "castle_held": 1
+    }
+  },
+  "top_players_public_total_power": [
+    {
+      "rank": 1,
+      "player": "Lord Z",
+      "alliance": "FFS",
+      "tg": "TG5",
+      "total_power_m": 459
+    },
+    {
+      "rank": 2,
+      "player": "JD865",
+      "alliance": "FFS",
+      "tg": "TG5",
+      "total_power_m": 300
+    },
+    {
+      "rank": 3,
+      "player": "Kim jong Un",
+      "alliance": "ACE",
+      "tg": "TG4",
+      "total_power_m": 284
+    },
+    {
+      "rank": 4,
+      "player": "은블리쨩ʕ·͡ᴥ፝֟·ʔ",
+      "alliance": "KOR",
+      "tg": "TG5",
+      "total_power_m": 276
+    },
+    {
+      "rank": 5,
+      "player": "SnoWave",
+      "alliance": "FFS",
+      "tg": "TG5",
+      "total_power_m": 266
+    },
+    {
+      "rank": 6,
+      "player": "ᬊᬁSaNai࿐",
+      "alliance": "KOR",
+      "tg": "TG5",
+      "total_power_m": 247
+    },
+    {
+      "rank": 7,
+      "player": "초코_Chocolateᴷᴼᴿ",
+      "alliance": "KOR",
+      "tg": "TG5",
+      "total_power_m": 247
+    },
+    {
+      "rank": 8,
+      "player": "KFA19",
+      "alliance": "ACE",
+      "tg": "TG5",
+      "total_power_m": 228
+    },
+    {
+      "rank": 9,
+      "player": "HanSi",
+      "alliance": "KOR",
+      "tg": "TG5",
+      "total_power_m": 222
+    },
+    {
+      "rank": 10,
+      "player": "Doradora",
+      "alliance": "KOR",
+      "tg": "TG5",
+      "total_power_m": 213
+    },
+    {
+      "rank": 11,
+      "player": "Leddᴷᴼᴿ",
+      "alliance": "KOR",
+      "tg": "TG4",
+      "total_power_m": 206
+    },
+    {
+      "rank": 12,
+      "player": "Bigghost417",
+      "alliance": "FFS",
+      "tg": "TG5",
+      "total_power_m": 191
+    },
+    {
+      "rank": 13,
+      "player": "外面都是長頸鹿ᵀᴬᴵᵂᴬᴺ",
+      "alliance": "BAO",
+      "tg": "TG4",
+      "total_power_m": 191
+    },
+    {
+      "rank": 14,
+      "player": "燭夜楓ᵀᴬᴵᵂᴬᴺ",
+      "alliance": "BAO",
+      "tg": "TG4",
+      "total_power_m": 189
+    },
+    {
+      "rank": 15,
+      "player": "ᓚᘏᗢAngelᗢᘏᓗ",
+      "alliance": "FFS",
+      "tg": "TG4",
+      "total_power_m": 182
+    },
+    {
+      "rank": 16,
+      "player": "Hansom",
+      "alliance": "ACE",
+      "tg": "TG4",
+      "total_power_m": 181
+    },
+    {
+      "rank": 17,
+      "player": "Maro 마로ᴷᴼᴿ",
+      "alliance": "KOR",
+      "tg": "TG4",
+      "total_power_m": 180
+    },
+    {
+      "rank": 18,
+      "player": "收手吧！阿祖ᵀᴬᴵᵂᴬᴺ",
+      "alliance": "BAO",
+      "tg": "TG4",
+      "total_power_m": 180
+    },
+    {
+      "rank": 19,
+      "player": "⟣° ᏰαᏰყʂհαɾƙ °⟢",
+      "alliance": "KOR",
+      "tg": "TG4",
+      "total_power_m": 176
+    },
+    {
+      "rank": 20,
+      "player": "༺ঔৣHKERঔৣ༻",
+      "alliance": "KOR",
+      "tg": "TG4",
+      "total_power_m": 175
+    }
+  ],
+  "derived_from_public_total_power_only": {
+    "top1_m": 459,
+    "top5_m": 1585,
+    "top10_m": 2742,
+    "top20_m": 4593,
+    "top1_share_of_top10_percent": 16.74,
+    "top5_share_of_top20_percent": 34.51
+  },
+  "not_publicly_confirmed_at_player_level": [
+    "individual Mystic Trial total for the relevant top players",
+    "individual Governor Gear score",
+    "individual Governor Charms score",
+    "individual Research score",
+    "individual Hero/Hero Gear score",
+    "individual Pet Power for all relevant players",
+    "a defensible True Power value per player",
+    "which players are actual primary rally leads",
+    "castle/garrison combat stats and buffs"
+  ],
+  "conclusion": {
+    "public_data_sufficient_for": [
+      "kingdom-level strength profile",
+      "TG depth",
+      "activity and momentum",
+      "KvK history",
+      "alliance distribution of top total-power players",
+      "initial whale screening by total power"
+    ],
+    "screenshots_still_needed_for": [
+      "true player-level whale comparison",
+      "K1885 vs opponent rally-lead head-to-head",
+      "Mega-Whale Watch confirmation",
+      "individual permanent-power composition"
+    ]
+  }
+}
