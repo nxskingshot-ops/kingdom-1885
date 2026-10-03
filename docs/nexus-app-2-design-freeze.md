@@ -321,3 +321,13 @@ Current collected visual wishes:
 - Kingdom Command should use the recreated Royal Castle visual.
 - Alliance Intelligence should use the prepared NXS / OoO / MYM / FRA alliance banners.
 - Alliance banners should also be available as reusable identity assets where alliance context is primary.
+
+## Project identity / privacy rule
+
+For all Nexus App 2.0 surfaces and supporting project materials, use the dedicated NXS project account instead of the user's private email address.
+
+- Project identity: **NXS Kingdom #1885**
+- Project email: **nxs.kingshot@gmail.com**
+- Do not expose or use the user's private email address in Nexus App 2.0 UI, Contact/Feedback, Google Sheets/Drive sharing, reports, tester instructions, GitHub documentation, or other project-facing materials.
+- New Google Sheets / Drive sharing related to Nexus App 2.0 should use the NXS project account wherever possible.
+- Existing Nexus App 2.0-related shares or references that still use the private address should be migrated when encountered.
