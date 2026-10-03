@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0c1526"><title>NEXUS · KvK Head-to-Head</title>
+<style>
+:root{color-scheme:dark;--bg:#09121f;--surface:#101d30;--raised:#182841;--gold:#dbb874;--pale:#f6e4ba;--ink:#dce6f2;--sub:#a6b8cb;--line:#715b39;--blue:#63a8df;--red:#e38a82;--green:#86cda4}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:radial-gradient(ellipse at 58% -20%,#263954 0%,#0b1728 53%,#07101c 100%);font:14px/1.5 system-ui,sans-serif;color:var(--ink)}
+body{overflow-x:hidden}main{max-width:1180px;margin:0 auto;padding:15px 15px 40px}h1,h2,h3,p{margin:0}h1{font:700 clamp(20px,4vw,30px)/1.12 Georgia,serif;color:var(--pale)}h2{font:700 18px Georgia,serif;color:var(--pale)}h3{font-size:13px;color:var(--pale)}small,.sub{color:var(--sub)}
+.eyebrow{font-size:10px;font-weight:750;letter-spacing:.18em;color:var(--gold)}.top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;border-bottom:1px solid #755a31;padding-bottom:14px}.top p{margin-top:5px;font-size:12px;color:var(--sub)}
+.badge{border:1px solid #796039;border-radius:9px;padding:7px 10px;color:var(--gold);font-size:10px;white-space:nowrap}.panel{border:1px solid #394d66;background:linear-gradient(150deg,#13243c,#0d192b);box-shadow:0 5px 22px #0004;border-radius:14px;padding:14px;min-width:0}
+.section{margin-top:15px}.kingdoms{display:grid;grid-template-columns:1fr 1fr;gap:12px}.kingdom{position:relative;overflow:hidden}.kingdom:before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:#e1b968}.kingdom.enemy:before{background:#6bb7f0}
+.kd-label{font-size:10px;color:var(--sub);letter-spacing:.08em}.kd-name{font-size:22px;font-weight:800;color:var(--pale);margin-top:3px}.kd-sub{font-size:11px;color:var(--sub);margin-top:4px}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:10px}.kpi{background:#0b1728;border:1px solid #334760;border-radius:9px;padding:9px}.kpi b{display:block;color:var(--pale);font-size:17px}.kpi span{font-size:10px;color:var(--sub)}
+.notice{border:1px solid #6e5b3c;background:#142239;border-radius:10px;padding:11px 12px;color:var(--sub);font-size:11px;line-height:1.55}.notice strong{color:var(--pale)}
+.scroll{overflow:auto;border:1px solid #34475f;border-radius:10px;margin-top:10px}.table{width:100%;border-collapse:collapse;min-width:780px;font-size:12px}.table th{position:sticky;top:0;background:#26344b;color:var(--gold);font-size:10px;letter-spacing:.05em;padding:9px 8px;text-align:left}.table td{padding:8px;border-top:1px solid #324158}.table tbody tr:nth-child(even){background:#17263a}.muted{color:var(--sub)}.gap{font-weight:800}.pending{color:#e7c88e}.ok{color:var(--green)}.warn{color:var(--red)}
+.alert{border:1px solid #805a4f;background:#211b22;border-radius:12px;padding:13px}.alert-head{display:flex;justify-content:space-between;gap:10px;align-items:center}.alert h2{color:#f4d2c8}.alert p{color:var(--sub);font-size:11px;margin-top:6px}
+.dual{display:grid;grid-template-columns:1fr 1fr;gap:12px}.metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}.metric{padding:9px;border:1px solid #354965;border-radius:9px;background:#0c182a}.metric b{display:block;color:var(--pale);font-size:12px}.metric span{font-size:10px;color:var(--sub)}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.chip{border:1px solid #3f536d;border-radius:30px;padding:5px 8px;font-size:10px;color:var(--sub)}
+.footer{margin-top:16px;color:var(--sub);font-size:10px;line-height:1.6}
+@media(max-width:720px){.kingdoms,.dual{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.top{align-items:flex-start}.badge{font-size:9px;padding:6px}}
+</style></head><body><main>
+<header class="top"><div><div class="eyebrow">KINGDOM #1885 · PRIVATE INTELLIGENCE</div><h1>True Power Intelligence · KvK Head-to-Head</h1><p>Prepared comparison layer for K1885 versus the matched opponent.</p></div><span class="badge">PREPARED · NO LIVE CHANGE</span></header>
+
+<section class="section notice"><strong>Purpose:</strong> this isolated module is ready before opponent data arrives. It does not alter the approved True Power Intelligence layout or any live Nexus App function. Later only the data source needs to be filled; the comparison structure stays unchanged.</section>
+
+<section class="section kingdoms">
+<article class="panel kingdom"><div class="kd-label">HOME KINGDOM</div><div class="kd-name">Kingdom #1885</div><div class="kd-sub">Reference side · NXS / kingdom top leads</div><div class="grid">
+<div class="kpi"><b id="homeTop1">—</b><span>Top #1 True Power</span></div><div class="kpi"><b id="homeTop5">—</b><span>Top 5 aggregate</span></div><div class="kpi"><b id="homeTop20">—</b><span>Top 20 aggregate</span></div><div class="kpi"><b id="homeLeads">—</b><span>Likely rally leads</span></div>
+</div></article>
+<article class="panel kingdom enemy"><div class="kd-label">MATCHED OPPONENT</div><div class="kd-name" id="enemyName">Kingdom #—</div><div class="kd-sub">Opponent data pending</div><div class="grid">
+<div class="kpi"><b id="enemyTop1">—</b><span>Top #1 True Power</span></div><div class="kpi"><b id="enemyTop5">—</b><span>Top 5 aggregate</span></div><div class="kpi"><b id="enemyTop20">—</b><span>Top 20 aggregate</span></div><div class="kpi"><b id="enemyLeads">—</b><span>Likely rally leads</span></div>
+</div></article>
+</section>
+
+<section class="section panel"><h2>Head-to-Head depth</h2><p class="sub">Fixed comparison levels. No arbitrary danger threshold; show measured gaps only.</p>
+<div class="scroll"><table class="table"><thead><tr><th>LEVEL</th><th>K1885 TRUE POWER</th><th>OPPONENT TRUE POWER</th><th>MEASURED GAP</th><th>READING</th></tr></thead><tbody id="depthRows">
+<tr><td>#1</td><td>—</td><td>—</td><td class="gap">—</td><td class="pending">Waiting for data</td></tr>
+<tr><td>Top 3</td><td>—</td><td>—</td><td class="gap">—</td><td class="pending">Waiting for data</td></tr>
+<tr><td>Top 5</td><td>—</td><td>—</td><td class="gap">—</td><td class="pending">Waiting for data</td></tr>
+<tr><td>Top 10</td><td>—</td><td>—</td><td class="gap">—</td><td class="pending">Waiting for data</td></tr>
+<tr><td>Top 20</td><td>—</td><td>—</td><td class="gap">—</td><td class="pending">Waiting for data</td></tr>
+</tbody></table></div></section>
+
+<section class="section alert"><div class="alert-head"><h2>⚠ Mega-Whale Watch</h2><span class="badge">ABSOLUTE IMPACT</span></div><p id="whaleText">No opponent data loaded. This block is reserved for a player who separates sharply from both kingdoms’ normal strength curve and could materially change Castle Battle dynamics.</p>
+<div class="chips"><span class="chip">Opponent #1 vs K1885 #1</span><span class="chip">Opponent #1 vs K1885 Top 3</span><span class="chip">True Power composition</span><span class="chip">Castle-hold potential indicators</span></div></section>
+
+<section class="section dual">
+<article class="panel"><h2>Rally-lead comparison</h2><p class="sub">Primary leads first; depth behind them second.</p><div class="metrics">
+<div class="metric"><b id="leadGap">—</b><span>Top lead gap</span></div><div class="metric"><b id="leadCountGap">—</b><span>Likely lead count gap</span></div><div class="metric"><b id="top5Gap">—</b><span>Top 5 aggregate gap</span></div><div class="metric"><b id="depthDrop">—</b><span>Depth drop after Top 5</span></div>
+</div></article>
+<article class="panel"><h2>Strength distribution</h2><p class="sub">Separates one-account dominance from broad kingdom depth.</p><div class="metrics">
+<div class="metric"><b id="whaleShare">—</b><span>#1 share of Top 10</span></div><div class="metric"><b id="top5Share">—</b><span>Top 5 share of Top 20</span></div><div class="metric"><b id="allianceConcentration">—</b><span>Lead alliance concentration</span></div><div class="metric"><b id="dataCoverage">0%</b><span>Required data coverage</span></div>
+</div></article>
+</section>
+
+<section class="section panel"><h2>Fixed player fields</h2><p class="sub">Only data with a direct analysis purpose is collected.</p>
+<div class="chips"><span class="chip">Player</span><span class="chip">Alliance</span><span class="chip">Total Power · context only</span><span class="chip">Mystic / True Power</span><span class="chip">Governor Gear</span><span class="chip">Governor Charms</span><span class="chip">Research</span><span class="chip">Heroes / Hero Gear</span><span class="chip">Pets</span><span class="chip">TG level</span></div></section>
+
+<div class="footer"><b>Method guardrail:</b> no invented combat score and no fixed “critical at X%” threshold. Differences are displayed as measured values; tactical interpretation is added only when the underlying data is present. This preview intentionally contains no private player data.</div>
+</main></body></html>
