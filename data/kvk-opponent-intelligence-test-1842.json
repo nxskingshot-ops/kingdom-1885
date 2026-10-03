@@ -1,14 +1,20 @@
 {
-  "version": 1,
+  "version": 2,
   "test_only": true,
   "source_kingdom": 1842,
   "observed_at": "2026-10-03",
-  "purpose": "Validate which opponent-intelligence fields can be filled from public sources before requesting in-game screenshots.",
+  "purpose": "Validate which opponent-intelligence fields can be filled publicly and which can be verified from a fresh in-kingdom observer account without grinding to TC19.",
   "public_sources": [
     "Kingshot Pulse",
     "Kingshot Guide / comparable public kingdom trackers",
     "Kingshot Atlas / StratForge where indexed"
   ],
+  "observer_account_result": {
+    "setup_time_minutes_approx": 40,
+    "mystic_trial_rankings_visible_before_tc19": true,
+    "tc19_required_for_personal_trial_access": true,
+    "practical_conclusion": "Use observer only until rankings unlock; do not grind to TC19 for scouting."
+  },
   "kingdom_level_available": {
     "total_power": "46.08B",
     "governors_total": 1447,
@@ -27,194 +33,112 @@
     "top100_building_power": "635M",
     "top100_research_power": "438M",
     "top100_mystic_trial_total": "109K",
-    "truegold_distribution": {
-      "TG5": 13,
-      "TG4": 28,
-      "TG3": 77,
-      "TG2": 93,
-      "TG1": 68
-    },
-    "kvk_record": {
-      "wins": 1,
-      "losses": 3,
-      "castle_held": 1
-    }
+    "truegold_distribution": {"TG5":13,"TG4":28,"TG3":77,"TG2":93,"TG1":68},
+    "kvk_record": {"wins":1,"losses":3,"castle_held":1}
   },
-  "top_players_public_total_power": [
-    {
-      "rank": 1,
-      "player": "Lord Z",
-      "alliance": "FFS",
-      "tg": "TG5",
-      "total_power_m": 459
-    },
-    {
-      "rank": 2,
-      "player": "JD865",
-      "alliance": "FFS",
-      "tg": "TG5",
-      "total_power_m": 300
-    },
-    {
-      "rank": 3,
-      "player": "Kim jong Un",
-      "alliance": "ACE",
-      "tg": "TG4",
-      "total_power_m": 284
-    },
-    {
-      "rank": 4,
-      "player": "은블리쨩ʕ·͡ᴥ፝֟·ʔ",
-      "alliance": "KOR",
-      "tg": "TG5",
-      "total_power_m": 276
-    },
-    {
-      "rank": 5,
-      "player": "SnoWave",
-      "alliance": "FFS",
-      "tg": "TG5",
-      "total_power_m": 266
-    },
-    {
-      "rank": 6,
-      "player": "ᬊᬁSaNai࿐",
-      "alliance": "KOR",
-      "tg": "TG5",
-      "total_power_m": 247
-    },
-    {
-      "rank": 7,
-      "player": "초코_Chocolateᴷᴼᴿ",
-      "alliance": "KOR",
-      "tg": "TG5",
-      "total_power_m": 247
-    },
-    {
-      "rank": 8,
-      "player": "KFA19",
-      "alliance": "ACE",
-      "tg": "TG5",
-      "total_power_m": 228
-    },
-    {
-      "rank": 9,
-      "player": "HanSi",
-      "alliance": "KOR",
-      "tg": "TG5",
-      "total_power_m": 222
-    },
-    {
-      "rank": 10,
-      "player": "Doradora",
-      "alliance": "KOR",
-      "tg": "TG5",
-      "total_power_m": 213
-    },
-    {
-      "rank": 11,
-      "player": "Leddᴷᴼᴿ",
-      "alliance": "KOR",
-      "tg": "TG4",
-      "total_power_m": 206
-    },
-    {
-      "rank": 12,
-      "player": "Bigghost417",
-      "alliance": "FFS",
-      "tg": "TG5",
-      "total_power_m": 191
-    },
-    {
-      "rank": 13,
-      "player": "外面都是長頸鹿ᵀᴬᴵᵂᴬᴺ",
-      "alliance": "BAO",
-      "tg": "TG4",
-      "total_power_m": 191
-    },
-    {
-      "rank": 14,
-      "player": "燭夜楓ᵀᴬᴵᵂᴬᴺ",
-      "alliance": "BAO",
-      "tg": "TG4",
-      "total_power_m": 189
-    },
-    {
-      "rank": 15,
-      "player": "ᓚᘏᗢAngelᗢᘏᓗ",
-      "alliance": "FFS",
-      "tg": "TG4",
-      "total_power_m": 182
-    },
-    {
-      "rank": 16,
-      "player": "Hansom",
-      "alliance": "ACE",
-      "tg": "TG4",
-      "total_power_m": 181
-    },
-    {
-      "rank": 17,
-      "player": "Maro 마로ᴷᴼᴿ",
-      "alliance": "KOR",
-      "tg": "TG4",
-      "total_power_m": 180
-    },
-    {
-      "rank": 18,
-      "player": "收手吧！阿祖ᵀᴬᴵᵂᴬᴺ",
-      "alliance": "BAO",
-      "tg": "TG4",
-      "total_power_m": 180
-    },
-    {
-      "rank": 19,
-      "player": "⟣° ᏰαᏰყʂհαɾƙ °⟢",
-      "alliance": "KOR",
-      "tg": "TG4",
-      "total_power_m": 176
-    },
-    {
-      "rank": 20,
-      "player": "༺ঔৣHKERঔৣ༻",
-      "alliance": "KOR",
-      "tg": "TG4",
-      "total_power_m": 175
-    }
-  ],
-  "derived_from_public_total_power_only": {
-    "top1_m": 459,
-    "top5_m": 1585,
-    "top10_m": 2742,
-    "top20_m": 4593,
-    "top1_share_of_top10_percent": 16.74,
-    "top5_share_of_top20_percent": 34.51
-  },
-  "not_publicly_confirmed_at_player_level": [
-    "individual Mystic Trial total for the relevant top players",
-    "individual Governor Gear score",
-    "individual Governor Charms score",
-    "individual Research score",
-    "individual Hero/Hero Gear score",
-    "individual Pet Power for all relevant players",
-    "a defensible True Power value per player",
-    "which players are actual primary rally leads",
-    "castle/garrison combat stats and buffs"
-  ],
-  "conclusion": {
-    "public_data_sufficient_for": [
-      "kingdom-level strength profile",
-      "TG depth",
-      "activity and momentum",
-      "KvK history",
-      "alliance distribution of top total-power players",
-      "initial whale screening by total power"
+  "verified_in_game": {
+    "alliance_power_top9": [
+      {"rank":1,"tag":"KOR","name":"KOREA","power":9469424232},
+      {"rank":2,"tag":"FFS","name":"ForFuxSake","power":8715230419},
+      {"rank":3,"tag":"ACE","name":"NightReapers","power":6845027593},
+      {"rank":4,"tag":"WTR","name":"Whatever","power":6818613054},
+      {"rank":5,"tag":"BAO","name":"阿皮動物精武體操會","power":6682445587},
+      {"rank":6,"tag":"TRN","name":"TURAN","power":5671533682},
+      {"rank":7,"tag":"BLF","name":"BlueFlower","power":4240612180},
+      {"rank":8,"tag":"DYN","name":"DYNASTY","power":1769563263},
+      {"rank":9,"tag":"ffs","name":"FFSacademy","power":1032928219}
     ],
-    "screenshots_still_needed_for": [
-      "true player-level whale comparison",
-      "K1885 vs opponent rally-lead head-to-head",
-      "Mega-Whale Watch confirmation",
-      "individual permanent-power composition"
+    "personal_power_top9": [
+      {"rank":1,"player":"Lord Z","alliance":"FFS","power":460676597},
+      {"rank":2,"player":"JD865","alliance":"FFS","power":305143127},
+      {"rank":3,"player":"Kim jong Un","alliance":"ACE","power":285419093},
+      {"rank":4,"player":"은블리짱","alliance":"KOR","power":276869087},
+      {"rank":5,"player":"SnowFlake","alliance":"FFS","power":268251489},
+      {"rank":6,"player":"SaNai","alliance":"KOR","power":248889571},
+      {"rank":7,"player":"초코_Chocolate","alliance":"KOR","power":248275541},
+      {"rank":8,"player":"KFA19","alliance":"ACE","power":228009601},
+      {"rank":9,"player":"HanSi","alliance":"KOR","power":223804785}
+    ],
+    "mystic_trial_top17": [
+      {"rank":1,"player":"Lord Z","alliance":"FFS","levels":2049},
+      {"rank":2,"player":"은블리짱","alliance":"KOR","levels":1649},
+      {"rank":3,"player":"초코_Chocolate","alliance":"KOR","levels":1596},
+      {"rank":4,"player":"Kim jong Un","alliance":"ACE","levels":1590},
+      {"rank":5,"player":"SaNai","alliance":"KOR","levels":1528},
+      {"rank":6,"player":"SnowFlake","alliance":"FFS","levels":1501},
+      {"rank":7,"player":"HanSi","alliance":"KOR","levels":1453},
+      {"rank":8,"player":"JD865","alliance":"FFS","levels":1444},
+      {"rank":9,"player":"Bravo4Range","alliance":"FFS","levels":1400},
+      {"rank":10,"player":"Angel","alliance":"FFS","levels":1349},
+      {"rank":11,"player":"Ledd","alliance":"KOR","levels":1320},
+      {"rank":12,"player":"燭夜楓","alliance":"BAO","levels":1313},
+      {"rank":13,"player":"Doradora","alliance":"KOR","levels":1299},
+      {"rank":14,"player":"Mattou","alliance":"FFS","levels":1287},
+      {"rank":15,"player":"KFA19","alliance":"ACE","levels":1285},
+      {"rank":16,"player":"Thighland","alliance":"FFS","levels":1261},
+      {"rank":17,"player":"Hansom","alliance":"ACE","levels":1249}
+    ],
+    "hero_power_top9": [
+      {"rank":1,"player":"Lord Z","alliance":"FFS","hero":"Amadeus","power":11947451},
+      {"rank":2,"player":"은블리짱","alliance":"KOR","hero":"Amadeus","power":8539761},
+      {"rank":3,"player":"초코_Chocolate","alliance":"KOR","hero":"Amadeus","power":6635090},
+      {"rank":4,"player":"SaNai","alliance":"KOR","hero":"Amadeus","power":6055859},
+      {"rank":5,"player":"SnowFlake","alliance":"FFS","hero":"Amadeus","power":5994499},
+      {"rank":6,"player":"Thighland","alliance":"FFS","hero":"Amadeus","power":5876039},
+      {"rank":7,"player":"Kim jong Un","alliance":"ACE","hero":"Marlin","power":5839700},
+      {"rank":8,"player":"外面都是長頸鹿","alliance":"BAO","hero":"Marlin","power":5746145},
+      {"rank":9,"player":"HanSi","alliance":"KOR","hero":"Marlin","power":5604500}
+    ],
+    "companion_power_top9": [
+      {"rank":1,"player":"Lord Z","alliance":"FFS","power":16028520},
+      {"rank":2,"player":"KFA19","alliance":"ACE","power":10823160},
+      {"rank":3,"player":"초코_Chocolate","alliance":"KOR","power":10281480},
+      {"rank":4,"player":"JD865","alliance":"FFS","power":9590280},
+      {"rank":5,"player":"SpiritBreeze","alliance":"KOR","power":9482400},
+      {"rank":6,"player":"MjöLniiR","alliance":"FFS","power":9462360},
+      {"rank":7,"player":"은블리짱","alliance":"KOR","power":9412440},
+      {"rank":8,"player":"Hansom","alliance":"ACE","power":8995920},
+      {"rank":9,"player":"燭夜楓","alliance":"BAO","power":8987520}
+    ],
+    "tc_level_top9": [
+      {"rank":1,"player":"KFA19","alliance":"ACE","tg":5},
+      {"rank":2,"player":"Lord Z","alliance":"FFS","tg":5},
+      {"rank":3,"player":"은블리짱","alliance":"KOR","tg":5},
+      {"rank":4,"player":"Los angelthan","alliance":"FFS","tg":5},
+      {"rank":5,"player":"HanSi","alliance":"KOR","tg":5},
+      {"rank":6,"player":"SnowFlake","alliance":"FFS","tg":5},
+      {"rank":7,"player":"JD865","alliance":"FFS","tg":5},
+      {"rank":8,"player":"SaNai","alliance":"KOR","tg":5},
+      {"rank":9,"player":"Bjb","alliance":"WTR","tg":5}
     ]
-  }
+  },
+  "derived_metrics": {
+    "mystic_top1_gap_vs_rank2_percent": 24.26,
+    "mystic_top1_gap_vs_avg_rank2_to5_percent": 28.81,
+    "mystic_top1_share_of_top10_percent": 13.17,
+    "mystic_top5_sum": 8412,
+    "mystic_top10_sum": 15559,
+    "mystic_top17_sum": 24573,
+    "mystic_avg_top5": 1682.4,
+    "mystic_avg_rank6_to10": 1429.4,
+    "mystic_depth_drop_top5_to_rank6_10_percent": 15.04,
+    "mystic_depth_drop_top10_to_rank11_17_percent": 17.24,
+    "interpretation": "Lord Z is a clear multi-signal outlier, while the kingdom still retains meaningful depth behind him."
+  },
+  "minimum_future_scouting_pack": [
+    "Alliance Power ranking",
+    "Personal Power ranking",
+    "Mystic Trial ranking through approximately Top 20",
+    "Hero Power ranking",
+    "Total Companion Power ranking",
+    "Town Center / Truegold ranking"
+  ],
+  "not_reliably_obtainable_without_more_effort": [
+    "individual Governor Gear values for the exact top players",
+    "individual Governor Charm values for the exact top players",
+    "individual Research values for the exact top players",
+    "verified primary rally-lead/garrison role",
+    "battle buffs and formation-specific combat stats"
+  ],
+  "final_conclusion": "A short-lived observer account plus public web data is sufficient for a strong first-pass opponent profile. Do not level to TC19 solely for scouting. Reserve deeper screenshots for a small number of high-impact players."
 }
