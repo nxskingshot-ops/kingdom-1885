@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Nexus App 2.0 — Command Center Preview</title>
+<meta name="theme-color" content="#07131f">
+<style>
+:root{
+  --bg:#06111c;--bg2:#0a1a29;--panel:#0b2032;--panel2:#102a40;
+  --gold:#d9a93b;--gold2:#f4d477;--line:#224f73;--blue:#53a7e8;
+  --text:#edf6ff;--muted:#a8bad0;--danger:#f45b63;--warn:#f3bd4f;--ok:#4fd69b;
+  --shadow:0 14px 34px rgba(0,0,0,.42);--radius:14px;
+}
+*{box-sizing:border-box} html,body{margin:0;background:radial-gradient(circle at 50% -10%,#17334b 0,#071420 38%,#040b12 100%);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+body{min-height:100vh}
+button{font:inherit}
+.shell{min-height:100vh}
+.header{
+  position:sticky;top:0;z-index:40;height:108px;border-bottom:1px solid rgba(244,212,119,.55);
+  background:
+    linear-gradient(90deg,rgba(3,10,16,.92),rgba(3,10,16,.52) 34%,rgba(3,10,16,.36) 62%,rgba(3,10,16,.84)),
+    url('../assets/nexus-banner-1885.png') center 44%/cover no-repeat;
+  box-shadow:0 8px 24px rgba(0,0,0,.4);
+}
+.header::after{content:"";position:absolute;inset:auto 0 0;height:3px;background:linear-gradient(90deg,transparent,var(--gold),var(--gold2),var(--gold),transparent)}
+.header-inner{height:100%;display:flex;align-items:center;gap:18px;padding:10px 22px}
+.crest{width:88px;height:88px;object-fit:contain;filter:drop-shadow(0 6px 8px rgba(0,0,0,.55))}
+.brand{min-width:260px;text-shadow:0 2px 10px #000}
+.brand h1{font-family:Georgia,'Times New Roman',serif;margin:0;color:#f6d87f;font-size:40px;line-height:1}
+.brand p{margin:7px 0 0;color:#f3d784;font-family:Georgia,serif;font-size:15px;letter-spacing:.02em}
+.kingdom-mark{margin:auto;display:flex;align-items:center;justify-content:center;min-width:175px;height:76px;padding:0 28px;border:1px solid rgba(234,191,74,.72);border-radius:12px;background:linear-gradient(180deg,rgba(22,48,71,.86),rgba(5,18,30,.92));box-shadow:inset 0 0 22px rgba(234,191,74,.12),0 6px 20px rgba(0,0,0,.4)}
+.kingdom-mark span{font-family:Georgia,serif;color:#f7d978;font-weight:800;font-size:42px;text-shadow:0 0 14px rgba(244,212,119,.28)}
+.header-actions{display:flex;gap:10px;align-items:center}
+.lang{display:flex;border:1px solid #285278;border-radius:11px;overflow:hidden;background:rgba(2,10,17,.8)}
+.lang button{border:0;background:transparent;color:#dbe8f6;padding:10px 12px;cursor:pointer}.lang button.active{background:#0d3a58;color:white}
+.menu-btn{width:44px;height:44px;border:1px solid rgba(225,184,78,.7);border-radius:11px;background:#071725;color:#f2d271;font-size:23px;cursor:pointer}
+
+.layout{display:grid;grid-template-columns:210px minmax(0,1fr);min-height:calc(100vh - 108px)}
+.sidebar{position:sticky;top:108px;height:calc(100vh - 108px);padding:18px 12px;background:linear-gradient(180deg,#071724,#05111b);border-right:1px solid rgba(218,174,66,.42);overflow:auto}
+.nav{display:flex;flex-direction:column;gap:5px}
+.nav button{display:flex;align-items:center;gap:11px;width:100%;min-height:48px;padding:10px 12px;border:1px solid transparent;border-radius:9px;background:transparent;color:#dce8f3;text-align:left;cursor:pointer}
+.nav button .ico{width:26px;text-align:center;font-size:20px;color:#bad6ee}
+.nav button.active{border-color:rgba(240,195,79,.78);background:linear-gradient(90deg,rgba(198,143,37,.28),rgba(31,55,77,.7));box-shadow:inset 3px 0 0 var(--gold2),0 0 15px rgba(222,173,62,.08)}
+.nav button.active .ico{color:#ffe28b}
+.nav .divider{height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:10px 0}
+.nav small{color:#91a7ba}
+
+.main{padding:18px 20px 36px;min-width:0}
+.hero{display:flex;align-items:center;gap:15px;padding:15px 18px;border:1px solid #1e5378;border-radius:12px;background:linear-gradient(90deg,rgba(9,31,48,.95),rgba(7,22,35,.88));box-shadow:inset 0 0 22px rgba(42,123,181,.08);margin-bottom:16px}
+.hero img{width:52px;height:52px;object-fit:contain}
+.hero-copy h2{font-family:Georgia,serif;color:#f4d178;font-size:27px;margin:0 0 4px}.hero-copy p{margin:0;color:#bccfe0}
+.hero .status{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.pill{border:1px solid #2a5575;background:#081a29;border-radius:999px;padding:7px 10px;font-size:12px;color:#cfe0ee}.pill strong{color:white}.pill.ok{border-color:rgba(79,214,155,.45);color:#9bf1cb}
+
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:14px}
+.card{border:1px solid #244f70;border-radius:var(--radius);background:linear-gradient(180deg,rgba(14,39,59,.96),rgba(7,24,38,.97));box-shadow:var(--shadow);overflow:hidden}
+.card.gold{border-color:rgba(224,176,58,.7)}.card.red{border-color:rgba(244,91,99,.55)}
+.card-header{display:flex;align-items:center;gap:10px;padding:13px 15px;border-bottom:1px solid rgba(58,112,150,.42)}
+.card-header h3{margin:0;font-size:17px}.card-header .mini{margin-left:auto;font-size:11px;color:#94aabc}
+.card-body{padding:15px}
+.summary{grid-column:span 5}.alerts{grid-column:span 4}.readiness{grid-column:span 3}.missions{grid-column:span 7}.updates{grid-column:span 5}.quick{grid-column:span 12}
+
+.summary-top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.big-number{font-family:Georgia,serif;font-size:35px;color:#f3d272;font-weight:800}.label{font-size:12px;color:#93a9bd}
+.metric-row{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px}
+.metric{padding:10px;border:1px solid #214761;border-radius:9px;background:#081b2b}.metric b{display:block;color:#f2f7fb;font-size:17px}.metric span{font-size:11px;color:#90a6ba}
+.bar{height:8px;border-radius:99px;background:#07131e;overflow:hidden;border:1px solid #1d415b}.bar>i{display:block;height:100%;width:82%;background:linear-gradient(90deg,#2e88c9,#68bfff)}
+.alert-item,.mission,.update{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid rgba(51,91,118,.34)}.alert-item:last-child,.mission:last-child,.update:last-child{border-bottom:0}
+.badge{flex:0 0 auto;width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:#122c40;border:1px solid #28516e}
+.badge.crit{background:rgba(133,31,42,.28);border-color:#8c3644;color:#ff838a}.badge.warn{background:rgba(137,95,22,.25);border-color:#8f6b2a;color:#ffd36f}.badge.info{color:#78c5ff}
+.item-title{font-weight:700;font-size:13px}.item-sub{margin-top:2px;color:#93a9bc;font-size:11px}
+.readiness-ring{width:132px;height:132px;margin:4px auto 12px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--gold2) 0 82%,#173248 82%);position:relative}.readiness-ring::after{content:"";position:absolute;width:96px;height:96px;border-radius:50%;background:#0a1e2f;border:1px solid #274d69}.readiness-ring b{position:relative;z-index:2;font-family:Georgia,serif;font-size:28px;color:#ffe18a}.readiness-note{text-align:center;color:#9db0c1;font-size:12px}
+.tag{display:inline-block;padding:3px 7px;border-radius:6px;font-size:10px;border:1px solid #27536f;color:#acd4ef}.tag.gold{border-color:#886b2a;color:#f0d175}.tag.red{border-color:#87333e;color:#ff9298}
+.quick-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}.quick button{border:1px solid #285471;border-radius:10px;background:linear-gradient(180deg,#0d2a40,#091b2b);color:#eaf5fd;padding:12px 8px;cursor:pointer}.quick button:hover{border-color:#d5a941}.quick span{display:block;font-size:20px;margin-bottom:5px}
+.footer-note{margin-top:14px;color:#6f879b;font-size:11px;text-align:right}
+
+.overlay{position:fixed;inset:0;z-index:80;background:rgba(2,8,13,.72);backdrop-filter:blur(4px);display:none}.overlay.open{display:block}.drawer{position:absolute;right:0;top:0;width:min(92vw,380px);height:100%;padding:18px;background:linear-gradient(180deg,#081b2a,#06121c);border-left:1px solid rgba(222,176,61,.65);overflow:auto}.drawer-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.drawer h3{font-family:Georgia,serif;color:#f3d273}.drawer .close{background:none;border:1px solid #765d2b;color:#f2d271;border-radius:8px;width:40px;height:40px}
+.drawer-section{margin-top:18px;padding-top:14px;border-top:1px solid #1d3b50}.drawer-section h4{margin:0 0 10px;color:#9fc8e5;font-size:12px;text-transform:uppercase;letter-spacing:.12em}
+.drawer-row{padding:10px;border:1px solid #20445e;border-radius:9px;margin:7px 0;background:#091b2a}.drawer-row b{display:block}.drawer-row small{color:#8ea6ba}
+
+@media(max-width:1050px){
+  .brand h1{font-size:32px}.kingdom-mark{min-width:135px}.summary{grid-column:span 6}.alerts{grid-column:span 6}.readiness{grid-column:span 4}.missions{grid-column:span 8}.updates{grid-column:span 12}.quick-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:760px){
+  .header{height:92px}.header-inner{padding:8px 12px}.crest{width:64px;height:64px}.brand{min-width:0}.brand h1{font-size:28px}.brand p{display:none}.kingdom-mark{display:none}.lang{display:none}
+  .layout{display:block;min-height:calc(100vh - 92px)}.sidebar{display:none}.main{padding:12px 10px 28px}.hero{padding:11px 12px}.hero img{width:42px;height:42px}.hero-copy h2{font-size:22px}.hero .status{display:none}
+  .grid{gap:10px}.summary,.alerts,.readiness,.missions,.updates,.quick{grid-column:span 12}.metric-row{grid-template-columns:repeat(3,1fr)}.quick-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:430px){
+  .crest{width:58px;height:58px}.brand h1{font-size:25px}.main{padding-inline:8px}.metric-row{grid-template-columns:1fr 1fr}.metric:last-child{grid-column:span 2}.quick-grid{grid-template-columns:1fr 1fr}.card-body{padding:12px}.header-actions{margin-left:auto}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="header">
+  <div class="header-inner">
+    <img class="crest" src="../icon-192.png" alt="NXS crest">
+    <div class="brand"><h1>Nexus App 2.0</h1><p>many paths, many strengths, one force.</p></div>
+    <div class="kingdom-mark"><span>1885</span></div>
+    <div class="header-actions">
+      <div class="lang"><button>DE</button><button class="active">EN</button><button>FR</button></div>
+      <button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <nav class="nav">
+      <button class="active"><span class="ico">⌂</span><span>Command<br>Center</span></button>
+      <button><span class="ico">♛</span><span>Kingdom<br>Command</span></button>
+      <button><span class="ico">⚔</span><span>KvK<br>Command</span></button>
+      <button><span class="ico">▥</span><span>True Power</span></button>
+      <button><span class="ico">👥</span><span>Alliance<br>Intelligence</span></button>
+      <button><span class="ico">◉</span><span>Transfer<br>Scouting</span></button>
+      <button><span class="ico">⌖</span><span>Outpost Map</span></button>
+      <button><span class="ico">♟</span><span>Player<br>Intelligence</span></button>
+      <button><span class="ico">✦</span><span>Operations<br>Center</span></button>
+      <button><span class="ico">▤</span><span>Briefing<br>Center</span></button>
+      <div class="divider"></div>
+      <button><span class="ico">•••</span><span>More</span></button>
+      <button><span class="ico">⚙</span><span>Settings</span></button>
+      <button><span class="ico">?</span><span>Help</span></button>
+      <button><span class="ico">✉</span><span>Contact</span></button>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <section class="hero">
+      <img src="../icon-192.png" alt="">
+      <div class="hero-copy"><h2>Command Center</h2><p>Strategy. Intelligence. Coordination. Victory.</p></div>
+      <div class="status"><span class="pill ok">● Data Readiness: <strong>Good</strong></span><span class="pill">Last Confirmed: <strong>03.10.26</strong></span></div>
+    </section>
+
+    <section class="grid">
+      <article class="card gold summary">
+        <div class="card-header"><span>♛</span><h3>Kingdom #1885 — Operational Status</h3><span class="mini">LIVE PREVIEW</span></div>
+        <div class="card-body">
+          <div class="summary-top"><div><div class="label">Four main alliances</div><div class="big-number">38.13B</div></div><span class="tag gold">Situation stable</span></div>
+          <div class="metric-row">
+            <div class="metric"><b>394</b><span>Members</span></div>
+            <div class="metric"><b>262</b><span>TG Castles</span></div>
+            <div class="metric"><b>4</b><span>Main Alliances</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card red alerts">
+        <div class="card-header"><span>⚠</span><h3>Critical Alerts</h3><span class="mini">2 ACTIVE</span></div>
+        <div class="card-body">
+          <div class="alert-item"><span class="badge crit">!</span><div><div class="item-title">KvK opponent data incomplete</div><div class="item-sub">Top 20 Mystic Trial coverage still missing.</div></div></div>
+          <div class="alert-item"><span class="badge warn">!</span><div><div class="item-title">Outpost verification required</div><div class="item-sub">Recent ownership changes need confirmation.</div></div></div>
+        </div>
+      </article>
+
+      <article class="card readiness">
+        <div class="card-header"><span>◈</span><h3>Operational Readiness</h3></div>
+        <div class="card-body"><div class="readiness-ring"><b>82%</b></div><div class="readiness-note">Strong overall readiness<br><span class="tag">3 operational gaps</span></div></div>
+      </article>
+
+      <article class="card missions">
+        <div class="card-header"><span>⚔</span><h3>Mission Priorities</h3><span class="mini">NEXT ACTIONS</span></div>
+        <div class="card-body">
+          <div class="mission"><span class="badge info">1</span><div><div class="item-title">Complete Enemy Intelligence baseline</div><div class="item-sub">Kingdom #1842 · Key Threats · Combat Depth · Command Strength</div></div><span class="tag gold" style="margin-left:auto">High</span></div>
+          <div class="mission"><span class="badge info">2</span><div><div class="item-title">Confirm Battle Assignments</div><div class="item-sub">Rally Leads, Garrison, Support Forces and Strategic Positions</div></div><span class="tag" style="margin-left:auto">Open</span></div>
+          <div class="mission"><span class="badge info">3</span><div><div class="item-title">Update alliance snapshots</div><div class="item-sub">NXS · OoO · MYM · FRA</div></div><span class="tag" style="margin-left:auto">Planned</span></div>
+        </div>
+      </article>
+
+      <article class="card updates">
+        <div class="card-header"><span>↻</span><h3>Situation Updates</h3><span class="mini">RECENT</span></div>
+        <div class="card-body">
+          <div class="update"><span class="badge info">↗</span><div><div class="item-title">NXS alliance power increased</div><div class="item-sub">Latest aggregate snapshot registered.</div></div></div>
+          <div class="update"><span class="badge info">◎</span><div><div class="item-title">Enemy mega-whale identified</div><div class="item-sub">Lord Z [FFS] flagged as a high-impact target.</div></div></div>
+          <div class="update"><span class="badge info">✓</span><div><div class="item-title">Nexus App 2.0 shell created</div><div class="item-sub">Separate preview — live Nexus App remains untouched.</div></div></div>
+        </div>
+      </article>
+
+      <article class="card quick">
+        <div class="card-header"><span>✦</span><h3>Quick Access</h3></div>
+        <div class="card-body quick-grid">
+          <button><span>⚔</span>KvK Command</button>
+          <button><span>♛</span>Kingdom Command</button>
+          <button><span>👥</span>Alliance Intelligence</button>
+          <button><span>⌖</span>Outpost Map</button>
+          <button><span>◉</span>Transfer Scouting</button>
+          <button><span>▤</span>Briefing Center</button>
+        </div>
+      </article>
+    </section>
+
+    <div class="footer-note">Nexus App 2.0 · isolated design preview · no live-app changes</div>
+  </main>
+</div>
+</div>
+
+<div class="overlay" id="overlay">
+  <aside class="drawer">
+    <div class="drawer-top"><h3>Nexus App 2.0</h3><button class="close" id="closeBtn">✕</button></div>
+    <div class="nav">
+      <button class="active"><span class="ico">⌂</span><span>Command Center</span></button>
+      <button><span class="ico">♛</span><span>Kingdom Command</span></button>
+      <button><span class="ico">⚔</span><span>KvK Command</span></button>
+      <button><span class="ico">▥</span><span>True Power</span></button>
+      <button><span class="ico">👥</span><span>Alliance Intelligence</span></button>
+      <button><span class="ico">◉</span><span>Transfer Scouting</span></button>
+      <button><span class="ico">⌖</span><span>Outpost Map</span></button>
+      <button><span class="ico">♟</span><span>Player Intelligence</span></button>
+      <button><span class="ico">✦</span><span>Operations Center</span></button>
+      <button><span class="ico">▤</span><span>Briefing Center</span></button>
+    </div>
+    <div class="drawer-section"><h4>Profile</h4><div class="drawer-row"><b>FaQu</b><small>NXS · Creator</small></div></div>
+    <div class="drawer-section"><h4>Status</h4><div class="drawer-row"><b>War Mode</b><small>Off</small></div><div class="drawer-row"><b>Data Readiness</b><small>Good · 3 gaps</small></div><div class="drawer-row"><b>Notifications</b><small>Important only</small></div></div>
+    <div class="drawer-section"><h4>Language</h4><div class="drawer-row"><b>DE · EN · FR</b><small>EN active</small></div></div>
+  </aside>
+</div>
+
+<script>
+const overlay=document.getElementById('overlay');
+document.getElementById('menuBtn').onclick=()=>overlay.classList.add('open');
+document.getElementById('closeBtn').onclick=()=>overlay.classList.remove('open');
+overlay.addEventListener('click',e=>{if(e.target===overlay) overlay.classList.remove('open')});
+document.querySelectorAll('.nav button').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}));
+</script>
+</body>
+</html>
