@@ -5,6 +5,7 @@
 - [ ] **Outpost Editor (mobile):** Verify R4/admin login on an Android phone, test saving a coordinate change to Supabase and confirm it appears on the public Outpost Map. The editor is not required for the current tester rollout. Current candidate: `preview/outpost-editor-v4.html`. Do not change the approved Nexus design.
 - [ ] **Google Sheets synchronization:** Decide whether Outpost edits in the app should also update the source Google Sheet; currently they do not.
 - [ ] **KvK snapshot import:** Complete the authorized import of newly committed, reviewed Google Sheets snapshots into Supabase; the existing dashboard currently reads imported historical data.
+- [ ] **Automatic backup audit:** Later verify which Nexus App backups are currently running automatically, confirm their cadence, and make sure the notification/result matches the intended backup schedule.
 
 ## Test-app priority
 
