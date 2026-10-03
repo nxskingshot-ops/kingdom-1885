@@ -15,6 +15,7 @@ This document is the shared, persistent backlog of ideas and follow-up work. **A
 - [ ] **Supabase/database backups:** Design and verify a separate, access-controlled data backup and restore procedure; GitHub code snapshots do not back up the database.
 - [ ] **Data refresh rhythm:** Evaluate an imported player snapshot approximately every **three days** (user says manual updates take a few minutes); possibly more often in KvK Prep.
 - [ ] **KvK matchmaking model:** Accumulate snapshots, review warning thresholds using actual change history and full KvK cycles; do not claim it is the official game matchmaking formula.
+- [ ] **KvK terminology:** In the Nexus App, use the exact section labels **Opponent Intelligence** and **Battle Readiness** for the two main KvK analysis layers. Opponent Intelligence = enemy strength/structure analysis; Battle Readiness = our own operational preparation for the fight.
 - [ ] **Invitation threshold administration:** Allow an authorized admin to update the officially confirmed transfer-window cap and distinguish Ordinary/Leading Kingdom rules when known.
 - [ ] **FaQuAI heraldic artwork:** Produce optional variants of the approved personalized FaQu/Eddy/robot crest: majestic, humorous, darker Kingshot aesthetic, more Eddy, wallpaper/banner/avatar, transparent background. Keep existing image as reference.
 - [ ] **Onboarding and documentation:** After app tests, write simple member/tester instructions for mobile PWA and desktop usage, access, and demo-vs-live sections.
