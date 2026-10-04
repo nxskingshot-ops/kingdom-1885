@@ -34,8 +34,8 @@ async function load(){const {data,error}=await db.from('transfer_candidates').se
 if(error){$('count').textContent='Access or database error: '+error.message;return;}players=data||[];chosen=new Set([...chosen].filter(id=>players.some(p=>p.candidate_id===id)));if(!players.some(p=>p.candidate_id===active))active=players[0]?.candidate_id||null;render();if(dossierOpen)renderDossier();}
 async function check(){try{const {data:{user},error}=await db.auth.getUser();if(error||!user){showLogin();return;}
 const {data:membership,error:merror}=await db.from('nxs_memberships').select('role,active,expires_at').eq('user_id',user.id).maybeSingle();
-if(merror||!membership?.active||!['member','r4','admin'].includes(membership.role)||(membership.expires_at&&Date.parse(membership.expires_at)<=Date.now())){showLogin('Approved NXS membership required.');return;}
-canEdit=['r4','admin'].includes(membership.role);$('newCandidate').hidden=!canEdit;$('login').hidden=true;$('private').hidden=false;await load();
+if(merror||!membership?.active||!['member','r4','r5','admin'].includes(membership.role)||(membership.expires_at&&Date.parse(membership.expires_at)<=Date.now())){showLogin('Approved NXS membership required.');return;}
+canEdit=['r4','r5','admin'].includes(membership.role);$('newCandidate').hidden=!canEdit;$('login').hidden=true;$('private').hidden=false;await load();
 }catch(e){showLogin('Unable to verify access: '+e.message)}}
 $('authForm').onsubmit=async e=>{e.preventDefault();$('message').textContent='Signing in…';const {error}=await db.auth.signInWithPassword({email:$('email').value,password:$('password').value});$('password').value='';if(error)showLogin(error.message);else check();};
 $('refresh').onclick=check;$('search').oninput=render;$('sort').onchange=render;
