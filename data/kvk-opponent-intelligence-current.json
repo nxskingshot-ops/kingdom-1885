@@ -1,8 +1,8 @@
 {
-  "version": 2,
-  "status": "active_verified_partial",
+  "version": 3,
+  "status": "active_verified_core_snapshot",
   "purpose": "KvK Head-to-Head data contract for Nexus App Opponent Intelligence",
-  "updated_at": "2026-10-04",
+  "updated_at": "2026-10-04T18:46:00+02:00",
   "home_kingdom": 1885,
   "opponent_kingdom": 1913,
   "comparison_levels": [
@@ -45,6 +45,11 @@
       "snapshot_date": "2026-10-04",
       "source": "User-provided live player profile screenshots",
       "scope": "Verified profile details for goo 대박, Dovik, Achilles, Greyjoy and Inigo Montoya"
+    },
+    "mightpulse_rankings": {
+      "snapshot_date": "2026-10-04",
+      "source": "MightPulse Kingdom #1913 ranking screens supplied by user",
+      "scope": "Top-40 screenshots captured for Personal Power, Troop Power, Governor Gear, Governor Charm, Hero w/o Equip, Hero Equip, Pet Power, Research Power, Mystic Trial and Town Center"
     }
   },
   "home_summary": {
@@ -100,10 +105,10 @@
     "strongest_player": {
       "player_name": "goo 대박",
       "alliance_tag": "YCP",
-      "personal_power_m": 315.8
+      "personal_power_m": 315.3
     },
-    "top5_personal_power_m": 1356.8,
-    "top10_personal_power_m": 2506.1,
+    "top5_personal_power_m": 1356,
+    "top10_personal_power_m": 2503.2,
     "city_center_top40": {
       "TG5": 15,
       "TG4": 18,
@@ -128,6 +133,24 @@
       "player_name": "Greyjoy",
       "alliance_tag": "LwT",
       "companion_power_m": 12.598
+    },
+    "kingdom_power_b": 65.84,
+    "governors": 2702,
+    "active_players_on_map": 1515,
+    "alliances": 628,
+    "top100_board_totals": {
+      "alliance_power_b": 62.03,
+      "alliance_kills_b": 1.82,
+      "governor_power_b": 14.76,
+      "kills_b": 1.27,
+      "single_hero_power_m": 326.9,
+      "hero_total_b": 2.36,
+      "troop_power_b": 8.64,
+      "building_power_m": 628.2,
+      "research_power_m": 433.4,
+      "hero_without_equip_b": 1.5,
+      "hero_equip_m": 873.2,
+      "governor_gear_power_m": 751.9
     }
   },
   "home_players": [
@@ -272,7 +295,7 @@
       "personal_power_rank": 1,
       "player_name": "goo 대박",
       "alliance_tag": "YCP",
-      "personal_power_m": 315.8,
+      "personal_power_m": 315.3,
       "governor_id": "297699930",
       "alliance_rank": "R4",
       "alliance_members": 100,
@@ -326,13 +349,30 @@
           "widget_level": 10
         }
       ],
-      "profile_verified_at": "2026-10-04"
+      "profile_verified_at": "2026-10-04",
+      "troop_power_rank": 2,
+      "troop_power_m": 210.4,
+      "governor_gear_rank": 1,
+      "governor_gear_m": 13.4,
+      "governor_charm_rank": 1,
+      "governor_charm_m": 12.8,
+      "hero_no_equip_rank": 2,
+      "hero_no_equip_m": 20.1,
+      "hero_equip_rank": 2,
+      "hero_equip_m": 24.8,
+      "pet_power_rank": 13,
+      "pet_power_m": 7.8,
+      "research_rank": 14,
+      "research_m": 4.7,
+      "town_center_level": 55,
+      "profile_type": "All-round powerhouse",
+      "metrics_verified_at": "2026-10-04"
     },
     {
       "personal_power_rank": 2,
       "player_name": "Dovik",
       "alliance_tag": "LwT",
-      "personal_power_m": 282,
+      "personal_power_m": 281.8,
       "governor_id": "295459962",
       "alliance_rank": "R3",
       "alliance_members": 93,
@@ -342,7 +382,7 @@
       "migrant_score": 456998,
       "migrant_rank": 16,
       "mystic_total": 1101,
-      "mystic_rank": 29,
+      "mystic_rank": 28,
       "shield": "No shield",
       "burn": "Not burning",
       "location": {
@@ -386,7 +426,20 @@
           "widget_level": 8
         }
       ],
-      "profile_verified_at": "2026-10-04"
+      "profile_verified_at": "2026-10-04",
+      "troop_power_rank": 1,
+      "troop_power_m": 212.6,
+      "governor_gear_rank": 28,
+      "governor_gear_m": 8.5,
+      "governor_charm_rank": 19,
+      "governor_charm_m": 8.6,
+      "hero_no_equip_rank": 20,
+      "hero_no_equip_m": 16.9,
+      "hero_equip_rank": 17,
+      "hero_equip_m": 9.9,
+      "town_center_level": 55,
+      "profile_type": "Troop-heavy whale",
+      "metrics_verified_at": "2026-10-04"
     },
     {
       "personal_power_rank": 3,
@@ -439,7 +492,24 @@
           "widget_level": 10
         }
       ],
-      "profile_verified_at": "2026-10-04"
+      "profile_verified_at": "2026-10-04",
+      "troop_power_rank": 3,
+      "troop_power_m": 163.7,
+      "governor_gear_rank": 4,
+      "governor_gear_m": 13.3,
+      "governor_charm_rank": 3,
+      "governor_charm_m": 12.5,
+      "hero_no_equip_rank": 5,
+      "hero_no_equip_m": 19.2,
+      "hero_equip_rank": 3,
+      "hero_equip_m": 24,
+      "pet_power_rank": 3,
+      "pet_power_m": 9.2,
+      "research_rank": 6,
+      "research_m": 5.1,
+      "town_center_level": 55,
+      "profile_type": "Balanced elite combat account",
+      "metrics_verified_at": "2026-10-04"
     },
     {
       "personal_power_rank": 4,
@@ -494,13 +564,30 @@
           "widget_level": 10
         }
       ],
-      "profile_verified_at": "2026-10-04"
+      "profile_verified_at": "2026-10-04",
+      "troop_power_rank": 9,
+      "troop_power_m": 134.7,
+      "governor_gear_rank": 3,
+      "governor_gear_m": 13.3,
+      "governor_charm_rank": 2,
+      "governor_charm_m": 12.7,
+      "hero_no_equip_rank": 1,
+      "hero_no_equip_m": 20.2,
+      "hero_equip_rank": 1,
+      "hero_equip_m": 28.3,
+      "pet_power_rank": 1,
+      "pet_power_m": 12.6,
+      "research_rank": 1,
+      "research_m": 6.4,
+      "town_center_level": 45,
+      "profile_type": "Permanent-power monster",
+      "metrics_verified_at": "2026-10-04"
     },
     {
       "personal_power_rank": 5,
       "player_name": "Inigo Montoya",
       "alliance_tag": "007",
-      "personal_power_m": 245.1,
+      "personal_power_m": 244.8,
       "alliance_rank": "R4",
       "alliance_members": 88,
       "castle": "TG5",
@@ -548,37 +635,139 @@
           "widget_level": 10
         }
       ],
-      "profile_verified_at": "2026-10-04"
+      "profile_verified_at": "2026-10-04",
+      "troop_power_rank": 6,
+      "troop_power_m": 153.6,
+      "governor_gear_rank": 10,
+      "governor_gear_m": 10.9,
+      "governor_charm_rank": 4,
+      "governor_charm_m": 11.5,
+      "hero_no_equip_rank": 3,
+      "hero_no_equip_m": 19.9,
+      "hero_equip_rank": 5,
+      "hero_equip_m": 16.8,
+      "pet_power_rank": 8,
+      "pet_power_m": 8.3,
+      "research_rank": 5,
+      "research_m": 5.2,
+      "town_center_level": 55,
+      "profile_type": "High-value balanced threat",
+      "metrics_verified_at": "2026-10-04"
     },
     {
+      "player_name": "CoCo sNOW",
       "personal_power_rank": 6,
-      "player_name": "CoCo SNOW",
-      "alliance_tag": "LwT",
-      "personal_power_m": 241.2
+      "personal_power_m": 241.3,
+      "troop_power_rank": 4,
+      "troop_power_m": 159.1,
+      "governor_gear_rank": 13,
+      "governor_gear_m": 10.5,
+      "governor_charm_rank": 8,
+      "governor_charm_m": 10,
+      "hero_no_equip_rank": 6,
+      "hero_no_equip_m": 18.4,
+      "hero_equip_rank": 8,
+      "hero_equip_m": 12.5,
+      "pet_power_rank": 4,
+      "pet_power_m": 9.1,
+      "mystic_rank": 10,
+      "mystic_total": 1421,
+      "town_center_level": 55,
+      "profile_type": "Balanced secondary elite",
+      "metrics_verified_at": "2026-10-04"
     },
     {
       "personal_power_rank": 7,
       "player_name": "Applerari",
       "alliance_tag": "LwT",
-      "personal_power_m": 233.5
+      "personal_power_m": 233.4,
+      "troop_power_rank": 5,
+      "troop_power_m": 155.6,
+      "governor_gear_rank": 17,
+      "governor_gear_m": 9.8,
+      "governor_charm_rank": 16,
+      "governor_charm_m": 9.2,
+      "hero_no_equip_rank": 15,
+      "hero_no_equip_m": 17.2,
+      "hero_equip_rank": 12,
+      "hero_equip_m": 11.7,
+      "pet_power_rank": 12,
+      "pet_power_m": 7.8,
+      "research_rank": 20,
+      "research_m": 4.6,
+      "mystic_rank": 21,
+      "mystic_total": 1173,
+      "town_center_level": 55,
+      "profile_type": "Troop-forward secondary threat",
+      "metrics_verified_at": "2026-10-04"
     },
     {
+      "player_name": "iSureHopeItDoes",
       "personal_power_rank": 8,
-      "player_name": "Ashybeeeee",
-      "alliance_tag": "007",
-      "personal_power_m": 230
+      "personal_power_m": 229.5,
+      "governor_gear_rank": 12,
+      "governor_gear_m": 10.6,
+      "governor_charm_rank": 12,
+      "governor_charm_m": 9.6,
+      "hero_no_equip_rank": 4,
+      "hero_no_equip_m": 19.3,
+      "hero_equip_rank": 7,
+      "hero_equip_m": 13.5,
+      "pet_power_rank": 2,
+      "pet_power_m": 10.7,
+      "research_rank": 4,
+      "research_m": 5.2,
+      "mystic_rank": 7,
+      "mystic_total": 1479,
+      "town_center_level": 55,
+      "profile_type": "Development-heavy elite",
+      "metrics_verified_at": "2026-10-04"
     },
     {
       "personal_power_rank": 9,
       "player_name": "Psychostick0",
       "alliance_tag": "CMR",
-      "personal_power_m": 225.5
+      "personal_power_m": 224.1,
+      "troop_power_rank": 11,
+      "troop_power_m": 130.1,
+      "governor_gear_rank": 2,
+      "governor_gear_m": 13.4,
+      "governor_charm_rank": 7,
+      "governor_charm_m": 10.7,
+      "hero_no_equip_rank": 8,
+      "hero_no_equip_m": 17.9,
+      "hero_equip_rank": 4,
+      "hero_equip_m": 17,
+      "pet_power_rank": 6,
+      "pet_power_m": 8.5,
+      "research_rank": 3,
+      "research_m": 5.5,
+      "mystic_rank": 4,
+      "mystic_total": 1608,
+      "town_center_level": 55,
+      "profile_type": "Underrated permanent-power threat",
+      "metrics_verified_at": "2026-10-04"
     },
     {
       "personal_power_rank": 10,
       "player_name": "KIA BONGO³",
       "alliance_tag": "LwT",
-      "personal_power_m": 219.1
+      "personal_power_m": 218.9,
+      "troop_power_rank": 7,
+      "troop_power_m": 150.1,
+      "governor_gear_rank": 16,
+      "governor_gear_m": 10,
+      "governor_charm_rank": 18,
+      "governor_charm_m": 8.6,
+      "hero_no_equip_rank": 17,
+      "hero_no_equip_m": 17.1,
+      "hero_equip_rank": 20,
+      "hero_equip_m": 9.3,
+      "mystic_rank": 18,
+      "mystic_total": 1201,
+      "town_center_level": 55,
+      "profile_type": "Troop-forward high-power account",
+      "metrics_verified_at": "2026-10-04"
     }
   ],
   "opponent_alliance_power_top5": [
@@ -649,12 +838,21 @@
     "home_total_hero_power_top40": "not_persisted_in_current_data_layer",
     "home_companion_power_top40": "not_persisted_in_current_data_layer",
     "home_tg_city_center_top40": "not_persisted_as_a_kingdomwide_top40_in_current_data_layer",
-    "opponent_personal_power": "verified_top40_captured; top10 persisted here",
+    "opponent_personal_power": "verified_top40_captured; top10 persisted",
     "opponent_tg_city_center_top40": "verified",
     "opponent_hero_power_top40": "verified_captured; leader persisted here",
     "opponent_total_hero_power_top40": "verified_captured; leader persisted here",
-    "opponent_mystic_trial_top40": "verified_captured; leader persisted here",
-    "opponent_companion_power_top40": "verified_captured; leader persisted here"
+    "opponent_mystic_trial_top40": "verified_top40_captured; top10 persisted",
+    "opponent_companion_power_top40": "verified_captured; leader persisted here",
+    "opponent_core_10_boards": "verified_top40_screenshots_captured_2026-10-04",
+    "opponent_troop_power": "verified_top40_captured; key top ranks persisted",
+    "opponent_governor_gear_power": "verified_top40_captured; top10 threat cohort persisted",
+    "opponent_governor_charm_power": "verified_top40_captured; top10 threat cohort persisted",
+    "opponent_hero_no_equip": "verified_top40_captured; top10 threat cohort persisted",
+    "opponent_hero_equip": "verified_top40_captured; top10 threat cohort persisted",
+    "opponent_pet_power": "verified_top40_captured; top threat cohort persisted",
+    "opponent_research_power": "verified_top40_captured; top threat cohort persisted",
+    "opponent_town_center_top40": "verified_top40_captured"
   },
   "derived_metrics": {
     "whale_gap_personal_power_m": -21,
@@ -664,5 +862,60 @@
     "top10_mystic_gap": null,
     "top20_mystic_gap": null,
     "data_coverage_percent": null
+  },
+  "opponent_battle_history": [
+    {
+      "date": "2026-09-12",
+      "opponent_kingdom": 1918,
+      "prep_result": "won",
+      "prep_score_for_b": 4.33,
+      "prep_score_against_b": 4.15,
+      "castle_result": "lost",
+      "king": "[LwT] HoRRoRLEGE",
+      "season": 21
+    },
+    {
+      "date": "2026-08-15",
+      "opponent_kingdom": 1932,
+      "prep_result": "lost",
+      "castle_result": "held",
+      "king": "Achilles",
+      "king_alliance": "LwT"
+    },
+    {
+      "date": "2026-07-18",
+      "opponent_kingdom": 1934,
+      "prep_result": "lost",
+      "castle_result": "held",
+      "king": "Greyjoy",
+      "king_alliance": "LwT"
+    },
+    {
+      "date": "2026-06-20",
+      "opponent_kingdom": null,
+      "prep_result": null,
+      "castle_result": "defended",
+      "king": "PerritoPeludo",
+      "king_alliance": "LwT"
+    }
+  ],
+  "strategic_assessment": {
+    "status": "working_tendency",
+    "primary_finding": "Do not treat #1913 as a single-whale kingdom; its danger is distributed across multiple distinct elite profiles.",
+    "threat_order_combat_development": [
+      "Greyjoy",
+      "Achilles",
+      "goo 대박",
+      "Psychostick0",
+      "Dovik"
+    ],
+    "role_tendency": {
+      "NXS": "Castle pressure / synchronized rallies",
+      "MYM": "Prepared counter-rallies",
+      "OoO": "Primary turret control"
+    },
+    "priority_rule": "If Greyjoy or Achilles is leading or holding, treat it as a priority matchup and answer with the strongest prepared counter rather than the next available rally.",
+    "battle_goal": "Deny stable Castle occupation, maintain turret pressure, and force #1913's strongest accounts to react instead of dictate the battle.",
+    "caveat": "Tactical tendency only; attendance, joiner depth, live rally composition and active-player status must be confirmed before battle."
   }
 }
