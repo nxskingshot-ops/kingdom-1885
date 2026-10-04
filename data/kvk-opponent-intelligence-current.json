@@ -1,48 +1,143 @@
 {
-  "version": 1,
-  "status": "prepared-empty",
-  "purpose": "KvK Head-to-Head data contract for True Power Intelligence",
-  "updated_at": null,
+  "version": 2,
+  "status": "active_verified_partial",
+  "purpose": "KvK Head-to-Head data contract for Nexus App Opponent Intelligence",
+  "updated_at": "2026-10-04",
   "home_kingdom": 1885,
-  "opponent_kingdom": null,
-  "comparison_levels": [
-    1,
-    3,
-    5,
-    10,
-    20
-  ],
-  "required_player_fields": [
-    "player_name",
-    "alliance_tag",
-    "total_power",
-    "true_power",
-    "mystic_total",
-    "governor_gear",
-    "governor_charms",
-    "research",
-    "hero_power",
-    "pet_power",
-    "tg_level"
-  ],
-  "home_players": [],
-  "opponent_players": [],
-  "derived_metrics": {
-    "whale_gap": null,
-    "top5_gap": null,
-    "depth_drop_after_top5": null,
-    "top1_share_of_top10": null,
-    "top5_share_of_top20": null,
-    "likely_rally_leads_home": null,
-    "likely_rally_leads_opponent": null,
-    "lead_alliance_concentration": null,
-    "data_coverage_percent": 0
-  },
+  "opponent_kingdom": 1913,
+  "comparison_levels": [1, 3, 5, 10, 20],
   "rules": [
+    "Compare only identical in-game metrics between kingdoms.",
     "Do not estimate missing values.",
-    "Total Power is context only, not the primary True Power measure.",
-    "Do not classify danger by a fixed percentage threshold without evidence.",
-    "Mega-whale analysis is separate from kingdom depth analysis.",
-    "Keep live/frozen Nexus App layouts unchanged until explicit integration approval."
-  ]
+    "Do not substitute public Real Power for in-game Personal Power.",
+    "Total Power is context only, not a substitute for Mystic Trial, Hero Power, Companion Power or TG/City Center.",
+    "Whale analysis is separate from kingdom-depth analysis.",
+    "Keep approved Nexus App layouts unchanged; this file is data-layer only."
+  ],
+  "sources": {
+    "home_mystic": {
+      "snapshot_date": "2026-09-29",
+      "source": "Supabase public.mystic_trial_observations",
+      "scope": "Verified in-game Mystic Trial leaderboards"
+    },
+    "home_power_references": {
+      "snapshot_date": "2026-09-29",
+      "source": "Supabase public.mystic_trial_power_references",
+      "scope": "Verified roster power references linked to Mystic Trial players"
+    },
+    "home_alliance_structure": {
+      "snapshot_date": "2026-10-02",
+      "source": "preview/data/imports/four_alliance_roster_2026-10-02.review.json",
+      "scope": "Complete aggregate roster transcription for NXS, FRA, OoO and MYM"
+    },
+    "opponent_verified_snapshot": {
+      "snapshot_date": "2026-10-04",
+      "source": "preview/kvk-enemy-1913.html",
+      "scope": "Verified in-game #1913 ranking screens"
+    }
+  },
+  "home_summary": {
+    "main_alliances": [
+      {"alliance_tag":"NXS","members":96,"total_power_m":11498.4,"tg_castles":89},
+      {"alliance_tag":"OoO","members":100,"total_power_m":9833.6,"tg_castles":67},
+      {"alliance_tag":"MYM","members":99,"total_power_m":9041.8,"tg_castles":62},
+      {"alliance_tag":"FRA","members":99,"total_power_m":7752.6,"tg_castles":44}
+    ],
+    "main_alliance_totals": {
+      "members": 394,
+      "total_power_m": 38126.4,
+      "tg_castles": 262
+    },
+    "mystic_trial": {
+      "leader": {"player_name":"Indy Tao","alliance_tag":"OoO","mystic_total":1855},
+      "top5_sum": 8140,
+      "top10_sum": 15037,
+      "top20_sum": 27608
+    }
+  },
+  "opponent_summary": {
+    "strongest_alliance": {"alliance_tag":"YCP","alliance_name":"Winners","total_power_m":10571},
+    "top5_alliance_power_m": 41750,
+    "strongest_player": {"player_name":"goo 대박","alliance_tag":"YCP","personal_power_m":315.8},
+    "top5_personal_power_m": 1356.8,
+    "top10_personal_power_m": 2506.1,
+    "city_center_top40": {"TG5":15,"TG4":18,"TG3":7},
+    "mystic_trial_leader": {"player_name":"Greyjoy","alliance_tag":"LwT","mystic_total":1794},
+    "hero_power_leader": {"player_name":"Greyjoy","alliance_tag":"LwT","hero_power_m":11.947},
+    "total_hero_power_leader": {"player_name":"Greyjoy","alliance_tag":"LwT","total_hero_power_m":48.537},
+    "companion_power_leader": {"player_name":"Greyjoy","alliance_tag":"LwT","companion_power_m":12.598}
+  },
+  "home_players": [
+    {"mystic_rank":1,"player_name":"Indy Tao","alliance_tag":"OoO","mystic_total":1855,"total_power_m":336.8,"castle":"TG5"},
+    {"mystic_rank":2,"player_name":"Lothlorien","alliance_tag":"MYM","mystic_total":1651,"total_power_m":229.8,"castle":"TG4"},
+    {"mystic_rank":3,"player_name":"MrMoe","alliance_tag":"NXS","mystic_total":1615},
+    {"mystic_rank":4,"player_name":"Merlin Murphy","alliance_tag":null,"mystic_total":1522},
+    {"mystic_rank":5,"player_name":"A_S_S_A_U_L_T","alliance_tag":"NXS","mystic_total":1497},
+    {"mystic_rank":6,"player_name":"KomaR","alliance_tag":"NXS","mystic_total":1482},
+    {"mystic_rank":7,"player_name":"Strife305","alliance_tag":"MYM","mystic_total":1437,"total_power_m":162.7,"castle":"TG5"},
+    {"mystic_rank":8,"player_name":"hanuthai","alliance_tag":"NXS","mystic_total":1358},
+    {"mystic_rank":9,"player_name":"Sigismund","alliance_tag":"OoO","mystic_total":1320,"total_power_m":199.2,"castle":"TG4"},
+    {"mystic_rank":10,"player_name":"Theodork","alliance_tag":"MYM","mystic_total":1300},
+    {"mystic_rank":11,"player_name":"MOOSE","alliance_tag":"MYM","mystic_total":1299,"total_power_m":191.2,"castle":"TG5"},
+    {"mystic_rank":12,"player_name":"Power_Angler","alliance_tag":"MYM","mystic_total":1283,"total_power_m":142.8,"castle":"TG3","identity_note":"Provisional roster identity match; decorative prefix differs from trial display"},
+    {"mystic_rank":13,"player_name":"MonaWPolishWitch","alliance_tag":"FRA","mystic_total":1282,"total_power_m":176.7,"castle":"TG5"},
+    {"mystic_rank":14,"player_name":"Joerogan","alliance_tag":"RKD","mystic_total":1279},
+    {"mystic_rank":15,"player_name":"Ziggy96","alliance_tag":"NXS","mystic_total":1273},
+    {"mystic_rank":16,"player_name":"CatDragon1015","alliance_tag":"NXS","mystic_total":1259},
+    {"mystic_rank":17,"player_name":"1234","alliance_tag":"AXL","mystic_total":1256},
+    {"mystic_rank":18,"player_name":"EriktheRed","alliance_tag":"NXS","mystic_total":1233},
+    {"mystic_rank":19,"player_name":"Mibu D Teranga","alliance_tag":"RKD","mystic_total":1221},
+    {"mystic_rank":20,"player_name":"Linus","alliance_tag":"NXS","mystic_total":1186}
+  ],
+  "opponent_players": [
+    {"personal_power_rank":1,"player_name":"goo 대박","alliance_tag":"YCP","personal_power_m":315.8},
+    {"personal_power_rank":2,"player_name":"Dovik","alliance_tag":"LwT","personal_power_m":282.0},
+    {"personal_power_rank":3,"player_name":"Achilles","alliance_tag":"LwT","personal_power_m":268.6},
+    {"personal_power_rank":4,"player_name":"Greyjoy","alliance_tag":"LwT","personal_power_m":245.5,"mystic_total":1794,"hero_power_m":11.947,"total_hero_power_m":48.537,"companion_power_m":12.598},
+    {"personal_power_rank":5,"player_name":"Inigo Montoya","alliance_tag":"007","personal_power_m":244.9},
+    {"personal_power_rank":6,"player_name":"CoCo SNOW","alliance_tag":"LwT","personal_power_m":241.2},
+    {"personal_power_rank":7,"player_name":"Applerari","alliance_tag":"LwT","personal_power_m":233.5},
+    {"personal_power_rank":8,"player_name":"Ashybeeeee","alliance_tag":"007","personal_power_m":230.0},
+    {"personal_power_rank":9,"player_name":"Psychostick0","alliance_tag":"CMR","personal_power_m":225.5},
+    {"personal_power_rank":10,"player_name":"KIA BONGO³","alliance_tag":"LwT","personal_power_m":219.1}
+  ],
+  "opponent_alliance_power_top5": [
+    {"rank":1,"alliance_tag":"YCP","alliance_name":"Winners","total_power_m":10571},
+    {"rank":2,"alliance_tag":"LwT","alliance_name":"Lowertz","total_power_m":10472},
+    {"rank":3,"alliance_tag":"007","alliance_name":"Family","total_power_m":8159},
+    {"rank":4,"alliance_tag":"CMR","alliance_name":"Chimera","total_power_m":7272},
+    {"rank":5,"alliance_tag":"TTN","alliance_name":"TITANS","total_power_m":5276}
+  ],
+  "opponent_alliance_kills_top5_m": [
+    {"rank":1,"alliance_tag":"LwT","kills_m":587.5},
+    {"rank":2,"alliance_tag":"YCP","kills_m":433.2},
+    {"rank":3,"alliance_tag":"007","kills_m":373.3},
+    {"rank":4,"alliance_tag":"CMR","kills_m":242.2},
+    {"rank":5,"alliance_tag":"TTN","kills_m":53.7}
+  ],
+  "coverage": {
+    "home_mystic_top20": "verified",
+    "home_mystic_specialist_boards": "verified_top40_boards_in_supabase",
+    "home_alliance_structure": "verified_complete_four_main_alliances_2026-10-02",
+    "home_personal_power_top40": "not_persisted_as_a_kingdomwide_top40_in_current_data_layer",
+    "home_hero_power_top40": "not_persisted_in_current_data_layer",
+    "home_total_hero_power_top40": "not_persisted_in_current_data_layer",
+    "home_companion_power_top40": "not_persisted_in_current_data_layer",
+    "home_tg_city_center_top40": "not_persisted_as_a_kingdomwide_top40_in_current_data_layer",
+    "opponent_personal_power": "verified_top40_captured; top10 persisted here",
+    "opponent_tg_city_center_top40": "verified",
+    "opponent_hero_power_top40": "verified_captured; leader persisted here",
+    "opponent_total_hero_power_top40": "verified_captured; leader persisted here",
+    "opponent_mystic_trial_top40": "verified_captured; leader persisted here",
+    "opponent_companion_power_top40": "verified_captured; leader persisted here"
+  },
+  "derived_metrics": {
+    "whale_gap_personal_power_m": -21.0,
+    "top5_personal_power_gap_m": null,
+    "top10_personal_power_gap_m": null,
+    "top5_mystic_gap": null,
+    "top10_mystic_gap": null,
+    "top20_mystic_gap": null,
+    "data_coverage_percent": null
+  }
 }
