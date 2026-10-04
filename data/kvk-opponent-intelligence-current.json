@@ -5,7 +5,13 @@
   "updated_at": "2026-10-04",
   "home_kingdom": 1885,
   "opponent_kingdom": 1913,
-  "comparison_levels": [1, 3, 5, 10, 20],
+  "comparison_levels": [
+    1,
+    3,
+    5,
+    10,
+    20
+  ],
   "rules": [
     "Compare only identical in-game metrics between kingdoms.",
     "Do not estimate missing values.",
@@ -34,14 +40,39 @@
       "snapshot_date": "2026-10-04",
       "source": "preview/kvk-enemy-1913.html",
       "scope": "Verified in-game #1913 ranking screens"
+    },
+    "opponent_player_profiles": {
+      "snapshot_date": "2026-10-04",
+      "source": "User-provided live player profile screenshots",
+      "scope": "Verified profile details for goo 대박 and Dovik"
     }
   },
   "home_summary": {
     "main_alliances": [
-      {"alliance_tag":"NXS","members":96,"total_power_m":11498.4,"tg_castles":89},
-      {"alliance_tag":"OoO","members":100,"total_power_m":9833.6,"tg_castles":67},
-      {"alliance_tag":"MYM","members":99,"total_power_m":9041.8,"tg_castles":62},
-      {"alliance_tag":"FRA","members":99,"total_power_m":7752.6,"tg_castles":44}
+      {
+        "alliance_tag": "NXS",
+        "members": 96,
+        "total_power_m": 11498.4,
+        "tg_castles": 89
+      },
+      {
+        "alliance_tag": "OoO",
+        "members": 100,
+        "total_power_m": 9833.6,
+        "tg_castles": 67
+      },
+      {
+        "alliance_tag": "MYM",
+        "members": 99,
+        "total_power_m": 9041.8,
+        "tg_castles": 62
+      },
+      {
+        "alliance_tag": "FRA",
+        "members": 99,
+        "total_power_m": 7752.6,
+        "tg_castles": 44
+      }
     ],
     "main_alliance_totals": {
       "members": 394,
@@ -49,71 +80,425 @@
       "tg_castles": 262
     },
     "mystic_trial": {
-      "leader": {"player_name":"Indy Tao","alliance_tag":"OoO","mystic_total":1855},
+      "leader": {
+        "player_name": "Indy Tao",
+        "alliance_tag": "OoO",
+        "mystic_total": 1855
+      },
       "top5_sum": 8140,
       "top10_sum": 15037,
       "top20_sum": 27608
     }
   },
   "opponent_summary": {
-    "strongest_alliance": {"alliance_tag":"YCP","alliance_name":"Winners","total_power_m":10571},
+    "strongest_alliance": {
+      "alliance_tag": "YCP",
+      "alliance_name": "Winners",
+      "total_power_m": 10571
+    },
     "top5_alliance_power_m": 41750,
-    "strongest_player": {"player_name":"goo 대박","alliance_tag":"YCP","personal_power_m":315.8},
+    "strongest_player": {
+      "player_name": "goo 대박",
+      "alliance_tag": "YCP",
+      "personal_power_m": 315.8
+    },
     "top5_personal_power_m": 1356.8,
     "top10_personal_power_m": 2506.1,
-    "city_center_top40": {"TG5":15,"TG4":18,"TG3":7},
-    "mystic_trial_leader": {"player_name":"Greyjoy","alliance_tag":"LwT","mystic_total":1794},
-    "hero_power_leader": {"player_name":"Greyjoy","alliance_tag":"LwT","hero_power_m":11.947},
-    "total_hero_power_leader": {"player_name":"Greyjoy","alliance_tag":"LwT","total_hero_power_m":48.537},
-    "companion_power_leader": {"player_name":"Greyjoy","alliance_tag":"LwT","companion_power_m":12.598}
+    "city_center_top40": {
+      "TG5": 15,
+      "TG4": 18,
+      "TG3": 7
+    },
+    "mystic_trial_leader": {
+      "player_name": "Greyjoy",
+      "alliance_tag": "LwT",
+      "mystic_total": 1794
+    },
+    "hero_power_leader": {
+      "player_name": "Greyjoy",
+      "alliance_tag": "LwT",
+      "hero_power_m": 11.947
+    },
+    "total_hero_power_leader": {
+      "player_name": "Greyjoy",
+      "alliance_tag": "LwT",
+      "total_hero_power_m": 48.537
+    },
+    "companion_power_leader": {
+      "player_name": "Greyjoy",
+      "alliance_tag": "LwT",
+      "companion_power_m": 12.598
+    }
   },
   "home_players": [
-    {"mystic_rank":1,"player_name":"Indy Tao","alliance_tag":"OoO","mystic_total":1855,"total_power_m":336.8,"castle":"TG5"},
-    {"mystic_rank":2,"player_name":"Lothlorien","alliance_tag":"MYM","mystic_total":1651,"total_power_m":229.8,"castle":"TG4"},
-    {"mystic_rank":3,"player_name":"MrMoe","alliance_tag":"NXS","mystic_total":1615},
-    {"mystic_rank":4,"player_name":"Merlin Murphy","alliance_tag":null,"mystic_total":1522},
-    {"mystic_rank":5,"player_name":"A_S_S_A_U_L_T","alliance_tag":"NXS","mystic_total":1497},
-    {"mystic_rank":6,"player_name":"KomaR","alliance_tag":"NXS","mystic_total":1482},
-    {"mystic_rank":7,"player_name":"Strife305","alliance_tag":"MYM","mystic_total":1437,"total_power_m":162.7,"castle":"TG5"},
-    {"mystic_rank":8,"player_name":"hanuthai","alliance_tag":"NXS","mystic_total":1358},
-    {"mystic_rank":9,"player_name":"Sigismund","alliance_tag":"OoO","mystic_total":1320,"total_power_m":199.2,"castle":"TG4"},
-    {"mystic_rank":10,"player_name":"Theodork","alliance_tag":"MYM","mystic_total":1300},
-    {"mystic_rank":11,"player_name":"MOOSE","alliance_tag":"MYM","mystic_total":1299,"total_power_m":191.2,"castle":"TG5"},
-    {"mystic_rank":12,"player_name":"Power_Angler","alliance_tag":"MYM","mystic_total":1283,"total_power_m":142.8,"castle":"TG3","identity_note":"Provisional roster identity match; decorative prefix differs from trial display"},
-    {"mystic_rank":13,"player_name":"MonaWPolishWitch","alliance_tag":"FRA","mystic_total":1282,"total_power_m":176.7,"castle":"TG5"},
-    {"mystic_rank":14,"player_name":"Joerogan","alliance_tag":"RKD","mystic_total":1279},
-    {"mystic_rank":15,"player_name":"Ziggy96","alliance_tag":"NXS","mystic_total":1273},
-    {"mystic_rank":16,"player_name":"CatDragon1015","alliance_tag":"NXS","mystic_total":1259},
-    {"mystic_rank":17,"player_name":"1234","alliance_tag":"AXL","mystic_total":1256},
-    {"mystic_rank":18,"player_name":"EriktheRed","alliance_tag":"NXS","mystic_total":1233},
-    {"mystic_rank":19,"player_name":"Mibu D Teranga","alliance_tag":"RKD","mystic_total":1221},
-    {"mystic_rank":20,"player_name":"Linus","alliance_tag":"NXS","mystic_total":1186}
+    {
+      "mystic_rank": 1,
+      "player_name": "Indy Tao",
+      "alliance_tag": "OoO",
+      "mystic_total": 1855,
+      "total_power_m": 336.8,
+      "castle": "TG5"
+    },
+    {
+      "mystic_rank": 2,
+      "player_name": "Lothlorien",
+      "alliance_tag": "MYM",
+      "mystic_total": 1651,
+      "total_power_m": 229.8,
+      "castle": "TG4"
+    },
+    {
+      "mystic_rank": 3,
+      "player_name": "MrMoe",
+      "alliance_tag": "NXS",
+      "mystic_total": 1615
+    },
+    {
+      "mystic_rank": 4,
+      "player_name": "Merlin Murphy",
+      "alliance_tag": null,
+      "mystic_total": 1522
+    },
+    {
+      "mystic_rank": 5,
+      "player_name": "A_S_S_A_U_L_T",
+      "alliance_tag": "NXS",
+      "mystic_total": 1497
+    },
+    {
+      "mystic_rank": 6,
+      "player_name": "KomaR",
+      "alliance_tag": "NXS",
+      "mystic_total": 1482
+    },
+    {
+      "mystic_rank": 7,
+      "player_name": "Strife305",
+      "alliance_tag": "MYM",
+      "mystic_total": 1437,
+      "total_power_m": 162.7,
+      "castle": "TG5"
+    },
+    {
+      "mystic_rank": 8,
+      "player_name": "hanuthai",
+      "alliance_tag": "NXS",
+      "mystic_total": 1358
+    },
+    {
+      "mystic_rank": 9,
+      "player_name": "Sigismund",
+      "alliance_tag": "OoO",
+      "mystic_total": 1320,
+      "total_power_m": 199.2,
+      "castle": "TG4"
+    },
+    {
+      "mystic_rank": 10,
+      "player_name": "Theodork",
+      "alliance_tag": "MYM",
+      "mystic_total": 1300
+    },
+    {
+      "mystic_rank": 11,
+      "player_name": "MOOSE",
+      "alliance_tag": "MYM",
+      "mystic_total": 1299,
+      "total_power_m": 191.2,
+      "castle": "TG5"
+    },
+    {
+      "mystic_rank": 12,
+      "player_name": "Power_Angler",
+      "alliance_tag": "MYM",
+      "mystic_total": 1283,
+      "total_power_m": 142.8,
+      "castle": "TG3",
+      "identity_note": "Provisional roster identity match; decorative prefix differs from trial display"
+    },
+    {
+      "mystic_rank": 13,
+      "player_name": "MonaWPolishWitch",
+      "alliance_tag": "FRA",
+      "mystic_total": 1282,
+      "total_power_m": 176.7,
+      "castle": "TG5"
+    },
+    {
+      "mystic_rank": 14,
+      "player_name": "Joerogan",
+      "alliance_tag": "RKD",
+      "mystic_total": 1279
+    },
+    {
+      "mystic_rank": 15,
+      "player_name": "Ziggy96",
+      "alliance_tag": "NXS",
+      "mystic_total": 1273
+    },
+    {
+      "mystic_rank": 16,
+      "player_name": "CatDragon1015",
+      "alliance_tag": "NXS",
+      "mystic_total": 1259
+    },
+    {
+      "mystic_rank": 17,
+      "player_name": "1234",
+      "alliance_tag": "AXL",
+      "mystic_total": 1256
+    },
+    {
+      "mystic_rank": 18,
+      "player_name": "EriktheRed",
+      "alliance_tag": "NXS",
+      "mystic_total": 1233
+    },
+    {
+      "mystic_rank": 19,
+      "player_name": "Mibu D Teranga",
+      "alliance_tag": "RKD",
+      "mystic_total": 1221
+    },
+    {
+      "mystic_rank": 20,
+      "player_name": "Linus",
+      "alliance_tag": "NXS",
+      "mystic_total": 1186
+    }
   ],
   "opponent_players": [
-    {"personal_power_rank":1,"player_name":"goo 대박","alliance_tag":"YCP","personal_power_m":315.8},
-    {"personal_power_rank":2,"player_name":"Dovik","alliance_tag":"LwT","personal_power_m":282.0},
-    {"personal_power_rank":3,"player_name":"Achilles","alliance_tag":"LwT","personal_power_m":268.6},
-    {"personal_power_rank":4,"player_name":"Greyjoy","alliance_tag":"LwT","personal_power_m":245.5,"mystic_total":1794,"hero_power_m":11.947,"total_hero_power_m":48.537,"companion_power_m":12.598},
-    {"personal_power_rank":5,"player_name":"Inigo Montoya","alliance_tag":"007","personal_power_m":244.9},
-    {"personal_power_rank":6,"player_name":"CoCo SNOW","alliance_tag":"LwT","personal_power_m":241.2},
-    {"personal_power_rank":7,"player_name":"Applerari","alliance_tag":"LwT","personal_power_m":233.5},
-    {"personal_power_rank":8,"player_name":"Ashybeeeee","alliance_tag":"007","personal_power_m":230.0},
-    {"personal_power_rank":9,"player_name":"Psychostick0","alliance_tag":"CMR","personal_power_m":225.5},
-    {"personal_power_rank":10,"player_name":"KIA BONGO³","alliance_tag":"LwT","personal_power_m":219.1}
+    {
+      "personal_power_rank": 1,
+      "player_name": "goo 대박",
+      "alliance_tag": "YCP",
+      "personal_power_m": 315.8,
+      "governor_id": "297699930",
+      "alliance_rank": "R4",
+      "alliance_members": 100,
+      "castle": "TG5",
+      "kills_m": 37.8,
+      "kills_rank": 3,
+      "migrant_score": 787998,
+      "migrant_rank": 2,
+      "mystic_total": 1633,
+      "mystic_rank": 3,
+      "shield": "No shield",
+      "burn": "Not burning",
+      "location": {
+        "x": 577,
+        "y": 456
+      },
+      "arena_heroes": [
+        {
+          "slot": 1,
+          "hero": "Amadeus",
+          "stars": "5-Star",
+          "hero_level": 80,
+          "widget_level": 10
+        },
+        {
+          "slot": 2,
+          "hero": "Eric",
+          "stars": "5-Star",
+          "hero_level": 80,
+          "widget_level": 10
+        },
+        {
+          "slot": 3,
+          "hero": "Marlin",
+          "stars": "5-Star",
+          "hero_level": 80,
+          "widget_level": 10
+        },
+        {
+          "slot": 4,
+          "hero": "Petra",
+          "stars": "5-Star",
+          "hero_level": 80,
+          "widget_level": 10
+        },
+        {
+          "slot": 5,
+          "hero": "Jaeger",
+          "stars": "5-Star",
+          "hero_level": 80,
+          "widget_level": 10
+        }
+      ],
+      "profile_verified_at": "2026-10-04"
+    },
+    {
+      "personal_power_rank": 2,
+      "player_name": "Dovik",
+      "alliance_tag": "LwT",
+      "personal_power_m": 282,
+      "governor_id": "295459962",
+      "alliance_rank": "R3",
+      "alliance_members": 93,
+      "castle": "TG5",
+      "kills_m": 6.6,
+      "kills_rank": 95,
+      "migrant_score": 456998,
+      "migrant_rank": 16,
+      "mystic_total": 1101,
+      "mystic_rank": 29,
+      "shield": "No shield",
+      "burn": "Not burning",
+      "location": {
+        "x": 464,
+        "y": 649
+      },
+      "arena_heroes": [
+        {
+          "slot": 1,
+          "hero": "Zoe",
+          "stars": "5-Star",
+          "hero_level": 80,
+          "widget_level": 7
+        },
+        {
+          "slot": 2,
+          "hero": "Petra",
+          "stars": "5-Star",
+          "hero_level": 80,
+          "widget_level": 8
+        },
+        {
+          "slot": 3,
+          "hero": "Hilde",
+          "stars": "5-Star",
+          "hero_level": 80,
+          "widget_level": 6
+        },
+        {
+          "slot": 4,
+          "hero": "Amadeus",
+          "stars": "4-Star (Tier 2)",
+          "hero_level": 80,
+          "widget_level": 10
+        },
+        {
+          "slot": 5,
+          "hero": "Marlin",
+          "stars": "5-Star",
+          "hero_level": 80,
+          "widget_level": 8
+        }
+      ],
+      "profile_verified_at": "2026-10-04"
+    },
+    {
+      "personal_power_rank": 3,
+      "player_name": "Achilles",
+      "alliance_tag": "LwT",
+      "personal_power_m": 268.6
+    },
+    {
+      "personal_power_rank": 4,
+      "player_name": "Greyjoy",
+      "alliance_tag": "LwT",
+      "personal_power_m": 245.5,
+      "mystic_total": 1794,
+      "hero_power_m": 11.947,
+      "total_hero_power_m": 48.537,
+      "companion_power_m": 12.598
+    },
+    {
+      "personal_power_rank": 5,
+      "player_name": "Inigo Montoya",
+      "alliance_tag": "007",
+      "personal_power_m": 244.9
+    },
+    {
+      "personal_power_rank": 6,
+      "player_name": "CoCo SNOW",
+      "alliance_tag": "LwT",
+      "personal_power_m": 241.2
+    },
+    {
+      "personal_power_rank": 7,
+      "player_name": "Applerari",
+      "alliance_tag": "LwT",
+      "personal_power_m": 233.5
+    },
+    {
+      "personal_power_rank": 8,
+      "player_name": "Ashybeeeee",
+      "alliance_tag": "007",
+      "personal_power_m": 230
+    },
+    {
+      "personal_power_rank": 9,
+      "player_name": "Psychostick0",
+      "alliance_tag": "CMR",
+      "personal_power_m": 225.5
+    },
+    {
+      "personal_power_rank": 10,
+      "player_name": "KIA BONGO³",
+      "alliance_tag": "LwT",
+      "personal_power_m": 219.1
+    }
   ],
   "opponent_alliance_power_top5": [
-    {"rank":1,"alliance_tag":"YCP","alliance_name":"Winners","total_power_m":10571},
-    {"rank":2,"alliance_tag":"LwT","alliance_name":"Lowertz","total_power_m":10472},
-    {"rank":3,"alliance_tag":"007","alliance_name":"Family","total_power_m":8159},
-    {"rank":4,"alliance_tag":"CMR","alliance_name":"Chimera","total_power_m":7272},
-    {"rank":5,"alliance_tag":"TTN","alliance_name":"TITANS","total_power_m":5276}
+    {
+      "rank": 1,
+      "alliance_tag": "YCP",
+      "alliance_name": "Winners",
+      "total_power_m": 10571
+    },
+    {
+      "rank": 2,
+      "alliance_tag": "LwT",
+      "alliance_name": "Lowertz",
+      "total_power_m": 10472
+    },
+    {
+      "rank": 3,
+      "alliance_tag": "007",
+      "alliance_name": "Family",
+      "total_power_m": 8159
+    },
+    {
+      "rank": 4,
+      "alliance_tag": "CMR",
+      "alliance_name": "Chimera",
+      "total_power_m": 7272
+    },
+    {
+      "rank": 5,
+      "alliance_tag": "TTN",
+      "alliance_name": "TITANS",
+      "total_power_m": 5276
+    }
   ],
   "opponent_alliance_kills_top5_m": [
-    {"rank":1,"alliance_tag":"LwT","kills_m":587.5},
-    {"rank":2,"alliance_tag":"YCP","kills_m":433.2},
-    {"rank":3,"alliance_tag":"007","kills_m":373.3},
-    {"rank":4,"alliance_tag":"CMR","kills_m":242.2},
-    {"rank":5,"alliance_tag":"TTN","kills_m":53.7}
+    {
+      "rank": 1,
+      "alliance_tag": "LwT",
+      "kills_m": 587.5
+    },
+    {
+      "rank": 2,
+      "alliance_tag": "YCP",
+      "kills_m": 433.2
+    },
+    {
+      "rank": 3,
+      "alliance_tag": "007",
+      "kills_m": 373.3
+    },
+    {
+      "rank": 4,
+      "alliance_tag": "CMR",
+      "kills_m": 242.2
+    },
+    {
+      "rank": 5,
+      "alliance_tag": "TTN",
+      "kills_m": 53.7
+    }
   ],
   "coverage": {
     "home_mystic_top20": "verified",
@@ -132,7 +517,7 @@
     "opponent_companion_power_top40": "verified_captured; leader persisted here"
   },
   "derived_metrics": {
-    "whale_gap_personal_power_m": -21.0,
+    "whale_gap_personal_power_m": -21,
     "top5_personal_power_gap_m": null,
     "top10_personal_power_gap_m": null,
     "top5_mystic_gap": null,
