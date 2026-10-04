@@ -3,173 +3,246 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#06131f">
+<meta name="theme-color" content="#03111b">
 <link rel="manifest" href="../nexus-app-2.webmanifest">
-<title>Nexus App 2.0 — Master Command Center</title>
+<title>Nexus App — KvK Command</title>
 <style>
 :root{
- --bg:#03111b;--panel:#071c2d;--panel2:#0a263a;--gold:#e9bf59;--gold2:#ffe08a;
- --blue:#2a8de7;--blue2:#55b7ff;--red:#d72f42;--red2:#ff596a;--text:#f3f6fa;
- --muted:#a6bdd1;--line:#1f5e8b;--lineGold:#8e6a24;--shadow:0 16px 36px rgba(0,0,0,.42);
+  --navy0:#020914;--navy1:#04111d;--navy2:#061c2c;--navy3:#0b2a40;
+  --gold:#d5a83c;--gold2:#f6d36b;--gold3:#fff0a2;
+  --blue:#1f7fd0;--blue2:#49aef5;--red:#c72436;--red2:#ff4b5d;
+  --line:#1b567e;--line2:#2a729f;--text:#f2f5f8;--muted:#9cb2c5;
+  --panel:linear-gradient(180deg,#082339 0%,#051827 100%);
 }
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:radial-gradient(circle at 50% -15%,#14314a,#07121d 40%,#02080d 100%);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#020914;color:var(--text);font-family:"Arial Narrow",Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+body{overflow-x:hidden}
 button{font:inherit;color:inherit}
-.app{min-height:100vh;display:grid;grid-template-rows:104px 1fr}
+.master{
+  width:min(1280px,100vw);min-height:1280px;margin:0 auto;position:relative;
+  background:
+    radial-gradient(circle at 56% -12%,rgba(50,104,139,.24),transparent 32%),
+    linear-gradient(180deg,#051420 0,#03101a 100%);
+  border-left:1px solid rgba(208,162,52,.55);border-right:1px solid rgba(208,162,52,.55)
+}
+/* HEADER */
 .topbar{
- position:sticky;top:0;z-index:30;display:grid;grid-template-columns:150px 1fr 250px 180px;align-items:center;
- border-bottom:2px solid var(--gold);background:
- linear-gradient(90deg,rgba(3,13,21,.96),rgba(3,13,21,.58),rgba(3,13,21,.85)),
- url('../assets/nexus-banner-1885.png') center 46%/cover no-repeat;
- box-shadow:0 8px 22px rgba(0,0,0,.45)
+  height:102px;position:sticky;top:0;z-index:50;display:grid;grid-template-columns:168px minmax(280px,1fr) 360px 230px;align-items:center;
+  background:
+    linear-gradient(90deg,rgba(1,8,14,.86),rgba(1,8,14,.33) 38%,rgba(1,8,14,.3) 67%,rgba(1,8,14,.74)),
+    url('../assets/nexus-banner-1885.png') center 46%/cover no-repeat;
+  border-bottom:2px solid var(--gold);box-shadow:0 6px 20px #000a
 }
-.brand-crest{height:100%;display:grid;place-items:center;border-right:1px solid rgba(233,191,89,.45)}
-.brand-crest img{width:92px;height:92px;object-fit:contain;filter:drop-shadow(0 4px 8px #000)}
-.brand-copy{padding-left:20px;text-shadow:0 3px 10px #000}
-.brand-copy h1{font:700 42px Georgia,serif;color:#f5cf70;margin:0;letter-spacing:.02em}
-.brand-copy p{margin:3px 0 0;color:#f1ce67;font-family:Georgia,serif}
-.crown{
- justify-self:center;min-width:210px;padding:8px 18px;border:1px solid rgba(233,191,89,.72);border-radius:10px;
- background:linear-gradient(180deg,rgba(9,39,60,.94),rgba(4,20,32,.94));text-align:center;color:#f9d770;
- box-shadow:inset 0 0 18px rgba(233,191,89,.12),0 5px 18px #0008
+.crest-zone{height:100%;position:relative;display:grid;place-items:center}
+.crest-zone::after{content:"";position:absolute;right:0;top:8px;bottom:8px;width:1px;background:linear-gradient(transparent,var(--gold),transparent)}
+.crest{
+  width:110px;height:110px;object-fit:contain;filter:drop-shadow(0 4px 5px #000);
+  transform:translateY(16px);z-index:3
 }
-.crown .orn{font-size:24px;letter-spacing:8px}.crown strong{display:block;font:700 38px Georgia,serif;line-height:1.05}
-.top-actions{display:flex;justify-content:flex-end;gap:8px;padding-right:14px}
-.lang{display:flex;border:1px solid #315a79;border-radius:10px;overflow:hidden;background:#061625}.lang button{border:0;background:transparent;padding:10px 12px}.lang .active{background:#0c3a5a}
-.menu{width:44px;height:44px;border:1px solid var(--lineGold);border-radius:10px;background:#0a1b27;color:#f8d66f;font-size:23px}
-.body{display:grid;grid-template-columns:170px 1fr;min-height:0}
-.sidebar{border-right:1px solid rgba(233,191,89,.52);background:linear-gradient(#071522,#04101a);padding:14px 8px;overflow:auto}
-.nav{display:flex;flex-direction:column;gap:7px}.nav button{border:1px solid transparent;background:transparent;text-align:left;padding:12px 10px;border-radius:8px;color:#d7e6f4}
-.nav button .ico{display:inline-block;width:28px;text-align:center;margin-right:6px}.nav button.active{border-color:var(--gold);background:linear-gradient(90deg,rgba(213,161,55,.38),rgba(8,36,54,.88));box-shadow:inset 3px 0 0 var(--gold2),0 0 14px rgba(233,191,89,.16)}
-.nav .divider{height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:7px 0}
-.main{padding:14px;min-width:0}
-.tabs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px}
-.tab{border:1px solid #2a638e;border-radius:8px;background:linear-gradient(180deg,#0c2f48,#081b2a);padding:13px 16px;text-align:center}
-.tab.active{border-color:var(--gold);box-shadow:inset 0 0 16px rgba(233,191,89,.12),0 0 12px rgba(233,191,89,.18)}
-.tab b{font-size:21px}.tab small{display:block;color:#a9c0d5;margin-top:3px}
-.frame{border:1px solid #22618f;border-radius:8px;background:linear-gradient(180deg,rgba(7,29,45,.96),rgba(3,17,27,.98));box-shadow:var(--shadow)}
-.frame.gold{border-color:#8c6c28}
-.head{display:flex;align-items:center;gap:10px;padding:9px 11px;border-bottom:1px solid rgba(70,126,164,.42)}
-.head h2,.head h3{margin:0;font-family:Georgia,serif}.head h2{font-size:22px}.head h3{font-size:17px}
-.h2h{padding-bottom:10px}
-.h2h-top{display:grid;grid-template-columns:1fr 70px 1fr 220px;gap:12px;align-items:center;padding:10px}
-.kingdom{display:grid;grid-template-columns:74px 1fr;gap:12px;align-items:center;padding:9px;border:1px solid;border-radius:7px}
-.kingdom.own{border-color:#2d8dde;background:linear-gradient(135deg,#0c4771,#0a2945)}
-.kingdom.enemy{border-color:#a62536;background:linear-gradient(135deg,#5e0f1a,#2b0b13)}
-.kingdom img{width:70px;height:70px;object-fit:contain}.kingdom b{font-size:19px;display:block}.kingdom small{display:block;margin-top:2px}.kingdom strong{display:block;font-size:28px;color:#ffe483;margin-top:3px}.vs{text-align:center;font:700 30px Georgia,serif;color:#f3d171}
-.statusbox{border:1px solid #27638e;border-radius:7px;padding:8px;background:#082238;font-size:11px;line-height:1.55}.statusbox .ok{color:#65e8ae;font-weight:700}
-.cards4{display:grid;grid-template-columns:1.25fr 1.05fr 1.1fr 1.05fr;gap:10px;padding:0 10px 10px}
-.card{border:1px solid #27638e;border-radius:8px;background:linear-gradient(180deg,#082239,#061927);overflow:hidden}.card.red{border-color:#8c3342}.card .title{padding:9px 10px;border-bottom:1px solid rgba(70,126,164,.42);font-weight:800}
-.whales{display:grid;grid-template-columns:1fr 1fr}.whale{padding:11px;text-align:center}.whale+ .whale{border-left:1px solid #234e6c}.whale .avatar{width:72px;height:72px;margin:8px auto;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle,#193b56,#05111d);border:1px solid #5c7690;font-size:34px}.whale strong{display:block;font-size:17px}.whale.own strong,.whale.own .val{color:#72e1a6}.whale.enemy strong,.whale.enemy .val{color:#ff6471}.statrow{display:flex;justify-content:space-between;gap:8px;padding:4px 10px;border-top:1px solid rgba(54,96,126,.36);font-size:12px}
-.depth-tabs{display:flex;gap:4px;padding:8px}.depth-tabs button{flex:1;border:1px solid #285d82;background:#071d2d;border-radius:5px;padding:5px;font-size:11px}.depth-tabs .active{border-color:#f1c75e;background:linear-gradient(#ffdd7c,#c88e26);color:#16202a;font-weight:800}
-.metricbar{padding:6px 10px}.metricbar .lab{font-size:11px;margin-bottom:4px}.barpair{display:grid;grid-template-columns:1fr 1fr;gap:6px}.bar{height:18px;border:1px solid #2a5d80;background:#05131f}.bar i{display:block;height:100%}.bar.blue i{background:linear-gradient(90deg,#1f79cf,#57b1ff)}.bar.red i{background:linear-gradient(90deg,#bb2333,#ff5665)}
-.alltable,.playertable{width:100%;border-collapse:collapse;font-size:10px}.alltable th,.alltable td,.playertable th,.playertable td{padding:5px 6px;border-top:1px solid rgba(52,95,126,.38);text-align:left}.alltable th,.playertable th{color:#9eb6ca}.alltable .ownrow{background:rgba(28,113,176,.12)}.alltable .enemyrow{background:rgba(166,38,54,.12)}
-.watchlist{max-height:360px;overflow:auto}.watch{display:grid;grid-template-columns:24px 1fr 64px;gap:6px;align-items:center;padding:7px 8px;border-top:1px solid rgba(52,95,126,.38);cursor:pointer}.watch:first-child{border-top:0}.watch:hover{background:#0b2940}.watch .rank{color:#f2cf66;font-weight:800}.watch .name{font-weight:800}.watch .sub{font-size:9px;color:#a3b9cd}.watch .pow{text-align:right;color:#f3d66e;font-weight:800}
-.bottom{display:grid;grid-template-columns:1.8fr 1fr;gap:10px;padding:0 10px 10px}.tabs-mini{display:flex;gap:4px;padding:8px}.tabs-mini button{flex:1;border:1px solid #285d82;background:#071d2d;border-radius:5px;padding:6px;font-size:10px}.tabs-mini .active{border-color:#f1c75e;background:linear-gradient(#ffdd7c,#c88e26);color:#16202a;font-weight:800}
-.twotables{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 8px 8px}.twotables .ownT{border:1px solid #256e9f;border-radius:6px;overflow:hidden}.twotables .enemyT{border:1px solid #8d3341;border-radius:6px;overflow:hidden}
-.chart{padding:8px}.legend{display:flex;gap:18px;justify-content:center;font-size:10px;color:#a9bfd1;margin:6px 0}.dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:4px}.blueDot{background:#369cf1}.redDot{background:#f04353}.bars{height:180px;display:flex;align-items:flex-end;gap:20px;padding:12px 16px 18px;border-left:1px solid #365978;border-bottom:1px solid #365978}.grp{display:flex;align-items:flex-end;gap:4px;position:relative;flex:1;justify-content:center;height:100%}.col{width:25px;border-radius:4px 4px 0 0}.col.blue{background:linear-gradient(#4db3ff,#1d6fc5)}.col.red{background:linear-gradient(#ff6a76,#c52537)}.grp label{position:absolute;bottom:-17px;font-size:9px;color:#9fb5c9}
-.footer{font-size:9px;color:#7892a6;text-align:right;padding:0 12px 10px}
-.mobile-menu{display:none;position:fixed;inset:0;z-index:70;background:rgba(2,8,13,.88);backdrop-filter:blur(5px);padding:16px}.mobile-menu.open{display:block}.mobile-sheet{height:100%;border:1px solid #8d6d2a;border-radius:12px;background:linear-gradient(#071b2a,#04101a);padding:14px;overflow:auto}.mobile-sheet .nav{margin-top:10px}
-.player-modal{display:none;position:fixed;inset:0;z-index:80;background:#02080dcc;align-items:center;justify-content:center;padding:12px}.player-modal.open{display:flex}.player-card{width:min(760px,100%);max-height:calc(100dvh - 24px);overflow:auto;border:1px solid var(--gold);border-radius:10px;background:linear-gradient(#08243a,#05131f);padding:14px}.player-top{display:flex;gap:10px;align-items:center}.player-top h3{margin:0;color:#f2d06c;font:700 22px Georgia,serif}.player-top button{margin-left:auto;border:1px solid #7e6329;background:#071623;border-radius:8px;width:38px;height:38px}.threat{margin:10px 0;padding:8px;border:1px solid #7d5f2a;border-radius:7px;background:rgba(126,95,42,.2);color:#f1ce69;font-weight:700}.intelgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.ibox{border:1px solid #285b80;border-radius:7px;padding:8px;background:#061725}.ibox small{display:block;color:#8fa7bb}.ibox b{display:block;margin-top:2px}.heroes{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:9px}.heroChip{border:1px solid #285b80;border-radius:7px;padding:8px;background:#061725}.heroChip small{display:block;color:#8fa7bb;margin-top:2px}
+.brand{padding-left:12px;text-shadow:0 3px 10px #000}
+.brand h1{margin:0;font:700 44px Georgia,serif;color:#f6cf6a;letter-spacing:.01em}
+.brand p{margin:2px 0 0;font:700 14px Georgia,serif;color:#f2cf63;letter-spacing:.03em}
+.realm{
+  justify-self:center;display:flex;align-items:center;justify-content:center;gap:12px;width:310px;height:84px;
+  color:#f7d569;text-shadow:0 3px 8px #000
+}
+.realm .sword{font-size:36px;line-height:1}.realm .crownbox{min-width:142px;text-align:center;position:relative}
+.realm .crownbox::before{content:"♛";display:block;font-size:30px;line-height:.8;color:#ffd978}
+.realm strong{display:block;font:700 40px Georgia,serif;line-height:1}
+.actions{display:flex;justify-content:flex-end;gap:9px;padding-right:14px}
+.lang{display:flex;border:1px solid #2d5f84;border-radius:10px;overflow:hidden;background:#061725}
+.lang button{padding:10px 13px;border:0;background:transparent}.lang .active{background:#0d3b5a;box-shadow:inset 0 0 12px #1d6d9e66}
+.menu-btn{width:47px;height:47px;border:1px solid #8c6a22;border-radius:10px;background:#071722;color:#f6d36b;font-size:25px}
+/* BODY */
+.body{display:grid;grid-template-columns:170px minmax(0,1fr)}
+.sidebar{
+  min-height:1178px;padding:20px 8px 12px;background:linear-gradient(180deg,#061521,#031019 100%);
+  border-right:1px solid #8b6821;position:relative
+}
+.sidebar::before,.sidebar::after{content:"";position:absolute;left:0;right:0;height:8px;background:linear-gradient(90deg,#876420,#f2cf67,#876420)}
+.sidebar::before{top:0}.sidebar::after{bottom:0}
+.nav{display:flex;flex-direction:column;gap:6px}
+.nav button{
+  min-height:58px;border:1px solid transparent;border-radius:8px;background:transparent;color:#e1e8ef;text-align:left;
+  display:flex;align-items:center;gap:8px;padding:8px 9px;font-weight:700
+}
+.nav .ico{width:29px;text-align:center;font-size:24px;color:#d7e7f4}
+.nav button.active{
+  border-color:#d0a039;background:linear-gradient(90deg,rgba(193,133,31,.43),rgba(17,48,68,.88));
+  box-shadow:inset 4px 0 0 #f6cf64,0 0 15px rgba(212,167,55,.2)
+}
+.divider{height:1px;background:linear-gradient(90deg,transparent,#ab802c,transparent);margin:12px 0}
+.content{padding:14px 12px 12px;min-width:0}
+/* TOP SWITCH */
+.switches{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:10px}
+.switch{
+  min-height:88px;border:1px solid #3373a1;border-radius:9px;background:linear-gradient(180deg,#0a3150,#071b2c);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center
+}
+.switch.active{border-color:#e0b74d;box-shadow:inset 0 0 20px rgba(27,129,199,.22),0 0 13px rgba(229,185,74,.26)}
+.switch b{font-size:25px;letter-spacing:-.01em}.switch small{font-size:16px;color:#a7bdd0;margin-top:3px}
+/* COMMON PANELS */
+.panel{background:var(--panel);border:1px solid #235f8b;border-radius:8px;overflow:hidden;box-shadow:0 8px 16px #0004}
+.panel.red{border-color:#8b2a39}
+.panel-title{height:40px;display:flex;align-items:center;gap:9px;padding:0 10px;border-bottom:1px solid rgba(73,122,156,.45);font-weight:900;font-size:18px}
+.panel-title .arrow{margin-left:auto;font-size:22px;color:#dbeaf6}
+.h2h{margin-bottom:10px}
+.h2h-head{height:42px;display:flex;align-items:center;padding:0 12px;font:700 21px Georgia,serif;border-bottom:1px solid rgba(63,109,139,.42)}
+.h2h-grid{display:grid;grid-template-columns:1fr 66px 1fr 214px;gap:12px;align-items:center;padding:10px 12px}
+.kbox{height:114px;border-radius:7px;border:1px solid;display:grid;grid-template-columns:94px 1fr;align-items:center;padding:9px;overflow:hidden;position:relative}
+.kbox::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 55%,rgba(255,255,255,.06))}
+.kbox.blue{border-color:#2f91df;background:linear-gradient(135deg,#0d4c78,#082843)}
+.kbox.red{border-color:#b6293e;background:linear-gradient(135deg,#690f1b,#2d0a13)}
+.kbox img{width:86px;height:86px;object-fit:contain;filter:drop-shadow(0 4px 5px #000)}
+.kbox b{display:block;font-size:20px}.kbox small{display:block;color:#c4d1dd;margin-top:1px}.kbox .alliance{font-weight:800;color:#f3d06c}
+.kbox strong{display:block;font-size:31px;color:#ffe276;line-height:1.05;margin-top:2px}
+.vs{font:900 33px Georgia,serif;color:#f2cf66;text-align:center}
+.status{
+  height:114px;border:1px solid #28658f;border-radius:7px;background:#08243a;padding:9px;font-size:11px;line-height:1.7
+}
+.status .ok{color:#62e2aa;font-weight:900}.status .details{margin-top:2px;border-top:1px solid #28506b;padding-top:4px;text-align:center}
+/* MIDDLE GRID */
+.mid{display:grid;grid-template-columns:1.13fr 1fr 1.05fr 1fr;gap:9px;margin-bottom:10px}
+.whales{display:grid;grid-template-columns:1fr 1fr}
+.whale{padding:8px 8px 6px;text-align:center}.whale+.whale{border-left:1px solid #25506f}
+.whale .who{font-size:11px;color:#e8c65e}.whale strong{display:block;font-size:18px}.whale small{display:block}
+.whale.own strong,.whale.own .v{color:#5ddf9a}.whale.enemy strong,.whale.enemy .v{color:#ff5364}
+.avatar{
+  width:108px;height:108px;margin:8px auto 6px;border-radius:50%;border:1px solid #536f86;display:grid;place-items:center;
+  background:radial-gradient(circle,#163c57,#040e17 68%);font-size:48px;box-shadow:inset 0 0 22px #0008
+}
+.srow{display:grid;grid-template-columns:1fr auto;gap:8px;padding:5px 3px;border-top:1px solid rgba(65,103,130,.4);font-size:11px;text-align:left}.srow span:last-child{text-align:right;font-weight:900}
+.depth-tabs,.mini-tabs{display:flex;gap:4px;padding:8px}
+.depth-tabs button,.mini-tabs button{flex:1;border:1px solid #2b6086;border-radius:5px;background:#071c2c;padding:5px;font-size:10px}
+.depth-tabs .active,.mini-tabs .active{border-color:#f1c95e;background:linear-gradient(#ffe27f,#c98f28);color:#17212a;font-weight:900}
+.metric{padding:5px 10px}.metric .lab{text-align:center;font-size:11px;margin-bottom:4px}.metric .vals{display:flex;justify-content:space-between;font-weight:900;font-size:11px;margin-bottom:3px}
+.bar2{display:grid;grid-template-columns:1fr 1fr;gap:6px}.bar{height:18px;border:1px solid #2c5f82;background:#04111c}.bar i{display:block;height:100%}.bar.blue i{background:linear-gradient(90deg,#1f73c4,#53b0f8)}.bar.red i{background:linear-gradient(90deg,#c32335,#ff5262)}
+.alliance-table,.rank-table{width:100%;border-collapse:collapse;font-size:10px}
+.alliance-table th,.alliance-table td,.rank-table th,.rank-table td{padding:5px 5px;border-top:1px solid rgba(54,96,126,.38);text-align:left}
+.alliance-table th,.rank-table th{color:#9bb2c4;font-weight:700}
+.alliance-table tr.home{background:rgba(27,115,180,.12)}.alliance-table tr.enemy{background:rgba(165,34,51,.12)}
+.watch{max-height:392px;overflow:auto}
+.watchrow{display:grid;grid-template-columns:22px 1fr 62px;gap:5px;align-items:center;padding:6px;border-top:1px solid rgba(54,96,126,.38);cursor:pointer}
+.watchrow:first-child{border-top:0}.watchrow:hover{background:#0b2940}.watchrow .r{color:#f2cf66;font-weight:900}.watchrow .nm{font-weight:900}.watchrow .sub{font-size:9px;color:#9eb5c8}.watchrow .pw{text-align:right;color:#f4d16c;font-weight:900}
+/* BOTTOM */
+.bottom{display:grid;grid-template-columns:1.7fr 1fr;gap:10px}
+.tables{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:0 8px 8px}.tablebox{border:1px solid #256a99;border-radius:6px;overflow:hidden}.tablebox.enemy{border-color:#91313f}
+.chartwrap{padding:0 8px 8px}.legend{display:flex;gap:20px;justify-content:center;margin:7px 0 4px;font-size:10px;color:#a8bbcc}.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px}.dot.b{background:#359bea}.dot.r{background:#f04454}
+.chart{height:228px;display:flex;align-items:flex-end;gap:14px;border-left:1px solid #3b607c;border-bottom:1px solid #3b607c;padding:12px 12px 22px}.grp{flex:1;height:100%;display:flex;align-items:flex-end;justify-content:center;gap:4px;position:relative}.col{width:28px;border-radius:4px 4px 0 0}.col.b{background:linear-gradient(#57baff,#1d6ec3)}.col.r{background:linear-gradient(#ff6875,#bf2435)}.grp label{position:absolute;bottom:-18px;font-size:9px;color:#9db2c4}
+.foot{text-align:right;color:#657e92;font-size:9px;padding-top:6px}
+/* MOBILE PORTRAIT: same design system, no landscape requirement */
+.mobile-drawer{display:none;position:fixed;inset:0;z-index:80;background:#01070ddd;padding:12px}.mobile-drawer.open{display:block}.drawer-card{height:100%;overflow:auto;border:1px solid #8f6d28;border-radius:10px;background:linear-gradient(#071b2a,#031019);padding:12px}
+.player-modal{display:none;position:fixed;inset:0;z-index:90;background:#01070ddd;align-items:center;justify-content:center;padding:12px}.player-modal.open{display:flex}.player-card{width:min(760px,100%);max-height:calc(100dvh - 24px);overflow:auto;border:1px solid var(--gold);border-radius:9px;background:linear-gradient(#08243a,#04121e);padding:13px}.player-card .top{display:flex;align-items:center;gap:8px}.player-card h3{margin:0;color:#f0cd67;font:700 22px Georgia,serif}.close{margin-left:auto;border:1px solid #7f632a;border-radius:8px;background:#071623;width:38px;height:38px}.threat{margin:9px 0;padding:8px;border:1px solid #7e622c;border-radius:7px;background:#5e461c33;color:#f1d06c;font-weight:800}.intelgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.ibox,.hero{border:1px solid #285b80;border-radius:7px;background:#061725;padding:7px}.ibox small,.hero small{display:block;color:#8fa7bb}.heroes{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:8px}
 @media(max-width:900px) and (orientation:portrait){
- .app{grid-template-rows:86px 1fr}.topbar{grid-template-columns:80px 1fr 92px;height:86px}.brand-crest img{width:66px;height:66px}.brand-copy{padding-left:10px}.brand-copy h1{font-size:27px}.brand-copy p{font-size:11px}.crown{display:none}.top-actions{padding-right:8px}.lang{display:none}.body{display:block}.sidebar{display:none}.main{padding:9px}.tabs{grid-template-columns:1fr}.h2h-top{grid-template-columns:1fr 44px 1fr}.statusbox{grid-column:1/-1}.cards4{grid-template-columns:1fr}.bottom{grid-template-columns:1fr}.twotables{grid-template-columns:1fr}.watchlist{max-height:none}.intelgrid{grid-template-columns:repeat(2,1fr)}.heroes{grid-template-columns:repeat(2,1fr)}
- .kingdom{grid-template-columns:48px minmax(0,1fr);gap:8px;padding:8px}.kingdom img{width:46px;height:46px}.kingdom strong{font-size:21px;line-height:1.05}.kingdom b{font-size:14px;line-height:1.15}.kingdom small{font-size:10px;line-height:1.2}.vs{font-size:22px}.menu{display:block}
+  .master{width:100%;min-height:100vh;border:0}
+  .topbar{height:92px;grid-template-columns:84px minmax(0,1fr) 58px;background-position:center top}
+  .crest-zone{border-right:1px solid rgba(213,168,60,.45)}.crest{width:78px;height:78px;transform:none}
+  .brand{padding-left:10px;min-width:0}.brand h1{font-size:30px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.brand p{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .realm,.lang{display:none}.actions{padding-right:7px}
+  .body{display:block}.sidebar{display:none}.content{padding:10px 8px 14px}
+  .switches{grid-template-columns:1fr;gap:9px}.switch{min-height:80px}.switch b{font-size:22px}.switch small{font-size:15px}
+  .h2h-grid{grid-template-columns:1fr 44px 1fr;gap:6px;padding:8px}
+  .status{grid-column:1/-1;height:auto}.kbox{height:116px;grid-template-columns:48px minmax(0,1fr);gap:7px;padding:7px}.kbox img{width:46px;height:46px}.kbox b{font-size:14px;line-height:1.12}.kbox strong{font-size:22px}.kbox small{font-size:10px;line-height:1.15}
+  .vs{font-size:22px}.mid{grid-template-columns:1fr;gap:9px}.bottom{grid-template-columns:1fr}.tables{grid-template-columns:1fr}.watch{max-height:none}.chart{height:230px}
+  .intelgrid{grid-template-columns:repeat(2,1fr)}.heroes{grid-template-columns:repeat(2,1fr)}
+  .panel-title{font-size:17px}.h2h-head{font-size:19px}
 }
-@media(max-width:560px) and (orientation:portrait){
- .brand-copy h1{font-size:23px}.brand-copy p{display:none}.topbar{grid-template-columns:72px minmax(0,1fr) 54px}.brand-copy{min-width:0}.tabs .tab b{font-size:18px}.h2h-top{gap:6px}.cards4,.bottom{padding-left:0;padding-right:0}.main{overflow-x:hidden}.kingdom{min-width:0}.kingdom>div{min-width:0}.kingdom b,.kingdom small,.kingdom strong{overflow-wrap:anywhere}
+@media(max-width:430px) and (orientation:portrait){
+  .topbar{grid-template-columns:74px minmax(0,1fr) 54px}.crest{width:68px;height:68px}.brand h1{font-size:25px}.brand p{display:none}
+  .content{padding-left:7px;padding-right:7px}.kbox{grid-template-columns:42px minmax(0,1fr)}.kbox img{width:40px;height:40px}.kbox strong{font-size:20px}.kbox b{font-size:13px}
 }
 </style>
 </head>
 <body>
-<div class="app">
+<div class="master">
 <header class="topbar">
- <div class="brand-crest"><img src="../icon-192.png" alt="NXS"></div>
- <div class="brand-copy"><h1>Nexus App</h1><p>many paths, many strengths, one force.</p></div>
- <div class="crown"><div class="orn">⚔ ♛ ⚔</div><strong>1885</strong></div>
- <div class="top-actions"><div class="lang"><button>DE</button><button class="active">EN</button><button>FR</button></div><button class="menu" id="menuBtn">☰</button></div>
+  <div class="crest-zone"><img class="crest" src="../icon-192.png" alt="NXS"></div>
+  <div class="brand"><h1>Nexus App</h1><p>many paths, many strengths, one force.</p></div>
+  <div class="realm"><span class="sword">⚔</span><div class="crownbox"><strong>1885</strong></div><span class="sword">⚔</span></div>
+  <div class="actions"><div class="lang"><button>DE</button><button class="active">EN</button><button>FR</button></div><button class="menu-btn" id="menuBtn">☰</button></div>
 </header>
 <div class="body">
 <aside class="sidebar">
- <nav class="nav">
-  <button><span class="ico">⌖</span>Outpost Map</button>
-  <button class="active"><span class="ico">⚔</span>KvK Prep</button>
-  <button><span class="ico">◉</span>Transfer Scouting</button>
-  <button><span class="ico">▥</span>Alliance Comparison</button>
-  <button><span class="ico">♜</span>About NEXUS</button>
-  <div class="divider"></div>
-  <button><span class="ico">⚙</span>Settings</button><button><span class="ico">?</span>Help</button><button><span class="ico">✉</span>Contact</button>
- </nav>
+  <nav class="nav">
+    <button><span class="ico">⌖</span><span>Outpost Map</span></button>
+    <button class="active"><span class="ico">⚔</span><span>KvK Prep</span></button>
+    <button><span class="ico">◉</span><span>Transfer Scouting</span></button>
+    <button><span class="ico">▥</span><span>Alliance Comparison</span></button>
+    <button><span class="ico">♜</span><span>About NEXUS</span></button>
+    <div class="divider"></div>
+    <button><span class="ico">⚙</span><span>Settings</span></button>
+    <button><span class="ico">?</span><span>Help</span></button>
+    <button><span class="ico">✉</span><span>Contact</span></button>
+  </nav>
 </aside>
-<main class="main">
- <section class="tabs">
-  <button class="tab active"><b>⚔ Opponent Intelligence</b><small>Know your enemy.</small></button>
-  <button class="tab"><b>🛡 Battle Readiness</b><small>Prepare. Coordinate. Win.</small></button>
- </section>
+<main class="content">
+  <section class="switches">
+    <button class="switch active"><b>⚔ Opponent Intelligence</b><small>Know your enemy.</small></button>
+    <button class="switch"><b>🛡 Battle Readiness</b><small>Prepare. Coordinate. Win.</small></button>
+  </section>
 
- <section class="frame h2h">
-  <div class="head"><h2>Kingdom Head-to-Head</h2></div>
-  <div class="h2h-top">
-   <div class="kingdom own"><img src="../icon-192.png" alt=""><div><b>Kingdom #1885</b><small>NEXUS</small><strong id="homeTotal">38.13B</strong><small>(4 main alliances)</small></div></div>
-   <div class="vs">VS</div>
-   <div class="kingdom enemy"><img src="../icon-192.png" alt=""><div><b>Kingdom #1913</b><small>Current opponent</small><strong id="enemyTotal">41.75B</strong><small>(Top 5 alliances)</small></div></div>
-   <div class="statusbox"><div>Data Status <span class="ok">● Verified partial</span></div><div>Last Update <b>04.10.26</b></div><div>Source <b>In-game snapshots</b></div><div style="margin-top:5px;text-align:right">View Details ›</div></div>
-  </div>
-
-  <div class="cards4">
-   <article class="card">
-    <div class="title">🐋 Mega-Whale</div>
-    <div class="whales">
-     <div class="whale own"><small>Our #1</small><strong>Indy Tao</strong><small>[OoO]</small><div class="avatar">♞</div><div class="statrow"><span>Total Power</span><span class="val">336.8M</span></div><div class="statrow"><span>Mystic Trial</span><span class="val">1,855</span></div><div class="statrow"><span>TC Level</span><span class="val">TG5</span></div></div>
-     <div class="whale enemy"><small>Enemy #1</small><strong>goo 대박</strong><small>[YCP]</small><div class="avatar">♞</div><div class="statrow"><span>Total Power</span><span class="val">315.8M</span></div><div class="statrow"><span>Mystic Trial</span><span class="val">1,633</span></div><div class="statrow"><span>TC Level</span><span class="val">TG5</span></div></div>
+  <section class="panel h2h">
+    <div class="h2h-head">Kingdom Head-to-Head</div>
+    <div class="h2h-grid">
+      <div class="kbox blue"><img src="../icon-192.png" alt=""><div><b>Kingdom #1885</b><small class="alliance">NEXUS</small><strong id="homeTotal">38.13B</strong><small>(4 main alliances)</small></div></div>
+      <div class="vs">VS</div>
+      <div class="kbox red"><img src="../icon-192.png" alt=""><div><b>Kingdom #1913</b><small class="alliance">Current opponent</small><strong id="enemyTotal">41.75B</strong><small>(Top 5 alliances)</small></div></div>
+      <div class="status"><div>Data Status &nbsp; <span class="ok">● Verified partial</span></div><div>Last Update &nbsp; <b>04.10.26</b></div><div>Source &nbsp; <b>In-game snapshots</b></div><div class="details">View Details &nbsp;›</div></div>
     </div>
-   </article>
 
-   <article class="card">
-    <div class="title">📊 Depth Comparison</div>
-    <div class="depth-tabs"><button class="active">Top 5</button><button>Top 10</button><button>Top 20</button></div>
-    <div class="metricbar"><div class="lab">Total Power (Sum)</div><div class="barpair"><div class="bar blue"><i style="width:100%"></i></div><div class="bar red"><i style="width:100%"></i></div></div><div class="statrow"><span id="homeTop5Power">Pending</span><span>1.3568B</span></div></div>
-    <div class="metricbar"><div class="lab">Mystic Trial (Sum)</div><div class="barpair"><div class="bar blue"><i style="width:100%"></i></div><div class="bar red"><i style="width:97%"></i></div></div><div class="statrow"><span>8,140</span><span id="enemyMysticTop5">Pending</span></div></div>
-    <div class="metricbar"><div class="lab">Hero Power (Sum)</div><div class="barpair"><div class="bar blue"><i style="width:55%"></i></div><div class="bar red"><i style="width:55%"></i></div></div><div class="statrow"><span>Pending</span><span>Pending</span></div></div>
-    <div class="metricbar"><div class="lab">Companion Power (Sum)</div><div class="barpair"><div class="bar blue"><i style="width:55%"></i></div><div class="bar red"><i style="width:55%"></i></div></div><div class="statrow"><span>Pending</span><span>Pending</span></div></div>
-   </article>
+    <div class="mid">
+      <article class="panel">
+        <div class="panel-title">🐋 Mega-Whale <span class="arrow">›</span></div>
+        <div class="whales">
+          <div class="whale own"><div class="who">Our #1</div><strong>Indy Tao</strong><small>[OoO]</small><div class="avatar">♞</div><div class="srow"><span>Total Power</span><span class="v">336.8M</span></div><div class="srow"><span>Mystic Trial</span><span class="v">1,855</span></div><div class="srow"><span>TC Level</span><span class="v">TG5</span></div></div>
+          <div class="whale enemy"><div class="who">Enemy #1</div><strong>goo 대박</strong><small>[YCP]</small><div class="avatar">♞</div><div class="srow"><span>Total Power</span><span class="v">315.8M</span></div><div class="srow"><span>Mystic Trial</span><span class="v">1,633</span></div><div class="srow"><span>TC Level</span><span class="v">TG5</span></div></div>
+        </div>
+      </article>
 
-   <article class="card">
-    <div class="title">🏰 Alliance Structure</div>
-    <table class="alltable"><thead><tr><th>Alliance</th><th>Members</th><th>Total Power</th><th>TG</th></tr></thead><tbody id="allianceRows"></tbody></table>
-   </article>
+      <article class="panel">
+        <div class="panel-title">📊 Depth Comparison <span class="arrow">›</span></div>
+        <div class="depth-tabs"><button class="active">Top 5</button><button>Top 10</button><button>Top 20</button></div>
+        <div class="metric"><div class="lab">Total Power (Sum)</div><div class="vals"><span id="homeTop5Power">Pending</span><span>1.3568B</span></div><div class="bar2"><div class="bar blue"><i style="width:100%"></i></div><div class="bar red"><i style="width:100%"></i></div></div></div>
+        <div class="metric"><div class="lab">Mystic Trial (Sum)</div><div class="vals"><span>8,140</span><span id="enemyMysticTop5">Pending</span></div><div class="bar2"><div class="bar blue"><i style="width:100%"></i></div><div class="bar red"><i style="width:96%"></i></div></div></div>
+        <div class="metric"><div class="lab">Hero Power (Sum)</div><div class="vals"><span>Pending</span><span>Pending</span></div><div class="bar2"><div class="bar blue"><i style="width:54%"></i></div><div class="bar red"><i style="width:54%"></i></div></div></div>
+        <div class="metric"><div class="lab">Companion Power (Sum)</div><div class="vals"><span>Pending</span><span>Pending</span></div><div class="bar2"><div class="bar blue"><i style="width:54%"></i></div><div class="bar red"><i style="width:54%"></i></div></div></div>
+      </article>
 
-   <article class="card red">
-    <div class="title">🎯 Players to Watch</div>
-    <div class="watchlist" id="watchList"></div>
-   </article>
-  </div>
+      <article class="panel">
+        <div class="panel-title">🏰 Alliance Structure <span class="arrow">›</span></div>
+        <table class="alliance-table"><thead><tr><th>Alliance</th><th>Members</th><th>Total Power</th><th>TG</th></tr></thead><tbody id="allianceRows"></tbody></table>
+      </article>
 
-  <div class="bottom">
-   <article class="card">
-    <div class="title">True Power Head-to-Head (Top 10)</div>
-    <div class="tabs-mini"><button class="active">Total Power</button><button>Mystic Trial</button><button>Hero Power</button><button>Companion Power</button><button>TC Level</button></div>
-    <div class="twotables"><div class="ownT"><table class="playertable"><thead><tr><th>#</th><th>Player</th><th>Alliance</th><th>Total Power</th><th>Mystic</th></tr></thead><tbody id="homePlayers"></tbody></table></div><div class="enemyT"><table class="playertable"><thead><tr><th>#</th><th>Player</th><th>Alliance</th><th>Total Power</th><th>Mystic</th></tr></thead><tbody id="enemyPlayers"></tbody></table></div></div>
-   </article>
+      <article class="panel red">
+        <div class="panel-title">🎯 Players to Watch <span class="arrow">›</span></div>
+        <div class="watch" id="watchList"></div>
+      </article>
+    </div>
 
-   <article class="card">
-    <div class="title">Power Distribution</div>
-    <div class="tabs-mini"><button class="active">Total Power</button><button>Mystic</button><button>Hero</button><button>Companion</button></div>
-    <div class="chart"><div class="legend"><span><i class="dot blueDot"></i>#1885</span><span><i class="dot redDot"></i>#1913</span></div><div class="bars">
-      <div class="grp"><div class="col blue" style="height:72%"></div><div class="col red" style="height:82%"></div><label>50M+</label></div>
-      <div class="grp"><div class="col blue" style="height:42%"></div><div class="col red" style="height:55%"></div><label>100M+</label></div>
-      <div class="grp"><div class="col blue" style="height:21%"></div><div class="col red" style="height:31%"></div><label>200M+</label></div>
-      <div class="grp"><div class="col blue" style="height:8%"></div><div class="col red" style="height:12%"></div><label>300M+</label></div>
-    </div></div>
-   </article>
-  </div>
-  <div class="footer">Nexus App 2.0 · verified data only · master visual locked</div>
- </section>
+    <div class="bottom">
+      <article class="panel">
+        <div class="panel-title">True Power Head-to-Head (Top 10)</div>
+        <div class="mini-tabs"><button class="active">Total Power</button><button>Mystic Trial</button><button>Hero Power</button><button>Companion Power</button><button>TC Level</button></div>
+        <div class="tables">
+          <div class="tablebox"><table class="rank-table"><thead><tr><th>#</th><th>Player</th><th>Alliance</th><th>Total Power</th><th>Mystic</th></tr></thead><tbody id="homePlayers"></tbody></table></div>
+          <div class="tablebox enemy"><table class="rank-table"><thead><tr><th>#</th><th>Player</th><th>Alliance</th><th>Total Power</th><th>Mystic</th></tr></thead><tbody id="enemyPlayers"></tbody></table></div>
+        </div>
+      </article>
+      <article class="panel">
+        <div class="panel-title">Power Distribution <span class="arrow">›</span></div>
+        <div class="mini-tabs"><button class="active">Total Power</button><button>Mystic</button><button>Hero</button><button>Companion</button></div>
+        <div class="chartwrap"><div class="legend"><span><i class="dot b"></i>#1885</span><span><i class="dot r"></i>#1913</span></div><div class="chart"><div class="grp"><div class="col b" style="height:72%"></div><div class="col r" style="height:82%"></div><label>50M+</label></div><div class="grp"><div class="col b" style="height:42%"></div><div class="col r" style="height:55%"></div><label>100M+</label></div><div class="grp"><div class="col b" style="height:21%"></div><div class="col r" style="height:31%"></div><label>200M+</label></div><div class="grp"><div class="col b" style="height:8%"></div><div class="col r" style="height:12%"></div><label>300M+</label></div></div></div>
+      </article>
+    </div>
+    <div class="foot">Nexus App 2.0 · master visual locked · data unchanged</div>
+  </section>
 </main>
 </div>
 </div>
 
-<div class="mobile-menu" id="mobileMenu"><div class="mobile-sheet"><div style="display:flex;align-items:center"><b style="font:700 22px Georgia,serif;color:#f4d178">Nexus App</b><button class="menu" id="closeMenu" style="margin-left:auto">✕</button></div><nav class="nav"><button><span class="ico">⌖</span>Outpost Map</button><button class="active"><span class="ico">⚔</span>KvK Prep</button><button><span class="ico">◉</span>Transfer Scouting</button><button><span class="ico">▥</span>Alliance Comparison</button><button><span class="ico">♜</span>About NEXUS</button><div class="divider"></div><button><span class="ico">⚙</span>Settings</button><button><span class="ico">?</span>Help</button><button><span class="ico">✉</span>Contact</button></nav></div></div>
+<div class="mobile-drawer" id="mobileDrawer"><div class="drawer-card"><div style="display:flex;align-items:center"><b style="font:700 23px Georgia,serif;color:#f4d178">Nexus App</b><button class="close" id="drawerClose">✕</button></div><nav class="nav" style="margin-top:10px"><button><span class="ico">⌖</span>Outpost Map</button><button class="active"><span class="ico">⚔</span>KvK Prep</button><button><span class="ico">◉</span>Transfer Scouting</button><button><span class="ico">▥</span>Alliance Comparison</button><button><span class="ico">♜</span>About NEXUS</button><div class="divider"></div><button><span class="ico">⚙</span>Settings</button><button><span class="ico">?</span>Help</button><button><span class="ico">✉</span>Contact</button></nav></div></div>
 
-<div class="player-modal" id="playerModal"><div class="player-card"><div class="player-top"><h3 id="pmName">Player Intel</h3><button id="pmClose">✕</button></div><div id="pmSub" class="sub"></div><div id="pmThreat" class="threat"></div><div id="pmMetrics" class="intelgrid"></div><div id="pmHeroes" class="heroes"></div><div id="pmPrivacy" class="footer"></div></div></div>
+<div class="player-modal" id="playerModal"><div class="player-card"><div class="top"><h3 id="pmName">Player Intel</h3><button class="close" id="pmClose">✕</button></div><div id="pmSub" style="color:#9fb4c6;font-size:11px"></div><div class="threat" id="pmThreat"></div><div class="intelgrid" id="pmMetrics"></div><div class="heroes" id="pmHeroes"></div><div id="pmPrivacy" style="margin-top:8px;color:#8199ac;font-size:10px"></div></div></div>
 
 <script>
 const $=s=>document.querySelector(s);
@@ -182,35 +255,29 @@ const threat={
  'Inigo Montoya':'Balanced high-value profile · #4 Migrant · #5 Mystic'
 };
 let players=new Map();
-function watchRow(p){
- const d=document.createElement('div');d.className='watch';d.dataset.name=p.player_name;
- d.innerHTML='<div class="rank">'+p.personal_power_rank+'</div><div><div class="name">'+p.player_name+'</div><div class="sub">['+(p.alliance_tag||'—')+']'+(p.mystic_total!=null?' · Mystic '+fmt(p.mystic_total):'')+'</div></div><div class="pow">'+fmt(p.personal_power_m)+'M</div>';
- d.onclick=()=>openPlayer(p.player_name);return d;
+function addWatch(p){
+  const d=document.createElement('div');d.className='watchrow';
+  d.innerHTML='<div class="r">'+p.personal_power_rank+'</div><div><div class="nm">'+p.player_name+'</div><div class="sub">['+(p.alliance_tag||'—')+']'+(p.mystic_total!=null?' · Mystic '+fmt(p.mystic_total):'')+'</div></div><div class="pw">'+fmt(p.personal_power_m)+'M</div>';
+  d.onclick=()=>openPlayer(p.player_name);$('#watchList').appendChild(d);
 }
 function openPlayer(name){
- const p=players.get(name);if(!p)return;
- $('#pmName').textContent=p.player_name;$('#pmSub').textContent='['+(p.alliance_tag||'—')+'] · Power Rank #'+(p.personal_power_rank||'—');
- $('#pmThreat').textContent=threat[name]||'Verified opponent profile';
- const m=[['Power',p.personal_power_m!=null?fmt(p.personal_power_m)+'M':'—'],['Town Center',p.castle||'—'],['Kills',p.kills_m!=null?fmt(p.kills_m)+'M · #'+(p.kills_rank||'—'):'—'],['Mystic',p.mystic_total!=null?fmt(p.mystic_total)+' · #'+(p.mystic_rank||'—'):'—'],['Migrant',p.migrant_score!=null?fmt(p.migrant_score)+' · #'+(p.migrant_rank||'—'):(p.migrant_status||'—')],['Alliance Rank',p.alliance_rank||'—']];
- $('#pmMetrics').innerHTML=m.map(x=>'<div class="ibox"><small>'+x[0]+'</small><b>'+x[1]+'</b></div>').join('');
- $('#pmHeroes').innerHTML=(p.arena_heroes||[]).map(h=>'<div class="heroChip"><b>'+h.hero+'</b><small>'+h.stars+' · Lv '+h.hero_level+' · Widget '+h.widget_level+'</small></div>').join('');
- $('#pmPrivacy').textContent=p.governor_gear_privacy?'Governor Gear privacy active — equipment is not inferred.':'Verified profile snapshot · 04.10.2026';
- $('#playerModal').classList.add('open');
+  const p=players.get(name);if(!p)return;
+  $('#pmName').textContent=p.player_name;$('#pmSub').textContent='['+(p.alliance_tag||'—')+'] · Power Rank #'+(p.personal_power_rank||'—');$('#pmThreat').textContent=threat[name]||'Verified opponent profile';
+  const m=[['Power',p.personal_power_m!=null?fmt(p.personal_power_m)+'M':'—'],['Town Center',p.castle||'—'],['Kills',p.kills_m!=null?fmt(p.kills_m)+'M · #'+(p.kills_rank||'—'):'—'],['Mystic',p.mystic_total!=null?fmt(p.mystic_total)+' · #'+(p.mystic_rank||'—'):'—'],['Migrant',p.migrant_score!=null?fmt(p.migrant_score)+' · #'+(p.migrant_rank||'—'):(p.migrant_status||'—')],['Alliance Rank',p.alliance_rank||'—']];
+  $('#pmMetrics').innerHTML=m.map(x=>'<div class="ibox"><small>'+x[0]+'</small><b>'+x[1]+'</b></div>').join('');
+  $('#pmHeroes').innerHTML=(p.arena_heroes||[]).map(h=>'<div class="hero"><b>'+h.hero+'</b><small>'+h.stars+' · Lv '+h.hero_level+' · Widget '+h.widget_level+'</small></div>').join('');
+  $('#pmPrivacy').textContent=p.governor_gear_privacy?'Governor Gear privacy active — equipment is not inferred.':'Verified profile snapshot · 04.10.2026';$('#playerModal').classList.add('open');
 }
 $('#pmClose').onclick=()=>$('#playerModal').classList.remove('open');$('#playerModal').onclick=e=>{if(e.target.id==='playerModal')$('#playerModal').classList.remove('open')};
-$('#menuBtn').onclick=()=>$('#mobileMenu').classList.add('open');$('#closeMenu').onclick=()=>$('#mobileMenu').classList.remove('open');
+$('#menuBtn').onclick=()=>$('#mobileDrawer').classList.add('open');$('#drawerClose').onclick=()=>$('#mobileDrawer').classList.remove('open');
 
-fetch('../data/kvk-opponent-intelligence-current.json?build=master-locked-v1',{cache:'no-store'}).then(r=>r.json()).then(d=>{
- const ht=d.home_summary.main_alliance_totals;$('#homeTotal').textContent=(ht.total_power_m/1000).toFixed(2)+'B';
- $('#enemyTotal').textContent=(d.opponent_summary.top5_alliance_power_m/1000).toFixed(2)+'B';
- const rows=[];
- (d.home_summary.main_alliances||[]).forEach(a=>rows.push('<tr class="ownrow"><td>'+a.alliance_tag+'</td><td>'+a.members+'</td><td>'+(a.total_power_m/1000).toFixed(3)+'B</td><td>'+a.tg_castles+'</td></tr>'));
- (d.opponent_alliance_power_top5||[]).forEach(a=>rows.push('<tr class="enemyrow"><td>'+a.alliance_tag+'</td><td>—</td><td>'+(a.total_power_m/1000).toFixed(3)+'B</td><td>—</td></tr>'));
- $('#allianceRows').innerHTML=rows.join('');
- const opp=(d.opponent_players||[]).slice(0,10);players=new Map((d.opponent_players||[]).map(p=>[p.player_name,p]));opp.forEach(p=>$('#watchList').appendChild(watchRow(p)));
- $('#homePlayers').innerHTML=(d.home_players||[]).slice(0,10).map((p,i)=>'<tr><td>'+(i+1)+'</td><td>'+p.player_name+'</td><td>'+(p.alliance_tag||'—')+'</td><td>'+(p.total_power_m!=null?fmt(p.total_power_m)+'M':'—')+'</td><td>'+fmt(p.mystic_total)+'</td></tr>').join('');
- $('#enemyPlayers').innerHTML=opp.map(p=>'<tr><td>'+p.personal_power_rank+'</td><td>'+p.player_name+'</td><td>'+(p.alliance_tag||'—')+'</td><td>'+fmt(p.personal_power_m)+'M</td><td>'+fmt(p.mystic_total)+'</td></tr>').join('');
- const top5Mystic=opp.slice(0,5).reduce((s,p)=>s+(p.mystic_total||0),0); if(opp.slice(0,5).every(p=>p.mystic_total!=null))$('#enemyMysticTop5').textContent=fmt(top5Mystic);
+fetch('../data/kvk-opponent-intelligence-current.json?build=master-design-final-v1',{cache:'no-store'}).then(r=>r.json()).then(d=>{
+  const ht=d.home_summary.main_alliance_totals;$('#homeTotal').textContent=(ht.total_power_m/1000).toFixed(2)+'B';$('#enemyTotal').textContent=(d.opponent_summary.top5_alliance_power_m/1000).toFixed(2)+'B';
+  const ar=[];(d.home_summary.main_alliances||[]).forEach(a=>ar.push('<tr class="home"><td>'+a.alliance_tag+'</td><td>'+a.members+'</td><td>'+(a.total_power_m/1000).toFixed(3)+'B</td><td>'+a.tg_castles+'</td></tr>'));(d.opponent_alliance_power_top5||[]).forEach(a=>ar.push('<tr class="enemy"><td>'+a.alliance_tag+'</td><td>—</td><td>'+(a.total_power_m/1000).toFixed(3)+'B</td><td>—</td></tr>'));$('#allianceRows').innerHTML=ar.join('');
+  const opp=(d.opponent_players||[]).slice(0,10);players=new Map((d.opponent_players||[]).map(p=>[p.player_name,p]));opp.forEach(addWatch);
+  $('#homePlayers').innerHTML=(d.home_players||[]).slice(0,10).map((p,i)=>'<tr><td>'+(i+1)+'</td><td>'+p.player_name+'</td><td>'+(p.alliance_tag||'—')+'</td><td>'+(p.total_power_m!=null?fmt(p.total_power_m)+'M':'—')+'</td><td>'+fmt(p.mystic_total)+'</td></tr>').join('');
+  $('#enemyPlayers').innerHTML=opp.map(p=>'<tr><td>'+p.personal_power_rank+'</td><td>'+p.player_name+'</td><td>'+(p.alliance_tag||'—')+'</td><td>'+fmt(p.personal_power_m)+'M</td><td>'+fmt(p.mystic_total)+'</td></tr>').join('');
+  const first5=opp.slice(0,5);if(first5.length===5&&first5.every(p=>p.mystic_total!=null))$('#enemyMysticTop5').textContent=fmt(first5.reduce((s,p)=>s+p.mystic_total,0));
 }).catch(()=>{});
 </script>
 </body>
