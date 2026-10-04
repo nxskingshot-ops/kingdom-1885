@@ -1,6 +1,26 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#2c2118"><title>KvK Comparison · #1885 vs #1913</title><style>
 :root{--gold:#dfbf7c;--line:#9a7447;--ink:#2f2116;--muted:#725f47;--own:#214c69;--enemy:#843f37}
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(#2c2118,#17110c);color:var(--ink);font:13px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}.wrap{max-width:980px;margin:auto;padding:12px}.hero,.card,.metric{background:linear-gradient(#fff0ce,#efd6a5);border:1px solid var(--line);border-radius:13px}.hero{padding:14px}.kicker{font-size:10px;font-weight:900;letter-spacing:1.3px;color:#735529;text-transform:uppercase}.hero h1{margin:3px 0 4px;font:700 27px Georgia,serif}.hero p{margin:0;color:var(--muted)}.notice{margin-top:9px;padding:9px 10px;border:1px solid #9b7443;border-radius:10px;background:#ead39f;color:#5a4226}.summary{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}.metric{padding:10px}.metric span{display:block;font-size:10px;color:var(--muted)}.metric .pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}.own,.enemy{font-weight:900;font-size:18px}.own{color:var(--own)}.enemy{color:var(--enemy)}.labels{display:grid;grid-template-columns:1fr 1fr;font-size:10px;font-weight:900;letter-spacing:.06em;margin:10px 0 3px}.labels div:first-child{color:var(--own)}.labels div:last-child{color:var(--enemy);text-align:right}.card{padding:12px;margin-top:9px}.card h2{margin:0 0 8px;font:700 19px Georgia,serif}.row{display:grid;grid-template-columns:minmax(0,1fr) 96px 96px;gap:9px;align-items:center;padding:8px 0;border-top:1px solid #c7a877}.row:first-of-type{border-top:0}.name{font-weight:900}.sub{font-size:10px;color:var(--muted);margin-top:2px}.v{text-align:right;font-weight:900}.v.own,.v.enemy{font-size:13px}.foot{font-size:10px;color:#bca77e;margin:12px 2px}.pill{display:inline-block;border:1px solid #9b7443;border-radius:999px;padding:3px 6px;background:#f5e5bd;font-size:9px}@media(max-width:560px){.row{grid-template-columns:minmax(0,1fr) 72px 72px}.v.own,.v.enemy{font-size:12px}}</style></head><body><main class="wrap">
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(#2c2118,#17110c);color:var(--ink);font:13px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}.wrap{max-width:980px;margin:auto;padding:12px}.hero,.card,.metric{background:linear-gradient(#fff0ce,#efd6a5);border:1px solid var(--line);border-radius:13px}.hero{padding:14px}.kicker{font-size:10px;font-weight:900;letter-spacing:1.3px;color:#735529;text-transform:uppercase}.hero h1{margin:3px 0 4px;font:700 27px Georgia,serif}.hero p{margin:0;color:var(--muted)}.notice{margin-top:9px;padding:9px 10px;border:1px solid #9b7443;border-radius:10px;background:#ead39f;color:#5a4226}.summary{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}.metric{padding:10px}.metric span{display:block;font-size:10px;color:var(--muted)}.metric .pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}.own,.enemy{font-weight:900;font-size:18px}.own{color:var(--own)}.enemy{color:var(--enemy)}.labels{display:grid;grid-template-columns:1fr 1fr;font-size:10px;font-weight:900;letter-spacing:.06em;margin:10px 0 3px}.labels div:first-child{color:var(--own)}.labels div:last-child{color:var(--enemy);text-align:right}.card{padding:12px;margin-top:9px}.card h2{margin:0 0 8px;font:700 19px Georgia,serif}.row{display:grid;grid-template-columns:minmax(0,1fr) 96px 96px;gap:9px;align-items:center;padding:8px 0;border-top:1px solid #c7a877}.row:first-of-type{border-top:0}.name{font-weight:900}.sub{font-size:10px;color:var(--muted);margin-top:2px}.v{text-align:right;font-weight:900}.v.own,.v.enemy{font-size:13px}.foot{font-size:10px;color:#bca77e;margin:12px 2px}.pill{display:inline-block;border:1px solid #9b7443;border-radius:999px;padding:3px 6px;background:#f5e5bd;font-size:9px}@media(max-width:560px){.row{grid-template-columns:minmax(0,1fr) 72px 72px}.v.own,.v.enemy{font-size:12px}}
+.player-row[data-player]{cursor:pointer;position:relative;padding-right:34px}
+.player-row[data-player]::after{content:'›';position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:22px;font-weight:900;color:var(--enemy)}
+.player-row[data-player]:hover,.player-row[data-player]:focus{background:#f5e5bd;outline:2px solid #b88b4e;outline-offset:-2px}
+.watch-note{margin-top:7px;font-size:10px;color:var(--muted)}
+#playerIntel[hidden]{display:none}
+#playerIntel{position:fixed;inset:0;z-index:9999;background:#120d09cc;display:flex;align-items:center;justify-content:center;padding:12px}
+.player-intel-card{width:min(700px,100%);max-height:calc(100dvh - 24px);overflow:auto;background:linear-gradient(#fff0ce,#efd6a5);border:2px solid var(--line);border-radius:14px;box-shadow:0 16px 48px #000a;padding:14px;position:relative}
+.player-intel-close{position:absolute;right:10px;top:10px;width:32px;height:32px;border:1px solid var(--line);border-radius:8px;background:#f5e5bd;color:var(--ink);font-size:20px;font-weight:900}
+.player-intel-title{margin:0 42px 2px 0;font:700 23px Georgia,serif}
+.player-intel-alliance{color:var(--muted);font-weight:800}
+.threat{margin:10px 0;padding:9px 10px;border:1px solid #a87846;border-radius:9px;background:#ead39f;font-weight:900;color:#693128}
+.intel-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.intel-box{border:1px solid #c3a16e;border-radius:9px;background:#f8e8c4;padding:8px}
+.intel-box small{display:block;color:var(--muted);font-size:9px}.intel-box b{display:block;margin-top:2px}
+.hero-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:8px}
+.hero-chip{border:1px solid #c3a16e;border-radius:9px;background:#f8e8c4;padding:8px;min-width:0}
+.hero-chip b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hero-chip small{display:block;color:var(--muted);margin-top:2px}
+.privacy{margin-top:8px;padding:7px 8px;border:1px dashed #9b7443;border-radius:8px;color:var(--muted);font-size:10px}
+@media(max-width:700px){.intel-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style></head><body><main class="wrap">
 
 <section class="hero"><div class="kicker">Nexus App · KvK Enemy Intelligence</div><h1>Kingdom #1913</h1><p>Verified in-game snapshot · 04.10.2026 · current opponent of #1885</p></section>
 <div class="notice"><strong>Verified Ingame Data:</strong> current #1913 ranking screens. Public Real Power is not used here.</div>
@@ -30,8 +50,8 @@
 <div class="row"><div><div class="name">#5 [TTN] TITANS</div></div><div class="v enemy">53.7M</div></div></section>
 
 <section class="card"><h2>Personal Power · Top 10</h2>
-<div class="row"><div><div class="name">#1 [YCP] goo 대박</div></div><div class="v enemy">315.8M</div></div><div class="row"><div><div class="name">#2 [LwT] Dovik</div></div><div class="v enemy">282.0M</div></div><div class="row"><div><div class="name">#3 [LwT] Achilles</div></div><div class="v enemy">268.6M</div></div><div class="row"><div><div class="name">#4 [LwT] Greyjoy</div></div><div class="v enemy">245.5M</div></div><div class="row"><div><div class="name">#5 [007] Inigo Montoya</div></div><div class="v enemy">244.9M</div></div><div class="row"><div><div class="name">#6 [LwT] CoCo SNOW</div></div><div class="v enemy">241.2M</div></div><div class="row"><div><div class="name">#7 [LwT] Applerari</div></div><div class="v enemy">233.5M</div></div><div class="row"><div><div class="name">#8 [007] Ashybeeeee</div></div><div class="v enemy">230.0M</div></div><div class="row"><div><div class="name">#9 [CMR] Psychostick0</div></div><div class="v enemy">225.5M</div></div><div class="row"><div><div class="name">#10 [LwT] KIA BONGO³</div></div><div class="v enemy">219.1M</div></div>
-<div class="legend">Top 40 captured; compact view shows the top 10.</div></section>
+<div class="row player-row" data-player="goo 대박" tabindex="0" role="button"><div><div class="name">#1 [YCP] goo 대박</div><div class="sub">Player Intel available</div></div><div class="v enemy">315.8M</div></div><div class="row player-row" data-player="Dovik" tabindex="0" role="button"><div><div class="name">#2 [LwT] Dovik</div><div class="sub">Player Intel available</div></div><div class="v enemy">282.0M</div></div><div class="row player-row" data-player="Achilles" tabindex="0" role="button"><div><div class="name">#3 [LwT] Achilles</div><div class="sub">Player Intel available</div></div><div class="v enemy">268.6M</div></div><div class="row player-row" data-player="Greyjoy" tabindex="0" role="button"><div><div class="name">#4 [LwT] Greyjoy</div><div class="sub">Player Intel available</div></div><div class="v enemy">245.5M</div></div><div class="row player-row" data-player="Inigo Montoya" tabindex="0" role="button"><div><div class="name">#5 [007] Inigo Montoya</div><div class="sub">Player Intel available</div></div><div class="v enemy">245.1M</div></div><div class="row"><div><div class="name">#6 [LwT] CoCo SNOW</div></div><div class="v enemy">241.2M</div></div><div class="row"><div><div class="name">#7 [LwT] Applerari</div></div><div class="v enemy">233.5M</div></div><div class="row"><div><div class="name">#8 [007] Ashybeeeee</div></div><div class="v enemy">230.0M</div></div><div class="row"><div><div class="name">#9 [CMR] Psychostick0</div></div><div class="v enemy">225.5M</div></div><div class="row"><div><div class="name">#10 [LwT] KIA BONGO³</div></div><div class="v enemy">219.1M</div></div>
+<div class="legend">Top 40 captured; compact view shows the top 10.</div><div class="watch-note">Tap the highlighted Top-5 players for verified Player Intel details.</div></section>
 
 <section class="card"><h2>City Center / TG Depth · Top 40</h2>
 <div class="row"><div><div class="name">TG5</div></div><div class="v enemy">15</div></div>
@@ -46,5 +66,60 @@
 <div class="row"><div><div class="name">Companion Power</div><div class="sub">Greyjoy</div></div><div class="v enemy">12.598M</div></div></section>
 
 <section class="card"><h2>Current Data Scope</h2><div class="sub">Verified now: Alliance Power · Alliance Kills · Personal Power Top 40 · City Center/TG Top 40 · Hero Power Top 40 · Total Hero Power Top 40 · Mystic Trial Top 40 · Companion Power Top 40.</div><div class="sub" style="margin-top:8px">Level-19-gated specialist rankings are intentionally not required for this KvK snapshot.</div></section>
+
+<div id="playerIntel" hidden aria-hidden="true"><section class="player-intel-card" role="dialog" aria-modal="true" aria-labelledby="playerIntelTitle"><button type="button" class="player-intel-close" aria-label="Close">×</button><div class="kicker">Nexus App · Player Intel</div><h2 class="player-intel-title" id="playerIntelTitle">Player</h2><div class="player-intel-alliance" id="playerIntelAlliance"></div><div class="threat" id="playerIntelThreat"></div><div class="intel-grid" id="playerIntelGrid"></div><h3 style="margin:12px 0 0;font:700 16px Georgia,serif">Arena Heroes</h3><div class="hero-grid" id="playerIntelHeroes"></div><div class="privacy" id="playerIntelPrivacy" hidden></div><div class="watch-note">Verified profile snapshot · 04.10.2026 · no estimated values</div></section></div>
 <div class="foot">Verified Ingame Snapshot · Kingdom #1913 · 04.10.2026 · Nexus App</div>
-</main></body></html>
+</main>
+<script>
+(()=>{'use strict';
+const overlay=document.getElementById('playerIntel');
+const title=document.getElementById('playerIntelTitle');
+const alliance=document.getElementById('playerIntelAlliance');
+const threat=document.getElementById('playerIntelThreat');
+const grid=document.getElementById('playerIntelGrid');
+const heroes=document.getElementById('playerIntelHeroes');
+const privacy=document.getElementById('playerIntelPrivacy');
+const close=overlay.querySelector('.player-intel-close');
+let players=new Map();
+
+const threatText={
+ 'goo 대박':'Top whale · #1 Power · #2 Migrant · #3 Kills · #3 Mystic',
+ 'Achilles':'High combat relevance · #1 Kills · #1 Migrant · #2 Mystic',
+ 'Greyjoy':'Elite build depth · #1 Mystic · #2 Kills · Hero/Companion leader',
+ 'Dovik':'High raw power · #2 Power · lower current Kills/Mystic ranks',
+ 'Inigo Montoya':'Balanced high-value profile · #4 Migrant · #5 Mystic'
+};
+const fmt=n=>n===null||n===undefined?'—':Number(n).toLocaleString('en-US',{maximumFractionDigits:3});
+const boxes=p=>[
+ ['Power',p.personal_power_m!=null?fmt(p.personal_power_m)+'M':'—'],
+ ['Town Center',p.castle||'—'],
+ ['Kills',p.kills_m!=null?fmt(p.kills_m)+'M'+(p.kills_rank?' · #'+p.kills_rank:''):'—'],
+ ['Mystic Trial',p.mystic_total!=null?fmt(p.mystic_total)+(p.mystic_rank?' · #'+p.mystic_rank:''):'—'],
+ ['Migrant',p.migrant_score!=null?fmt(p.migrant_score)+(p.migrant_rank?' · #'+p.migrant_rank:''):p.migrant_status||'—'],
+ ['Alliance Rank',p.alliance_rank||'—']
+];
+function openPlayer(name){
+ const p=players.get(name); if(!p)return;
+ title.textContent=p.player_name;
+ alliance.textContent='['+(p.alliance_tag||'—')+'] · Personal Power Rank #'+(p.personal_power_rank||'—');
+ threat.textContent=threatText[name]||'Verified opponent profile';
+ grid.replaceChildren(...boxes(p).map(([k,v])=>{const el=document.createElement('div');el.className='intel-box';const s=document.createElement('small');s.textContent=k;const b=document.createElement('b');b.textContent=v;el.append(s,b);return el;}));
+ heroes.replaceChildren(...((p.arena_heroes||[]).map(h=>{const el=document.createElement('div');el.className='hero-chip';const b=document.createElement('b');b.textContent=h.hero;const s=document.createElement('small');s.textContent=(h.stars||'—')+' · Lv '+(h.hero_level??'—')+' · Widget '+(h.widget_level??'—');el.append(b,s);return el;})));
+ privacy.hidden=!p.governor_gear_privacy;
+ privacy.textContent=p.governor_gear_privacy?'Governor Gear privacy is active — equipment is intentionally not inferred.':'';
+ overlay.hidden=false;overlay.setAttribute('aria-hidden','false');close.focus();
+}
+function closePlayer(){overlay.hidden=true;overlay.setAttribute('aria-hidden','true');}
+close.addEventListener('click',closePlayer);
+overlay.addEventListener('click',e=>{if(e.target===overlay)closePlayer();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!overlay.hidden)closePlayer();});
+document.querySelectorAll('.player-row[data-player]').forEach(row=>{
+ row.addEventListener('click',()=>openPlayer(row.dataset.player));
+ row.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openPlayer(row.dataset.player);}});
+});
+fetch('../data/kvk-opponent-intelligence-current.json?build=player-intel-20261004-v1',{cache:'no-store'})
+ .then(r=>{if(!r.ok)throw Error('HTTP '+r.status);return r.json();})
+ .then(data=>{players=new Map((data.opponent_players||[]).filter(p=>p.profile_verified_at).map(p=>[p.player_name,p]));})
+ .catch(err=>console.warn('Player Intel data unavailable',err));
+})();
+</script></body></html>
