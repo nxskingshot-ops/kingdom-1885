@@ -130,8 +130,8 @@ header>div{min-width:0}
 
 
 <section class="kvk-cycle-panel" id="kvk-cycle-planner" aria-labelledby="kvkCycleHeading">
-  <div class="kvk-cycle-head"><div><div class="kvk-cycle-title" id="kvkCycleHeading">Kingdom of Power · Current Cycle</div><div class="kvk-cycle-sub">Kingdom #1885 · verified phase timing + planning layer</div></div><div class="kvk-cycle-tag" id="kvkCycleStatus">🟡 PRE-MATCHMAKING</div></div>
-  <div class="kvk-cycle-meta"><div class="kvk-cycle-box"><span>OUR KINGDOM</span><b>#1885</b></div><div class="kvk-cycle-box"><span>OPPONENT</span><b>Not matched yet</b></div></div>
+  <div class="kvk-cycle-head"><div><div class="kvk-cycle-title" id="kvkCycleHeading">Kingdom of Power · Current Cycle</div><div class="kvk-cycle-sub">Kingdom #1885 vs #1913 · confirmed KvK matchup · planning layer</div></div><div class="kvk-cycle-tag" id="kvkCycleStatus">🎯 MATCHED · #1913</div></div>
+  <div class="kvk-cycle-meta"><div class="kvk-cycle-box"><span>OUR KINGDOM</span><b>#1885</b></div><div class="kvk-cycle-box"><span>OPPONENT</span><b>#1913</b></div></div>
   <div class="kvk-cycle-line">
     <div class="kvk-cycle-step active" data-phase="matchmaking"><div class="kvk-cycle-dot"></div><strong>Matchmaking</strong><small>03–04 Oct</small></div>
     <div class="kvk-cycle-step" data-phase="preparation"><div class="kvk-cycle-dot"></div><strong>Preparation</strong><small>05 Oct → 10 Oct · 10:00 UTC</small></div>
@@ -139,7 +139,7 @@ header>div{min-width:0}
     <div class="kvk-cycle-step" data-phase="triage"><div class="kvk-cycle-dot"></div><strong>Field Triage</strong><small>after Battle</small></div>
   </div>
   <div class="kvk-cycle-strip">
-    <div class="kvk-cycle-mini"><span>NEXT / CURRENT</span><b id="kvkCycleNext">Matchmaking</b><em id="kvkCycleNextTime">03 Oct · 00:00 UTC</em></div>
+    <div class="kvk-cycle-mini"><span>NEXT / CURRENT</span><b id="kvkCycleNext">Preparation</b><em id="kvkCycleNextTime">05 Oct · 00:00 UTC</em></div>
     <div class="kvk-cycle-mini"><span>PREP DURATION</span><b>5 days + 10 h</b><em>official Kingshot timing</em></div>
     <div class="kvk-cycle-mini"><span>NXS PREP POINTS</span><b>Starts 05 Oct</b><em>live values not available yet</em></div>
     <div class="kvk-cycle-mini"><span>RELATIVE PREP EFFICIENCY</span><b>Awaiting data</b><em>needs verified Prep-point totals</em></div>
@@ -228,7 +228,7 @@ header>div{min-width:0}
  const now=Date.now(), t=s=>Date.parse(s);
  const mm0=t('2026-10-03T00:00:00Z'), prep0=t('2026-10-05T00:00:00Z'), battle0=t('2026-10-10T10:00:00Z'), triage0=t('2026-10-10T22:00:00Z');
  let phase='pre',label='🟡 PRE-MATCHMAKING',next='Matchmaking',nextTime='03 Oct · 00:00 UTC';
- if(now>=mm0&&now<prep0){phase='matchmaking';label='🟠 MATCHMAKING';next='Preparation';nextTime='05 Oct · 00:00 UTC';}
+ if(now>=mm0&&now<prep0){phase='matchmaking';label='🎯 MATCHED · #1913';next='Preparation';nextTime='05 Oct · 00:00 UTC';}
  else if(now>=prep0&&now<battle0){phase='preparation';label='🟢 PREPARATION';next='Battle Phase';nextTime='10 Oct · 10:00 UTC';}
  else if(now>=battle0&&now<triage0){phase='battle';label='🔴 BATTLE PHASE';next="Field Triage";nextTime='after 22:00 UTC';}
  else if(now>=triage0){phase='triage';label='🟣 FIELD TRIAGE';next='Current cycle complete';nextTime='';}
@@ -435,13 +435,13 @@ if(all.error)throw all.error;pastChanges=all.data||[];
 const rosterResponse=await client.from('kvk_roster_history').select('snapshot_id,snapshot_date,player_id,player_name,power_m,castle,is_warning,identity_status').order('snapshot_date',{ascending:true}).limit(1000);
 if(rosterResponse.error)throw rosterResponse.error;rosterHistory=rosterResponse.data||[];
 warningHistory=new Map();for(const item of pastChanges){if(!item.player_id)continue;if(!warningHistory.has(item.player_id))warningHistory.set(item.player_id,new Set());warningHistory.get(item.player_id).add(item.snapshot_id)}
-$('timeLabel').textContent='Latest imported snapshot: '+last.snapshot_date+' · '+last.source_period;
+$('timeLabel').textContent='Last internal NXS data import: '+last.snapshot_date+' · '+last.source_period+' · current opponent: #1913';
 $('tracked').textContent=number(last.tracked_players);$('warnings').textContent=number(last.warning_count);$('castles').textContent=number(last.castle_upgrades);setMatchmakingRisk(last.risk_label);
 $('intervalRiskScore').textContent='Interval score: '+riskNumber(last.risk_score);
 $('cumulativeRiskScore').textContent=riskNumber(last.metadata?.cumulative_risk_score);
 $('cumulativeCastles').textContent=number(last.metadata?.cumulative_castle_events);
 $('cumulativePowerAlerts').textContent=number(last.metadata?.cumulative_power_alert_events);$('majorGains').textContent='+'+number(rows.filter(r=>Number(r.power_change_m)>1.5).reduce((sum,r)=>sum+Number(r.power_change_m||0),0))+'M';
-$('status').textContent='Protected data loaded · '+rows.length+' recorded player alerts · Snapshot '+last.snapshot_date+'. Refresh reloads the database only; a new game-data import is needed to update this snapshot.';
+$('status').textContent='Historical NXS tracking data loaded · '+rows.length+' recorded player alerts · last internal import '+last.snapshot_date+'. Current KvK opponent is #1913. Refresh reloads the database only; a new in-game data import is needed to refresh these NXS tracking values.';
 showData();render();renderFullRoster();overview();renderOperations();
 }catch(error){$('status').textContent='Could not load protected data: '+error.message;console.error(error);}
 finally{$('refresh').disabled=false;}
