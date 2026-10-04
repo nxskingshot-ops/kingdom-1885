@@ -32,8 +32,8 @@ The app reads protected `kvk_snapshots`, `kvk_player_changes`, and `kvk_roster_h
 
 ## Transfer Scouting
 
-The protected candidate board reads `transfer_candidates`, refreshes periodically, and lets verified R4/admin members add or edit real candidates. All database writes remain governed by Supabase row-level security. Ordinary members and temporary guests are read-only. The separately linked scouting demo contains fictional browser-local profiles and is not written to the live table.
+The protected candidate board reads `transfer_candidates`, refreshes periodically, and lets verified R4/R5/Admin members add or edit real candidates. All database writes remain governed by Supabase row-level security. Ordinary members and temporary guests are read-only. The separately linked scouting demo contains fictional browser-local profiles and is not written to the live table.
 
 ## Quality gate
 
-Confirm real-user sign-in on two devices, verify guest access and expiry, and manually test an R4 candidate edit before announcing automatic operation. Never publish private API credentials in GitHub Pages, Discord or browser source.
+Confirm real-user sign-in on two devices, verify guest access and expiry, and manually test an R4/R5 candidate edit before announcing automatic operation. Never publish private API credentials in GitHub Pages, Discord or browser source.
