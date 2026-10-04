@@ -14,13 +14,18 @@ Goal: perform every safe, non-device-dependent go-live task without changing the
 ### Access & roles
 A schema mismatch was found: the app offered Kingdom, Outpost Manager and R5 concepts, but the database membership constraint only accepted `member`, `r4`, `admin`.
 
-Fixed:
+Fixed end-to-end:
 - membership roles now support `kingdom`, `member`, `outpost_manager`, `r4`, `r5`, `admin`;
 - role hierarchy function aligned with those roles;
 - access-request RLS optimized and aligned for R4/R5/Admin review;
-- Outpost update RLS now permits Outpost Manager, R4/R5 and Admin;
+- access-review Edge Function now supports a distinct R5 grant;
+- main Access Requests UI exposes separate R4 and R5 grant choices;
+- central **Member Sign-in** entry added to the existing Access & Support menu;
+- Outpost update RLS permits Outpost Manager, R4/R5 and Admin;
 - browser Outpost Editor authorization aligned with the same role set;
-- active Supabase Outpost Editor edge page aligned with the same role set.
+- active Supabase Outpost Editor edge page aligned with the same role set;
+- current KvK client recognizes R5 as protected member access;
+- current Transfer Scouting LIVE client recognizes R5 as member access and R5 as editor/officer access.
 
 Current access-request table has no unreviewed request requiring an automatic decision. Existing approved test entries were left untouched.
 
@@ -83,7 +88,7 @@ The only remaining step for automatic Sheet → Supabase propagation is the one-
 
 ## Still requires a person/device
 
-- Real-user login/logout test for each intended role.
+- Real-user login/logout test for each intended role (Kingdom / Member / Outpost Manager / R4 / R5 / Admin).
 - Physical phone testing in portrait/landscape, PWA launch, Full Screen, Map Focus and keyboard behavior.
 - Run the one-time Google Apps Script authorization in the verified Outposts sheet, then perform one controlled edit/sync verification.
 - Enable Supabase leaked-password protection if available for the plan.
