@@ -26,7 +26,7 @@ function render(){
 async function refresh(){
  if(!authorized)return;
  $('status').textContent='Loading records…';
- const {data,error}=await db.from('public_outposts').select('id,source_key,alliance,structure_type,level,coord_x,coord_y,published,updated_at').order('id',{ascending:true}).limit(400);
+ const {data,error}=await db.from('public_outposts_verified_20261002').select('id,source_key,alliance,structure_type,level,coord_x,coord_y,published,updated_at').order('id',{ascending:true}).limit(400);
  if(error){$('status').textContent='Could not retrieve outposts: '+error.message;return;}
  records=data||[];if(!records.some(r=>r.id===selected))selected=null;
  render();$('status').textContent=records.length+' records loaded. Select a row to edit.';
@@ -55,7 +55,7 @@ $('editForm').onsubmit=async e=>{
  $('save').disabled=true;$('status').textContent='Saving to protected Supabase…';
  const payload={alliance,structure_type:structure,level,coord_x:x,coord_y:y,updated_at:new Date().toISOString()};
  try{
- const {data,error}=await db.from('public_outposts').update(payload).eq('id',original.id).select('id').maybeSingle();
+ const {data,error}=await db.from('public_outposts_verified_20261002').update(payload).eq('id',original.id).select('id').maybeSingle();
  if(error)throw error;if(!data)throw Error('Update denied by access rules or record not found.');
  await refresh();$('status').textContent='✓ Saved. Public map will refresh shortly.';
  }catch(error){$('status').textContent='Save failed: '+error.message;$('save').disabled=false;}
