@@ -44,7 +44,7 @@
     "opponent_player_profiles": {
       "snapshot_date": "2026-10-04",
       "source": "User-provided live player profile screenshots",
-      "scope": "Verified profile details for goo 대박, Dovik, Achilles and Greyjoy"
+      "scope": "Verified profile details for goo 대박, Dovik, Greyjoy and Inigo Montoya; Achilles captured separately pending persistence"
     }
   },
   "home_summary": {
@@ -453,7 +453,55 @@
       "personal_power_rank": 5,
       "player_name": "Inigo Montoya",
       "alliance_tag": "007",
-      "personal_power_m": 244.9
+      "personal_power_m": 245.1,
+      "alliance_rank": "R4",
+      "alliance_members": 88,
+      "castle": "TG5",
+      "kills_m": 20.5,
+      "kills_rank": 14,
+      "migrant_score": 669508,
+      "migrant_rank": 4,
+      "mystic_total": 1537,
+      "mystic_rank": 5,
+      "governor_gear_privacy": true,
+      "arena_heroes": [
+        {
+          "slot": 1,
+          "hero": "Hilde",
+          "stars": "5-Star",
+          "hero_level": 80,
+          "widget_level": 10
+        },
+        {
+          "slot": 2,
+          "hero": "Eric",
+          "stars": "4-Star (Tier 5)",
+          "hero_level": 80,
+          "widget_level": 3
+        },
+        {
+          "slot": 3,
+          "hero": "Amadeus",
+          "stars": "5-Star",
+          "hero_level": 80,
+          "widget_level": 10
+        },
+        {
+          "slot": 4,
+          "hero": "Petra",
+          "stars": "5-Star",
+          "hero_level": 80,
+          "widget_level": 10
+        },
+        {
+          "slot": 5,
+          "hero": "Marlin",
+          "stars": "5-Star",
+          "hero_level": 80,
+          "widget_level": 10
+        }
+      ],
+      "profile_verified_at": "2026-10-04"
     },
     {
       "personal_power_rank": 6,
