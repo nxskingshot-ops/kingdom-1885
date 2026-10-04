@@ -486,7 +486,8 @@ function renderNexusAccessRequests(rows){
    ['kingdom','Kingdom member · public/basic'],
    ['member','NXS Member · protected intelligence'],
    ['outpost','Outpost Manager · editor only'],
-   ['officer','NXS R4/R5 · protected + editor'],
+   ['officer','NXS R4 · protected + editor'],
+   ['r5','NXS R5 · protected + editor'],
    ['admin','Admin · full access']
   ].forEach(([value,label])=>{const option=document.createElement('option');option.value=value;option.textContent=label;grant.append(option);});
   grant.value=defaultNexusGrant(row);
