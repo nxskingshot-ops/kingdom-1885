@@ -232,7 +232,7 @@ function selectKvkSubsection(value){
  document.body.classList.toggle('kvk-comparison',subsection==='comparison');
  document.body.classList.toggle('kvk-trends',subsection==='trends');
  for(const [name,id] of Object.entries({dashboard:'kvkDashboardButton',enemy:'kvkEnemyButton',controlling:'kvkControllingButton',comparison:'kvkComparisonButton',trends:'kvkTrendsButton'}))document.getElementById(id).setAttribute('aria-pressed',String(name===subsection));
- if(subsection==='enemy'&&!kvkEnemyLoaded){kvkEnemy.src='./kvk-enemy-1913.html?build=1913-public-v1';kvkEnemyLoaded=true;}
+ if(subsection==='enemy'&&!kvkEnemyLoaded){kvkEnemy.src='./kvk-enemy-1913.html?build=1913-ingame-v1';kvkEnemyLoaded=true;}
  if(subsection==='controlling'&&!kvkControllingLoaded){kvkControlling.src='./alliance-trends-ring-test.html?section=kvk&build=distinct-control-v2';kvkControllingLoaded=true;}
  if(subsection==='comparison'&&!allianceComparisonLoaded){allianceComparison.src='./alliance-trends-ring-test.html?section=comparison&build=decisive-kvk-force-v1';allianceComparisonLoaded=true;}
  if(subsection==='trends'&&!allianceTrendsLoaded){allianceTrends.src='./alliance-trends-ring-test.html?section=trends&build=distinct-control-v2';allianceTrendsLoaded=true;}
