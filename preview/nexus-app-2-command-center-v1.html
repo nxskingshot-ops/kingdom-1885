@@ -90,6 +90,22 @@ button{font:inherit}
 @media(max-width:430px){
   .crest{width:58px;height:58px}.brand h1{font-size:25px}.main{padding-inline:8px}.metric-row{grid-template-columns:1fr 1fr}.metric:last-child{grid-column:span 2}.quick-grid{grid-template-columns:1fr 1fr}.card-body{padding:12px}.header-actions{margin-left:auto}
 }
+
+.player-intel-overlay{position:fixed;inset:0;z-index:95;background:rgba(2,8,13,.82);backdrop-filter:blur(4px);display:none;padding:12px;align-items:center;justify-content:center}
+.player-intel-overlay.open{display:flex}
+.player-intel-panel{width:min(920px,100%);max-height:calc(100dvh - 24px);overflow:auto;border:1px solid rgba(224,176,58,.72);border-radius:14px;background:linear-gradient(180deg,#0b2032,#06131f);box-shadow:0 18px 60px rgba(0,0,0,.62);padding:16px}
+.player-intel-top{display:flex;align-items:center;gap:10px;margin-bottom:12px}.player-intel-top h3{margin:0;font:700 23px Georgia,serif;color:#f3d273}.player-intel-top .close{margin-left:auto;width:40px;height:40px;border:1px solid #765d2b;border-radius:8px;background:#071725;color:#f2d271;font-size:20px}
+.player-watch-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px}
+.player-watch{border:1px solid #28516e;border-radius:10px;background:#091b2a;color:#eaf5fd;padding:10px;text-align:left;cursor:pointer}
+.player-watch.active,.player-watch:hover{border-color:#d5a941;box-shadow:inset 0 0 14px rgba(217,169,59,.1)}
+.player-watch b{display:block;color:#f2d271}.player-watch small{display:block;color:#91a7ba;margin-top:3px}
+.player-detail{margin-top:12px;border:1px solid #244f70;border-radius:12px;background:#081a29;padding:13px}
+.player-detail h4{margin:0;font:700 20px Georgia,serif;color:#f4d178}.player-detail .subline{color:#a8bad0;font-size:12px;margin-top:3px}
+.player-threat{margin:10px 0;padding:8px 10px;border:1px solid #7f6130;border-radius:8px;background:rgba(137,95,22,.18);color:#f2d271;font-weight:700}
+.player-metrics{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px}.player-metric{padding:8px;border:1px solid #214761;border-radius:8px;background:#071825}.player-metric span{display:block;font-size:10px;color:#8fa7ba}.player-metric b{display:block;margin-top:2px;font-size:13px}
+.player-heroes{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin-top:10px}.player-hero{padding:8px;border:1px solid #214761;border-radius:8px;background:#071825}.player-hero b{display:block}.player-hero small{display:block;color:#8fa7ba;margin-top:2px}
+.player-note{margin-top:9px;color:#879eb2;font-size:10px}
+@media(max-width:760px){.player-watch-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.player-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.player-heroes{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -116,7 +132,7 @@ button{font:inherit}
       <button><span class="ico">👥</span><span>Alliance<br>Intelligence</span></button>
       <button><span class="ico">◉</span><span>Transfer<br>Scouting</span></button>
       <button><span class="ico">⌖</span><span>Outpost Map</span></button>
-      <button><span class="ico">♟</span><span>Player<br>Intelligence</span></button>
+      <button data-open-player-intel><span class="ico">♟</span><span>Player<br>Intelligence</span></button>
       <button><span class="ico">✦</span><span>Operations<br>Center</span></button>
       <button><span class="ico">▤</span><span>Briefing<br>Center</span></button>
       <div class="divider"></div>
@@ -131,7 +147,7 @@ button{font:inherit}
     <section class="hero">
       <img src="../icon-192.png" alt="">
       <div class="hero-copy"><h2>Command Center</h2><p>Strategy. Intelligence. Coordination. Victory.</p></div>
-      <div class="status"><span class="pill ok">● Data Readiness: <strong>Good</strong></span><span class="pill">Last Confirmed: <strong>03.10.26</strong></span></div>
+      <div class="status"><span class="pill ok">● Data Readiness: <strong>Good</strong></span><span class="pill">Last Confirmed: <strong>04.10.26</strong></span></div>
     </section>
 
     <section class="grid">
@@ -163,7 +179,7 @@ button{font:inherit}
       <article class="card missions">
         <div class="card-header"><span>⚔</span><h3>Mission Priorities</h3><span class="mini">NEXT ACTIONS</span></div>
         <div class="card-body">
-          <div class="mission"><span class="badge info">1</span><div><div class="item-title">Complete Enemy Intelligence baseline</div><div class="item-sub">Kingdom #1842 · Key Threats · Combat Depth · Command Strength</div></div><span class="tag gold" style="margin-left:auto">High</span></div>
+          <div class="mission"><span class="badge info">1</span><div><div class="item-title">Complete Enemy Intelligence baseline</div><div class="item-sub">Kingdom #1913 · Key Threats · Combat Depth · Player Intel</div></div><span class="tag gold" style="margin-left:auto">High</span></div>
           <div class="mission"><span class="badge info">2</span><div><div class="item-title">Confirm Battle Assignments</div><div class="item-sub">Rally Leads, Garrison, Support Forces and Strategic Positions</div></div><span class="tag" style="margin-left:auto">Open</span></div>
           <div class="mission"><span class="badge info">3</span><div><div class="item-title">Update alliance snapshots</div><div class="item-sub">NXS · OoO · MYM · FRA</div></div><span class="tag" style="margin-left:auto">Planned</span></div>
         </div>
@@ -173,7 +189,7 @@ button{font:inherit}
         <div class="card-header"><span>↻</span><h3>Situation Updates</h3><span class="mini">RECENT</span></div>
         <div class="card-body">
           <div class="update"><span class="badge info">↗</span><div><div class="item-title">NXS alliance power increased</div><div class="item-sub">Latest aggregate snapshot registered.</div></div></div>
-          <div class="update"><span class="badge info">◎</span><div><div class="item-title">Enemy mega-whale identified</div><div class="item-sub">Lord Z [FFS] flagged as a high-impact target.</div></div></div>
+          <div class="update"><span class="badge info">◎</span><div><div class="item-title">Enemy Player Intel expanded</div><div class="item-sub">Verified profiles added for the current #1913 top threats.</div></div></div>
           <div class="update"><span class="badge info">✓</span><div><div class="item-title">Nexus App 2.0 shell created</div><div class="item-sub">Separate preview — live Nexus App remains untouched.</div></div></div>
         </div>
       </article>
@@ -196,6 +212,15 @@ button{font:inherit}
 </div>
 </div>
 
+<div class="player-intel-overlay" id="playerIntelOverlay" aria-hidden="true">
+  <section class="player-intel-panel" role="dialog" aria-modal="true" aria-labelledby="playerIntelHeading">
+    <div class="player-intel-top"><span>♟</span><h3 id="playerIntelHeading">Player Intelligence · Kingdom #1913</h3><button class="close" id="playerIntelClose" type="button" aria-label="Close">✕</button></div>
+    <div class="player-watch-grid" id="playerWatchGrid"></div>
+    <div class="player-detail" id="playerIntelDetail"><div class="item-sub">Loading verified Player Intel…</div></div>
+    <div class="player-note">Verified profile snapshots · 04.10.2026 · no estimated values</div>
+  </section>
+</div>
+
 <div class="overlay" id="overlay">
   <aside class="drawer">
     <div class="drawer-top"><h3>Nexus App 2.0</h3><button class="close" id="closeBtn">✕</button></div>
@@ -207,7 +232,7 @@ button{font:inherit}
       <button><span class="ico">👥</span><span>Alliance Intelligence</span></button>
       <button><span class="ico">◉</span><span>Transfer Scouting</span></button>
       <button><span class="ico">⌖</span><span>Outpost Map</span></button>
-      <button><span class="ico">♟</span><span>Player Intelligence</span></button>
+      <button data-open-player-intel><span class="ico">♟</span><span>Player Intelligence</span></button>
       <button><span class="ico">✦</span><span>Operations Center</span></button>
       <button><span class="ico">▤</span><span>Briefing Center</span></button>
     </div>
@@ -218,6 +243,69 @@ button{font:inherit}
 </div>
 
 <script>
+const playerIntelOverlay=document.getElementById('playerIntelOverlay');
+const playerIntelClose=document.getElementById('playerIntelClose');
+const playerWatchGrid=document.getElementById('playerWatchGrid');
+const playerIntelDetail=document.getElementById('playerIntelDetail');
+let playerIntelMap=new Map();
+const threatText={
+ 'goo 대박':'Top whale · #1 Power · #2 Migrant · #3 Kills · #3 Mystic',
+ 'Achilles':'High combat relevance · #1 Kills · #1 Migrant · #2 Mystic',
+ 'Greyjoy':'Elite build depth · #1 Mystic · #2 Kills · Hero/Companion leader',
+ 'Dovik':'High raw power · #2 Power · lower current Kills/Mystic ranks',
+ 'Inigo Montoya':'Balanced high-value profile · #4 Migrant · #5 Mystic'
+};
+const fmt=n=>n===null||n===undefined?'—':Number(n).toLocaleString('en-US',{maximumFractionDigits:3});
+function renderPlayerDetail(name){
+ const p=playerIntelMap.get(name); if(!p)return;
+ for(const b of playerWatchGrid.querySelectorAll('.player-watch'))b.classList.toggle('active',b.dataset.player===name);
+ const metric=(label,value)=>'<div class="player-metric"><span>'+label+'</span><b>'+value+'</b></div>';
+ const hero=(h)=>'<div class="player-hero"><b>'+h.hero+'</b><small>'+h.stars+' · Lv '+h.hero_level+' · Widget '+h.widget_level+'</small></div>';
+ const migrant=p.migrant_score!=null?fmt(p.migrant_score)+(p.migrant_rank?' · #'+p.migrant_rank:''):(p.migrant_status||'—');
+ playerIntelDetail.innerHTML=
+  '<h4>'+p.player_name+'</h4><div class="subline">['+(p.alliance_tag||'—')+'] · Personal Power Rank #'+(p.personal_power_rank||'—')+'</div>'+
+  '<div class="player-threat">'+(threatText[name]||'Verified opponent profile')+'</div>'+
+  '<div class="player-metrics">'+
+    metric('Power',p.personal_power_m!=null?fmt(p.personal_power_m)+'M':'—')+
+    metric('Town Center',p.castle||'—')+
+    metric('Kills',p.kills_m!=null?fmt(p.kills_m)+'M'+(p.kills_rank?' · #'+p.kills_rank:''):'—')+
+    metric('Mystic',p.mystic_total!=null?fmt(p.mystic_total)+(p.mystic_rank?' · #'+p.mystic_rank:''):'—')+
+    metric('Migrant',migrant)+
+    metric('Alliance Rank',p.alliance_rank||'—')+
+  '</div>'+
+  '<div class="player-heroes">'+(p.arena_heroes||[]).map(hero).join('')+'</div>'+
+  (p.governor_gear_privacy?'<div class="player-note">Governor Gear privacy active — equipment is not inferred.</div>':'');
+}
+function openPlayerIntel(){
+ overlay.classList.remove('open');
+ playerIntelOverlay.classList.add('open');playerIntelOverlay.setAttribute('aria-hidden','false');
+ if(playerIntelMap.size){
+   const preferred=['Achilles','goo 대박','Greyjoy','Dovik','Inigo Montoya'].find(n=>playerIntelMap.has(n));
+   if(preferred)renderPlayerDetail(preferred);
+ }
+}
+function closePlayerIntel(){playerIntelOverlay.classList.remove('open');playerIntelOverlay.setAttribute('aria-hidden','true');}
+document.querySelectorAll('[data-open-player-intel]').forEach(btn=>btn.addEventListener('click',openPlayerIntel));
+playerIntelClose.addEventListener('click',closePlayerIntel);
+playerIntelOverlay.addEventListener('click',e=>{if(e.target===playerIntelOverlay)closePlayerIntel();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&playerIntelOverlay.classList.contains('open'))closePlayerIntel();});
+fetch('../data/kvk-opponent-intelligence-current.json?build=command-center-player-intel-v1',{cache:'no-store'})
+ .then(r=>{if(!r.ok)throw Error('HTTP '+r.status);return r.json();})
+ .then(data=>{
+   const wanted=['goo 대박','Achilles','Greyjoy','Dovik','Inigo Montoya'];
+   const players=(data.opponent_players||[]).filter(p=>wanted.includes(p.player_name)&&p.profile_verified_at);
+   playerIntelMap=new Map(players.map(p=>[p.player_name,p]));
+   playerWatchGrid.replaceChildren(...wanted.filter(n=>playerIntelMap.has(n)).map(name=>{
+     const p=playerIntelMap.get(name),b=document.createElement('button');b.type='button';b.className='player-watch';b.dataset.player=name;
+     const strong=document.createElement('b');strong.textContent=name;
+     const small=document.createElement('small');small.textContent='['+(p.alliance_tag||'—')+'] · '+fmt(p.personal_power_m)+'M';
+     b.append(strong,small);b.addEventListener('click',()=>renderPlayerDetail(name));return b;
+   }));
+   const preferred=['Achilles','goo 대박','Greyjoy','Dovik','Inigo Montoya'].find(n=>playerIntelMap.has(n));
+   if(preferred)renderPlayerDetail(preferred);
+ })
+ .catch(err=>{playerIntelDetail.innerHTML='<div class="item-sub">Player Intel data unavailable. '+err.message+'</div>';});
+
 const overlay=document.getElementById('overlay');
 document.getElementById('menuBtn').onclick=()=>overlay.classList.add('open');
 document.getElementById('closeBtn').onclick=()=>overlay.classList.remove('open');
