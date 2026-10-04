@@ -3,6 +3,17 @@
 Status: **ACTIVE DESIGN FREEZE**
 Last updated: 2026-10-03
 
+
+## Binding master reference — 04.10.2026
+
+The user-approved Nexus App 2.0 master screenshot supplied on 04.10.2026 is the single binding visual reference for implementation.
+
+For all future Nexus App 2.0 work, the acceptance test is visual equivalence to that master: header composition, NXS crest position, Nexus App title/motto, centered 1885 crown-and-swords motif, left navigation, Opponent Intelligence / Battle Readiness switch, Kingdom Head-to-Head block, Mega-Whale, Depth Comparison, Alliance Structure, Players to Watch, True Power Head-to-Head, Power Distribution, navy/black base, gold framing, blue/red side coding, typography hierarchy, density, spacing, borders and overall proportions.
+
+No alternative layout, reinterpretation, modernization, simplification or unsolicited visual refinement is allowed. New functionality must fit into the frozen master rather than changing it.
+
+Portrait is a responsive reflow of the same frozen design system. It must preserve the same hierarchy, visual language and component styling without requiring landscape.
+
 ## Core rule
 
 The current Nexus App remains untouched. Nexus App 2.0 is developed separately as a parallel preview/test version.
