@@ -52,26 +52,40 @@ Verified in source:
 - update checker compares deployed shell content and checks for service-worker updates;
 - unsaved-input warning exists before applying an update.
 
-## Outpost source-of-truth audit — BLOCKER, no automatic overwrite
+## Outpost source-of-truth audit and alignment
 
-Live `public_outposts` currently contains 68 published rows, all marked `verified=false`.
-The separate verified 02.10 snapshot contains 74 published/verified rows.
+The canonical current dataset is now confirmed as **Kingdom 1885 – Verified Outposts – Nexus App** / `Outposts #1885`.
 
-Coordinate reconciliation:
-- 22 coordinates exist in both sets;
-- 12 are exact matches for owner/type/level;
-- 10 have the same structure/level but a different owner;
-- 46 live coordinates are absent from the verified snapshot;
-- 52 verified-snapshot coordinates are absent from live;
-- no same-coordinate structure/level mismatches were found among the 22 overlaps.
+Direct comparison on 04.10.2026 confirmed:
+- Google Sheet: 74 verified rows;
+- Supabase `public_outposts_verified_20261002`: 74 rows;
+- zero sheet-only rows;
+- zero database-only rows;
+- zero mismatches in structure, level, coordinates, owner, bonus, Verified status or Published status.
 
-Because the two datasets clearly represent different baselines rather than a simple six-row extension, the live table was **not** overwritten automatically. A human choice of canonical map baseline is required before destructive synchronization.
+The older `public_outposts` table contains a different 68-row legacy baseline and is no longer treated as the production map source.
+
+Aligned in code:
+- public map reads `public_outposts_verified_20261002`;
+- map reports use exactly the rows currently displayed by that map;
+- Outpost Editor now reads/writes `public_outposts_verified_20261002`;
+- editor RLS allows Outpost Manager, R4, R5 and Admin;
+- standalone Outpost Editor edge page was aligned to the same canonical table.
+
+A transactional verified-sheet synchronization path was added:
+- Edge Function: `verified-outpost-sync`;
+- database RPC validates the full verified dataset and replaces it atomically;
+- duplicate coordinates, invalid rows, unverified rows and implausibly small datasets are rejected;
+- exact-coordinate owner changes are logged before replacement;
+- integration script: `integrations/verified-outpost-sheet-sync.gs`.
+
+The only remaining step for automatic Sheet → Supabase propagation is the one-time Google Apps Script authorization by the sheet owner.
 
 ## Still requires a person/device
 
 - Real-user login/logout test for each intended role.
 - Physical phone testing in portrait/landscape, PWA launch, Full Screen, Map Focus and keyboard behavior.
-- Confirm which outpost dataset is the canonical current truth before replacing live data.
+- Run the one-time Google Apps Script authorization in the verified Outposts sheet, then perform one controlled edit/sync verification.
 - Enable Supabase leaked-password protection if available for the plan.
 - Confirm provider-level/off-project database disaster-recovery backup.
 - Visual pass for remaining layout issues that only reproduce on a tester device.
