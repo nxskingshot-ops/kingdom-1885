@@ -18,8 +18,9 @@
 html,body{margin:0;min-height:100%;background:#020914;color:var(--text);font-family:"Arial Narrow",Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
 body{overflow-x:hidden}
 button{font:inherit;color:inherit}
+.stage{width:100%;position:relative;overflow:visible}
 .master{
-  width:min(1280px,100vw);min-height:1280px;margin:0 auto;position:relative;
+  width:1280px;min-height:1280px;margin:0 auto;position:relative;transform-origin:top left;
   background:
     radial-gradient(circle at 56% -12%,rgba(50,104,139,.24),transparent 32%),
     linear-gradient(180deg,#051420 0,#03101a 100%);
@@ -40,14 +41,14 @@ button{font:inherit;color:inherit}
   transform:translateY(16px);z-index:3
 }
 .brand{padding-left:12px;text-shadow:0 3px 10px #000}
-.brand h1{margin:0;font:700 44px Georgia,serif;color:#f6cf6a;letter-spacing:.01em}
-.brand p{margin:2px 0 0;font:700 14px Georgia,serif;color:#f2cf63;letter-spacing:.03em}
+.brand h1{margin:0;font:700 42px Georgia,serif;color:#f6cf6a;letter-spacing:.01em;white-space:nowrap}
+.brand p{margin:2px 0 0;font:700 13px Georgia,serif;color:#f2cf63;letter-spacing:.03em;white-space:nowrap}
 .realm{
-  justify-self:center;display:flex;align-items:center;justify-content:center;gap:12px;width:310px;height:84px;
+  justify-self:center;display:flex;align-items:center;justify-content:center;gap:8px;width:310px;height:84px;
   color:#f7d569;text-shadow:0 3px 8px #000
 }
-.realm .sword{font-size:36px;line-height:1}.realm .crownbox{min-width:142px;text-align:center;position:relative}
-.realm .crownbox::before{content:"♛";display:block;font-size:30px;line-height:.8;color:#ffd978}
+.realm .sword{font-size:40px;line-height:1;color:#f4c85d}.realm .crownbox{min-width:142px;text-align:center;position:relative}
+.realm .crownbox::before{content:"♛";display:block;font-size:34px;line-height:.75;color:#ffd978}
 .realm strong{display:block;font:700 40px Georgia,serif;line-height:1}
 .actions{display:flex;justify-content:flex-end;gap:9px;padding-right:14px}
 .lang{display:flex;border:1px solid #2d5f84;border-radius:10px;overflow:hidden;background:#061725}
@@ -72,11 +73,11 @@ button{font:inherit;color:inherit}
   box-shadow:inset 4px 0 0 #f6cf64,0 0 15px rgba(212,167,55,.2)
 }
 .divider{height:1px;background:linear-gradient(90deg,transparent,#ab802c,transparent);margin:12px 0}
-.content{padding:14px 12px 12px;min-width:0}
+.content{padding:12px 12px 12px;min-width:0}
 /* TOP SWITCH */
-.switches{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:10px}
+.switches{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px}
 .switch{
-  min-height:88px;border:1px solid #3373a1;border-radius:9px;background:linear-gradient(180deg,#0a3150,#071b2c);
+  min-height:86px;border:1px solid #3373a1;border-radius:9px;background:linear-gradient(180deg,#0a3150,#071b2c);
   display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center
 }
 .switch.active{border-color:#e0b74d;box-shadow:inset 0 0 20px rgba(27,129,199,.22),0 0 13px rgba(229,185,74,.26)}
@@ -88,7 +89,7 @@ button{font:inherit;color:inherit}
 .panel-title .arrow{margin-left:auto;font-size:22px;color:#dbeaf6}
 .h2h{margin-bottom:10px}
 .h2h-head{height:42px;display:flex;align-items:center;padding:0 12px;font:700 21px Georgia,serif;border-bottom:1px solid rgba(63,109,139,.42)}
-.h2h-grid{display:grid;grid-template-columns:1fr 66px 1fr 214px;gap:12px;align-items:center;padding:10px 12px}
+.h2h-grid{display:grid;grid-template-columns:1fr 66px 1fr 214px;gap:10px;align-items:center;padding:9px 12px}
 .kbox{height:114px;border-radius:7px;border:1px solid;display:grid;grid-template-columns:94px 1fr;align-items:center;padding:9px;overflow:hidden;position:relative}
 .kbox::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 55%,rgba(255,255,255,.06))}
 .kbox.blue{border-color:#2f91df;background:linear-gradient(135deg,#0d4c78,#082843)}
@@ -102,7 +103,7 @@ button{font:inherit;color:inherit}
 }
 .status .ok{color:#62e2aa;font-weight:900}.status .details{margin-top:2px;border-top:1px solid #28506b;padding-top:4px;text-align:center}
 /* MIDDLE GRID */
-.mid{display:grid;grid-template-columns:1.13fr 1fr 1.05fr 1fr;gap:9px;margin-bottom:10px}
+.mid{display:grid;grid-template-columns:1.13fr 1fr 1.05fr 1fr;gap:8px;margin-bottom:10px}
 .whales{display:grid;grid-template-columns:1fr 1fr}
 .whale{padding:8px 8px 6px;text-align:center}.whale+.whale{border-left:1px solid #25506f}
 .whale .who{font-size:11px;color:#e8c65e}.whale strong{display:block;font-size:18px}.whale small{display:block}
@@ -134,7 +135,7 @@ button{font:inherit;color:inherit}
 .mobile-drawer{display:none;position:fixed;inset:0;z-index:80;background:#01070ddd;padding:12px}.mobile-drawer.open{display:block}.drawer-card{height:100%;overflow:auto;border:1px solid #8f6d28;border-radius:10px;background:linear-gradient(#071b2a,#031019);padding:12px}
 .player-modal{display:none;position:fixed;inset:0;z-index:90;background:#01070ddd;align-items:center;justify-content:center;padding:12px}.player-modal.open{display:flex}.player-card{width:min(760px,100%);max-height:calc(100dvh - 24px);overflow:auto;border:1px solid var(--gold);border-radius:9px;background:linear-gradient(#08243a,#04121e);padding:13px}.player-card .top{display:flex;align-items:center;gap:8px}.player-card h3{margin:0;color:#f0cd67;font:700 22px Georgia,serif}.close{margin-left:auto;border:1px solid #7f632a;border-radius:8px;background:#071623;width:38px;height:38px}.threat{margin:9px 0;padding:8px;border:1px solid #7e622c;border-radius:7px;background:#5e461c33;color:#f1d06c;font-weight:800}.intelgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.ibox,.hero{border:1px solid #285b80;border-radius:7px;background:#061725;padding:7px}.ibox small,.hero small{display:block;color:#8fa7bb}.heroes{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:8px}
 @media(max-width:900px) and (orientation:portrait){
-  .master{width:100%;min-height:100vh;border:0}
+  .stage{width:100%;height:auto!important;overflow:visible}.master{width:100%;min-height:100vh;border:0;transform:none!important;margin:0}
   .topbar{height:92px;grid-template-columns:84px minmax(0,1fr) 58px;background-position:center top}
   .crest-zone{border-right:1px solid rgba(213,168,60,.45)}.crest{width:78px;height:78px;transform:none}
   .brand{padding-left:10px;min-width:0}.brand h1{font-size:30px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.brand p{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -154,7 +155,8 @@ button{font:inherit;color:inherit}
 </style>
 </head>
 <body>
-<div class="master">
+<div class="stage" id="stage">
+<div class="master" id="masterCanvas">
 <header class="topbar">
   <div class="crest-zone"><img class="crest" src="../icon-192.png" alt="NXS"></div>
   <div class="brand"><h1>Nexus App</h1><p>many paths, many strengths, one force.</p></div>
@@ -239,6 +241,7 @@ button{font:inherit;color:inherit}
 </main>
 </div>
 </div>
+</div>
 
 <div class="mobile-drawer" id="mobileDrawer"><div class="drawer-card"><div style="display:flex;align-items:center"><b style="font:700 23px Georgia,serif;color:#f4d178">Nexus App</b><button class="close" id="drawerClose">✕</button></div><nav class="nav" style="margin-top:10px"><button><span class="ico">⌖</span>Outpost Map</button><button class="active"><span class="ico">⚔</span>KvK Prep</button><button><span class="ico">◉</span>Transfer Scouting</button><button><span class="ico">▥</span>Alliance Comparison</button><button><span class="ico">♜</span>About NEXUS</button><div class="divider"></div><button><span class="ico">⚙</span>Settings</button><button><span class="ico">?</span>Help</button><button><span class="ico">✉</span>Contact</button></nav></div></div>
 
@@ -246,6 +249,34 @@ button{font:inherit;color:inherit}
 
 <script>
 const $=s=>document.querySelector(s);
+
+function fitMasterToLandscape(){
+  const stage=document.getElementById('stage');
+  const master=document.getElementById('masterCanvas');
+  const portrait=window.matchMedia('(orientation: portrait)').matches;
+  if(portrait){
+    master.style.transform='none';
+    master.style.margin='0';
+    stage.style.height='auto';
+    return;
+  }
+  const base=1280;
+  const vw=document.documentElement.clientWidth;
+  if(vw < base){
+    const scale=vw/base;
+    master.style.margin='0';
+    master.style.transform='scale('+scale+')';
+    stage.style.height=(master.scrollHeight*scale)+'px';
+  }else{
+    master.style.transform='none';
+    master.style.margin='0 auto';
+    stage.style.height='auto';
+  }
+}
+window.addEventListener('resize',fitMasterToLandscape);
+window.addEventListener('orientationchange',()=>setTimeout(fitMasterToLandscape,120));
+window.addEventListener('load',fitMasterToLandscape);
+
 const fmt=n=>n===null||n===undefined?'—':Number(n).toLocaleString('en-US',{maximumFractionDigits:3});
 const threat={
  'goo 대박':'Top whale · #1 Power · #2 Migrant · #3 Kills · #3 Mystic',
@@ -278,7 +309,8 @@ fetch('../data/kvk-opponent-intelligence-current.json?build=master-design-final-
   $('#homePlayers').innerHTML=(d.home_players||[]).slice(0,10).map((p,i)=>'<tr><td>'+(i+1)+'</td><td>'+p.player_name+'</td><td>'+(p.alliance_tag||'—')+'</td><td>'+(p.total_power_m!=null?fmt(p.total_power_m)+'M':'—')+'</td><td>'+fmt(p.mystic_total)+'</td></tr>').join('');
   $('#enemyPlayers').innerHTML=opp.map(p=>'<tr><td>'+p.personal_power_rank+'</td><td>'+p.player_name+'</td><td>'+(p.alliance_tag||'—')+'</td><td>'+fmt(p.personal_power_m)+'M</td><td>'+fmt(p.mystic_total)+'</td></tr>').join('');
   const first5=opp.slice(0,5);if(first5.length===5&&first5.every(p=>p.mystic_total!=null))$('#enemyMysticTop5').textContent=fmt(first5.reduce((s,p)=>s+p.mystic_total,0));
-}).catch(()=>{});
+  requestAnimationFrame(fitMasterToLandscape);
+}).catch(()=>{requestAnimationFrame(fitMasterToLandscape);});
 </script>
 </body>
 </html>
