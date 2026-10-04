@@ -1,15 +1,30 @@
 # NXS #1885 – Data synchronization
 
-## Outpost Data → Map
+## Verified Outpost Data → Map
 
-The map reads published records from Supabase automatically about every 15 seconds. The backend `outpost-sync` accepts an authenticated import of the `Outpost Data` Google Sheet. To enable changes made **inside Google Sheets** to reach Supabase, the sheet owner must perform a one-time Apps Script authorization:
+The public map, Outpost Editor and map reports now use the same canonical Supabase table: `public_outposts_verified_20261002` (74 verified records at the 02.10.2026 baseline).
 
-1. Open [Kingdom 1885 – Live Outpost Map](https://docs.google.com/spreadsheets/d/1NVT4yzztbduo0B0VwXw6i-Do1HpiKUK6IQe1dHcjcWE/edit).
-2. Extensions → Apps Script → add the code from `integrations/outpost-sheet-sync.gs`.
-3. Project Settings → Script properties → set `NXS_OUTPOST_SYNC_SECRET` equal to the protected value configured server-side as `OUTPOST_SYNC_SECRET`. **Never commit or post the secret.**
-4. Run `nxsInstallOutpostTrigger`, approve Google permissions, and verify that the import reports the expected number of records.
+Canonical collaborative sheet:
+- **Kingdom 1885 – Verified Outposts – Nexus App**
+- tab: `Outposts #1885`
+- expected columns A:G: Outpost, Level, X, Y, Bonus, Owner #1885, Status
 
-The installable trigger responds to manual edits. Formula recalculation, API writes and row deletions are not automatically reflected by this trigger. The backend upserts rows by spreadsheet row number; avoid sorting/deleting rows until stable IDs and removal semantics are introduced.
+A transactional backend sync is available at the protected `verified-outpost-sync` Edge Function. It accepts only the authenticated shared-secret webhook, validates every row, rejects datasets below the safety threshold, rejects duplicate coordinates, requires every imported row to be marked `Verified`, records exact-coordinate ownership changes, and replaces the canonical table in one database transaction.
+
+To enable automatic changes made **inside the verified Google Sheet** to reach Supabase, the sheet owner must perform a one-time Apps Script authorization:
+
+1. Open **Kingdom 1885 – Verified Outposts – Nexus App**.
+2. Extensions → Apps Script → add the code from `integrations/verified-outpost-sheet-sync.gs`.
+3. Project Settings → Script properties → set `NXS_OUTPOST_SYNC_SECRET` equal to the protected server-side `OUTPOST_SYNC_SECRET`. **Never commit, paste into cells, or post the secret.**
+4. Run `nexusInstallVerifiedOutpostTrigger`, approve Google permissions, and verify that the result reports 74 rows.
+5. Make one controlled test edit, confirm the map/editor/report show the same result, then revert the test edit if it was only for validation.
+
+The installable trigger responds to manual edits. Changes made through APIs, formulas or other automations may not fire an `onEdit` trigger; run `nexusSyncVerifiedOutposts` explicitly after such changes.
+
+### Legacy source
+
+The older `Kingdom 1885 – Live Outpost Map` / `Outpost Data` flow and `integrations/outpost-sheet-sync.gs` write to the legacy `public_outposts` table. The production map no longer reads that legacy table. Do not use the legacy flow as the canonical map source.
+
 
 ## KvK Prep
 
