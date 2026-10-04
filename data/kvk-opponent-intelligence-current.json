@@ -44,7 +44,7 @@
     "opponent_player_profiles": {
       "snapshot_date": "2026-10-04",
       "source": "User-provided live player profile screenshots",
-      "scope": "Verified profile details for goo 대박 and Dovik"
+      "scope": "Verified profile details for goo 대박, Dovik, Achilles and Greyjoy"
     }
   },
   "home_summary": {
@@ -402,7 +402,52 @@
       "mystic_total": 1794,
       "hero_power_m": 11.947,
       "total_hero_power_m": 48.537,
-      "companion_power_m": 12.598
+      "companion_power_m": 12.598,
+      "alliance_rank": "R1",
+      "alliance_members": 93,
+      "castle": "TG3",
+      "kills_m": 39.6,
+      "kills_rank": 2,
+      "migrant_status": "Unranked",
+      "mystic_rank": 1,
+      "arena_heroes": [
+        {
+          "slot": 1,
+          "hero": "Eric",
+          "stars": "5-Star",
+          "hero_level": 80,
+          "widget_level": 10
+        },
+        {
+          "slot": 2,
+          "hero": "Amadeus",
+          "stars": "5-Star",
+          "hero_level": 80,
+          "widget_level": 10
+        },
+        {
+          "slot": 3,
+          "hero": "Marlin",
+          "stars": "5-Star",
+          "hero_level": 80,
+          "widget_level": 10
+        },
+        {
+          "slot": 4,
+          "hero": "Petra",
+          "stars": "5-Star",
+          "hero_level": 80,
+          "widget_level": 10
+        },
+        {
+          "slot": 5,
+          "hero": "Jaeger",
+          "stars": "5-Star",
+          "hero_level": 80,
+          "widget_level": 10
+        }
+      ],
+      "profile_verified_at": "2026-10-04"
     },
     {
       "personal_power_rank": 5,
