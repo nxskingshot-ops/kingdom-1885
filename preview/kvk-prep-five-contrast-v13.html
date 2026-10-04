@@ -260,7 +260,7 @@ async function membership(client,knownSession=null){
   });
   if(!response.ok)throw Error('Membership request failed (HTTP '+response.status+').');
   const records=await response.json(),record=records?.[0];
-  return !!record&&record.active===true&&['member','r4','admin'].includes(record.role)&&(!record.expires_at||Date.parse(record.expires_at)>Date.now());
+  return !!record&&record.active===true&&['member','r4','r5','admin'].includes(record.role)&&(!record.expires_at||Date.parse(record.expires_at)>Date.now());
  }catch(error){if(error.name==='AbortError')throw Error('Membership database is not responding (8s timeout).');throw error;}
  finally{clearTimeout(timeout);}
 }
