@@ -189,7 +189,7 @@ button{font:inherit;color:inherit}
       <div class="kbox blue"><img src="../icon-192.png" alt=""><div><b>Kingdom #1885</b><small class="alliance">NEXUS</small><strong id="homeTotal">38.13B</strong><small>(4 main alliances)</small></div></div>
       <div class="vs">VS</div>
       <div class="kbox red"><img src="../icon-192.png" alt=""><div><b>Kingdom #1913</b><small class="alliance">Current opponent</small><strong id="enemyTotal">41.75B</strong><small>(Top 5 alliances)</small></div></div>
-      <div class="status"><div>Data Status &nbsp; <span class="ok">● Verified partial</span></div><div>Last Update &nbsp; <b>04.10.26</b></div><div>Source &nbsp; <b>In-game snapshots</b></div><div class="details">View Details &nbsp;›</div></div>
+      <div class="status"><div>Data Status &nbsp; <span class="ok">● Core snapshot verified</span></div><div>Last Update &nbsp; <b>04.10.26</b></div><div>Source &nbsp; <b>In-game + MightPulse snapshots</b></div><div class="details">View Details &nbsp;›</div></div>
     </div>
 
     <div class="mid">
@@ -279,11 +279,13 @@ window.addEventListener('load',fitMasterToLandscape);
 
 const fmt=n=>n===null||n===undefined?'—':Number(n).toLocaleString('en-US',{maximumFractionDigits:3});
 const threat={
- 'goo 대박':'Top whale · #1 Power · #2 Migrant · #3 Kills · #3 Mystic',
- 'Achilles':'High combat relevance · #1 Kills · #1 Migrant · #2 Mystic',
- 'Greyjoy':'Elite build depth · #1 Mystic · #2 Kills · Hero/Companion leader',
- 'Dovik':'High raw power · #2 Power · lower current Kills/Mystic ranks',
- 'Inigo Montoya':'Balanced high-value profile · #4 Migrant · #5 Mystic'
+ 'Greyjoy':'Permanent-power monster · #1 Mystic / Hero base / Hero Equip / Pets / Research · proven Castle King',
+ 'Achilles':'Balanced elite · #3 Personal / #3 Troops · #2 Mystic · proven Castle King',
+ 'goo 대박':'All-round powerhouse · #1 Personal / Gear / Charms · #2 Troops / Hero depth',
+ 'Psychostick0':'Underrated permanent-power threat · #2 Gear · #3 Research · #4 Mystic / Hero Equip',
+ 'Dovik':'Troop-heavy whale · #1 Troops · #2 Personal · much lower permanent-development ranks',
+ 'Inigo Montoya':'High-value balanced threat · #3 Hero base · #4 Charms · #5 Mystic / Research',
+ 'iSureHopeItDoes':'Development-heavy elite · #2 Pets · #4 Hero base / Research · #7 Mystic'
 };
 let players=new Map();
 function addWatch(p){
@@ -294,7 +296,20 @@ function addWatch(p){
 function openPlayer(name){
   const p=players.get(name);if(!p)return;
   $('#pmName').textContent=p.player_name;$('#pmSub').textContent='['+(p.alliance_tag||'—')+'] · Power Rank #'+(p.personal_power_rank||'—');$('#pmThreat').textContent=threat[name]||'Verified opponent profile';
-  const m=[['Power',p.personal_power_m!=null?fmt(p.personal_power_m)+'M':'—'],['Town Center',p.castle||'—'],['Kills',p.kills_m!=null?fmt(p.kills_m)+'M · #'+(p.kills_rank||'—'):'—'],['Mystic',p.mystic_total!=null?fmt(p.mystic_total)+' · #'+(p.mystic_rank||'—'):'—'],['Migrant',p.migrant_score!=null?fmt(p.migrant_score)+' · #'+(p.migrant_rank||'—'):(p.migrant_status||'—')],['Alliance Rank',p.alliance_rank||'—']];
+  const m=[
+    ['Personal Power',p.personal_power_m!=null?fmt(p.personal_power_m)+'M · #'+(p.personal_power_rank||'—'):'—'],
+    ['Troop Power',p.troop_power_m!=null?fmt(p.troop_power_m)+'M · #'+(p.troop_power_rank||'—'):'—'],
+    ['Town Center',p.town_center_level!=null?'TC '+p.town_center_level:(p.castle||'—')],
+    ['Mystic',p.mystic_total!=null?fmt(p.mystic_total)+' · #'+(p.mystic_rank||'—'):'—'],
+    ['Governor Gear',p.governor_gear_m!=null?fmt(p.governor_gear_m)+'M · #'+(p.governor_gear_rank||'—'):'—'],
+    ['Governor Charms',p.governor_charm_m!=null?fmt(p.governor_charm_m)+'M · #'+(p.governor_charm_rank||'—'):'—'],
+    ['Hero w/o Equip',p.hero_no_equip_m!=null?fmt(p.hero_no_equip_m)+'M · #'+(p.hero_no_equip_rank||'—'):'—'],
+    ['Hero Equip',p.hero_equip_m!=null?fmt(p.hero_equip_m)+'M · #'+(p.hero_equip_rank||'—'):'—'],
+    ['Pet Power',p.pet_power_m!=null?fmt(p.pet_power_m)+'M · #'+(p.pet_power_rank||'—'):'—'],
+    ['Research',p.research_m!=null?fmt(p.research_m)+'M · #'+(p.research_rank||'—'):'—'],
+    ['Kills',p.kills_m!=null?fmt(p.kills_m)+'M · #'+(p.kills_rank||'—'):'—'],
+    ['Profile',p.profile_type||'Verified opponent profile']
+  ];
   $('#pmMetrics').innerHTML=m.map(x=>'<div class="ibox"><small>'+x[0]+'</small><b>'+x[1]+'</b></div>').join('');
   $('#pmHeroes').innerHTML=(p.arena_heroes||[]).map(h=>'<div class="hero"><b>'+h.hero+'</b><small>'+h.stars+' · Lv '+h.hero_level+' · Widget '+h.widget_level+'</small></div>').join('');
   $('#pmPrivacy').textContent=p.governor_gear_privacy?'Governor Gear privacy active — equipment is not inferred.':'Verified profile snapshot · 04.10.2026';$('#playerModal').classList.add('open');
