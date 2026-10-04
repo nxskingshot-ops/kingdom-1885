@@ -7,10 +7,10 @@ This document is the shared, persistent backlog of ideas and follow-up work. **A
 ## Open / needs verification
 
 - [ ] **PWA fullscreen and launch:** Confirm that the *new NEXUS NXS installation* opens the Outpost Map, not standalone KvK, and check Android status/navigation bars on FaQu's phone.
-- [ ] **End-to-end internal test:** Test each app tab and transitions, login/logout, member versus R4/admin permissions, map/editor navigation, scouting demo vs protected live data, editing/save, phone and desktop.
+- [ ] **End-to-end internal test:** Test each app tab and transitions, login/logout, Kingdom / Member / Outpost Manager / R4 / R5 / Admin permissions, map/editor navigation, scouting demo vs protected live data, editing/save, phone and desktop.
 - [ ] **Scouting board on phone:** Verify compact non-horizontal-scroll candidate table and that profile retains columns hidden at narrow widths. Adjust only after feedback.
 - [ ] **Invitation categories:** Keep **170M only as an illustrative planning cap** until official transfer power cap, kingdom classification, special-invite eligibility and slot details are confirmed for the actual event. Review provisional wording and manual override before production use.
-- [ ] **Protected scouting access:** Verify and finish intended access/permission rules for Transfer Scouting; demo/test data must never be confused with production records.
+- [ ] **Protected scouting access — device verification remaining:** Backend/client role rules are aligned for Member (read) and R4/R5/Admin (edit); verify real-account behavior on a tester device. Demo/test data must never be confused with production records.
 - [x] **Automatic GitHub backups:** Verified 04.10.2026: scheduled GitHub Action runs successfully and generates dated source backups (successful scheduled runs confirmed for 29.09, 03.10 and 04.10).
 - [x] **Supabase/database rollback backup:** Private in-project rollback snapshot created and row-count verified on 04.10.2026 for 14 application-data tables; restore procedure documented in `docs/SUPABASE_BACKUP_RESTORE.md`. **Still open for final disaster recovery:** verify provider-level/PITR or separate off-project logical export.
 - [ ] **Data refresh rhythm:** Evaluate an imported player snapshot approximately every **three days** (user says manual updates take a few minutes); possibly more often in KvK Prep.
@@ -21,7 +21,7 @@ This document is the shared, persistent backlog of ideas and follow-up work. **A
 - [ ] **Onboarding and documentation:** After app tests, write simple member/tester instructions for mobile PWA and desktop usage, access, and demo-vs-live sections.
 - [ ] **Keyboard dismissal:** Check the Hide Keyboard control across all editable mobile tabs.
 
-- [ ] **Alliance-chat report system:** Prepare a reusable **Create Report → Copy All** pattern for useful Nexus App queries (map/outposts first, later rankings, comparisons, scouting and operational summaries). Reports must be concise, mobile-readable, directly pasteable into alliance chat, respect source-view permissions, and require no manual reformatting. First concrete use case: An's request for all outposts in the northern quadrant. Map reports depend on a reliable, verified current map data source / baseline; Linus' help is valuable for establishing that source of truth. Specification: `docs/ALLIANCE_CHAT_REPORT_STANDARD.md`.
+- [x] **Alliance-chat report system · map/outposts:** Create Report → Copy workflow is implemented against the same 74-row verified canonical map dataset; Kingshot/Discord report output uses the currently displayed map data. Specification: `docs/ALLIANCE_CHAT_REPORT_STANDARD.md`. Extend the same pattern to other app areas only when explicitly approved.
 
 ## Implemented in code · still verify live/device behavior
 
