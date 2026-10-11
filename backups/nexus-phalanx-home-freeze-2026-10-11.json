@@ -1,0 +1,18 @@
+{
+  "project": "NEXUS PHALANX",
+  "freeze_date": "2026-10-11",
+  "status": "APPROVED_DESIGN_FROZEN",
+  "frozen_html": "NEXUS_PHALANX_HOME_FROZEN_2026-10-11.html",
+  "sha256": "f8e8a4c4a61cdaf89b9b6de8a8c8c906c0cace084e9b54ae6ac5ed4b90fa8031",
+  "backup_zip": "NEXUS_PHALANX_HOME_BACKUP_2026-10-11.zip",
+  "frozen_sections": [
+    "Fantasy banner",
+    "Command Center home screen",
+    "DE EN FR language selection",
+    "Player info and permissions",
+    "Gold laurel silver helmet avatar",
+    "Quick Access tiles",
+    "Kingdom Status"
+  ],
+  "note": "This is a freeze manifest only; the HTML and ZIP binaries are not included in this GitHub commit. Do not alter frozen design without user approval."
+}
