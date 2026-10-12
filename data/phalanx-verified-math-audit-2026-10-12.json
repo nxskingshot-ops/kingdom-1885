@@ -1,0 +1,67 @@
+{
+  "schema": "phalanx-math-audit/2",
+  "date": "2026-10-12",
+  "scope": "7 screenshot-backed first expedition skills, mathematical probability and abstract Monte Carlo models",
+  "execution": {
+    "runtime": "Node.js 22.16.0",
+    "fiveCoreSuites": {
+      "assertions": 64,
+      "passed": 64
+    },
+    "randomizedCrossChecks": {
+      "cases": 1000,
+      "passed": 1000
+    },
+    "deterministicAdditionalChecks": 3,
+    "independentExactPython": {
+      "cases": 10000,
+      "heroGroups": 35
+    }
+  },
+  "results": {
+    "fourIndependentProcs40Percent": {
+      "distribution": [
+        0.1296,
+        0.3456,
+        0.3456,
+        0.1536,
+        0.0256
+      ],
+      "atLeastOne": 0.8704,
+      "all": 0.0256,
+      "expected": 1.6,
+      "variance": 0.96
+    },
+    "fourFullySharedProcs40Percent": {
+      "atLeastOne": 0.4,
+      "all": 0.4,
+      "expected": 1.6,
+      "variance": 3.84
+    },
+    "topGroupProxy": {
+      "attackPct": 50,
+      "lethalityPct": 50,
+      "additive": 2,
+      "grouped": 2.25
+    }
+  },
+  "verifiedFiles": [
+    "tests/phalanx-screenshot-joiner-v2.test.js",
+    "tests/phalanx-robust-ranking-v1.test.js",
+    "tests/phalanx-probability-v1.test.js",
+    "tests/phalanx-monte-carlo-v2.test.js",
+    "tests/phalanx-dependence-bounds-v1.test.js",
+    "tests/phalanx-math-properties-v1.test.js"
+  ],
+  "ciWorkflow": ".github/workflows/phalanx-math-regression-suite.yml",
+  "remoteCiStatus": "not inspected",
+  "limitations": [
+    "GitHub versions of core modules were reconstructed from fetched content for local Node testing",
+    "Models are conditional, not verified Kingshot combat damage",
+    "21 of 28 heroes lack screenshot-derived skill evidence",
+    "Joiner selection and stacking not confirmed by battle reports",
+    "Pets, masters, gear, buffs and troop class combat are not calibrated"
+  ],
+  "releaseGate": "BLOCKED",
+  "homeFreeze": "UNCHANGED"
+}
