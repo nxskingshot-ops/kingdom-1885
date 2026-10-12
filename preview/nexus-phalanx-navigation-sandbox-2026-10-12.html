@@ -13,9 +13,21 @@
 (()=>{'use strict';
 const modules={command:['./nexus-app-2-command-center-portrait-final-polish-test.html','Command Center preview'],rally:['./phalanx-rally-selection-alpha32-2026-10-12.html','Rally Skills Alpha32'],monte:['./phalanx-monte-carlo-lab-alpha31-2026-10-12.html','Monte Carlo Alpha31'],hub:['./kingdom-hub-menu-test.html','Existing App preview']};
 const frame=document.getElementById('module'),status=document.getElementById('status'),buttons=[...document.querySelectorAll('[data-page]')];
-function select(key){if(!Object.hasOwn(modules,key))return;const [url,title]=modules[key];buttons.forEach(b=>b.setAttribute('aria-selected',String(b.dataset.page===key)));frame.title=title;frame.src=url;status.textContent=title+' · test preview';try{history.replaceState(null,'','#'+key)}catch(_){}}
+let active='command';
+function select(key,record=true){
+ if(!Object.hasOwn(modules,key))return;
+ const changed=key!==active;
+ const [url,title]=modules[key];
+ active=key;
+ buttons.forEach(b=>{const selected=b.dataset.page===key;b.setAttribute('aria-selected',String(selected));b.tabIndex=selected?0:-1;});
+ if(changed||frame.getAttribute('src')!==url){frame.title=title;frame.src=url;}
+ status.textContent=title+' · test preview';
+ if(record&&changed)history.pushState({module:key},'', '#'+key);
+}
 buttons.forEach(b=>b.addEventListener('click',()=>select(b.dataset.page)));
-const hash=location.hash.slice(1);if(Object.hasOwn(modules,hash))select(hash);
+window.addEventListener('popstate',()=>select(Object.hasOwn(modules,location.hash.slice(1))?location.hash.slice(1):'command',false));
+window.addEventListener('hashchange',()=>select(Object.hasOwn(modules,location.hash.slice(1))?location.hash.slice(1):'command',false));
+const hash=location.hash.slice(1);if(Object.hasOwn(modules,hash))select(hash,false);
 frame.addEventListener('load',()=>{status.textContent=frame.title+' · preview loaded (inner functionality not verified)';});
 frame.addEventListener('error',()=>{status.textContent='Module failed to load; check deployment and permissions';});
 })();
