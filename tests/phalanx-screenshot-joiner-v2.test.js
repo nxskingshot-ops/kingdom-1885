@@ -7,7 +7,7 @@ assert.equal(balanced.allAdditive,2);
 assert.equal(balanced.totals.attack,50);
 assert.equal(balanced.totals.lethality,50);
 const mixed=E.evaluate([j("Chenko"),j("Yeonwoo"),j("Amane"),j("Hilde")]);
-assert.equal(mixed.grouped,2.1);
+assert.ok(Math.abs(mixed.grouped-2.1)<1e-12);
 assert.equal(mixed.totals.defense,10);
 assert.equal(E.skill("Saul",5).health,15);
 assert.equal(E.skill("Helga",5).attack,25);
