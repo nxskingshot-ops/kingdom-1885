@@ -169,40 +169,50 @@
       "generation": 3,
       "troopType": "infantry",
       "rarity": "mythic",
-      "skillDataStatus": "pending_full_skill_audit",
-      "skillValues": null
+      "skillDataStatus": "screenshot_documented_all_six",
+      "skillValues": null,
+      "skillEvidencePath": "data/phalanx-gen3-ingame-skills-2026-10-12.json",
+      "skillEvidenceHeroKey": "Eric"
     },
     {
       "name": "Petra",
       "generation": 3,
       "troopType": "cavalry",
       "rarity": "mythic",
-      "skillDataStatus": "partial_in_research_database",
-      "skillValues": null
+      "skillDataStatus": "screenshot_documented_all_six",
+      "skillValues": null,
+      "skillEvidencePath": "data/phalanx-gen3-ingame-skills-2026-10-12.json",
+      "skillEvidenceHeroKey": "Petra"
     },
     {
       "name": "Jaeger",
       "generation": 3,
       "troopType": "archer",
       "rarity": "mythic",
-      "skillDataStatus": "pending_full_skill_audit",
-      "skillValues": null
+      "skillDataStatus": "screenshot_documented_all_six",
+      "skillValues": null,
+      "skillEvidencePath": "data/phalanx-gen3-ingame-skills-2026-10-12.json",
+      "skillEvidenceHeroKey": "Jaeger"
     },
     {
       "name": "Alcar",
       "generation": 4,
       "troopType": "infantry",
       "rarity": "mythic",
-      "skillDataStatus": "partial_in_research_database",
-      "skillValues": null
+      "skillDataStatus": "screenshot_documented_all_six",
+      "skillValues": null,
+      "skillEvidencePath": "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json",
+      "skillEvidenceHeroKey": "Alcar"
     },
     {
       "name": "Margot",
       "generation": 4,
       "troopType": "cavalry",
       "rarity": "mythic",
-      "skillDataStatus": "pending_full_skill_audit",
-      "skillValues": null
+      "skillDataStatus": "screenshot_documented_partial",
+      "skillValues": null,
+      "skillEvidencePath": "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json",
+      "skillEvidenceHeroKey": "Margot"
     },
     {
       "name": "Rosa",
@@ -244,5 +254,5 @@
     "https://www.kingshotapp.com/heroes/generation-5-heroes"
   ],
   "caveat": "Names, generations and troop classes are community-sourced. Full skill values require per-hero validation; null means not yet researched.",
-  "auditNote": "7 heroes have screenshot-derived skill evidence files; completeness varies, no combat mechanic validation; other roster fields unchanged"
+  "auditNote": "12 distinct heroes now linked to user-screenshot evidence: seven individual files, three complete Gen3, Alcar complete Gen4, Margot partial Gen4. More historical data may exist in other files; never equate unlinked with unavailable."
 }
