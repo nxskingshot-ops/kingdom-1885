@@ -54,7 +54,8 @@ test('Shared trigger makes identical skills perfectly correlated without cooldow
  const x=opts(.4,{skills:[{chance:.4,bonus:1,cooldown:0},{chance:.4,bonus:1,cooldown:0}],dependence:'shared'});
  const r=mc.simulate(x);
  assert.equal(r.meanTriggers,r.mean); // both bonus=1
- assert.equal(r.mean*100%2,0); // total score across 100 trials is always even
+ const equivalent=mc.simulate({...x,skills:[{chance:.4,bonus:2,cooldown:0}],dependence:'independent'});
+ assert.equal(r.mean,equivalent.mean); // same seeded draw once per round
 });
 test('Dependence bounds respect known union/intersection cases',()=>{
  const a=bounds.analyze([.4,.4]);
