@@ -20,15 +20,15 @@ function select(key,record=true){
  const [url,title]=modules[key];
  active=key;
  buttons.forEach(b=>{const selected=b.dataset.page===key;b.setAttribute('aria-selected',String(selected));b.tabIndex=selected?0:-1;});
- if(changed||frame.getAttribute('src')!==url){frame.title=title;frame.src=url;}
- status.textContent=title+' · test preview';
+ if(changed||frame.getAttribute('src')!==url){frame.title=title;status.textContent=title+' · loading preview…';frame.src=url;}
+ if(!changed)status.textContent=title+' · preview selected';
  if(record&&changed)history.pushState({module:key},'', '#'+key);
 }
 buttons.forEach(b=>b.addEventListener('click',()=>select(b.dataset.page)));
 window.addEventListener('popstate',()=>select(Object.hasOwn(modules,location.hash.slice(1))?location.hash.slice(1):'command',false));
 window.addEventListener('hashchange',()=>select(Object.hasOwn(modules,location.hash.slice(1))?location.hash.slice(1):'command',false));
 const hash=location.hash.slice(1);if(Object.hasOwn(modules,hash))select(hash,false);
-frame.addEventListener('load',()=>{status.textContent=frame.title+' · preview loaded (inner functionality not verified)';});
-frame.addEventListener('error',()=>{status.textContent='Module failed to load; check deployment and permissions';});
+frame.addEventListener('load',()=>{status.textContent=frame.title+' · document loaded (data and controls not verified)';});
+frame.addEventListener('error',()=>{status.textContent='Module document could not be loaded; verify deployment and permissions';});
 })();
 </script></body></html>
