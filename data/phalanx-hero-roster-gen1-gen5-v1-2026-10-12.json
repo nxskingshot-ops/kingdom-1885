@@ -219,8 +219,9 @@
       "generation": 4,
       "troopType": "archer",
       "rarity": "mythic",
-      "skillDataStatus": "pending_full_skill_audit",
-      "skillValues": null
+      "skillDataStatus": "six_screenshots_locally_archived_pending_transcription",
+      "skillValues": null,
+      "skillEvidenceNote": "Six user-provided screenshots archived in local V12 project database; source screenshots not yet verified in GitHub; no skill values should be inferred."
     },
     {
       "name": "Long Fei",
@@ -254,5 +255,5 @@
     "https://www.kingshotapp.com/heroes/generation-5-heroes"
   ],
   "caveat": "Names, generations and troop classes are community-sourced. Full skill values require per-hero validation; null means not yet researched.",
-  "auditNote": "12 distinct heroes now linked to user-screenshot evidence: seven individual files, three complete Gen3, Alcar complete Gen4, Margot partial Gen4. More historical data may exist in other files; never equate unlinked with unavailable."
+  "auditNote": "12 distinct heroes now linked to user-screenshot evidence: seven individual files, three complete Gen3, Alcar complete Gen4, Margot partial Gen4. More historical data may exist in other files; never equate unlinked with unavailable. Rosa: six local V12 screenshots acknowledged, transcription and GitHub evidence synchronization pending."
 }
