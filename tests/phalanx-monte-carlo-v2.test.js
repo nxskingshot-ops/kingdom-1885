@@ -3,3 +3,6 @@ const cooldownCase=M.simulate({rounds:10,trials:30,seed:1885,dependence:'indepen
 assert.equal(cooldownCase.mean,12);
 assert.equal(cooldownCase.p05,12);
 assert.equal(cooldownCase.p95,12);
+
+assert.throws(()=>M.simulate({...base,dependence:'independent',seed:1.5}));
+assert.throws(()=>M.simulate({...base,dependence:'independent',skills:[{chance:.4,bonus:1,cooldown:-1}]}));
