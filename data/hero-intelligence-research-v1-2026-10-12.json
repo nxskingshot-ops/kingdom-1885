@@ -1,0 +1,110 @@
+{
+  "schema_version": "1.0",
+  "date": "2026-10-12",
+  "status": "research snapshot; not validated against in-game screenshots",
+  "source_links": [
+    "https://www.kingshotguide.com/heroes/generation-5-heroes",
+    "https://www.kingshotguide.com/de/heroes/generation-4-heroes",
+    "https://kingshotwin.com/guides/heroes/generation-4/",
+    "https://kingshothandbook.com/guides/best-hero-lineups",
+    "https://kingshotguides.com/guide/kingshot-hero-lineup-guide-solo-rally-garrison/"
+  ],
+  "heroes": [
+    {
+      "name": "Amadeus",
+      "gen": 1,
+      "class": "Infantry",
+      "role": "Offensive rally / Bear Trap",
+      "confidence": "guide consensus"
+    },
+    {
+      "name": "Marlin",
+      "gen": 2,
+      "class": "Archer",
+      "role": "Offensive rally",
+      "confidence": "guide consensus"
+    },
+    {
+      "name": "Petra",
+      "gen": 3,
+      "class": "Cavalry",
+      "role": "Offensive rally",
+      "confidence": "guide consensus"
+    },
+    {
+      "name": "Alcar",
+      "gen": 4,
+      "class": "Infantry",
+      "role": "Defense and garrison",
+      "acquisition": "Hero Rally, Daily Deals, ranking events",
+      "confidence": "multiple guides"
+    },
+    {
+      "name": "Rosa",
+      "gen": 4,
+      "class": "Archer",
+      "role": "Cleanse, PvP utility, rally damage potential",
+      "acquisition": "Hero Roulette, Swordland Shop",
+      "confidence": "multiple guides"
+    },
+    {
+      "name": "Margot",
+      "gen": 4,
+      "class": "Cavalry",
+      "role": "Dodge, garrison and offensive buffs",
+      "acquisition": "Hall of Heroes, Swordland Shop",
+      "confidence": "multiple guides"
+    },
+    {
+      "name": "Long Fei",
+      "gen": 5,
+      "class": "Infantry",
+      "role": "Frontline, solo PvP and rally potential",
+      "acquisition": "Hero Roulette, Swordland Shop",
+      "confidence": "multiple guides"
+    },
+    {
+      "name": "Vivian",
+      "gen": 5,
+      "class": "Archer",
+      "role": "Enemy damage-taken amplification",
+      "acquisition": "Hall of Heroes, Swordland Shop",
+      "confidence": "multiple guides"
+    },
+    {
+      "name": "Thrud",
+      "gen": 5,
+      "class": "Cavalry",
+      "role": "Rally support",
+      "acquisition": "Ranking events, Daily Deals",
+      "confidence": "multiple guides"
+    }
+  ],
+  "observations": [
+    {
+      "key": "maxed_marlin",
+      "note": "Do not automatically recommend Rosa; compare rally skills, cost and current hero investment."
+    },
+    {
+      "key": "maxed_petra",
+      "note": "Do not automatically recommend Margot; compare PvP/garrison gains with Petra offensive value."
+    },
+    {
+      "key": "gen5",
+      "note": "Vivian and Long Fei are important options, but no automatic replacement without skill and acquisition comparisons."
+    }
+  ],
+  "open_verification": [
+    "Exact expedition skill multipliers and proc rates",
+    "Exact star/shard costs per hero",
+    "Weapon/widget level and role activation",
+    "Kingdom-specific availability and timing",
+    "Contradictory guide rankings for rally lineups"
+  ],
+  "guardrails": [
+    "No unsupported numerical win probability",
+    "Separate conquest and expedition skills",
+    "Separate rally lead, joiner, garrison, arena and Bear Trap",
+    "Do not assume a 4-star hero beats a maxed predecessor"
+  ]
+}
