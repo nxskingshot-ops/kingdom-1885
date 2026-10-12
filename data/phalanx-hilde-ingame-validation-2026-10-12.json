@@ -1,0 +1,78 @@
+{
+  "schema": "phalanx-in-game-skill-validation-v1",
+  "hero": "Hilde",
+  "rarity": "SSR",
+  "troopType": "cavalry",
+  "source": "User-provided German Kingshot skill screenshots, transcribed from conversation",
+  "sourceStatus": "Screenshot-reported values; original image reinspection not performed in this operation",
+  "skills": [
+    {
+      "name": "Erlöser",
+      "mode": "conquest",
+      "slot": 1,
+      "healWeakestAllyPct": [
+        100,
+        110,
+        120,
+        130,
+        140
+      ]
+    },
+    {
+      "name": "Nobler Weg",
+      "mode": "expedition",
+      "slot": 1,
+      "allSquadsAttackPct": [
+        3,
+        6,
+        9,
+        12,
+        15
+      ],
+      "allSquadsDefensePct": [
+        2,
+        4,
+        6,
+        8,
+        10
+      ]
+    },
+    {
+      "name": "Elixier der Stärke",
+      "mode": "expedition",
+      "slot": 2,
+      "procChancePct": 25,
+      "damagePct": [
+        120,
+        140,
+        160,
+        180,
+        200
+      ],
+      "damageInterpretation": "replacement versus additional unknown"
+    },
+    {
+      "name": "Feuerprobe",
+      "mode": "expedition",
+      "slot": 3,
+      "procChancePct": [
+        8,
+        16,
+        24,
+        32,
+        40
+      ],
+      "allSquadsDamageTakenReductionPctAtLevel5": 50
+    }
+  ],
+  "confidence": {
+    "displayedSkillValues": "A screenshot-derived, pending independent image reread",
+    "joinerSkillSelection": "C community rule, not confirmed by these screenshots",
+    "stackingAndActualDamage": "D unverified"
+  },
+  "notes": [
+    "Level tables describe in-game preview, not the player's currently trained skill levels",
+    "Do not combine conquest skills with expedition skills",
+    "Proc effects are not permanent passive bonuses"
+  ]
+}
