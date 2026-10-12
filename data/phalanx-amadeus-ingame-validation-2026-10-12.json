@@ -1,0 +1,105 @@
+{
+  "schema": "phalanx-in-game-skill-validation-v1",
+  "hero": "Amadeus",
+  "rarity": "SSR",
+  "troopType": "infantry",
+  "source": "6 user-provided Kingshot German screenshots",
+  "sourceFiles": [
+    "43267.png",
+    "43268.png",
+    "43269.png",
+    "43270.png",
+    "43271.png",
+    "43272.png"
+  ],
+  "skills": [
+    {
+      "name": "Kombo-Schlag",
+      "mode": "conquest",
+      "slot": 1,
+      "damagePerHitPct": [
+        160,
+        176,
+        192,
+        208,
+        224
+      ],
+      "hits": 3
+    },
+    {
+      "name": "Geheimnisvolle Schwertkunst",
+      "mode": "conquest",
+      "slot": 2,
+      "additionalDamagePerSwordHitPct": [
+        15,
+        17,
+        19,
+        21,
+        23
+      ]
+    },
+    {
+      "name": "Ansturm",
+      "mode": "conquest",
+      "slot": 3,
+      "attackPct": [
+        16,
+        24,
+        32,
+        40,
+        48
+      ],
+      "condition": "health above 50%"
+    },
+    {
+      "name": "Kampfbereit",
+      "mode": "expedition",
+      "slot": 1,
+      "allSquadsLethalityPct": [
+        5,
+        10,
+        15,
+        20,
+        25
+      ]
+    },
+    {
+      "name": "Weg der Klinge",
+      "mode": "expedition",
+      "slot": 2,
+      "allSquadsAttackPct": [
+        5,
+        10,
+        15,
+        20,
+        25
+      ]
+    },
+    {
+      "name": "Unheiliger Treffer",
+      "mode": "expedition",
+      "slot": 3,
+      "procChancePct": [
+        8,
+        16,
+        24,
+        32,
+        40
+      ],
+      "damageIncreasePct": 50,
+      "damageIncreasePctLevels": "Only level 5 value visible; lower-level damage increase unverified",
+      "expectedUpliftPctAtLevel5UnderSimpleIndependentModel": 20
+    }
+  ],
+  "visibleExpeditionStats": {
+    "infantryAttackPct": 260.2,
+    "infantryDefensePct": 260.2
+  },
+  "modelCautions": [
+    "Level 5 display is from screenshot, not proof user's own Amadeus currently has level 5 skills",
+    "Joiner skill transfer rules not validated",
+    "40% proc chance and 50% damage increase are separate factors",
+    "Expected 20% is conditional model, not validated in-game damage",
+    "Do not aggregate all three expedition skills for joiner without evidence"
+  ]
+}
