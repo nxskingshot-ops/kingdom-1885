@@ -1,0 +1,92 @@
+{
+  "schema": "phalanx-verification-audit/1",
+  "date": "2026-10-12",
+  "reviewed": [
+    "data/phalanx-combat-modifier-engine-v1-2026-10-12.json",
+    "data/phalanx-pets-masters-buffs-research-v1-2026-10-12.json",
+    "preview/phalanx-combat-modifiers-alpha25-2026-10-12.html"
+  ],
+  "verifiedCommunityRules": [
+    "Rally leader contributes combat stats; joiner stats and gear do not replace leader stats",
+    "Four joiner skill slots; first expedition skill of first hero; priority by skill level then join order",
+    "Same effect_op additive and different effect_op multiplicative for documented damage buff families"
+  ],
+  "verifiedOfficial": [
+    {
+      "rule": "Cassia Mastery applies to all Expedition battles",
+      "source": "https://centurygames.helpshift.com/hc/en/140-kingshot/faq/8865-battle-master-in-which-scenarios-does-cassia-s-mastery-skill-take-effect/"
+    }
+  ],
+  "verifiedPetMaximaCommunity": [
+    {
+      "name": "Giant Rhino",
+      "stat": "squad_attack",
+      "valuePct": 10,
+      "durationHours": 2
+    },
+    {
+      "name": "Alpha Black Panther",
+      "stat": "troop_lethality",
+      "valuePct": 10,
+      "durationHours": 2
+    },
+    {
+      "name": "Mighty Bison",
+      "stat": "squad_capacity",
+      "valueFlat": 15000,
+      "durationHours": 2
+    },
+    {
+      "name": "Great Moose",
+      "stat": "rally_capacity",
+      "valueFlat": 150000,
+      "durationHours": 2
+    }
+  ],
+  "discrepancies": [
+    {
+      "id": "valora_expertise_level_table",
+      "severity": "high",
+      "details": "Two published sources agree maximum 30% Bear Hunt Damage Points but disagree at levels 4-10; never use unverified intermediate values",
+      "sources": [
+        "https://kingshotmastery.com/masters/valora",
+        "https://kingshotdata.com/masters/valora/"
+      ]
+    },
+    {
+      "id": "valora_damage_vs_damage_points",
+      "severity": "high",
+      "details": "Valora expertise explicitly increases Bear Hunt Damage Points, not necessarily the underlying troop attack or raw battle damage; model as score modifier until verified"
+    },
+    {
+      "id": "alpha25_snapshot_toggle",
+      "severity": "high",
+      "details": "When snapshot checkbox is checked, the preview suppresses all active bonus effects, even if some buffs were not included in the snapshot; requires per-effect includedInSnapshot flags"
+    },
+    {
+      "id": "alpha25_master_and_pet_stacking",
+      "severity": "high",
+      "details": "Alpha25 sums attack% values into one pool and multiplies attack and lethality. This is a provisional simplification; real categories and inclusion in stat sheet not proven."
+    },
+    {
+      "id": "alpha25_pet_activations",
+      "severity": "medium",
+      "details": "Preview shows active Pet percentage fields but no actual activation, duration or eligibility check."
+    },
+    {
+      "id": "alpha25_scope",
+      "severity": "high",
+      "details": "Alpha25 is a relative offensive index; cannot be called verified damage or defensive simulator."
+    }
+  ],
+  "sources": [
+    "https://kingshotwin.com/guides/gameplay/rallies/",
+    "https://kingshothandbook.com/guides/joiner-rules-guide",
+    "https://www.kingshot.wiki/guides/lethality-attack-defense-health-what-they-actually-do",
+    "https://www.kingshotguide.org/data-center/kingshot-pets-database",
+    "https://kingshotmastery.com/masters/valora",
+    "https://kingshotdata.com/masters/valora/"
+  ],
+  "releaseGate": "Do not promote Alpha25 to production; fix per-effect snapshot inclusion, duration, activation, scoring-vs-damage distinction and validate intermediate master values",
+  "status": "audit complete; existing preview unchanged"
+}
