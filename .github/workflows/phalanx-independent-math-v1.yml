@@ -1,0 +1,20 @@
+name: PHALANX independent math validation
+on:
+  push:
+    paths:
+      - 'src/phalanx-probability-v1.js'
+      - 'src/phalanx-robust-ranking-v1.js'
+      - 'tests/phalanx-probability-v1.test.js'
+      - 'tests/phalanx-robust-ranking-v1.test.js'
+      - '.github/workflows/phalanx-independent-math-v1.yml'
+  workflow_dispatch:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node tests/phalanx-probability-v1.test.js
+      - run: node tests/phalanx-robust-ranking-v1.test.js
