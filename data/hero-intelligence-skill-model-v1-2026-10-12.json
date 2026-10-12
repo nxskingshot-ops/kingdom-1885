@@ -1,0 +1,165 @@
+{
+  "schema_version": "1.0",
+  "status": "research backed partial skill database; not production verified",
+  "date": "2026-10-12",
+  "design_freeze": true,
+  "skill_types": [
+    "conquest",
+    "expedition",
+    "exclusive_conquest",
+    "exclusive_expedition"
+  ],
+  "heroes": [
+    {
+      "name": "Marlin",
+      "gen": 2,
+      "expedition": [
+        {
+          "name": "Wild Card",
+          "value_by_level": [
+            8,
+            16,
+            24,
+            32,
+            40
+          ],
+          "unit": "proc_percent",
+          "effect": "50% squad damage dealt increase on proc"
+        },
+        {
+          "name": "Rumhead",
+          "value_by_level": [
+            10,
+            20,
+            30,
+            40,
+            50
+          ],
+          "unit": "enemy_lethality_reduction_percent",
+          "trigger": "20% on attack, 2 turns"
+        },
+        {
+          "name": "Dynamo",
+          "value_by_level": [
+            10,
+            20,
+            30,
+            40,
+            50
+          ],
+          "unit": "damage_dealt_percent",
+          "trigger": "50% chance"
+        }
+      ],
+      "exclusive_expedition": {
+        "name": "Admiral of the Line",
+        "max_bonus_percent": 15,
+        "stat": "rally_lethality"
+      },
+      "source": "https://www.kingshotapp.com/heroes/marlin"
+    },
+    {
+      "name": "Petra",
+      "gen": 3,
+      "expedition": [
+        {
+          "name": "Evil Eye",
+          "value_by_level": [
+            10,
+            20,
+            30,
+            40,
+            50
+          ],
+          "unit": "enemy_damage_taken_percent",
+          "trigger": "50% chance"
+        },
+        {
+          "name": "The Favor",
+          "value_by_level": [
+            10,
+            20,
+            30,
+            40,
+            50
+          ],
+          "unit": "squad_attack_percent",
+          "trigger": "50% chance"
+        },
+        {
+          "name": "The Shield",
+          "value_by_level": [
+            10,
+            20,
+            30,
+            40,
+            50
+          ],
+          "unit": "damage_taken_reduction_percent",
+          "trigger": "40% chance"
+        }
+      ],
+      "exclusive_expedition": {
+        "name": "Cosmic Eye",
+        "max_bonus_percent": 15,
+        "stat": "rally_attack"
+      },
+      "source": "https://www.kingshotcommand.com/heroes/petra"
+    },
+    {
+      "name": "Thrud",
+      "gen": 5,
+      "expedition": [
+        {
+          "name": "Battle Hunger",
+          "value_by_level": [
+            3,
+            6,
+            9,
+            12,
+            15
+          ],
+          "unit": "infantry_archer_damage_dealt_and_reduction_percent",
+          "trigger": "passive"
+        },
+        {
+          "name": "Reckless Charge",
+          "value_by_level": [
+            20,
+            40,
+            60,
+            80,
+            100
+          ],
+          "unit": "extra_cavalry_damage_percent",
+          "trigger": "20% chance"
+        },
+        {
+          "name": "Ancestral Guidance",
+          "value_by_level": [
+            5,
+            10,
+            15,
+            20,
+            25
+          ],
+          "unit": "squad_damage_up_and_taken_down_percent",
+          "trigger": "after four cavalry attacks; 2 turns"
+        }
+      ],
+      "exclusive_expedition": {
+        "name": "Wolf-Kissed",
+        "max_bonus_percent": 15,
+        "stat": "rally_lethality"
+      },
+      "source": "https://kingshottoolbox.com/database/heroes/thrud"
+    }
+  ],
+  "verification": [
+    "These are secondary community sources; validate skill values and triggers in-game.",
+    "Never add proc probabilities to buff magnitude.",
+    "Joiner eligibility depends on actual game mechanics and skill slot.",
+    "All 9 hero records not yet fully populated.",
+    "Conquest skills still need structured capture."
+  ]
+}
