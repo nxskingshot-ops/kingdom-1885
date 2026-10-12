@@ -1,0 +1,110 @@
+{
+  "schema": "phalanx-release-quality-gate/1",
+  "updated": "2026-10-12",
+  "project": "NEXUS PHALANX",
+  "productionStatus": "BLOCKED",
+  "principle": "No claims of exact Kingshot damage without reproducible in-game calibration",
+  "verificationLevels": {
+    "A": "Official game documentation plus empirical confirmation",
+    "B": "Independent sources agree and tested against game observations",
+    "C": "Community-supported, mathematically consistent, not empirically validated",
+    "D": "Speculative or contradictory; excluded from definitive recommendations"
+  },
+  "sources": [
+    {
+      "url": "https://kingshotsim.com/damage-formula",
+      "kind": "reverse_engineering",
+      "caution": "State of Survival engine inferred; not independent Kingshot source code proof"
+    },
+    {
+      "url": "https://kingshotwin.com/guides/gameplay/rallies/",
+      "kind": "community"
+    },
+    {
+      "url": "https://kingshothandbook.com/guides/joiner-rules-guide",
+      "kind": "community"
+    },
+    {
+      "url": "https://kingshotworld.com/guides/advanced-rally-guide/",
+      "kind": "community"
+    }
+  ],
+  "conflicts": [
+    {
+      "id": "chance_skill_stacking",
+      "description": "kingshotsim claims chance-based joiner skills do not stack; Kingshot World describes independent rolls per joiner",
+      "action": "Do not assume either rule; test in game or exclude from deterministic optimization",
+      "status": "BLOCKED"
+    },
+    {
+      "id": "damage_formula",
+      "description": "KingshotSim labels some components confirmed from State of Survival engine; transfer to Kingshot not independently proven",
+      "action": "Mark inferred, never official",
+      "status": "BLOCKED"
+    },
+    {
+      "id": "buff_stacking",
+      "description": "Pet and Master buffs not confirmed whether represented in displayed snapshots or separate multipliers",
+      "action": "Per-effect inclusion flag and sensitivity range",
+      "status": "BLOCKED"
+    },
+    {
+      "id": "valora",
+      "description": "Published skill progression tables disagree; score bonus distinct from damage",
+      "action": "Only verified player-observed level values",
+      "status": "BLOCKED"
+    }
+  ],
+  "automatedTests": [
+    {
+      "id": "zero_modifier_identity",
+      "expect": "No active modifiers means result equals baseline"
+    },
+    {
+      "id": "snapshot_idempotence",
+      "expect": "Every already-included modifier contributes exactly zero additional bonus"
+    },
+    {
+      "id": "expiration",
+      "expect": "Expired active effect contributes zero"
+    },
+    {
+      "id": "mode_restriction",
+      "expect": "Wrong-mode effect contributes zero"
+    },
+    {
+      "id": "joiner_selection",
+      "expect": "Top four eligible skills selected by level then join order"
+    },
+    {
+      "id": "joiner_capacity",
+      "expect": "Never more than four joiner skills"
+    },
+    {
+      "id": "skill_groups",
+      "expect": "At +25% each, 2+2 = 2.25 and 4+0 = 2.0, conditional on grouping assumption"
+    },
+    {
+      "id": "numeric_domain",
+      "expect": "Reject non-finite inputs, impossible negative capacities and percentage denominators <= 0"
+    },
+    {
+      "id": "score_separation",
+      "expect": "Bear points bonus never silently inserted into combat damage"
+    },
+    {
+      "id": "uncertainty",
+      "expect": "Any unverified multiplier labels result as model not actual damage"
+    }
+  ],
+  "requiredForRelease": [
+    "Tests executed automatically with pass/fail output, not merely documented",
+    "Independent formula implementation cross-checked",
+    "At least 3 distinct account-stat profiles and multiple event modes compared to actual in-game observations",
+    "Confidence and error bands calculated per scenario",
+    "Contradictions resolved or excluded from exact predictions",
+    "Production and frozen Command Center unchanged until explicit approval"
+  ],
+  "currentEvidence": "Source review and arithmetic examples only; no real in-game calibration samples in this audit",
+  "status": "RESEARCH_ONLY"
+}
