@@ -43,4 +43,9 @@ const zero=M.simulate({skills:[{chance:0,bonus:100,cooldown:2}],trials:100,round
 assert.equal(zero.mean,0);
 const certain=M.simulate({skills:[{chance:1,bonus:2,cooldown:2}],trials:100,rounds:10,seed:1885,dependence:'independent'});
 assert.equal(certain.mean,8);
+const rosterNames=['Chenko','Yeonwoo','Amadeus','Amane','Helga','Hilde','Saul'];
+const maxPool=Array.from({length:24},(_,i)=>({name:rosterNames[i%7],level:i%5+1,playerId:'p'+i}));
+assert.equal(S.optimize(maxPool).evaluated,10626);
+const maxRank=maxPool.map(x=>{const skill=S.skill(x.name,x.level);return {playerId:x.playerId,hero:x.name,attack:skill.attack,lethality:skill.lethality};});
+assert.equal(R.rank(maxRank).evaluated,10626);
 console.log(`${cases} randomized cross-model cases + 3 deterministic edge checks passed`);
