@@ -1,0 +1,52 @@
+{
+  "module": "Hero Intelligence",
+  "status": "approved specification; not live",
+  "date": "2026-10-12",
+  "design": "Frozen Command Center remains unchanged. No new tile.",
+  "sections": [
+    "Hero Comparison",
+    "Investment Advisor",
+    "Generation Outlook"
+  ],
+  "comparisons": [
+    [
+      "Amadeus",
+      "Alcar",
+      "Long Fei"
+    ],
+    [
+      "Marlin",
+      "Rosa",
+      "Vivian"
+    ],
+    [
+      "Petra",
+      "Margot",
+      "Thrud"
+    ]
+  ],
+  "modes": [
+    "Rally lead",
+    "Rally joiner",
+    "Bear Trap",
+    "PvP",
+    "Garrison",
+    "Arena"
+  ],
+  "inputs": [
+    "stars",
+    "skill levels",
+    "exclusive gear",
+    "shard costs",
+    "available resources",
+    "F2P vs paid"
+  ],
+  "rules": [
+    "Do not assume newer hero is always stronger",
+    "Differentiate verified facts from tactical judgment",
+    "Account for maxed Marlin and Petra in user-specific advice",
+    "Record source and verification date for hero values",
+    "Avoid hardcoding uncertain Gen 5 claims"
+  ],
+  "implementation": "Data and logic specification only. Validate game facts and integrate with existing Hero Intelligence before claiming functionality."
+}
