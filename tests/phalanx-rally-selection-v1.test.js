@@ -1,0 +1,16 @@
+const assert=require('node:assert/strict');const R=require('../src/phalanx-rally-selection-v1.js');
+const p=(id,order,level,hero='Chenko')=>({playerId:id,joinOrder:order,skillLevel:level,hero});
+const pool=[p('a',0,5),p('b',1,4),p('c',2,5),p('d',3,5),p('e',4,5)];
+assert.deepEqual(R.select(pool).selected.map(x=>x.playerId),['a','c','d','e']);
+assert.equal(R.select(pool).excluded[0].playerId,'b');
+assert.deepEqual(R.select(pool.slice(0,4)).selected.map(x=>x.playerId),['a','c','d','b']);
+assert.deepEqual(R.select(pool,2).selected.map(x=>x.playerId),['a','c']);
+assert.equal(R.select([p('a',0,5,null)]).excluded[0].reason,'no_first_slot_hero');
+assert.equal(R.select([]).selected.length,0);
+assert.throws(()=>R.select([...pool,p('a',5,5)]));
+assert.throws(()=>R.select([...pool,p('f',0,5)]));
+assert.throws(()=>R.select([p('a',0,6)]));
+assert.throws(()=>R.select([p('a',0,0)]));
+assert.throws(()=>R.select(Array.from({length:15},(_,i)=>p(String(i),i,5))));
+assert.deepEqual(R.select([p('a',0,4),p('b',1,5),p('c',2,5),p('d',3,5),p('e',4,5)]).selected.map(x=>x.playerId),['b','c','d','e']);
+console.log('12 rally selection assertions passed');
