@@ -1,0 +1,42 @@
+{
+  "project": "NEXUS PHALANX",
+  "date": "2026-10-12",
+  "modules": [
+    "src/phalanx-probability-v1.js",
+    "src/phalanx-robust-ranking-v1.js"
+  ],
+  "tests": [
+    "tests/phalanx-probability-v1.test.js",
+    "tests/phalanx-robust-ranking-v1.test.js"
+  ],
+  "ci": ".github/workflows/phalanx-independent-math-v1.yml",
+  "localExecution": {
+    "runtime": "Node.js 22.16.0",
+    "probability": "14 assertions passed in locally executed prototype",
+    "robustRanking": "12 assertions passed in locally executed prototype",
+    "note": "GitHub versions include minor changes and have been read back, but remote CI result has not been inspected"
+  },
+  "exactIndependentExample": {
+    "chancePerSkill": 0.4,
+    "skillCount": 4,
+    "probabilityAtLeastOne": 0.8704,
+    "probabilityAllFour": 0.0256,
+    "expectedProcs": 1.6,
+    "variance": 0.96
+  },
+  "seededMonteCarlo": {
+    "seed": 1885,
+    "trials": 100000,
+    "mean": 1.59841,
+    "atLeastOne": 0.86825,
+    "allFour": 0.02585
+  },
+  "limitations": [
+    "Independence is a hypothesis, not verified Kingshot mechanics",
+    "Offensive index is not measured damage",
+    "Defense and health are not mapped to survival",
+    "Scenario ranks are not win probabilities"
+  ],
+  "releaseGate": "BLOCKED",
+  "frozenHome": "unchanged"
+}
