@@ -1,0 +1,11 @@
+{
+  "model": "conditional sensitivity",
+  "p": 0.4,
+  "n": 4,
+  "independentAny": 0.8704,
+  "sharedAny": 0.4,
+  "independentAll": 0.0256,
+  "sharedAll": 0.4,
+  "expected": 1.6,
+  "disclaimer": "No Kingshot mechanics confirmed"
+}
