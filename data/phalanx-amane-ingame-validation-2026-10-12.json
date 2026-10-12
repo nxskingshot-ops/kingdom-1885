@@ -1,0 +1,91 @@
+{
+  "schema": "phalanx-in-game-skill-validation-v1",
+  "hero": "Amane",
+  "rarity": "SR",
+  "troopType": "archer",
+  "source": "User-provided German Kingshot skill screenshots, transcribed from conversation",
+  "sourceStatus": "Screenshot-reported values; original image reinspection not performed in this operation",
+  "skills": [
+    {
+      "name": "Sakura Blüte",
+      "mode": "conquest",
+      "slot": 1,
+      "attackPct": [
+        1.5,
+        2,
+        2.5,
+        3,
+        3.5
+      ],
+      "attackSpeedPct": [
+        2.5,
+        3,
+        3.5,
+        4,
+        4.5
+      ],
+      "durationSeconds": 4
+    },
+    {
+      "name": "Feuersiegel",
+      "mode": "conquest",
+      "slot": 2,
+      "damagePct": [
+        150,
+        165,
+        180,
+        195,
+        210
+      ]
+    },
+    {
+      "name": "Göttliche Melodie",
+      "mode": "conquest",
+      "slot": 3,
+      "attackSpeedPct": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "trigger": "every 3 basic attacks",
+      "duration": "until end of fight",
+      "stacking": "unknown"
+    },
+    {
+      "name": "Tri-Phalanx",
+      "mode": "expedition",
+      "slot": 1,
+      "allSquadsAttackPct": [
+        5,
+        10,
+        15,
+        20,
+        25
+      ]
+    },
+    {
+      "name": "Exorzismus",
+      "mode": "expedition",
+      "slot": 2,
+      "infirmaryHealingSpeedPct": [
+        10,
+        20,
+        30,
+        40,
+        50
+      ]
+    }
+  ],
+  "confidence": {
+    "displayedSkillValues": "A screenshot-derived, pending independent image reread",
+    "joinerSkillSelection": "C community rule, not confirmed by these screenshots",
+    "stackingAndActualDamage": "D unverified"
+  },
+  "notes": [
+    "Level tables describe in-game preview, not the player's currently trained skill levels",
+    "Do not combine conquest skills with expedition skills",
+    "Proc effects are not permanent passive bonuses"
+  ]
+}
