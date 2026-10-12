@@ -1,0 +1,135 @@
+{
+  "version": 2,
+  "updated": "2026-10-12",
+  "status": "sourced skill reference; not integrated into app",
+  "scope": "Expedition skills only, level 5 values, distinct from Conquest and weapon",
+  "heroes": [
+    {
+      "name": "Margot",
+      "gen": 4,
+      "type": "Cavalry",
+      "source": "https://kingshotdata.com/heroes/generation-4-heroes/",
+      "skills": [
+        {
+          "name": "Warbringer",
+          "effect": "all_squad_attack_percent",
+          "max_level_value": 25
+        },
+        {
+          "name": "Subterfuge",
+          "effect": "normal_attack_dodge_chance_percent",
+          "max_level_value": 20
+        },
+        {
+          "name": "Sleight Hand",
+          "effect": "cavalry_extra_attack_damage_percent",
+          "max_level_value": 200,
+          "trigger": "25% chance"
+        }
+      ],
+      "exclusive_expedition": {
+        "name": "Pugilist",
+        "effect": "defender_squad_lethality_percent",
+        "max": 15
+      }
+    },
+    {
+      "name": "Long Fei",
+      "gen": 5,
+      "type": "Infantry",
+      "source": "https://kingshotdata.com/heroes/generation-5-heroes/",
+      "skills": [
+        {
+          "name": "Mighty Paragon",
+          "effect": "all_squad_damage_taken_reduction_percent",
+          "max_level_value": 50,
+          "trigger": "40% chance"
+        },
+        {
+          "name": "Celestial Sustenance",
+          "effect": "all_squad_defense_percent",
+          "max_level_value": 25
+        },
+        {
+          "name": "Art of War",
+          "effect": "all_squad_attack_damage_percent",
+          "max_level_value": 200,
+          "trigger": "25% chance"
+        }
+      ],
+      "exclusive_expedition": {
+        "name": "Strategic Strike",
+        "effect": "defender_squad_attack_percent",
+        "max": 15
+      }
+    },
+    {
+      "name": "Thrud",
+      "gen": 5,
+      "type": "Cavalry",
+      "source": "https://kingshotdata.com/heroes/generation-5-heroes/",
+      "skills": [
+        {
+          "name": "Battle Hunger",
+          "effect": "infantry_archer_damage_dealt_and_taken_percent",
+          "max_level_value": 15
+        },
+        {
+          "name": "Reckless Charge",
+          "effect": "cavalry_extra_damage_percent",
+          "max_level_value": 100,
+          "trigger": "20% chance"
+        },
+        {
+          "name": "Ancestral Guidance",
+          "effect": "all_squad_damage_dealt_up_taken_down_percent",
+          "max_level_value": 25,
+          "trigger": "after 4 cavalry attacks, lasts 2 turns"
+        }
+      ],
+      "exclusive_expedition": {
+        "name": "Wolf-Kissed",
+        "effect": "initiating_rally_squad_lethality_percent",
+        "max": 15
+      }
+    },
+    {
+      "name": "Vivian",
+      "gen": 5,
+      "type": "Archer",
+      "source": "https://kingshotdata.com/heroes/generation-5-heroes/",
+      "skills": [
+        {
+          "name": "Crouching Tiger",
+          "effect": "enemy_damage_taken_percent",
+          "max_level_value": 25
+        },
+        {
+          "name": "Focus Fire",
+          "effect": "all_squad_extra_damage_percent",
+          "max_level_value": 100,
+          "trigger": "every fourth attack; next hit enemy damage taken +15%"
+        },
+        {
+          "name": "Trap of Greed",
+          "effect": "archer_extra_damage_percent",
+          "max_level_value": 60,
+          "trigger": "next attack of every fourth attack"
+        }
+      ],
+      "exclusive_expedition": {
+        "name": "Money Driven",
+        "effect": "defender_squad_defense_percent",
+        "max": 15
+      }
+    }
+  ],
+  "caveats": [
+    "Community databases are secondary sources; in-game screenshots should be final verification.",
+    "Proc chances must not be added directly to static percentage buffs.",
+    "Effects for rally leader and rally joiner depend on game mechanics and slot.",
+    "Weapon bonuses require separate level and activation handling.",
+    "Do not auto-replace maxed Petra or Marlin.",
+    "No battle-win predictions without battle reports."
+  ]
+}
