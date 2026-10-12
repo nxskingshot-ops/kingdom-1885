@@ -5,6 +5,7 @@ on:
       - 'src/phalanx-*.js'
       - 'tests/phalanx-*.test.js'
       - 'tests/phalanx-*.test.cjs'
+      - 'tests/phalanx-*.cjs'
       - 'data/phalanx-*.json'
       - '.github/workflows/phalanx-math-regression-suite.yml'
   workflow_dispatch:
@@ -30,3 +31,4 @@ jobs:
           node tests/phalanx-evidence-consistency-v1.test.js
           node tests/phalanx-rally-selection-v1.test.js
           node --test tests/phalanx-regression.test.cjs
+          node --test tests/phalanx-source-links.test.cjs
