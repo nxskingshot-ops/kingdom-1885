@@ -1,0 +1,97 @@
+{
+  "schema": "phalanx-in-game-skill-validation-v1",
+  "hero": "Helga",
+  "rarity": "SSR",
+  "troopType": "infantry",
+  "source": "User-provided German Kingshot skill screenshots, transcribed from conversation",
+  "sourceStatus": "Screenshot-reported values; original image reinspection not performed in this operation",
+  "skills": [
+    {
+      "name": "Geweih-Angriff",
+      "mode": "conquest",
+      "slot": 1,
+      "damagePct": [
+        160,
+        176,
+        192,
+        208,
+        224
+      ],
+      "otherEffects": "not independently rechecked"
+    },
+    {
+      "name": "Speer-Angriff",
+      "mode": "conquest",
+      "slot": 2,
+      "damagePct": [
+        150,
+        165,
+        180,
+        195,
+        210
+      ]
+    },
+    {
+      "name": "Zorn",
+      "mode": "conquest",
+      "slot": 3,
+      "attackPct": [
+        4,
+        6,
+        8,
+        10,
+        12
+      ],
+      "procChancePct": 10,
+      "durationSeconds": 3,
+      "maxStacks": 5
+    },
+    {
+      "name": "Echos aus Valhalla",
+      "mode": "expedition",
+      "slot": 1,
+      "allSquadsAttackPct": [
+        5,
+        10,
+        15,
+        20,
+        25
+      ]
+    },
+    {
+      "name": "Das Gleichgewicht der Natur",
+      "mode": "expedition",
+      "slot": 2,
+      "allSquadsLethalityPct": [
+        5,
+        10,
+        15,
+        20,
+        25
+      ]
+    },
+    {
+      "name": "Eid des Wächters",
+      "mode": "expedition",
+      "slot": 3,
+      "procChancePct": [
+        8,
+        16,
+        24,
+        32,
+        40
+      ],
+      "allSquadsDamageTakenReductionPctAtLevel5": 50
+    }
+  ],
+  "confidence": {
+    "displayedSkillValues": "A screenshot-derived, pending independent image reread",
+    "joinerSkillSelection": "C community rule, not confirmed by these screenshots",
+    "stackingAndActualDamage": "D unverified"
+  },
+  "notes": [
+    "Level tables describe in-game preview, not the player's currently trained skill levels",
+    "Do not combine conquest skills with expedition skills",
+    "Proc effects are not permanent passive bonuses"
+  ]
+}
