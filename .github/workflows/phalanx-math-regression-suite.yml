@@ -26,3 +26,4 @@ jobs:
           node tests/phalanx-dependence-bounds-v1.test.js
           node tests/phalanx-math-properties-v1.test.js
           node tests/phalanx-evidence-consistency-v1.test.js
+          node tests/phalanx-rally-selection-v1.test.js
