@@ -4,6 +4,7 @@ on:
     paths:
       - 'src/phalanx-*.js'
       - 'tests/phalanx-*.test.js'
+      - 'data/phalanx-*.json'
       - '.github/workflows/phalanx-math-regression-suite.yml'
   workflow_dispatch:
 permissions:
