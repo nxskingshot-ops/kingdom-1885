@@ -1,0 +1,20 @@
+name: PHALANX Robust Engine Tests
+on:
+  push:
+    paths:
+      - 'src/phalanx-robust-engine-v1.js'
+      - 'tests/phalanx-robust-engine-v1.test.js'
+      - '.github/workflows/phalanx-robust-engine-tests.yml'
+  workflow_dispatch:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Regression tests
+        run: node tests/phalanx-robust-engine-v1.test.js
