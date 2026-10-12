@@ -1,0 +1,36 @@
+{
+  "project": "NEXUS PHALANX",
+  "date": "2026-10-12",
+  "scope": "Read-only inspection of isolated navigation sandbox and portrait-final-polish Command Center preview",
+  "productionChanged": false,
+  "status": "ACCESS_VALIDATION_PENDING",
+  "findings": [
+    {
+      "id": "snapshot-static",
+      "severity": "warning",
+      "source": "preview/nexus-app-2-command-center-portrait-final-polish-test.html",
+      "finding": "Command Center fetches data/kvk-opponent-intelligence-current.json directly from static host; no auth check was found in this preview's own JavaScript.",
+      "implication": "Treat preview JSON as publicly readable when deployed on public GitHub Pages; no confidentiality claims for contents."
+    },
+    {
+      "id": "historical-snapshot",
+      "severity": "information",
+      "source": "data/kvk-opponent-intelligence-current.json",
+      "finding": "Dataset identifies opponent #1913 and last update 2026-10-04, not a live game feed."
+    },
+    {
+      "id": "sandbox-frame",
+      "severity": "warning",
+      "source": "preview/nexus-phalanx-navigation-sandbox-2026-10-12.html",
+      "finding": "Iframe links to independent previews; iframe document load does not verify inner authentication, data completeness, or privileges."
+    }
+  ],
+  "releaseGates": [
+    "Review whether the currently published static JSON contains only data authorized for public disclosure.",
+    "Validate Supabase RLS separately using authorized test accounts for public, member and R4/R5 roles.",
+    "Confirm any protected operations are performed server-side and never trusted to front-end navigation hiding.",
+    "Verify data source freshness and visibly distinguish snapshots from live game data.",
+    "Test mobile navigation and blank/error states on actual device."
+  ],
+  "policy": "No privilege changes, secret exposure, production deployments or frozen design changes authorized by this audit."
+}
