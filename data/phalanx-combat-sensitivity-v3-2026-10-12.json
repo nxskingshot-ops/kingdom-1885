@@ -1,0 +1,55 @@
+{
+  "schema": "phalanx-combat-sensitivity/3",
+  "date": "2026-10-12",
+  "status": "MATHEMATICALLY_TESTED_NOT_GAME_CALIBRATED",
+  "tests": {
+    "prior": 12,
+    "new": 6,
+    "totalPassed": 18,
+    "totalFailed": 0
+  },
+  "joinerScenario": {
+    "skillBonus": 0.25,
+    "fourSameEffectGroup": 2,
+    "twoGroupsTwoEach": 2.25,
+    "fourIndependentGroups": 2.44140625,
+    "warning": "Different valid grouping assumptions yield different optima; verify real skill IDs before recommending."
+  },
+  "independentProcScenario": {
+    "perSkillProbability": 0.4,
+    "count": 4,
+    "atLeastOne": 0.8704,
+    "allFour": 0.0256,
+    "expectedPerRound": 1.6,
+    "warning": "Independence is unverified for Kingshot; do not publish this as a measured in-game rate."
+  },
+  "petProxySensitivity": [
+    {
+      "attackPct": 50,
+      "lethalityPct": 50,
+      "gainPct": 13.7778
+    },
+    {
+      "attackPct": 200,
+      "lethalityPct": 150,
+      "gainPct": 7.4667
+    },
+    {
+      "attackPct": 500,
+      "lethalityPct": 400,
+      "gainPct": 3.7
+    },
+    {
+      "attackPct": 1000,
+      "lethalityPct": 1000,
+      "gainPct": 1.8264
+    }
+  ],
+  "calculation": "((100+attack+10)*(100+lethality+10))/((100+attack)*(100+lethality))-1",
+  "limitations": [
+    "Pet stacking into displayed stat pools unverified",
+    "Independent proc model not game-confirmed",
+    "No battle damage or score calibration"
+  ],
+  "release": "BLOCKED"
+}
