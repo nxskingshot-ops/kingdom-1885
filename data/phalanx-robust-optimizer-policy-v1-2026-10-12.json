@@ -1,0 +1,43 @@
+{
+  "schema": "phalanx-robust-optimizer/1",
+  "date": "2026-10-12",
+  "project": "NEXUS PHALANX",
+  "mission": "Win by intelligence, not just power",
+  "goal": "Select combinations with small but reproducible advantages under uncertain Kingshot mechanics",
+  "inputs": [
+    "heroes through current generation plus one",
+    "pets",
+    "masters",
+    "gear",
+    "charms",
+    "research",
+    "active buffs",
+    "troop mix",
+    "rally leader",
+    "joiner skills",
+    "battle mode"
+  ],
+  "scenarioModels": [
+    "same effect group additive",
+    "independent effect groups multiplicative",
+    "chance skill independent procs",
+    "chance skill restricted stacking",
+    "snapshot includes buff",
+    "snapshot excludes buff"
+  ],
+  "evaluation": {
+    "relativePerformance": "Calculate normalized damage or score proxy per scenario; never label absolute damage",
+    "robustness": "Count fraction of explicitly enumerated scenarios in which candidate beats baseline; not an empirical win probability",
+    "expectedScore": "Only use probability-weighted mean when model weights are empirically justified",
+    "worstCase": "Show worst-case relative advantage",
+    "sensitivity": "Flag candidate rank reversals when stacking assumptions change",
+    "costEfficiency": "Apply F2P/low/mid ROI criteria separately from whale maximum-performance criteria",
+    "margin": "Keep marginal improvements, but warn when below uncertainty or rounding tolerance"
+  },
+  "releaseGate": {
+    "production": "BLOCKED until executable regression tests and representative in-game observations",
+    "honesty": "All scenario probabilities and performance numbers must be labeled model-dependent",
+    "designFreeze": "Do not modify Command Center home"
+  },
+  "nextImplementation": "Implement deterministic scenario enumeration and robust rank comparison with cross-check tests"
+}
