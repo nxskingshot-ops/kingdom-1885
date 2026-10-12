@@ -1,0 +1,155 @@
+{
+  "schema": "phalanx-combat-modifiers-research/1",
+  "date": "2026-10-12",
+  "scope": "pets masters buffs rally leader joiner application and anti-double-counting",
+  "confidence": "Mixed: official Master FAQ, third-party pet tables and community rally mechanics",
+  "rules": [
+    {
+      "id": "pets_passive",
+      "rule": "Sum passives across all unlocked pets; do not add twice if already reflected in displayed troop totals",
+      "source": "https://kingshotbattlemaster.com/guides/pets",
+      "confidence": "community_documented"
+    },
+    {
+      "id": "pets_active",
+      "rule": "Only include activated skills during applicable duration and mode; keep separate from passives",
+      "source": "https://kingshotwin.com/guides/pets/getting-started/",
+      "confidence": "community_documented"
+    },
+    {
+      "id": "pets_refining",
+      "rule": "Record Lethality and Health per troop type separately from pet level",
+      "source": "https://kingshot.fandom.com/wiki/Pets",
+      "confidence": "community_documented"
+    },
+    {
+      "id": "masters_expertise",
+      "rule": "Unlocked Master expertise is passive and automatic",
+      "source": "https://centurygames.helpshift.com/hc/en/140-kingshot/section/1695-master-system/",
+      "confidence": "official"
+    },
+    {
+      "id": "masters_cassia",
+      "rule": "Cassia Mastery skill applies to all Expedition battles",
+      "source": "https://centurygames.helpshift.com/hc/en/140-kingshot/faq/8865-battle-master-in-which-scenarios-does-cassia-s-mastery-skill-take-effect/",
+      "confidence": "official"
+    },
+    {
+      "id": "rally_joiner",
+      "rule": "Leader contributes account stats; joiner contributes troop count and qualifying first hero first expedition skill, four selected slots; do not stack each joiner's research/gear/pet buffs as leader bonuses",
+      "source": "https://kingshotbattlemaster.com/guides/bear-trap",
+      "confidence": "community_documented"
+    },
+    {
+      "id": "bear_defense",
+      "rule": "Defense and survivability buffs likely not relevant to damage-only Bear Trap score; validate event mechanics",
+      "source": "https://kingshotpro.com/bear-trap-guide.html",
+      "confidence": "community_documented"
+    }
+  ],
+  "pets": [
+    {
+      "name": "Giant Rhino",
+      "generation": 4,
+      "active": {
+        "stat": "squad_attack",
+        "maxPercent": 10,
+        "durationMinutes": 120
+      }
+    },
+    {
+      "name": "Mighty Bison",
+      "generation": 4,
+      "active": {
+        "stat": "squad_capacity",
+        "maxFlat": 15000,
+        "durationMinutes": 120
+      }
+    },
+    {
+      "name": "Alpha Black Panther",
+      "generation": 5,
+      "active": {
+        "stat": "squad_lethality",
+        "maxPercent": 10,
+        "durationMinutes": 120
+      }
+    },
+    {
+      "name": "Great Moose",
+      "generation": 5,
+      "active": {
+        "stat": "rally_capacity",
+        "maxFlat": 150000,
+        "durationMinutes": 120
+      }
+    }
+  ],
+  "masters": [
+    {
+      "name": "Valora",
+      "type": "bear_hunt",
+      "expertise": "Hunter Instinct",
+      "effect": "bear damage, verify exact values by level",
+      "source": "https://centurygames.helpshift.com/hc/en/140-kingshot/section/1695-master-system/"
+    },
+    {
+      "name": "Pan",
+      "type": "economy"
+    },
+    {
+      "name": "Roman",
+      "type": "arena"
+    },
+    {
+      "name": "Cassia",
+      "type": "expedition",
+      "officialRule": "Mastery applies to all Expedition battles"
+    }
+  ],
+  "buffCategories": [
+    "troop attack",
+    "troop defense",
+    "troop lethality",
+    "troop health",
+    "squad attack",
+    "squad defense",
+    "rally capacity",
+    "squad capacity",
+    "bear damage",
+    "enemy stat debuffs",
+    "kingdom/alliance/event temporary buffs"
+  ],
+  "dataModelFields": [
+    "effect_id",
+    "source_system",
+    "stat",
+    "value",
+    "unit",
+    "troop_type",
+    "applies_to_modes",
+    "applies_to_actor",
+    "activation",
+    "duration",
+    "stacking_group",
+    "included_in_snapshot",
+    "source_url",
+    "confidence"
+  ],
+  "antiDoubleCount": "Choose baseline from displayed battle stats OR reconstruct from individual sources. When using displayed stats, do not reapply pet passive, research, gear or charm already included.",
+  "sourceUrls": [
+    "https://kingshotbattlemaster.com/guides/pets",
+    "https://www.kingshotapp.com/pets",
+    "https://centurygames.helpshift.com/hc/en/140-kingshot/section/1695-master-system/",
+    "https://kingshotbattlemaster.com/guides/bear-trap",
+    "https://www.kingshot.wiki/guides/lethality-attack-defense-health-what-they-actually-do"
+  ],
+  "remainingResearch": [
+    "Complete pet level/refinement tables for Gen1-5",
+    "Exact Valora skills and stage requirements",
+    "All Master skill levels and mode restrictions",
+    "Buff category stacking and in-game snapshot inclusion",
+    "Pet skill effects in Bear Hunt vs PvP",
+    "Source-backed formula for full defense, proc timing, battle rounds"
+  ]
+}
