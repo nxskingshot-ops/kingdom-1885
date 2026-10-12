@@ -1,0 +1,292 @@
+{
+  "schema": "nexus-phalanx-hero-skills-v2",
+  "date": "2026-10-12",
+  "status": "secondary-source verified; in-game confirmation pending",
+  "heroClass": "Infantry",
+  "heroes": [
+    {
+      "name": "Amadeus",
+      "generation": 1,
+      "source": "https://www.kingshotcommand.com/heroes/amadeus",
+      "expedition": [
+        {
+          "name": "Battle Ready",
+          "levels": [
+            5,
+            10,
+            15,
+            20,
+            25
+          ],
+          "effect": "squad_lethality",
+          "trigger": "passive"
+        },
+        {
+          "name": "Way of the Blade",
+          "levels": [
+            5,
+            10,
+            15,
+            20,
+            25
+          ],
+          "effect": "squad_attack",
+          "trigger": "passive"
+        },
+        {
+          "name": "Unrighteous Strike",
+          "levels": [
+            8,
+            16,
+            24,
+            32,
+            40
+          ],
+          "effect": "chance_for_50pct_squad_damage_bonus",
+          "trigger": "chance_per_skill"
+        }
+      ],
+      "conquest": [
+        {
+          "name": "Combo Slash",
+          "levels": [
+            160,
+            176,
+            192,
+            208,
+            224
+          ],
+          "effect": "three_hits_attack_multiplier_percent"
+        },
+        {
+          "name": "Arcane Swordship",
+          "levels": [
+            15,
+            17,
+            19,
+            21,
+            23
+          ],
+          "effect": "frontal_attack_multiplier_percent"
+        },
+        {
+          "name": "Onslaught",
+          "levels": [
+            16,
+            24,
+            32,
+            40,
+            48
+          ],
+          "effect": "attack_bonus_when_health_above_50_percent"
+        }
+      ],
+      "widget": {
+        "name": "Aegis of Fate",
+        "expedition": {
+          "name": "Discernment",
+          "levels": [
+            5,
+            7.5,
+            10,
+            12.5,
+            15
+          ],
+          "effect": "rally_attack"
+        }
+      }
+    },
+    {
+      "name": "Alcar",
+      "generation": 4,
+      "source": "https://kingshotguide.org/heroes/alcar",
+      "expedition": [
+        {
+          "name": "Rescuing Hands",
+          "levels": [
+            14,
+            28,
+            42,
+            56,
+            70
+          ],
+          "effect": "infantry_archer_damage_taken_reduction",
+          "trigger": "every_5_turns_for_2_turns"
+        },
+        {
+          "name": "Praetorian Will",
+          "levels": [
+            20,
+            40,
+            60,
+            80,
+            100
+          ],
+          "secondary_levels": [
+            2,
+            4,
+            6,
+            8,
+            10
+          ],
+          "effect": "infantry_damage_dealt; cavalry_archer_damage_dealt"
+        },
+        {
+          "name": "Carpe Diem",
+          "levels": [
+            12,
+            24,
+            36,
+            48,
+            60
+          ],
+          "secondary_levels": [
+            5,
+            10,
+            15,
+            20,
+            25
+          ],
+          "effect": "infantry_damage_per_attack; enemy_damage_taken_one_turn"
+        }
+      ],
+      "conquest": [
+        {
+          "name": "Glorious Mark",
+          "levels": [
+            30,
+            40,
+            50,
+            60,
+            70
+          ],
+          "effect": "friendly_damage_reduction_two_seconds"
+        },
+        {
+          "name": "Boneshatter",
+          "levels": [
+            70,
+            77,
+            84,
+            91,
+            98
+          ],
+          "effect": "attack_multiplier_and_enemy_damage_taken"
+        },
+        {
+          "name": "Second Wind",
+          "levels": [
+            30,
+            33,
+            36,
+            39,
+            42
+          ],
+          "effect": "healing_attack_multiplier"
+        }
+      ],
+      "widget": {
+        "name": "Praetorian Guard",
+        "expedition": {
+          "name": "Defender Health",
+          "levels": [
+            5,
+            7.5,
+            10,
+            12.5,
+            15
+          ],
+          "effect": "defender_health"
+        }
+      }
+    },
+    {
+      "name": "Long Fei",
+      "generation": 5,
+      "source": "https://www.kingshot.wiki/heroes/long-fei",
+      "expedition": [
+        {
+          "name": "Mighty Paragon",
+          "levels": [
+            10,
+            20,
+            30,
+            40,
+            50
+          ],
+          "effect": "all_squad_damage_taken_reduction",
+          "trigger": "40pct_chance"
+        },
+        {
+          "name": "Celestial Sustenance",
+          "levels": [
+            5,
+            10,
+            15,
+            20,
+            25
+          ],
+          "effect": "squad_defense",
+          "trigger": "passive"
+        },
+        {
+          "name": "Art of War",
+          "levels": [
+            120,
+            140,
+            160,
+            180,
+            200
+          ],
+          "effect": "attack_damage_multiplier",
+          "trigger": "25pct_chance"
+        }
+      ],
+      "conquest": [
+        {
+          "name": "Above And Beyond",
+          "levels": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "effect": "damage_reduction_below_half_health"
+        },
+        {
+          "name": "Ambrosia",
+          "levels": [
+            80,
+            90,
+            100,
+            110,
+            120
+          ],
+          "effect": "attack_speed_and_control_immunity"
+        },
+        {
+          "name": "Mountain Mover",
+          "levels": [
+            16,
+            24,
+            32,
+            40,
+            48
+          ],
+          "effect": "attack_below_half_health"
+        }
+      ],
+      "widget": {
+        "status": "pending_verified_reference"
+      }
+    }
+  ],
+  "guardrails": [
+    "Conquest and expedition must never be merged into one numeric score.",
+    "Triggers and target troop types matter.",
+    "A maxed Amadeus may remain superior for Bear Trap while Long Fei may be better in other roles.",
+    "Guide data require in-game confirmation.",
+    "No hero replacement is automatic."
+  ]
+}
