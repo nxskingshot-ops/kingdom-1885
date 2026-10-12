@@ -7,6 +7,7 @@ on:
       - 'tests/phalanx-*.test.cjs'
       - 'tests/phalanx-*.cjs'
       - 'data/phalanx-*.json'
+      - 'preview/phalanx-*.html'
       - '.github/workflows/phalanx-math-regression-suite.yml'
   workflow_dispatch:
 permissions:
@@ -32,3 +33,4 @@ jobs:
           node tests/phalanx-rally-selection-v1.test.js
           node --test tests/phalanx-regression.test.cjs
           node --test tests/phalanx-source-links.test.cjs
+          node --test tests/phalanx-preview-links.test.cjs
