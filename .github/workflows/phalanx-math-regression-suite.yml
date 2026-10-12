@@ -1,0 +1,27 @@
+name: PHALANX math regression suite
+on:
+  push:
+    paths:
+      - 'src/phalanx-*.js'
+      - 'tests/phalanx-*.test.js'
+      - '.github/workflows/phalanx-math-regression-suite.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  math:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run verified core tests
+        run: |
+          node tests/phalanx-screenshot-joiner-v2.test.js
+          node tests/phalanx-robust-ranking-v1.test.js
+          node tests/phalanx-probability-v1.test.js
+          node tests/phalanx-monte-carlo-v2.test.js
+          node tests/phalanx-dependence-bounds-v1.test.js
+          node tests/phalanx-math-properties-v1.test.js
