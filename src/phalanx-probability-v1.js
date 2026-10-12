@@ -1,0 +1,8 @@
+/* Exact independent Bernoulli math; not a verified Kingshot damage model */
+(function(root,factory){const api=factory();if(typeof module==="object"&&module.exports)module.exports=api;else root.PhalanxProbability=api;})(typeof globalThis!=="undefined"?globalThis:this,function(){"use strict";
+function check(p){if(!Array.isArray(p)||p.length>100||p.some(x=>typeof x!=="number"||!Number.isFinite(x)||x<0||x>1))throw Error("Invalid chances");}
+function poissonBinomial(p){check(p);let d=[1];for(const q of p){const n=Array(d.length+1).fill(0);for(let i=0;i<d.length;i++){n[i]+=d[i]*(1-q);n[i+1]+=d[i]*q;}d=n;}return {distribution:d,atLeastOne:1-d[0],expected:p.reduce((a,b)=>a+b,0),variance:p.reduce((a,b)=>a+b*(1-b),0)};}
+function atLeastOnce(p,rounds){check([p]);if(!Number.isInteger(rounds)||rounds<0||rounds>1e8)throw Error("Invalid rounds");return -Math.expm1(rounds*Math.log1p(-p));}
+function seeded(seed){if(!Number.isInteger(seed))throw Error("Integer seed required");let x=seed>>>0;return ()=>{x=(Math.imul(1664525,x)+1013904223)>>>0;return x/4294967296;};}
+function monteCarlo(p,trials,seed=1885){check(p);if(!Number.isInteger(trials)||trials<1||trials>1000000)throw Error("Invalid trials");const random=seeded(seed);let sum=0,square=0,any=0,all=0;for(let t=0;t<trials;t++){let count=0;for(const q of p)if(random()<q)count++;sum+=count;square+=count*count;if(count>0)any++;if(count===p.length)all++;}const mean=sum/trials,variance=Math.max(0,square/trials-mean*mean);return {trials,seed,mean,variance,atLeastOne:any/trials,all:all/trials,standardErrorMean:Math.sqrt(variance/trials)};}
+return {poissonBinomial,atLeastOnce,monteCarlo};});
