@@ -1,0 +1,21 @@
+{
+  "schema": "phalanx-source-registry-v13",
+  "date": "2026-10-12",
+  "hero_count": 28,
+  "documented_skills": 68,
+  "skill_effect_rows_local": 87,
+  "github_skill_sources": [
+    "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+    "data/phalanx-helga-ingame-validation-2026-10-12.json",
+    "data/phalanx-saul-skill-evidence-v1.json",
+    "data/phalanx-chenko-ingame-validation-2026-10-12.json",
+    "data/phalanx-amane-ingame-validation-2026-10-12.json",
+    "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json",
+    "data/phalanx-hilde-ingame-validation-2026-10-12.json",
+    "data/phalanx-gen3-ingame-skills-2026-10-12.json",
+    "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json"
+  ],
+  "source_policy": "GitHub source files authoritative; SQLite V12 has 8 reconstructed documents and 1 content-copied document; byte identity unverified",
+  "rosa": "Six screenshots locally archived in V12; no Rosa original JSON in this registry",
+  "home_frozen": true
+}
