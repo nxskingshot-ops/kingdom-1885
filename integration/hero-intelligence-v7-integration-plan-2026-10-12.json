@@ -1,0 +1,43 @@
+{
+  "version": "v7",
+  "status": "integration-ready plan, NOT deployed",
+  "date": "2026-10-12",
+  "source": "preview/hero-intelligence-combined-advisor-v7-2026-10-12.html",
+  "freeze": {
+    "command_center": "DO NOT MODIFY",
+    "frozen_backup": "backups/NEXUS_PHALANX_HOME_FROZEN_2026-10-11.html",
+    "new_home_tile": false
+  },
+  "placement": {
+    "parent": "Hero Intelligence",
+    "sections": [
+      "Hero Comparison",
+      "Investment Advisor",
+      "Generation Outlook"
+    ],
+    "navigation": "Use existing Hero Intelligence entry only; no new home tile"
+  },
+  "implementation_steps": [
+    "Identify current production entrypoint and existing Hero Intelligence route from actual source; never assume index.html content",
+    "Extract advisor markup/style/script into scoped module; prevent global CSS collisions",
+    "Keep data separate from UI and load sourced skill snapshots with validation labels",
+    "Validate mobile touch interactions, language DE/EN/FR, roles and navigation",
+    "Run 7 shard unit vectors and browser interaction tests",
+    "Deploy only after explicit approval and rollback snapshot"
+  ],
+  "acceptance": [
+    "Frozen home layout pixel unchanged",
+    "Existing Command Center navigation and bottom bar remain functional",
+    "No duplicate header or hamburger menu",
+    "All 7 shard calculations pass",
+    "Missing or invalid inputs have understandable feedback",
+    "Skill claims marked provisional",
+    "DE EN FR UI strings provided",
+    "Rollback artifact exists"
+  ],
+  "known_limitations": [
+    "GitHub index.html fetch returned empty content; production entrypoint not identified",
+    "No browser or device test yet",
+    "Not integrated or live"
+  ]
+}
