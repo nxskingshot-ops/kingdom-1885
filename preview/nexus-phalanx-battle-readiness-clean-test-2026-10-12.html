@@ -313,13 +313,13 @@ button{font:inherit;color:inherit}
     <p style="color:#b4c6d6">Local planning only. No automatic Kingshot verification or upload. Check an item only after confirming it yourself.</p>
     <label for="readinessEditor" style="display:block;margin:12px 0 6px">Bearbeitet von (optional)</label><input id="readinessEditor" maxlength="80" autocomplete="off" placeholder="Name / role" style="width:100%;padding:10px;border:1px solid #7694ad;border-radius:8px;color:#fff;background:#061b2c;font:inherit"><div id="readinessChecks" style="display:grid;gap:10px"></div>
     <section id="simpleReadiness" class="panel" style="margin:12px;padding:12px;display:grid;gap:10px">
- <strong style="color:#f6d36b">NXS-Einsatzplan</strong>
+ <strong style="color:#f6d36b">🛡️ NXS-Einsatzplan</strong>
  
  <p id="simpleReadinessState" role="status" aria-live="polite">Verbindung wird geprüft …</p>
- <button id="simpleReadinessSave" type="button" disabled style="padding:12px;background:#d8b66d;color:#091b2c;font:inherit;font-weight:700;border:0;border-radius:9px">Änderungen speichern</button>
- <details id="simpleReadinessExtras"><summary style="cursor:pointer;color:#eac67a;padding:8px">Weitere Funktionen</summary><div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px">
- <button id="simpleReadinessLoad" type="button" disabled>Teamstand laden</button>
- <button id="simpleReadinessHistory" type="button" disabled>Verlauf anzeigen</button>
+ <button id="simpleReadinessSave" type="button" disabled style="padding:12px;background:#d8b66d;color:#091b2c;font:inherit;font-weight:700;border:0;border-radius:9px">💾 Änderungen speichern</button>
+ <details id="simpleReadinessExtras"><summary style="cursor:pointer;color:#eac67a;padding:8px">⚙ Weitere Funktionen</summary><div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px">
+ <button id="simpleReadinessLoad" type="button" disabled>↙ Teamstand laden</button>
+ <button id="simpleReadinessHistory" type="button" disabled>🕘 Verlauf anzeigen</button>
  </div><div id="simpleReadinessHistoryContent" style="line-height:1.6"></div></details>
  </section><div class="panel" style="padding:12px;margin-top:12px" id="sharedReadinessPanel">
  <b style="color:#f6d36b">NXS shared plan · authenticated members only</b>
@@ -337,7 +337,7 @@ button{font:inherit;color:inherit}
 <p id="readinessSaved" role="status" aria-live="polite" style="color:#a4c5d8"></p><button type="button" id="readinessReset" style="background:#20394e;color:#f8dda3;border:1px solid #98794a;border-radius:8px;padding:9px;font:inherit">Lokalen Entwurf löschen</button><p id="readinessCount" role="status" aria-live="polite" style="color:#f6d36b;font-weight:bold"></p>
     <label for="readinessNotes" style="display:block;margin-top:12px">Einsatznotizen (optional)</label>
     <textarea id="readinessNotes" rows="3" maxlength="1200" placeholder="Confirmed leaders, timing, assignments…" style="display:block;width:100%;background:#061b2c;color:#fff;border:1px solid #7694ad;border-radius:8px;padding:10px;font:inherit;resize:vertical"></textarea>
-    <button id="readinessCopy" type="button" style="margin-top:12px;background:#d4b368;color:#092037;border:0;border-radius:8px;padding:12px;font-weight:700;font:inherit">Bericht kopieren</button>
+    <button id="readinessCopy" type="button" style="margin-top:12px;background:#d4b368;color:#092037;border:0;border-radius:8px;padding:12px;font-weight:700;font:inherit">📋 Bericht kopieren</button>
     <p id="readinessMessage" role="status" aria-live="polite"></p>
    </div>
  </div></section>
@@ -520,7 +520,7 @@ const tasks=[
 ];
 const editor=document.getElementById('readinessEditor'),saved=document.getElementById('readinessSaved'),reset=document.getElementById('readinessReset');const storeKey='nexus-phalanx-readiness-planner-v1-1885-1913';let lastSaved=null;const host=document.getElementById('readinessChecks'),count=document.getElementById('readinessCount'),notes=document.getElementById('readinessNotes'),copy=document.getElementById('readinessCopy'),msg=document.getElementById('readinessMessage');
 if(!host||!count||!notes||!copy)return;
-const boxes=tasks.map(([key,title])=>{const label=document.createElement('label');label.style.cssText='display:flex;align-items:flex-start;gap:10px;line-height:1.4';const cb=document.createElement('input');cb.type='checkbox';cb.dataset.key=key;cb.style.cssText='width:20px;height:20px;flex:0 0 auto;accent-color:#d4b368';label.append(cb,document.createTextNode(title));host.append(label);cb.addEventListener('change',()=>{update();persist();});return cb;});
+const boxes=tasks.map(([key,title])=>{const label=document.createElement('label');label.style.cssText='display:flex;align-items:flex-start;gap:10px;line-height:1.4';const cb=document.createElement('input');cb.type='checkbox';cb.dataset.key=key;cb.style.cssText='width:20px;height:20px;flex:0 0 auto;accent-color:#d4b368';const icons={attendance:'👥',roles:'🏰',rallies:'🚩',joiners:'🛡️',buffs:'⚔️',timing:'⏱️',intel:'🔎'};const symbol=document.createElement('span');symbol.textContent=icons[key]||'•';symbol.setAttribute('aria-hidden','true');symbol.style.cssText='flex:0 0 24px;text-align:center';label.append(cb,symbol,document.createTextNode(title));host.append(label);cb.addEventListener('change',()=>{update();persist();});return cb;});
 function update(){let checked=boxes.filter(b=>b.checked).length;count.textContent=checked+' / '+tasks.length+' preparation items manually confirmed'+(checked===tasks.length?' · checklist complete (not a win prediction)':'');}
 function report(){const lines=['NEXUS PHALANX · BATTLE PREPARATION','#1885 vs #1913 · historical opponent snapshot: 04.10.2026','Manual checklist · NOT live game verification','Prepared by: '+(editor.value.trim()||'Not specified'),'Updated: '+(lastSaved||'Not saved')+' (local device time)',...tasks.map(([key,title],i)=>(boxes[i].checked?'[x] ':'[ ] ')+title),'Confirmed: '+boxes.filter(b=>b.checked).length+'/'+tasks.length,'Notes: '+(notes.value.trim()||'None'),'Provided by Nexus App'];return lines.join('\n');}
 function persist(){const state={version:1,checks:boxes.map(b=>b.checked),notes:notes.value,editor:editor.value,updatedAt:new Date().toISOString()};try{localStorage.setItem(storeKey,JSON.stringify(state));lastSaved=new Date(state.updatedAt).toLocaleString();saved.textContent='Saved on this device: '+lastSaved+' · Not shared with other users';}catch(e){saved.textContent='Local save unavailable; copy the report to keep it.';}}
