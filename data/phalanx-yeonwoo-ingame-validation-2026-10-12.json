@@ -1,0 +1,114 @@
+{
+  "schema": "phalanx-in-game-skill-validation-v1",
+  "hero": "Yeonwoo",
+  "rarity": "SR",
+  "troopType": "archer",
+  "source": "5 user-provided Kingshot German screenshots",
+  "sourceFiles": [
+    "43262.png",
+    "43263.png",
+    "43264.png",
+    "43265.png",
+    "43266.png"
+  ],
+  "skills": [
+    {
+      "name": "Blühblüte",
+      "mode": "conquest",
+      "slot": 1,
+      "wave1Pct": [
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "wave2Pct": [
+        125,
+        137.5,
+        150,
+        162.5,
+        175
+      ],
+      "wave3Pct": [
+        150,
+        165,
+        180,
+        195,
+        210
+      ],
+      "thirdWaveArea": true
+    },
+    {
+      "name": "Fallende Schwalbe",
+      "mode": "conquest",
+      "slot": 2,
+      "damagePct": [
+        100,
+        110,
+        120,
+        130,
+        140
+      ],
+      "targetAttackSpeedReductionPct": [
+        30,
+        35,
+        40,
+        45,
+        50
+      ],
+      "durationSeconds": 2
+    },
+    {
+      "name": "Zwillingsreißzähne",
+      "mode": "conquest",
+      "slot": 3,
+      "attackPct": [
+        8,
+        12,
+        16,
+        20,
+        24
+      ]
+    },
+    {
+      "name": "Wachsam",
+      "mode": "expedition",
+      "slot": 1,
+      "allSquadsLethalityPct": [
+        5,
+        10,
+        15,
+        20,
+        25
+      ]
+    },
+    {
+      "name": "Gut bereist",
+      "mode": "expedition",
+      "slot": 2,
+      "researchSpeedPct": [
+        3,
+        6,
+        9,
+        12,
+        15
+      ]
+    }
+  ],
+  "confidence": {
+    "displayedValues": "A direct in-game screenshot",
+    "joinerStacking": "D unverified",
+    "effectOp": "D unverified"
+  },
+  "comparison": {
+    "Chenko": "first expedition skill +25% lethality at level 5",
+    "Amane": "first expedition skill +25% attack at level 5",
+    "Yeonwoo": "first expedition skill +25% lethality at level 5"
+  },
+  "notes": [
+    "Do not model +25% lethality as +25% final damage",
+    "Research speed is not combat damage",
+    "All three conquest skills separate from two expedition skills"
+  ]
+}
