@@ -1,0 +1,200 @@
+{
+  "schema": "phalanx-calculation-database/1",
+  "created": "2026-10-12",
+  "project": "NEXUS PHALANX",
+  "purpose": "Versioned research and calculation reference for hero skills, rallies, Bear Trap, gear and resource optimization",
+  "confidencePolicy": {
+    "official": "Only if Kingshot confirms",
+    "community_documented": "Published and reproducible, not official",
+    "experimental": "Assumptions awaiting battle-report calibration",
+    "unverified": "Never claim exact mechanics"
+  },
+  "datasets": [
+    {
+      "path": "data/phalanx-combat-formulas-v1-2026-10-12.json",
+      "domain": "combat equations and effect_op groups"
+    },
+    {
+      "path": "data/hero-intelligence-skill-model-v1-2026-10-12.json",
+      "domain": "Marlin Petra Thrud skill levels and widgets"
+    },
+    {
+      "path": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "domain": "Amadeus Alcar Long Fei skills"
+    },
+    {
+      "path": "data/phalanx-mechanics-audit-2026-10-12.json",
+      "domain": "joiner mechanics audit"
+    }
+  ],
+  "models": [
+    {
+      "id": "attack_lethality",
+      "formula": "(1+ATK_pct/100)*(1+LET_pct/100)",
+      "domain": "per troop type offensive strength",
+      "confidence": "community_documented",
+      "source": "https://github.com/blackillzone/kingshot-companion/blob/main/doc/kingshot-game.md"
+    },
+    {
+      "id": "formation_damage_proxy",
+      "formula": "leaderFactor*SUM((1+ATK_i/100)*(1+LET_i/100)*sqrt(fraction_i*rallyCapacity)*troopWeight_i)",
+      "weights": {
+        "infantry": 0.3333333333,
+        "cavalry": 1,
+        "archer": 1.47
+      },
+      "domain": "relative rally comparison; not absolute damage",
+      "confidence": "community_documented",
+      "source": "https://github.com/blackillzone/kingshot-companion/blob/main/doc/kingshot-game.md"
+    },
+    {
+      "id": "gear_enhanced",
+      "formula": "base+(enhancementLevel/100)*(max-base)",
+      "domain": "gear stat between quality endpoints",
+      "confidence": "community_documented",
+      "source": "https://kingshotoptimizer.com/hero-gear/how-it-works/"
+    },
+    {
+      "id": "gear_mastery",
+      "formula": "enhancedStat*(1+0.1*masteryLevel)",
+      "domain": "gear final stat",
+      "confidence": "community_documented",
+      "source": "https://kingshotoptimizer.com/hero-gear/how-it-works/"
+    },
+    {
+      "id": "weighted_gear_score",
+      "formula": "finalStat*strategicWeight",
+      "confidence": "experimental",
+      "note": "Weight expresses player priorities, not a game-engine multiplier",
+      "source": "https://kingshotoptimizer.com/hero-gear/how-it-works/"
+    },
+    {
+      "id": "xp_upgrade_roi",
+      "formula": "statGain*strategicWeight*masteryMultiplier/xpCost",
+      "domain": "upgrade ranking",
+      "confidence": "community_documented",
+      "source": "https://kingshotoptimizer.com/hero-gear/how-it-works/"
+    },
+    {
+      "id": "normalized_resource_roi",
+      "formula": "valueGain/(resourcesUsed/resourcesAvailable*100)",
+      "domain": "comparing unlike resource costs; one resource at a time",
+      "confidence": "community_documented",
+      "source": "https://kingshotoptimizer.com/hero-gear/how-it-works/"
+    },
+    {
+      "id": "speed",
+      "formula": "baseSeconds/(1+speedPct/100)",
+      "confidence": "community_documented",
+      "source": "https://kingshottips.com/optimizer/how-it-works"
+    },
+    {
+      "id": "rss_cost",
+      "formula": "baseCost*(1-min(90,costDownPct)/100)",
+      "note": "Truegold excluded",
+      "confidence": "community_documented",
+      "source": "https://kingshottips.com/optimizer/how-it-works"
+    },
+    {
+      "id": "skill_groups",
+      "formula": "product(1+sum(same_effect_op_bonus_pct)/100) over independent effect groups",
+      "confidence": "experimental",
+      "note": "Check actual effect_op stacking and hero skill semantics before exact predictions"
+    }
+  ],
+  "gear": {
+    "slotsPerClass": 4,
+    "classes": [
+      "infantry",
+      "cavalry",
+      "archer"
+    ],
+    "slotStat": {
+      "helm": "lethality",
+      "gloves": "health",
+      "chest": "health",
+      "boots": "lethality"
+    },
+    "enhancement": {
+      "epic": {
+        "base": 0.09,
+        "perLevel": 0.0021,
+        "maxLevel": 80
+      },
+      "mythic": {
+        "base": 0.15,
+        "perLevel": 0.0035,
+        "maxLevel": 100
+      },
+      "red": {
+        "baseAt100": 0.5,
+        "perLevelAfter100": 0.005,
+        "maxLevel": 200
+      }
+    },
+    "mastery": {
+      "multiplierPerLevel": 0.1,
+      "maxLevel": 20,
+      "forgehammerCostForTargetLevel": "10*targetLevel",
+      "mythicGearCostForTargetLevel": "max(0,targetLevel-10)",
+      "totalForgehammer0To10": 550,
+      "totalForgehammer0To20": 2100,
+      "totalMythicGear10To20": 55
+    },
+    "notes": [
+      "Quality and individual slot stat tables may vary; verify against in-game screens",
+      "Ascension and imbuement milestones need separate costs and constraints"
+    ],
+    "sources": [
+      "https://kingshotoptimizer.com/hero-gear/how-it-works/",
+      "https://kingshotoptimizer.com/hero-gear/references/stat-bonuses/",
+      "https://kingshotveterans.com/database/hero-gear",
+      "https://kingshot-optimizer.com/hero-gear/"
+    ]
+  },
+  "externalData": {
+    "mightPulse": {
+      "type": "player alliance kingdom intelligence, not combat formula",
+      "api": "https://api.mightpulse.com/v1",
+      "auth": "user-authorized API key; do not store secrets in repository",
+      "freeLimits": {
+        "perMinute": 60,
+        "perDay": 5000
+      },
+      "stalenessMinutes": 60,
+      "source": "https://api.mightpulse.com/",
+      "integrationStatus": "reference only; no key connected"
+    },
+    "frakinator": {
+      "url": "https://frakinator.streamlit.app/",
+      "integrationStatus": "reference; reproduce only independently documented formulas"
+    },
+    "kingshotSimulator": {
+      "url": "https://kingshotsim.com/damage-formula",
+      "integrationStatus": "reference; unverified full damage equation"
+    }
+  },
+  "validation": {
+    "requiredInputs": [
+      "troop counts and tiers",
+      "rally leader trio",
+      "four joiner first expedition skills",
+      "ATK DEF LET HP stats by troop type",
+      "skill levels and proc rules",
+      "battle mode",
+      "widgets and relevant gear"
+    ],
+    "testCases": [
+      "same-group vs mixed-group joiners",
+      "conditional procs with expected value",
+      "defensive garrison vs Bear Trap",
+      "gear mastery breakpoints",
+      "actual battle reports"
+    ],
+    "neverClaim": [
+      "official exact damage",
+      "observed battle damage from proxy formula",
+      "accurate win rate without calibration"
+    ]
+  }
+}
