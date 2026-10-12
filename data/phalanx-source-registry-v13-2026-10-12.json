@@ -17,5 +17,14 @@
   ],
   "source_policy": "GitHub source files authoritative; SQLite V12 has 8 reconstructed documents and 1 content-copied document; byte identity unverified",
   "rosa": "Six screenshots locally archived in V12; no Rosa original JSON in this registry",
-  "home_frozen": true
+  "home_frozen": true,
+  "github_source_audit": {
+    "date": "2026-10-12",
+    "verified_files": 9,
+    "roster_heroes_with_source_links": 12,
+    "first_expedition_skills_cross_checked": 7,
+    "first_expedition_level_values_cross_checked": 45,
+    "scope": "GitHub file existence and first expedition skill arrays only; not full in-game mechanical validation",
+    "remaining": "Rosa original screenshots not committed; 16 roster heroes without direct GitHub evidence links; full skill documentation counts from local V12 not independently revalidated"
+  }
 }
