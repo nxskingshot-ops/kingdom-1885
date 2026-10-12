@@ -1,0 +1,142 @@
+{
+  "date": "2026-10-12",
+  "kingdom": 1885,
+  "source": "user-supplied in-game level-5 preview screenshots",
+  "note": "Skill descriptions verified from screenshots; preview values are not player-owned skill levels. Combat interactions unverified.",
+  "heroes": [
+    {
+      "name": "Alcar",
+      "generation": 4,
+      "rarity": "SSR",
+      "class": "infantry",
+      "exploration": [
+        [
+          "Glorreiches Zeichen",
+          [
+            30,
+            40,
+            50,
+            60,
+            70
+          ],
+          "nearby allies damage reduction for 2 seconds; self immobilized, control immune"
+        ],
+        [
+          "Knochenspalter",
+          [
+            70,
+            77,
+            84,
+            91,
+            98
+          ],
+          "attack damage; target takes 20% more damage for 2 seconds"
+        ],
+        [
+          "Frischer Mut",
+          [
+            30,
+            33,
+            36,
+            39,
+            42
+          ],
+          "heal % of attack every second for 5 seconds after Glorreiches Zeichen"
+        ]
+      ],
+      "expedition": [
+        [
+          "Helfende Hände",
+          [
+            14,
+            28,
+            42,
+            56,
+            70
+          ],
+          "infantry and archers damage taken reduction for 2 rounds every 5 rounds"
+        ],
+        [
+          "Wille des Prätorianers",
+          [
+            20,
+            40,
+            60,
+            80,
+            100
+          ],
+          "infantry damage increase; cavalry/archer damage increase [2,4,6,8,10]"
+        ],
+        [
+          "Carpe Diem",
+          [
+            12,
+            24,
+            36,
+            48,
+            60
+          ],
+          "infantry damage per attack for 1 round; target incoming damage increase [5,10,15,20,25]"
+        ]
+      ]
+    },
+    {
+      "name": "Margot",
+      "generation": 4,
+      "rarity": "SSR",
+      "class": "cavalry",
+      "exploration": [
+        [
+          "Hinterhalt",
+          [
+            300,
+            330,
+            360,
+            390,
+            420
+          ],
+          "area attack damage"
+        ],
+        [
+          "Parade",
+          [
+            5,
+            10,
+            15,
+            20,
+            25
+          ],
+          "chance to evade enemy attack damage"
+        ],
+        [
+          "Stilett",
+          [
+            100,
+            110,
+            120,
+            130,
+            140
+          ],
+          "attack damage, hero priority; immobilize 1.5 seconds"
+        ]
+      ],
+      "expedition": [
+        [
+          "Kriegsbringer",
+          [
+            5,
+            10,
+            15,
+            20,
+            25
+          ],
+          "all squads attack increase"
+        ]
+      ],
+      "missing": [
+        "expedition skill 2",
+        "expedition skill 3"
+      ]
+    }
+  ]
+}
