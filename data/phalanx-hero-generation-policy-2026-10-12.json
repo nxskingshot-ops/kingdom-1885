@@ -1,0 +1,36 @@
+{
+  "schema": "phalanx-hero-generation-policy/1",
+  "updated": "2026-10-12",
+  "project": "NEXUS PHALANX",
+  "currentGeneration": 4,
+  "lookaheadGenerations": 1,
+  "requiredGenerations": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "retention": "Keep all historical generations; never remove earlier heroes",
+  "rule": "Always include current hero generation and next generation in hero database, investment comparisons, rally leader and joiner analysis",
+  "rollForward": "When kingdom generation increases, automatically extend target to currentGeneration+1 without deleting old generations",
+  "generation5Status": "forward-looking; distinguish released, previewed, community-reported and unverified skills",
+  "evaluation": {
+    "currentHero": "actual owned stars, partial stars, skills, gear and role",
+    "replacement": "role-by-role effects, conditions, synergies, investment and opportunity cost",
+    "futureGeneration": "compare available or documented next-gen alternatives; do not invent costs, hero strength or availability",
+    "spendingTiers": [
+      "F2P",
+      "Low Spender",
+      "Mid Spender",
+      "Whale"
+    ],
+    "whale": "optimize maximum team performance; no automatic 4-star spending cap",
+    "others": "optimize ROI and preserve resources where next generation may offer better value"
+  },
+  "sourceSkillDatasets": [
+    "data/hero-intelligence-skill-model-v1-2026-10-12.json",
+    "data/hero-intelligence-infantry-skills-v2-2026-10-12.json"
+  ],
+  "designFreeze": "Do not modify frozen Command Center"
+}
