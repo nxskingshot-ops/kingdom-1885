@@ -1,0 +1,90 @@
+{
+  "schema": "hero-skills-research-v1",
+  "date": "2026-10-12",
+  "status": "partial verified public guide data; not production",
+  "heroes": [
+    {
+      "name": "Rosa",
+      "generation": 4,
+      "type": "Archer",
+      "expedition": [
+        {
+          "name": "Chaos Gambit",
+          "max": "40% proc chance, +50% all squad damage dealt",
+          "source": "https://www.kingshotcommand.com/heroes/rosa"
+        },
+        {
+          "name": "Rose of War",
+          "max": "-20% enemy squad damage dealt",
+          "source": "https://www.kingshotcommand.com/heroes/rosa"
+        },
+        {
+          "name": "Golden Rhythm",
+          "max": "+30% Archer attack",
+          "source": "https://www.kingshotcommand.com/heroes/rosa"
+        }
+      ],
+      "widget": {
+        "name": "Aeolian",
+        "max": "+15% rally lethality",
+        "source": "https://www.kingshotcommand.com/heroes/rosa"
+      }
+    },
+    {
+      "name": "Alcar",
+      "generation": 4,
+      "type": "Infantry",
+      "expedition": [
+        {
+          "name": "Rescuing Hands",
+          "max": "-70% infantry and archer damage taken for 2 turns every 5 turns"
+        },
+        {
+          "name": "Praetorian Will",
+          "max": "+100% infantry damage dealt and +10% cavalry/archer damage dealt"
+        },
+        {
+          "name": "Carpe Diem",
+          "max": "+60% infantry damage per attack and +25% target damage taken for 1 turn"
+        }
+      ],
+      "source": "https://www.kingshotcommand.com/heroes/alcar",
+      "widget": {
+        "name": "Praetorian Guard",
+        "max": "+15% defender health"
+      }
+    },
+    {
+      "name": "Margot",
+      "generation": 4,
+      "type": "Cavalry",
+      "expedition": [
+        {
+          "name": "Warbringer",
+          "max": "+25% total squad attack"
+        }
+      ],
+      "source": "https://kingshotdata.com/heroes/generation-4-heroes/"
+    }
+  ],
+  "shard_cumulative_from_unlock": {
+    "unlock": 10,
+    "star1": 10,
+    "star2": 50,
+    "star3": 165,
+    "star4": 465,
+    "star5": 1075
+  },
+  "notes": [
+    "Shard chart shown by guides lists 10 unlock + 40 + 115 + 300 + 600. Interpret as 1075 total including unlock, not 1065. star1 is unlock; cumulative star4 is 465 including unlock.",
+    "Margot and Gen 5 full expedition skills pending independent corroboration.",
+    "Do not treat damage, attack, lethality and proc as interchangeable.",
+    "Only skills explicitly present in data should be used in calculations."
+  ],
+  "sources": [
+    "https://www.kingshotcommand.com/heroes/rosa",
+    "https://www.kingshotcommand.com/heroes/alcar",
+    "https://kingshotdata.com/heroes/generation-4-heroes/",
+    "https://kingshotwin.com/guides/heroes/generation-4/"
+  ]
+}
