@@ -1,0 +1,12 @@
+{
+  "status": "research_pending_validation",
+  "source": "https://ks.c18d.com/en/faq/rally-joiner-and-march-mechanics/joiner-first-slot-rule-and-skill-stacking",
+  "rules": [
+    {
+      "id": "joiner_first_skill",
+      "confidence": "community_corrob",
+      "validatedInGame": false
+    }
+  ],
+  "optimalClaimAllowed": false
+}
