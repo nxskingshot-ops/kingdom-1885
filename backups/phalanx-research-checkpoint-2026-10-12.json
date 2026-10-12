@@ -1,0 +1,24 @@
+{
+  "project": "NEXUS PHALANX",
+  "date": "2026-10-12",
+  "type": "research-checkpoint-manifest",
+  "status": "research-only; game-mechanics qualification incomplete",
+  "verifiedFiles": [
+    "data/phalanx-exhaustive-math-audit-2026-10-12.json",
+    "src/phalanx-robust-engine-v1.js",
+    "src/phalanx-joiner-search-v1.js",
+    "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json",
+    "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+    "backups/NEXUS_PHALANX_HOME_FROZEN_2026-10-11.html"
+  ],
+  "pendingHeroTranscription": [
+    "Chenko",
+    "Amane",
+    "Helga",
+    "Hilde",
+    "Saul"
+  ],
+  "releaseGate": "BLOCKED",
+  "designFreeze": "Command Center home remains unchanged",
+  "note": "Manifest only. GitHub version history retains file revisions; this is not a complete independent repository archive or database backup."
+}
