@@ -1,0 +1,95 @@
+{
+  "schema": "phalanx-first-expedition-skills-v1",
+  "source": "user-provided Kingshot screenshots; see per-hero evidence files",
+  "values": {
+    "Chenko": {
+      "stat": "lethality",
+      "pct": [
+        5,
+        10,
+        15,
+        20,
+        25
+      ]
+    },
+    "Yeonwoo": {
+      "stat": "lethality",
+      "pct": [
+        5,
+        10,
+        15,
+        20,
+        25
+      ]
+    },
+    "Amadeus": {
+      "stat": "lethality",
+      "pct": [
+        5,
+        10,
+        15,
+        20,
+        25
+      ]
+    },
+    "Amane": {
+      "stat": "attack",
+      "pct": [
+        5,
+        10,
+        15,
+        20,
+        25
+      ]
+    },
+    "Helga": {
+      "stat": "attack",
+      "pct": [
+        5,
+        10,
+        15,
+        20,
+        25
+      ]
+    },
+    "Hilde": {
+      "stat": "attack_and_defense",
+      "attackPct": [
+        3,
+        6,
+        9,
+        12,
+        15
+      ],
+      "defensePct": [
+        2,
+        4,
+        6,
+        8,
+        10
+      ]
+    },
+    "Saul": {
+      "stat": "defense_and_health",
+      "defensePct": [
+        2,
+        4,
+        6,
+        8,
+        10
+      ],
+      "healthPct": [
+        3,
+        6,
+        9,
+        12,
+        15
+      ]
+    }
+  },
+  "constraints": [
+    "First expedition skill only is community rule",
+    "Not all skills have offensive bonuses",
+    "Not calibrated to actual damage"
+  ]
+}
