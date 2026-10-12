@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-12",
+  "status": "entrypoint audit completed; deployment not attempted",
+  "findings": [
+    {
+      "path": "index.html",
+      "result": "exists but fetch returns zero text; cannot use as verified integration target"
+    },
+    {
+      "path": "README.md",
+      "result": "documents tester preview as preview/kingdom-hub-menu-test.html; explicitly warns not to treat preview as production portal"
+    },
+    {
+      "path": "preview/kingdom-hub-menu-test.html",
+      "result": "exists, 75807 UTF-8 characters; legacy integrated tester hub, not approved frozen Phalanx home"
+    },
+    {
+      "path": "backups/NEXUS_PHALANX_HOME_FROZEN_2026-10-11.html",
+      "result": "exists, 435549 characters; frozen design backup, must not modify"
+    },
+    {
+      "path": "preview/hero-intelligence-combined-advisor-v7-2026-10-12.html",
+      "result": "isolated advisor prototype; not connected"
+    }
+  ],
+  "next_safe_action": "Create a separate non-production integration preview based on a copy of the approved frozen home, with Hero Intelligence route added only after its navigation implementation is mapped and tested. Never overwrite frozen backup or legacy tester preview.",
+  "production_changed": false,
+  "design_frozen": true
+}
