@@ -1,0 +1,153 @@
+{
+  "schema": "phalanx-database-qualification-audit/1",
+  "date": "2026-10-12",
+  "status": "PARTIAL_PASS_RELEASE_BLOCKED",
+  "scope": "Gen1-5 hero roster, skill research, joiner modifiers, pets, masters, formulas",
+  "structuralChecks": {
+    "passed": 15,
+    "failed": 0,
+    "meaning": "Schema and internal linkage checks only; not external verification of skill mechanics"
+  },
+  "coverage": {
+    "heroRoster": {
+      "total": 28,
+      "matchedAcrossIndependentSources": 28,
+      "confidence": "B-community cross-reference"
+    },
+    "fullHeroSkillSets": {
+      "total": 28,
+      "completeAndInGameVerified": 0,
+      "partialResearch": 6,
+      "missing": 22,
+      "coveragePct": 21.43
+    },
+    "joinerSkillRows": {
+      "rows": 4,
+      "fullyVerified": 0
+    },
+    "pets": {
+      "stored": 4,
+      "knownGen1To5Pets": 11,
+      "missingAtLeast": 7
+    },
+    "masters": {
+      "stored": 4,
+      "completeSkillLevelTables": 0
+    }
+  },
+  "confirmedHeroRosterSources": [
+    "https://kingshotdata.com/category/heroes/",
+    "https://www.kingshotapp.com/heroes",
+    "https://kingshot.net/heroes"
+  ],
+  "confirmedPetSources": [
+    "https://www.kingshotapp.com/pets",
+    "https://kingshotguide.org/data-center/kingshot-pets-database"
+  ],
+  "criticalFindings": [
+    {
+      "id": "joiner_effect_op_conflict",
+      "severity": "BLOCKER",
+      "detail": "Community references disagree about Yeonwoo vs Chenko effect_op equivalence and some class/role descriptions; group 101/102 assignments must not be presented as game-verified",
+      "action": "Manual in-game skill IDs or reproducible damage experiments"
+    },
+    {
+      "id": "hero_skills_missing",
+      "severity": "BLOCKER",
+      "detail": "22 of 28 heroes lack partial researched skill tables; 0 of 28 have complete in-game validated expedition+conquest+widget skills",
+      "action": "Fill source-linked per-skill and per-level records"
+    },
+    {
+      "id": "pets_incomplete",
+      "severity": "BLOCKER",
+      "detail": "4 pets in research, at least 11 distinct pets through Gen5 in community database",
+      "action": "Add 7 missing pets and skill level curves"
+    },
+    {
+      "id": "master_skill_tables",
+      "severity": "BLOCKER",
+      "detail": "4 master entries but no full verified per-level skill tables",
+      "action": "Research, flag mode, activation, levels"
+    },
+    {
+      "id": "numeric_proxies",
+      "severity": "CAUTION",
+      "detail": "Relative attack/lethality factors and effect_op stacking are conditional community models, not proven engine damage",
+      "action": "Keep as scenario-only output"
+    },
+    {
+      "id": "snapshot",
+      "severity": "CAUTION",
+      "detail": "No per-stat evidence which active Pet/Master effects are included in in-game snapshots",
+      "action": "User confirmation or empirical screenshots per modifier"
+    }
+  ],
+  "petRosterThroughGen5": [
+    {
+      "name": "Gray Wolf",
+      "generation": 1
+    },
+    {
+      "name": "Lynx",
+      "generation": 1
+    },
+    {
+      "name": "Bison",
+      "generation": 1
+    },
+    {
+      "name": "Cheetah",
+      "generation": 2
+    },
+    {
+      "name": "Moose",
+      "generation": 2
+    },
+    {
+      "name": "Lion",
+      "generation": 3
+    },
+    {
+      "name": "Grizzly Bear",
+      "generation": 3
+    },
+    {
+      "name": "Mighty Bison",
+      "generation": 4
+    },
+    {
+      "name": "Giant Rhino",
+      "generation": 4
+    },
+    {
+      "name": "Great Moose",
+      "generation": 5
+    },
+    {
+      "name": "Alpha Black Panther",
+      "generation": 5
+    }
+  ],
+  "petGenerationCaveat": "Sources disagree whether initial pets are Gen1 or Gen2; preserve unlock timing as stronger key until verified",
+  "qualityLevels": {
+    "A": "Official plus in-game validation",
+    "B": "Independent consistent sources",
+    "C": "Community documented; not independently calibrated",
+    "D": "Unverified or contradictory; excluded from definitive recommendations"
+  },
+  "approvedForResearch": [
+    "28 hero identities and classes with community source tags",
+    "provisional skill curves for six heroes",
+    "4 pet active maxima as community estimates",
+    "mathematical probability and sensitivity scenarios"
+  ],
+  "blockedForProduction": [
+    "exact battle damage",
+    "definitive joiner stacking rankings",
+    "all-hero automatic recommendation",
+    "full Pet/Master investment ROI",
+    "empirical win chance"
+  ],
+  "releaseGate": "BLOCKED",
+  "designFreeze": "Do not modify Command Center"
+}
