@@ -1,0 +1,240 @@
+{
+  "schema": "phalanx-hero-roster/1",
+  "project": "NEXUS PHALANX",
+  "date": "2026-10-12",
+  "currentGeneration": 4,
+  "targetGeneration": 5,
+  "heroes": [
+    {
+      "name": "Amadeus",
+      "generation": 1,
+      "troopType": "infantry",
+      "rarity": "mythic",
+      "skillDataStatus": "partial_in_research_database",
+      "skillValues": null
+    },
+    {
+      "name": "Helga",
+      "generation": 1,
+      "troopType": "infantry",
+      "rarity": "mythic",
+      "skillDataStatus": "pending_full_skill_audit",
+      "skillValues": null
+    },
+    {
+      "name": "Jabel",
+      "generation": 1,
+      "troopType": "cavalry",
+      "rarity": "mythic",
+      "skillDataStatus": "pending_full_skill_audit",
+      "skillValues": null
+    },
+    {
+      "name": "Saul",
+      "generation": 1,
+      "troopType": "archer",
+      "rarity": "mythic",
+      "skillDataStatus": "pending_full_skill_audit",
+      "skillValues": null
+    },
+    {
+      "name": "Howard",
+      "generation": 1,
+      "troopType": "infantry",
+      "rarity": "epic",
+      "skillDataStatus": "pending_full_skill_audit",
+      "skillValues": null
+    },
+    {
+      "name": "Gordon",
+      "generation": 1,
+      "troopType": "cavalry",
+      "rarity": "epic",
+      "skillDataStatus": "pending_full_skill_audit",
+      "skillValues": null
+    },
+    {
+      "name": "Quinn",
+      "generation": 1,
+      "troopType": "archer",
+      "rarity": "epic",
+      "skillDataStatus": "pending_full_skill_audit",
+      "skillValues": null
+    },
+    {
+      "name": "Chenko",
+      "generation": 1,
+      "troopType": "cavalry",
+      "rarity": "epic",
+      "skillDataStatus": "pending_full_skill_audit",
+      "skillValues": null
+    },
+    {
+      "name": "Diana",
+      "generation": 1,
+      "troopType": "archer",
+      "rarity": "epic",
+      "skillDataStatus": "pending_full_skill_audit",
+      "skillValues": null
+    },
+    {
+      "name": "Amane",
+      "generation": 1,
+      "troopType": "archer",
+      "rarity": "epic",
+      "skillDataStatus": "pending_full_skill_audit",
+      "skillValues": null
+    },
+    {
+      "name": "Yeonwoo",
+      "generation": 1,
+      "troopType": "archer",
+      "rarity": "epic",
+      "skillDataStatus": "pending_full_skill_audit",
+      "skillValues": null
+    },
+    {
+      "name": "Fahd",
+      "generation": 1,
+      "troopType": "cavalry",
+      "rarity": "epic",
+      "skillDataStatus": "pending_full_skill_audit",
+      "skillValues": null
+    },
+    {
+      "name": "Forrest",
+      "generation": 1,
+      "troopType": "infantry",
+      "rarity": "rare",
+      "skillDataStatus": "pending_full_skill_audit",
+      "skillValues": null
+    },
+    {
+      "name": "Seth",
+      "generation": 1,
+      "troopType": "infantry",
+      "rarity": "rare",
+      "skillDataStatus": "pending_full_skill_audit",
+      "skillValues": null
+    },
+    {
+      "name": "Edwin",
+      "generation": 1,
+      "troopType": "cavalry",
+      "rarity": "rare",
+      "skillDataStatus": "pending_full_skill_audit",
+      "skillValues": null
+    },
+    {
+      "name": "Olive",
+      "generation": 1,
+      "troopType": "archer",
+      "rarity": "rare",
+      "skillDataStatus": "pending_full_skill_audit",
+      "skillValues": null
+    },
+    {
+      "name": "Zoe",
+      "generation": 2,
+      "troopType": "infantry",
+      "rarity": "mythic",
+      "skillDataStatus": "pending_full_skill_audit",
+      "skillValues": null
+    },
+    {
+      "name": "Hilde",
+      "generation": 2,
+      "troopType": "cavalry",
+      "rarity": "mythic",
+      "skillDataStatus": "pending_full_skill_audit",
+      "skillValues": null
+    },
+    {
+      "name": "Marlin",
+      "generation": 2,
+      "troopType": "archer",
+      "rarity": "mythic",
+      "skillDataStatus": "partial_in_research_database",
+      "skillValues": null
+    },
+    {
+      "name": "Eric",
+      "generation": 3,
+      "troopType": "infantry",
+      "rarity": "mythic",
+      "skillDataStatus": "pending_full_skill_audit",
+      "skillValues": null
+    },
+    {
+      "name": "Petra",
+      "generation": 3,
+      "troopType": "cavalry",
+      "rarity": "mythic",
+      "skillDataStatus": "partial_in_research_database",
+      "skillValues": null
+    },
+    {
+      "name": "Jaeger",
+      "generation": 3,
+      "troopType": "archer",
+      "rarity": "mythic",
+      "skillDataStatus": "pending_full_skill_audit",
+      "skillValues": null
+    },
+    {
+      "name": "Alcar",
+      "generation": 4,
+      "troopType": "infantry",
+      "rarity": "mythic",
+      "skillDataStatus": "partial_in_research_database",
+      "skillValues": null
+    },
+    {
+      "name": "Margot",
+      "generation": 4,
+      "troopType": "cavalry",
+      "rarity": "mythic",
+      "skillDataStatus": "pending_full_skill_audit",
+      "skillValues": null
+    },
+    {
+      "name": "Rosa",
+      "generation": 4,
+      "troopType": "archer",
+      "rarity": "mythic",
+      "skillDataStatus": "pending_full_skill_audit",
+      "skillValues": null
+    },
+    {
+      "name": "Long Fei",
+      "generation": 5,
+      "troopType": "infantry",
+      "rarity": "mythic",
+      "skillDataStatus": "partial_in_research_database",
+      "skillValues": null
+    },
+    {
+      "name": "Thrud",
+      "generation": 5,
+      "troopType": "cavalry",
+      "rarity": "mythic",
+      "skillDataStatus": "partial_in_research_database",
+      "skillValues": null
+    },
+    {
+      "name": "Vivian",
+      "generation": 5,
+      "troopType": "archer",
+      "rarity": "mythic",
+      "skillDataStatus": "pending_full_skill_audit",
+      "skillValues": null
+    }
+  ],
+  "policy": "Retain all past generations; include current plus next generation; never fabricate missing skills.",
+  "sources": [
+    "https://www.kingshotapp.com/heroes",
+    "https://kingshotdata.com/heroes/",
+    "https://www.kingshotapp.com/heroes/generation-5-heroes"
+  ],
+  "caveat": "Names, generations and troop classes are community-sourced. Full skill values require per-hero validation; null means not yet researched."
+}
