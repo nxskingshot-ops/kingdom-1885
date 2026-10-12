@@ -1,0 +1,45 @@
+{
+  "schema": "phalanx-joiner-research/1",
+  "status": "community-source estimates; check individual first expedition skill in game",
+  "updated": "2026-10-12",
+  "heroes": [
+    {
+      "name": "Chenko",
+      "effect_op": 101,
+      "group": "DamageUp",
+      "skillLevel5Pct": 25
+    },
+    {
+      "name": "Yeonwoo",
+      "effect_op": 101,
+      "group": "DamageUp",
+      "skillLevel5Pct": 25
+    },
+    {
+      "name": "Amadeus",
+      "effect_op": 101,
+      "group": "DamageUp",
+      "skillLevel5Pct": 25
+    },
+    {
+      "name": "Amane",
+      "effect_op": 102,
+      "group": "DamageUp",
+      "skillLevel5Pct": 25
+    }
+  ],
+  "rules": {
+    "joinerSkillCount": 4,
+    "firstExpeditionSkillOnly": true,
+    "withinGroup": "sum percentages",
+    "acrossGroups": "multiply factors",
+    "sample": "2 Chenko + 2 Amane = (1+0.50)*(1+0.50)=2.25; 4 Chenko = 2.00",
+    "limits": "No skill procs, widgets, opponent, defense, availability or actual troop tiers; do not present as exact battle damage"
+  },
+  "sources": [
+    "https://kingshotsim.com/skillmod",
+    "https://kingshotguide.org/calculator/bear-trap-calculator",
+    "https://www.kingshot.wiki/guides/joiner-hero-mechanics-no-one-told-you-about",
+    "https://github.com/blackillzone/kingshot-companion/blob/main/doc/kingshot-game.md"
+  ]
+}
