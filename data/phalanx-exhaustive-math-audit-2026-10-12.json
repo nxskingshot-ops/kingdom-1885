@@ -1,0 +1,66 @@
+{
+  "project": "NEXUS PHALANX",
+  "date": "2026-10-12",
+  "scope": "conditional mathematical research, not verified game damage",
+  "levels": [
+    5,
+    10,
+    15,
+    20,
+    25
+  ],
+  "skillLevelTuples": 625,
+  "attackLethalityAssignmentsPerTuple": 16,
+  "scenarios": 10000,
+  "groupedFactor": "(1+sumAttackPct/100)*(1+sumLethalityPct/100)",
+  "optimization": "For fixed total percentage, minimize imbalance between attack and lethality sums",
+  "cases": [
+    {
+      "values": [
+        25,
+        25,
+        25,
+        25
+      ],
+      "best": 2.25,
+      "allSame": 2
+    },
+    {
+      "values": [
+        25,
+        25,
+        25,
+        5
+      ],
+      "best": 1.95,
+      "threePlusOne": 1.8375
+    },
+    {
+      "values": [
+        25,
+        25,
+        10,
+        5
+      ],
+      "best": 1.755
+    }
+  ],
+  "stochastic": {
+    "trials": 200000,
+    "seed": 1885,
+    "independentProcProbability": 0.4,
+    "numberOfProcs": 4,
+    "atLeastOneEmpirical": 0.870645,
+    "allFourEmpirical": 0.02536,
+    "meanEmpirical": 1.59971,
+    "atLeastOneExact": 0.8704,
+    "allFourExact": 0.0256,
+    "meanExact": 1.6
+  },
+  "limitations": [
+    "Cannot infer actual damage or win probability",
+    "Attack/lethality group separation unverified",
+    "Only eligible first expedition joiner skills can be included",
+    "Hero availability and skill selection are constraints, not assumed"
+  ]
+}
