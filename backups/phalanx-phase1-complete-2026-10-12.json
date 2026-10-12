@@ -1,0 +1,21 @@
+{
+  "project": "NEXUS PHALANX",
+  "date": "2026-10-12",
+  "checkpoint": "phase1-evidence-indexed",
+  "heroesTotal": 28,
+  "linkedScreenshotEvidence": 7,
+  "heroes": [
+    "Amadeus",
+    "Chenko",
+    "Amane",
+    "Yeonwoo",
+    "Helga",
+    "Hilde",
+    "Saul"
+  ],
+  "roster": "data/phalanx-hero-roster-gen1-gen5-v1-2026-10-12.json",
+  "evidenceCompleteness": "varies; Hilde and Saul partial; not all 28 skills verified",
+  "releaseGate": "BLOCKED until empirical mechanics tests",
+  "homeDesign": "FROZEN; not edited",
+  "backupType": "manifest and GitHub version history, not independent full repository archive"
+}
