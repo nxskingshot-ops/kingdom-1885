@@ -1,0 +1,27 @@
+{
+  "status": "double-checked",
+  "cases": 10000,
+  "exact": {
+    "any": 0.8704,
+    "all": 0.0256,
+    "mean": 1.6,
+    "variance": 0.96
+  },
+  "seeded100000": {
+    "hist": [
+      13175,
+      34416,
+      34387,
+      15437,
+      2585
+    ],
+    "mean": 1.59841,
+    "variance": 0.9676554719
+  },
+  "findings": [
+    "Ranking additive minimum is tautological for nonnegative attack/lethality",
+    "Game stacking and combat damage remain unverified",
+    "Screenshot regression count corrected from 11 to 12"
+  ],
+  "release": "BLOCKED"
+}
