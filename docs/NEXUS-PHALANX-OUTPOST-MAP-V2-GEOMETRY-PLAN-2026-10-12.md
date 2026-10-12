@@ -56,4 +56,26 @@ Preserve source timestamps and import validation, permissions and log.
 4. Require tap/zoom, search/filter, overlap handling, report copy, permissions and mutation history tests.
 5. Get sign-off on finalized specification before implementing.
 
+## Marker and alliance family policy (user's provisional approval, 2026-10-12)
+The eight distinct labels are **intentional**, not capitalization errors. Each main alliance has a youth/academy alliance:
+- NXS (main) / NxS (academy)
+- FRA (main) / Fra (academy)
+- MYM (main) / MyM (academy)
+- OoO (main) / oOo (academy)
+
+Use four **provisional** color families, one for each pair. Main alliance marker = small filled circular dot; academy = same hue, outlined ring with tiny center dot. Unlike slight shade changes, distinct fill outlines remain legible to color-impaired viewers. Other alliances have neutral markers, but remain separately identifiable in details and filters. Exact hex colors are visual placeholders until actual portrait review; don't treat them as permanently approved colors.
+
+At initial zoom show all 74 points without collapsing records or inventing coordinate offsets. Draw symbol about 7–10 CSS pixels across at overview zoom (to be tuned visually); give each independently selectable point a larger invisible finger-friendly hit target when non-overlapping. For dense overlapping locations, provide nearest-point picker/list selection, never jitter coordinates. Highlight selected marker with halo. Map vs marker colors must meet dark-mode contrast requirements. Show compact legend with 4 families + marker shape explanation + 'Other', not 12 large legend rows.
+
+Filtering by alliance must support **distinct exact affiliations** AND optional family view (main+academy) without silently merging dataset rows. The ownership text in detail and reports retains exact source spelling. The current canonical 74-record database inspection showed all 74 verified, all 74 published, 74 unique valid coordinate pairs, and the latest row update recorded 2026-10-02. Current game ownership has **not** been reverified.
+
+Other UX:
+- Search stays always visible above map; match source label/type/level/alliance/X,Y. Four independent filter selectors: Alliance, Quadrant, Type, Level. Restore all in one reset action.
+- No per-pin permanent labels at overview zoom; selection details and searchable list carry text.
+- Keep small central castle marker separate from outposts.
+- 1:1 frozen Home is outside the scope of all proposed map changes.
+
+## Implementation guardrail
+This is a design planning update, **not** user approval to redeploy or replace the existing Outpost Map. Next work: validate exact quadrant boundary convention, ensure active canonical viewer/editor uses the verified table rather than legacy; build isolated preview only after the full spec is signed off.
+
 No existing Home, Outpost or production file modified by this document.
