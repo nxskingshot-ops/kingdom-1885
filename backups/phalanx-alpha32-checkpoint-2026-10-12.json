@@ -1,0 +1,32 @@
+{
+  "project": "NEXUS PHALANX",
+  "checkpoint": "Alpha32 Rally Skill Selection",
+  "date": "2026-10-12",
+  "type": "GitHub checkpoint manifest, not binary archive",
+  "newFiles": [
+    "preview/phalanx-rally-selection-alpha32-2026-10-12.html",
+    "src/phalanx-rally-selection-v1.js",
+    "tests/phalanx-rally-selection-v1.test.js",
+    "data/phalanx-rally-mechanics-source-audit-2026-10-12.json",
+    "preview/phalanx-monte-carlo-lab-alpha31-2026-10-12.html",
+    "tests/phalanx-math-properties-v1.test.js",
+    "tests/phalanx-evidence-consistency-v1.test.js"
+  ],
+  "ci": ".github/workflows/phalanx-math-regression-suite.yml",
+  "verification": {
+    "coreNodeAssertions": "64 passed",
+    "rallySelectionAssertions": "12 passed",
+    "randomCrossChecks": "1000 passed",
+    "maxCandidateSearch": "10626 combinations each in two optimizers",
+    "firstSkillSourceRecords": "7/7 matched",
+    "remoteGitHubActions": "not inspected",
+    "androidPages": "not tested"
+  },
+  "blockedOn": [
+    "Real rally battle reports to confirm selection and stacking",
+    "Complete hero first expedition skill screenshots for unverified roster",
+    "Pet, master, gear and buff screenshots or official complete tables"
+  ],
+  "home": "frozen, unchanged",
+  "release": "BLOCKED"
+}
