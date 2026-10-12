@@ -1,0 +1,58 @@
+{
+  "hero": "Saul",
+  "status": "partial",
+  "skills": [
+    {
+      "name": "Letztes Gebet",
+      "mode": "conquest",
+      "defensePct": [
+        50,
+        75,
+        100,
+        125,
+        150
+      ],
+      "condition": "HP below 50%"
+    },
+    {
+      "name": "Task-Force-Ausbildung",
+      "mode": "expedition",
+      "slot": 1,
+      "defensePct": [
+        2,
+        4,
+        6,
+        8,
+        10
+      ],
+      "healthPct": [
+        3,
+        6,
+        9,
+        12,
+        15
+      ]
+    },
+    {
+      "name": "Einfallsreich",
+      "mode": "expedition",
+      "slot": 2,
+      "constructionSpeedPct": [
+        3,
+        6,
+        9,
+        12,
+        15
+      ],
+      "constructionCostReductionPct": [
+        3,
+        6,
+        9,
+        12,
+        15
+      ]
+    }
+  ],
+  "source": "user in-game screenshots previously reviewed",
+  "limits": "Skill previews, not user's actual levels; other skills missing; no damage stacking verification"
+}
