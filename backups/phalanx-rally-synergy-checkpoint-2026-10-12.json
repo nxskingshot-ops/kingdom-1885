@@ -1,0 +1,22 @@
+{
+  "project": "NEXUS PHALANX",
+  "checkpoint_date": "2026-10-12",
+  "status": "Alpha17 last verified; Alpha18 not published",
+  "files": [
+    {
+      "path": "preview/phalanx-rally-leader-joiner-alpha17-2026-10-12.html",
+      "blob_sha": "a1418dac32c24e9e7017a58fe9268d2fc3d98ece"
+    },
+    {
+      "path": "preview/phalanx-hero-synergy-alpha16-2026-10-12.html",
+      "blob_sha": "fcb75ce90665970fe86cf64d0150d63d8e9d634e"
+    },
+    {
+      "path": "backups/NEXUS_PHALANX_HOME_FROZEN_2026-10-11.html",
+      "blob_sha": "e07740b64bf9dacb4df00ad9cdd374c21bd2f244"
+    }
+  ],
+  "freeze": "Command Center home remains unchanged; no unauthorized design edits",
+  "next": "Leader-first three hero synergy comparison using verified skill effects, then four joiner recommendations by Bear Trap, offensive Rally/KvK, Garrison. Separate modeled multipliers from observed damage. Whale performance-focused; F2P/Low/Mid cost-conscious.",
+  "caveat": "Existing Alpha16 25-percent-per-skill synergy model is illustrative, not battle-validated."
+}
