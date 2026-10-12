@@ -1,0 +1,148 @@
+{
+  "schema": "phalanx-combat-modifier-engine/1",
+  "date": "2026-10-12",
+  "project": "NEXUS PHALANX",
+  "baselineModes": {
+    "snapshot": "Use in-game total stats; add only modifiers not already reflected",
+    "reconstruct": "Start from base stats and add every source exactly once"
+  },
+  "modifierFields": [
+    "id",
+    "source",
+    "stat",
+    "value",
+    "unit",
+    "troopType",
+    "mode",
+    "actor",
+    "timing",
+    "durationSeconds",
+    "stackingGroup",
+    "includedInSnapshot",
+    "confidence",
+    "sourceUrl"
+  ],
+  "sourceSystems": [
+    "pet_passive",
+    "pet_refinement",
+    "pet_active",
+    "master_expertise",
+    "master_skill",
+    "governor_gear",
+    "governor_charm",
+    "hero_gear",
+    "hero_widget",
+    "hero_expedition_skill",
+    "research",
+    "alliance",
+    "consumable",
+    "kingdom_buff",
+    "event_buff",
+    "troop_tier",
+    "joiner_expedition_skill"
+  ],
+  "rally": {
+    "leaderSources": [
+      "pet_passive",
+      "pet_refinement",
+      "pet_active",
+      "master_expertise",
+      "master_skill",
+      "governor_gear",
+      "governor_charm",
+      "hero_gear",
+      "hero_widget",
+      "hero_expedition_skill",
+      "research",
+      "alliance",
+      "consumable",
+      "kingdom_buff",
+      "event_buff"
+    ],
+    "joinerSources": [
+      "troop_count",
+      "joiner_expedition_skill"
+    ],
+    "joinerSkillLimit": 4,
+    "joinerHeroSlot": 1,
+    "joinerSkillSlot": 1,
+    "selection": "Highest first expedition skill level; ties by join order",
+    "source": "https://kingshotworld.com/guides/advanced-rally-guide/"
+  },
+  "effects": [
+    {
+      "id": "pet_rhino_active",
+      "source": "pet_active",
+      "stat": "attack",
+      "valueMaxPercent": 10,
+      "durationSeconds": 7200,
+      "appliesTo": [
+        "expedition",
+        "rally",
+        "bear"
+      ],
+      "confidence": "community_documented"
+    },
+    {
+      "id": "pet_panther_active",
+      "source": "pet_active",
+      "stat": "lethality",
+      "valueMaxPercent": 10,
+      "durationSeconds": 7200,
+      "appliesTo": [
+        "expedition",
+        "rally",
+        "bear"
+      ],
+      "confidence": "community_documented"
+    },
+    {
+      "id": "pet_moose_active",
+      "source": "pet_active",
+      "stat": "rally_capacity",
+      "valueMaxFlat": 150000,
+      "durationSeconds": 7200,
+      "appliesTo": [
+        "rally"
+      ],
+      "confidence": "community_documented"
+    },
+    {
+      "id": "pet_bison_active",
+      "source": "pet_active",
+      "stat": "deployment_capacity",
+      "valueMaxFlat": 15000,
+      "durationSeconds": 7200,
+      "appliesTo": [
+        "expedition",
+        "rally",
+        "bear"
+      ],
+      "confidence": "community_documented"
+    }
+  ],
+  "combinationPolicy": {
+    "sameGroup": "add percentages",
+    "independentGroups": "multiply factors",
+    "proc": "evaluate per turn and preserve conditions; do not turn chance into guaranteed effect",
+    "snapshotProtection": "skip modifiers includedInSnapshot=true",
+    "petPassive": "aggregate all unlocked pet passive stats once",
+    "petRefinement": "aggregate all pet refinement stats by troop class once",
+    "master": "expertise vs learned skills, mode restrictions separately",
+    "garrison": "do not reuse offensive Bear score as defensive prediction"
+  },
+  "sourceUrls": [
+    "https://kingshotwin.com/guides/gameplay/rallies/",
+    "https://kingshotbattlemaster.com/guides/pets",
+    "https://kingshotworld.com/guides/advanced-rally-guide/",
+    "https://centurygames.helpshift.com/hc/en/140-kingshot/section/1695-master-system/"
+  ],
+  "openQuestions": [
+    "Complete pet active skill values per level",
+    "Master skill lists and activation per mode",
+    "Which master bonuses are reflected in in-game stats",
+    "Official buff stacking caps and effect group interaction",
+    "Real turn-based damage equation and enemy targeting"
+  ],
+  "status": "Architecture + sourced rules, not calibrated engine"
+}
