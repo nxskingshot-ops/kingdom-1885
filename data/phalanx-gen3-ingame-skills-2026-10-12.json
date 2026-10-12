@@ -1,0 +1,236 @@
+{
+  "schema": "phalanx.hero.skills.ingame.v1",
+  "source": "user-provided Kingshot screenshots",
+  "captured": "2026-10-12",
+  "status": "skill text and level previews screenshot-verified; actual owned levels not asserted",
+  "generation": 3,
+  "heroes": [
+    {
+      "name": "Jaeger",
+      "class": "archer",
+      "conquest": [
+        [
+          "Eine tödliche Affäre",
+          [
+            160,
+            176,
+            192,
+            208,
+            224
+          ],
+          "damage_pct; stun 2s"
+        ],
+        [
+          "Glücksspiel",
+          [
+            220,
+            240,
+            260,
+            280,
+            300
+          ],
+          "damage_pct or heal 50% of attack; outcome random"
+        ],
+        [
+          "Klatschmaul",
+          [
+            10,
+            15,
+            20,
+            25,
+            30
+          ],
+          "enemy damage received increase 3s"
+        ]
+      ],
+      "expedition": [
+        [
+          "Der Sturm",
+          [
+            8,
+            16,
+            24,
+            32,
+            40
+          ],
+          "20% proc chance; squad damage increase 3 rounds"
+        ],
+        [
+          "Der Widerstand",
+          [
+            10,
+            20,
+            30,
+            40,
+            50
+          ],
+          "20% proc chance; enemy lethality reduction 2 rounds"
+        ],
+        [
+          "Die Feier",
+          [
+            5,
+            10,
+            15,
+            20,
+            25
+          ],
+          "squad health increase"
+        ]
+      ]
+    },
+    {
+      "name": "Petra",
+      "class": "cavalry",
+      "conquest": [
+        [
+          "Zwiespalt",
+          [
+            270,
+            297,
+            324,
+            351,
+            378
+          ],
+          "damage; enemy attack -20% for 2s or stun 1.5s"
+        ],
+        [
+          "Wendepunkt",
+          [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "base attack damage; random 5%-600% of base"
+        ],
+        [
+          "Karte umdrehen",
+          [
+            100,
+            110,
+            120,
+            130,
+            140
+          ],
+          "healing base; random 5%-400% of base"
+        ]
+      ],
+      "expedition": [
+        [
+          "Böses Auge",
+          [
+            10,
+            20,
+            30,
+            40,
+            50
+          ],
+          "50% proc chance; enemy damage received increase"
+        ],
+        [
+          "Der Gefallen",
+          [
+            10,
+            20,
+            30,
+            40,
+            50
+          ],
+          "50% proc chance; squad attack increase"
+        ],
+        [
+          "Der Schild",
+          [
+            10,
+            20,
+            30,
+            40,
+            50
+          ],
+          "40% proc chance; damage received reduction"
+        ]
+      ]
+    },
+    {
+      "name": "Eric",
+      "class": "infantry",
+      "conquest": [
+        [
+          "Bodenschock",
+          [
+            120,
+            132,
+            144,
+            156,
+            168
+          ],
+          "damage; target attack speed -50% for 4s"
+        ],
+        [
+          "Veteranentum",
+          [
+            8,
+            10,
+            12,
+            14,
+            16
+          ],
+          "proc chance when attacked; defense bonus [8,11,14,17,20]%; 2s; max 5 stacks"
+        ],
+        [
+          "Hammer der Gerechtigkeit",
+          [
+            80,
+            88,
+            96,
+            104,
+            112
+          ],
+          "damage; 30% stun chance 1s"
+        ]
+      ],
+      "expedition": [
+        [
+          "Heiliger Krieger",
+          [
+            4,
+            8,
+            12,
+            16,
+            20
+          ],
+          "enemy squad attack reduction"
+        ],
+        [
+          "Überzeugung",
+          [
+            4,
+            8,
+            12,
+            16,
+            20
+          ],
+          "own squad damage taken reduction"
+        ],
+        [
+          "Mahnende Worte",
+          [
+            5,
+            10,
+            15,
+            20,
+            25
+          ],
+          "own squad health increase"
+        ]
+      ]
+    }
+  ],
+  "caveats": [
+    "Conquest and expedition effects are distinct.",
+    "Proc stacking and actual damage formula unverified.",
+    "These screenshots display Lv5 preview, not necessarily user account ownership."
+  ]
+}
