@@ -1,0 +1,96 @@
+{
+  "schema": "phalanx-combat-qualification/2",
+  "date": "2026-10-12",
+  "verdict": "qualified_relative_comparison_only",
+  "confirmedByMultipleCommunitySources": [
+    "leader combat stats govern rally",
+    "four selected joiner first-expedition skills",
+    "skill-level priority then join order",
+    "joiner personal research gear pets and buffs not applied as leader stats"
+  ],
+  "disputedOrUnverified": [
+    "effect_op grouping is reverse engineered and may not apply to every skill",
+    "official full damage equation unavailable",
+    "pet/master temporary buff inclusion in snapshot not established",
+    "valora score bonus must not be treated as attack bonus",
+    "chance-based effects require per-turn stochastic simulation"
+  ],
+  "calculation": {
+    "joinerAssumption": "4 eligible skills, each +25%, op101 additive within group and op102 additive within group; two groups multiply",
+    "joinerCompositions": [
+      {
+        "op101": 0,
+        "op102": 4,
+        "factor": 2,
+        "vsFourSamePct": 0
+      },
+      {
+        "op101": 1,
+        "op102": 3,
+        "factor": 2.1875,
+        "vsFourSamePct": 9.38
+      },
+      {
+        "op101": 2,
+        "op102": 2,
+        "factor": 2.25,
+        "vsFourSamePct": 12.5
+      },
+      {
+        "op101": 3,
+        "op102": 1,
+        "factor": 2.1875,
+        "vsFourSamePct": 9.38
+      },
+      {
+        "op101": 4,
+        "op102": 0,
+        "factor": 2,
+        "vsFourSamePct": 0
+      }
+    ],
+    "buffAssumption": "attack and lethality additive to displayed percentage points and multiply in offensive proxy; only valid if these modifiers are not already included",
+    "petExamples": [
+      {
+        "attackPct": 200,
+        "lethalityPct": 150,
+        "rhino": 10,
+        "panther": 10,
+        "baseFactor": 7.5,
+        "activeFactor": 8.06,
+        "relativeGainPct": 7.4667
+      },
+      {
+        "attackPct": 50,
+        "lethalityPct": 50,
+        "rhino": 10,
+        "panther": 10,
+        "baseFactor": 2.25,
+        "activeFactor": 2.5600000000000005,
+        "relativeGainPct": 13.7778
+      },
+      {
+        "attackPct": 500,
+        "lethalityPct": 400,
+        "rhino": 10,
+        "panther": 10,
+        "baseFactor": 30,
+        "activeFactor": 31.109999999999996,
+        "relativeGainPct": 3.7
+      }
+    ]
+  },
+  "releaseCriteria": [
+    "per-effect inclusion and activation",
+    "source for every effect and mode",
+    "sensitivity analysis for alternate stacking assumptions",
+    "scenario tests",
+    "never claim absolute damage without in-game validation"
+  ],
+  "sources": [
+    "https://kingshotwin.com/guides/gameplay/rallies/",
+    "https://kingshotworld.com/guides/advanced-rally-guide/",
+    "https://kingshothandbook.com/guides/joiner-rules-guide",
+    "https://kingshotbattlemaster.com/guides/bear-trap"
+  ]
+}
