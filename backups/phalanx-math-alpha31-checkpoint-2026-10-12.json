@@ -1,0 +1,31 @@
+{
+  "project": "NEXUS PHALANX",
+  "checkpoint": "Math Alpha31",
+  "date": "2026-10-12",
+  "type": "GitHub checkpoint manifest, not full source archive",
+  "files": [
+    "preview/phalanx-monte-carlo-lab-alpha31-2026-10-12.html",
+    "src/phalanx-probability-v1.js",
+    "src/phalanx-monte-carlo-v2.js",
+    "src/phalanx-dependence-bounds-v1.js",
+    "src/phalanx-screenshot-joiner-v2.js",
+    "src/phalanx-robust-ranking-v1.js",
+    "tests/phalanx-math-properties-v1.test.js",
+    "tests/phalanx-evidence-consistency-v1.test.js",
+    ".github/workflows/phalanx-math-regression-suite.yml",
+    "data/phalanx-hero-roster-gen1-gen5-v1-2026-10-12.json",
+    "data/phalanx-seven-hero-first-expedition-skills-2026-10-12.json",
+    "data/phalanx-verified-math-audit-2026-10-12.json"
+  ],
+  "checks": {
+    "node22CoreAssertions": "64/64 locally passed",
+    "randomizedCases": "1000/1000 locally passed",
+    "exhaustiveSearch24": "10626/10626 locally passed",
+    "screenshotEvidence": "7/7 crosschecked with linked source records",
+    "remoteCI": "not verified",
+    "pagesBrowser": "not verified"
+  },
+  "release": "BLOCKED pending real Kingshot combat calibration",
+  "frozenHome": "unchanged",
+  "notes": "No official game win-rate or damage claim; keep all scenario assumptions visible."
+}
