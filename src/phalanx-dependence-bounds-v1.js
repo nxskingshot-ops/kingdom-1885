@@ -1,0 +1,4 @@
+/* Exact event bounds, hypothetical dependence scenarios only. */
+(function(root,factory){const api=factory();if(typeof module==="object"&&module.exports)module.exports=api;else root.PhalanxDependenceBounds=api;})(typeof globalThis!=="undefined"?globalThis:this,function(){"use strict";
+function analyze(chances){if(!Array.isArray(chances)||chances.length<1||chances.length>100||chances.some(p=>!Number.isFinite(p)||p<0||p>1))throw Error("Invalid probabilities");const sum=chances.reduce((a,b)=>a+b,0),max=Math.max(...chances),min=Math.min(...chances),independentAny=1-chances.reduce((a,p)=>a*(1-p),1),independentAll=chances.reduce((a,p)=>a*p,1);return {expected:sum,anyBounds:[max,Math.min(1,sum)],allBounds:[Math.max(0,sum-(chances.length-1)),min],independent:{any:independentAny,all:independentAll},sharedUniform:{any:max,all:min},warning:"Marginal probability bounds only; dependence in Kingshot is unverified"};}
+return {analyze};});
