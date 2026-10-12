@@ -25,3 +25,4 @@ jobs:
           node tests/phalanx-monte-carlo-v2.test.js
           node tests/phalanx-dependence-bounds-v1.test.js
           node tests/phalanx-math-properties-v1.test.js
+          node tests/phalanx-evidence-consistency-v1.test.js
