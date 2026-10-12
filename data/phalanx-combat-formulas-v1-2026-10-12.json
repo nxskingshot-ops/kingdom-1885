@@ -1,0 +1,35 @@
+{
+  "name": "PHALANX Combat Formula Reference",
+  "version": 1,
+  "date": "2026-10-12",
+  "status": "community reverse-engineered; not officially verified",
+  "formulas": {
+    "effectiveAttack": "baseAttack*(1+attackPct/100)*baseLethality*(1+lethalityPct/100)/100",
+    "effectiveDefense": "baseDefense*(1+defensePct/100)*baseHealth*(1+healthPct/100)/100",
+    "armyFactor": "sqrt(troopTypeCount*min(totalOwnTroops,totalEnemyTroops))",
+    "skillMultiplier": "product(1+sum(effectBonusesForSameOp)/100) across independent offensive effect_op groups",
+    "heroGearEnhanced": "baseStat+(level/100)*(maxStat-baseStat)",
+    "heroGearFinal": "heroGearEnhanced*(1+0.1*masteryLevel)",
+    "upgradeEfficiency": "valueGain/(resourcesUsed/resourcesAvailable*100)",
+    "speedSeconds": "baseTimeSeconds/(1+speedPct/100)",
+    "costAfterReduction": "baseCost*(1-min(90,costReductionPct)/100)"
+  },
+  "effectOpExamples": {
+    "101": "DamageUp group: Chenko, Amadeus, Yeonwoo, Jabel, Marlin, Vivian",
+    "102": "DamageUp group: Amane, Margot, Hilde partial",
+    "111": "DefenseUp group: Howard, Quinn",
+    "112": "DefenseUp group: Saul partial, Alcar, Long Fei",
+    "113": "DefenseUp group: Gordon, Saul partial, Zoe, Rosa, Jaeger",
+    "201": "OppDamageDown Fahd",
+    "202": "OppDamageDown Eric"
+  },
+  "sourceUrls": [
+    "https://kingshotsim.com/damage-formula",
+    "https://frakinator.streamlit.app/",
+    "https://github.com/blackillzone/kingshot-companion",
+    "https://github.com/ryandimick/brs-kingshot/blob/main/KINGSHOT-OPTIMIZER-PROMPT.md",
+    "https://kingshotoptimizer.com/hero-gear/how-it-works/",
+    "https://kingshotoptimizer.com/optimizer/how-it-works"
+  ],
+  "usage": "Use as default provisional PHALANX model. Label assumptions and model outputs; calibrate with battle reports. Do not treat sources as official or claim exact Kingshot engine reproduction. Distinguish rally leader, joiner, garrison, bear modes. Do not infer total damage from isolated hero stats."
+}
