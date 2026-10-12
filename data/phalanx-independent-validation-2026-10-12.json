@@ -1,0 +1,90 @@
+{
+  "schema": "phalanx-independent-validation/1",
+  "date": "2026-10-12",
+  "engine": "src/phalanx-robust-engine-v1.js",
+  "nodeRegression": "tests/phalanx-robust-engine-v1.test.js",
+  "nodeRegressionStatus": "written_not_executed_in_GitHub_runtime",
+  "browserPreview": "preview/phalanx-robust-optimizer-alpha28-2026-10-12.html",
+  "pythonIndependentCheck": {
+    "seed": 1885,
+    "iterations": 100000,
+    "independentProcProbability": 0.4,
+    "atLeastOne": {
+      "analytic": 0.8704,
+      "monteCarlo": 0.87044
+    },
+    "allFour": {
+      "analytic": 0.0256,
+      "monteCarlo": 0.02473
+    },
+    "meanProcCount": {
+      "analytic": 1.6,
+      "monteCarlo": 1.5995
+    },
+    "result": "PASS"
+  },
+  "joinerSensitivity": {
+    "twoAndTwo": {
+      "grouped": 2.25,
+      "allAdditive": 2,
+      "allIndependent": 2.44140625
+    },
+    "fourSame": {
+      "grouped": 2,
+      "allAdditive": 2,
+      "allIndependent": 2.44140625
+    },
+    "conclusion": "Mixed beats same only under grouped additive-within/multiplicative-across assumption; other scenarios tie, not robustly strictly better"
+  },
+  "petSensitivity": [
+    {
+      "attackPct": 50,
+      "lethalityPct": 50,
+      "gainPct": 13.77778
+    },
+    {
+      "attackPct": 200,
+      "lethalityPct": 150,
+      "gainPct": 7.46667
+    },
+    {
+      "attackPct": 500,
+      "lethalityPct": 400,
+      "gainPct": 3.7
+    },
+    {
+      "attackPct": 1000,
+      "lethalityPct": 1000,
+      "gainPct": 1.82645
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://kingshotsim.com/rally-and-troops",
+      "evidence": "leader/joiner rules; chance skills probable not confirmed"
+    },
+    {
+      "url": "https://kingshotwin.com/guides/gameplay/rallies/",
+      "evidence": "leader stat contribution, joiner slots and skill group heuristic"
+    },
+    {
+      "url": "https://kingshothandbook.com/guides/joiner-rules-guide",
+      "evidence": "skill selection priority and 4 slots"
+    },
+    {
+      "url": "https://kingshotbattlemaster.com/guides/pets",
+      "evidence": "passive vs active pets; not complete verified level tables"
+    }
+  ],
+  "knownBlockers": [
+    "Full Gen1-5 skill tables incomplete",
+    "Master values and pet buff inclusion not calibrated",
+    "RNG independence unproven",
+    "Real battle reports not ingested",
+    "GitHub Actions regression run result not yet observed",
+    "UI mobile live test not observed",
+    "No production feedback upload backend"
+  ],
+  "production": "BLOCKED",
+  "designFreeze": "Command Center unchanged"
+}
