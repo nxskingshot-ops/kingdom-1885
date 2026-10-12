@@ -16,4 +16,4 @@ assert.throws(()=>E.evaluate([j("Chenko")]));
 const pool=[j("Chenko"),j("Yeonwoo"),j("Amane"),j("Helga"),j("Hilde")];
 assert.equal(E.optimize(pool).evaluated,5);
 assert.equal(E.optimize(pool).top[0].result.grouped,2.25);
-console.log("11 PHALANX screenshot joiner regression assertions passed");
+console.log("12 PHALANX screenshot joiner regression assertions passed");
