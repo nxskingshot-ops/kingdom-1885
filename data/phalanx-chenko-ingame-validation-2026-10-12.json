@@ -1,0 +1,82 @@
+{
+  "schema": "phalanx-in-game-skill-validation-v1",
+  "hero": "Chenko",
+  "rarity": "SR",
+  "troopType": "cavalry",
+  "source": "User-provided German Kingshot skill screenshots, transcribed from conversation",
+  "sourceStatus": "Screenshot-reported values; original image reinspection not performed in this operation",
+  "skills": [
+    {
+      "name": "Feuerstoß",
+      "mode": "conquest",
+      "slot": 1,
+      "damagePct": [
+        55,
+        60,
+        65,
+        70,
+        75
+      ],
+      "intervalSeconds": 0.5,
+      "durationSeconds": 2
+    },
+    {
+      "name": "Verteidigungs-Aufwertung",
+      "mode": "conquest",
+      "slot": 2,
+      "defensePct": [
+        25,
+        37.5,
+        50,
+        62.5,
+        70
+      ]
+    },
+    {
+      "name": "Waffen-Aufwertung",
+      "mode": "conquest",
+      "slot": 3,
+      "attackPct": [
+        8,
+        12,
+        16,
+        20,
+        24
+      ]
+    },
+    {
+      "name": "Bewaffnung",
+      "mode": "expedition",
+      "slot": 1,
+      "allSquadsLethalityPct": [
+        5,
+        10,
+        15,
+        20,
+        25
+      ]
+    },
+    {
+      "name": "Schildmauer",
+      "mode": "expedition",
+      "slot": 2,
+      "allSquadsDamageTakenReductionPct": [
+        4,
+        8,
+        12,
+        16,
+        20
+      ]
+    }
+  ],
+  "confidence": {
+    "displayedSkillValues": "A screenshot-derived, pending independent image reread",
+    "joinerSkillSelection": "C community rule, not confirmed by these screenshots",
+    "stackingAndActualDamage": "D unverified"
+  },
+  "notes": [
+    "Level tables describe in-game preview, not the player's currently trained skill levels",
+    "Do not combine conquest skills with expedition skills",
+    "Proc effects are not permanent passive bonuses"
+  ]
+}
