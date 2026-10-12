@@ -1,0 +1,54 @@
+{
+  "schema": "phalanx-source-audit/1",
+  "date": "2026-10-12",
+  "topic": "Rally joiner first slot and skill selection",
+  "consensus": [
+    "Only first expedition skill of first-slot joiner hero contributes",
+    "At most four joiner skills are active",
+    "Higher-level first skills often described as displacing lower-level skills",
+    "At equal skill level, earlier join order commonly described as priority"
+  ],
+  "sources": [
+    {
+      "url": "https://ks.c18d.com/en/faq/rally-joiner-and-march-mechanics/joiner-first-slot-rule-and-skill-stacking",
+      "type": "community FAQ"
+    },
+    {
+      "url": "https://kingshotbattlemaster.com/guides/bear-trap",
+      "type": "community guide",
+      "date": "2026-08-18"
+    },
+    {
+      "url": "https://kingshothandbook.com/guides/joiner-rules-guide",
+      "type": "community guide"
+    },
+    {
+      "url": "https://kingshottools.pro/database/heroes/guide",
+      "type": "community guide"
+    },
+    {
+      "url": "https://kingshotwin.com/guides/gameplay/rallies/",
+      "type": "community guide"
+    }
+  ],
+  "conflicts": [
+    {
+      "topic": "Selection timing",
+      "description": "Some guides describe first four skills plus replacement after fifth joiner, others simply top four by level; special-case chance skills may differ",
+      "resolution": "Model level-first then order as conditional only"
+    },
+    {
+      "topic": "Helga joiner role",
+      "description": "One secondary guide calls Helga defensive in offensive rallies, but supplied in-game screenshots show her first expedition skill as all-squad attack",
+      "resolution": "Prefer screenshot for displayed skill text; game mode applicability remains to validate"
+    },
+    {
+      "topic": "Damage formula",
+      "description": "Third-party guides claim cross-group multiplication, but no official verified damage formula or real battle report calibration",
+      "resolution": "Offensive multiplier remains proxy"
+    }
+  ],
+  "gameVerified": false,
+  "needFromUser": "A screenshot of a full rally participant skill list and battle result to validate selection and stacking",
+  "release": "BLOCKED"
+}
