@@ -1,0 +1,175 @@
+{
+  "schema": "phalanx-skill-name-crosswalk-v1",
+  "date": "2026-10-13",
+  "scope": "English-German candidate names; source-level alignment only",
+  "recordCount": 15,
+  "records": [
+    {
+      "hero": "Amadeus",
+      "mode": "expedition",
+      "slot": 1,
+      "english": "Battle Ready",
+      "german": "Kampfbereit",
+      "source": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "levelValuesMatch": true,
+      "translationStatus": "CANDIDATE_NOT_INGAME_BILINGUAL_CONFIRMED"
+    },
+    {
+      "hero": "Amadeus",
+      "mode": "expedition",
+      "slot": 2,
+      "english": "Way of the Blade",
+      "german": "Weg der Klinge",
+      "source": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "levelValuesMatch": true,
+      "translationStatus": "CANDIDATE_NOT_INGAME_BILINGUAL_CONFIRMED"
+    },
+    {
+      "hero": "Amadeus",
+      "mode": "expedition",
+      "slot": 3,
+      "english": "Unrighteous Strike",
+      "german": "Unheiliger Treffer",
+      "source": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "levelValuesMatch": true,
+      "translationStatus": "CANDIDATE_NOT_INGAME_BILINGUAL_CONFIRMED"
+    },
+    {
+      "hero": "Amadeus",
+      "mode": "conquest",
+      "slot": 1,
+      "english": "Combo Slash",
+      "german": "Kombo-Schlag",
+      "source": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "levelValuesMatch": true,
+      "translationStatus": "CANDIDATE_NOT_INGAME_BILINGUAL_CONFIRMED"
+    },
+    {
+      "hero": "Amadeus",
+      "mode": "conquest",
+      "slot": 2,
+      "english": "Arcane Swordship",
+      "german": "Geheimnisvolle Schwertkunst",
+      "source": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "levelValuesMatch": true,
+      "translationStatus": "CANDIDATE_NOT_INGAME_BILINGUAL_CONFIRMED"
+    },
+    {
+      "hero": "Amadeus",
+      "mode": "conquest",
+      "slot": 3,
+      "english": "Onslaught",
+      "german": "Ansturm",
+      "source": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "levelValuesMatch": true,
+      "translationStatus": "CANDIDATE_NOT_INGAME_BILINGUAL_CONFIRMED"
+    },
+    {
+      "hero": "Alcar",
+      "mode": "expedition",
+      "slot": 1,
+      "english": "Rescuing Hands",
+      "german": "Helfende Hände",
+      "source": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "levelValuesMatch": true,
+      "translationStatus": "CANDIDATE_NOT_INGAME_BILINGUAL_CONFIRMED"
+    },
+    {
+      "hero": "Alcar",
+      "mode": "expedition",
+      "slot": 2,
+      "english": "Praetorian Will",
+      "german": "Wille des Prätorianers",
+      "source": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "levelValuesMatch": true,
+      "translationStatus": "CANDIDATE_NOT_INGAME_BILINGUAL_CONFIRMED"
+    },
+    {
+      "hero": "Alcar",
+      "mode": "expedition",
+      "slot": 3,
+      "english": "Carpe Diem",
+      "german": "Carpe Diem",
+      "source": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "levelValuesMatch": true,
+      "translationStatus": "CANDIDATE_NOT_INGAME_BILINGUAL_CONFIRMED"
+    },
+    {
+      "hero": "Alcar",
+      "mode": "conquest",
+      "slot": 1,
+      "english": "Glorious Mark",
+      "german": "Glorreiches Zeichen",
+      "source": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "levelValuesMatch": true,
+      "translationStatus": "CANDIDATE_NOT_INGAME_BILINGUAL_CONFIRMED"
+    },
+    {
+      "hero": "Alcar",
+      "mode": "conquest",
+      "slot": 2,
+      "english": "Boneshatter",
+      "german": "Knochenspalter",
+      "source": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "levelValuesMatch": true,
+      "translationStatus": "CANDIDATE_NOT_INGAME_BILINGUAL_CONFIRMED"
+    },
+    {
+      "hero": "Alcar",
+      "mode": "conquest",
+      "slot": 3,
+      "english": "Second Wind",
+      "german": "Frischer Mut",
+      "source": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "levelValuesMatch": true,
+      "translationStatus": "CANDIDATE_NOT_INGAME_BILINGUAL_CONFIRMED"
+    },
+    {
+      "hero": "Petra",
+      "mode": "expedition",
+      "slot": 1,
+      "english": "Evil Eye",
+      "german": "Böses Auge",
+      "source": "data/hero-intelligence-skill-model-v1-2026-10-12.json",
+      "levelValuesMatch": true,
+      "translationStatus": "CANDIDATE_NOT_INGAME_BILINGUAL_CONFIRMED"
+    },
+    {
+      "hero": "Petra",
+      "mode": "expedition",
+      "slot": 2,
+      "english": "The Favor",
+      "german": "Der Gefallen",
+      "source": "data/hero-intelligence-skill-model-v1-2026-10-12.json",
+      "levelValuesMatch": true,
+      "translationStatus": "CANDIDATE_NOT_INGAME_BILINGUAL_CONFIRMED"
+    },
+    {
+      "hero": "Petra",
+      "mode": "expedition",
+      "slot": 3,
+      "english": "The Shield",
+      "german": "Der Schild",
+      "source": "data/hero-intelligence-skill-model-v1-2026-10-12.json",
+      "levelValuesMatch": true,
+      "translationStatus": "CANDIDATE_NOT_INGAME_BILINGUAL_CONFIRMED"
+    }
+  ],
+  "reviewFlags": [
+    {
+      "hero": "Amadeus",
+      "skill": "Onslaught",
+      "issue": "Public sources disagree whether attack condition is health above or below 50%; hold mechanic mapping",
+      "sources": [
+        "https://www.kingshotcommand.com/heroes/amadeus",
+        "https://kingshot.net/heroes/amadeus"
+      ]
+    }
+  ],
+  "rules": [
+    "Names are candidates until bilingual in-game verification",
+    "Conquest and exploration labels must not be silently equated",
+    "No gameplay formula or UI changes"
+  ],
+  "productionChanged": false
+}
