@@ -17,6 +17,24 @@
 .phalanx-verified-card p{font-size:12px;font-weight:700;margin:0 0 6px}
 @media(max-width:900px){.phalanx-verified-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:520px){.phalanx-verified-cards{grid-template-columns:1fr}.phalanx-verified-power{font-size:20px}}
+</style><style>
+/* Test-only current snapshot mode: prevent mixing 02 Oct legacy totals with 13 Oct live values. */
+body:has(#phalanxLiveAlliancePanel:not([hidden])) .heading small,
+body:has(#phalanxLiveAlliancePanel:not([hidden])) .controls,
+body:has(#phalanxLiveAlliancePanel:not([hidden])) #info,
+body:has(#phalanxLiveAlliancePanel:not([hidden])) .grid4[aria-label="Key metrics"],
+body:has(#phalanxLiveAlliancePanel:not([hidden])) #forcePanel,
+body:has(#phalanxLiveAlliancePanel:not([hidden])) #competitivePanel,
+body:has(#phalanxLiveAlliancePanel:not([hidden])) #kvkPanel,
+body:has(#phalanxLiveAlliancePanel:not([hidden])) #efficiencyPanel{display:none!important}
+#phalanxLiveAlliancePanel{padding:11px}
+#phalanxLiveAlliancePanel>h2{font-size:19px}
+.phalanx-verified-cards{gap:9px!important}
+.phalanx-verified-card{padding:10px!important}
+.phalanx-verified-card h2{font-size:21px!important;margin:2px 0 4px!important}
+.phalanx-verified-power{font-size:clamp(12px,2.2vw,19px)!important;margin:2px 0 4px!important}
+@media(max-width:620px){.phalanx-verified-cards{grid-template-columns:repeat(2,minmax(0,1fr))!important}.phalanx-verified-power{font-size:clamp(11px,3.1vw,17px)!important}}
+@media(max-width:360px){.phalanx-verified-cards{grid-template-columns:1fr!important}}
 </style><section id="phalanxLiveAlliancePanel" class="panel" hidden aria-label="Private PHALANX alliance comparison" style="margin-bottom:12px">
 <h2>🔒 PHALANX · Verified Alliance Snapshot</h2>
 <small id="phalanxLiveStatus">Private read-only data · requires active NXS membership · 13 Oct 2026</small>
