@@ -13,7 +13,7 @@ export async function checkAllianceAccess(client) {
     .select('alliance,members,total_power,tg5,tg4,snapshot_date')
     .eq('kingdom', 1885);
   const top40 = await client.from('phalanx_alliance_top40')
-    .select('alliance,position', { count: 'exact' })
+    .select('position', { count: 'exact', head: true })
     .eq('kingdom', 1885).eq('snapshot_date', '2026-10-13');
   return {
     signedIn: true,
