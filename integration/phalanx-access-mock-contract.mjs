@@ -12,7 +12,7 @@ function mock(allowed) {
             ? { data: null, count: null, error: { code: '42501' } }
             : name === 'phalanx_alliance_top40'
               ? { data: null, count: 160, error: null }
-              : { data: ['NXS','OoO','MYM','FRA'].map(alliance => ({ alliance })), error: null };
+              : { data: ['NXS','OoO','MYM','FRA'].map(alliance => ({ alliance, snapshot_date: '2026-10-13' })), error: null };
           return Promise.resolve(result).then(resolve, reject);
         }
       })
