@@ -1,0 +1,790 @@
+{
+  "schema": "phalanx-skill-effect-taxonomy-v1",
+  "date": "2026-10-13",
+  "input": "data/phalanx-hero-unified-evidence-index-v2-2026-10-13.json",
+  "scope": "Classification of explicit source fields only; no inference of battle stacking, effect equivalence, or calibrated strength",
+  "effectCount": 47,
+  "categoryCounts": {
+    "attack": 11,
+    "defense": 8,
+    "lethality": 4,
+    "health": 1,
+    "damage": 13,
+    "healing": 1,
+    "probability": 5,
+    "economy": 4
+  },
+  "effects": [
+    {
+      "hero": "Amadeus",
+      "skill": "Kombo-Schlag",
+      "mode": "conquest",
+      "slot": 1,
+      "field": "damagePerHitPct",
+      "value": [
+        160,
+        176,
+        192,
+        208,
+        224
+      ],
+      "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+      "category": "damage",
+      "unit": "percent"
+    },
+    {
+      "hero": "Amadeus",
+      "skill": "Geheimnisvolle Schwertkunst",
+      "mode": "conquest",
+      "slot": 2,
+      "field": "additionalDamagePerSwordHitPct",
+      "value": [
+        15,
+        17,
+        19,
+        21,
+        23
+      ],
+      "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+      "category": "damage",
+      "unit": "percent"
+    },
+    {
+      "hero": "Amadeus",
+      "skill": "Ansturm",
+      "mode": "conquest",
+      "slot": 3,
+      "field": "attackPct",
+      "value": [
+        16,
+        24,
+        32,
+        40,
+        48
+      ],
+      "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+      "category": "attack",
+      "unit": "percent"
+    },
+    {
+      "hero": "Amadeus",
+      "skill": "Kampfbereit",
+      "mode": "expedition",
+      "slot": 1,
+      "field": "allSquadsLethalityPct",
+      "value": [
+        5,
+        10,
+        15,
+        20,
+        25
+      ],
+      "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+      "category": "lethality",
+      "unit": "percent"
+    },
+    {
+      "hero": "Amadeus",
+      "skill": "Weg der Klinge",
+      "mode": "expedition",
+      "slot": 2,
+      "field": "allSquadsAttackPct",
+      "value": [
+        5,
+        10,
+        15,
+        20,
+        25
+      ],
+      "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+      "category": "attack",
+      "unit": "percent"
+    },
+    {
+      "hero": "Amadeus",
+      "skill": "Unheiliger Treffer",
+      "mode": "expedition",
+      "slot": 3,
+      "field": "procChancePct",
+      "value": [
+        8,
+        16,
+        24,
+        32,
+        40
+      ],
+      "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+      "category": "probability",
+      "unit": "percent"
+    },
+    {
+      "hero": "Amadeus",
+      "skill": "Unheiliger Treffer",
+      "mode": "expedition",
+      "slot": 3,
+      "field": "damageIncreasePct",
+      "value": 50,
+      "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+      "category": "damage",
+      "unit": "percent"
+    },
+    {
+      "hero": "Amadeus",
+      "skill": "Unheiliger Treffer",
+      "mode": "expedition",
+      "slot": 3,
+      "field": "damageIncreasePctLevels",
+      "value": "Only level 5 value visible; lower-level damage increase unverified",
+      "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+      "category": "damage",
+      "unit": "percent"
+    },
+    {
+      "hero": "Helga",
+      "skill": "Geweih-Angriff",
+      "mode": "conquest",
+      "slot": 1,
+      "field": "damagePct",
+      "value": [
+        160,
+        176,
+        192,
+        208,
+        224
+      ],
+      "source": "data/phalanx-helga-ingame-validation-2026-10-12.json",
+      "category": "damage",
+      "unit": "percent"
+    },
+    {
+      "hero": "Helga",
+      "skill": "Speer-Angriff",
+      "mode": "conquest",
+      "slot": 2,
+      "field": "damagePct",
+      "value": [
+        150,
+        165,
+        180,
+        195,
+        210
+      ],
+      "source": "data/phalanx-helga-ingame-validation-2026-10-12.json",
+      "category": "damage",
+      "unit": "percent"
+    },
+    {
+      "hero": "Helga",
+      "skill": "Zorn",
+      "mode": "conquest",
+      "slot": 3,
+      "field": "attackPct",
+      "value": [
+        4,
+        6,
+        8,
+        10,
+        12
+      ],
+      "source": "data/phalanx-helga-ingame-validation-2026-10-12.json",
+      "category": "attack",
+      "unit": "percent"
+    },
+    {
+      "hero": "Helga",
+      "skill": "Zorn",
+      "mode": "conquest",
+      "slot": 3,
+      "field": "procChancePct",
+      "value": 10,
+      "source": "data/phalanx-helga-ingame-validation-2026-10-12.json",
+      "category": "probability",
+      "unit": "percent"
+    },
+    {
+      "hero": "Helga",
+      "skill": "Echos aus Valhalla",
+      "mode": "expedition",
+      "slot": 1,
+      "field": "allSquadsAttackPct",
+      "value": [
+        5,
+        10,
+        15,
+        20,
+        25
+      ],
+      "source": "data/phalanx-helga-ingame-validation-2026-10-12.json",
+      "category": "attack",
+      "unit": "percent"
+    },
+    {
+      "hero": "Helga",
+      "skill": "Das Gleichgewicht der Natur",
+      "mode": "expedition",
+      "slot": 2,
+      "field": "allSquadsLethalityPct",
+      "value": [
+        5,
+        10,
+        15,
+        20,
+        25
+      ],
+      "source": "data/phalanx-helga-ingame-validation-2026-10-12.json",
+      "category": "lethality",
+      "unit": "percent"
+    },
+    {
+      "hero": "Helga",
+      "skill": "Eid des Wächters",
+      "mode": "expedition",
+      "slot": 3,
+      "field": "procChancePct",
+      "value": [
+        8,
+        16,
+        24,
+        32,
+        40
+      ],
+      "source": "data/phalanx-helga-ingame-validation-2026-10-12.json",
+      "category": "probability",
+      "unit": "percent"
+    },
+    {
+      "hero": "Helga",
+      "skill": "Eid des Wächters",
+      "mode": "expedition",
+      "slot": 3,
+      "field": "allSquadsDamageTakenReductionPctAtLevel5",
+      "value": 50,
+      "source": "data/phalanx-helga-ingame-validation-2026-10-12.json",
+      "category": "defense",
+      "unit": "percent"
+    },
+    {
+      "hero": "Saul",
+      "skill": "Letztes Gebet",
+      "mode": "conquest",
+      "slot": null,
+      "field": "defensePct",
+      "value": [
+        50,
+        75,
+        100,
+        125,
+        150
+      ],
+      "source": "data/phalanx-saul-skill-evidence-v1.json",
+      "category": "defense",
+      "unit": "percent"
+    },
+    {
+      "hero": "Saul",
+      "skill": "Task-Force-Ausbildung",
+      "mode": "expedition",
+      "slot": 1,
+      "field": "defensePct",
+      "value": [
+        2,
+        4,
+        6,
+        8,
+        10
+      ],
+      "source": "data/phalanx-saul-skill-evidence-v1.json",
+      "category": "defense",
+      "unit": "percent"
+    },
+    {
+      "hero": "Saul",
+      "skill": "Task-Force-Ausbildung",
+      "mode": "expedition",
+      "slot": 1,
+      "field": "healthPct",
+      "value": [
+        3,
+        6,
+        9,
+        12,
+        15
+      ],
+      "source": "data/phalanx-saul-skill-evidence-v1.json",
+      "category": "health",
+      "unit": "percent"
+    },
+    {
+      "hero": "Saul",
+      "skill": "Einfallsreich",
+      "mode": "expedition",
+      "slot": 2,
+      "field": "constructionSpeedPct",
+      "value": [
+        3,
+        6,
+        9,
+        12,
+        15
+      ],
+      "source": "data/phalanx-saul-skill-evidence-v1.json",
+      "category": "economy",
+      "unit": "percent"
+    },
+    {
+      "hero": "Saul",
+      "skill": "Einfallsreich",
+      "mode": "expedition",
+      "slot": 2,
+      "field": "constructionCostReductionPct",
+      "value": [
+        3,
+        6,
+        9,
+        12,
+        15
+      ],
+      "source": "data/phalanx-saul-skill-evidence-v1.json",
+      "category": "economy",
+      "unit": "percent"
+    },
+    {
+      "hero": "Chenko",
+      "skill": "Feuerstoß",
+      "mode": "conquest",
+      "slot": 1,
+      "field": "damagePct",
+      "value": [
+        55,
+        60,
+        65,
+        70,
+        75
+      ],
+      "source": "data/phalanx-chenko-ingame-validation-2026-10-12.json",
+      "category": "damage",
+      "unit": "percent"
+    },
+    {
+      "hero": "Chenko",
+      "skill": "Verteidigungs-Aufwertung",
+      "mode": "conquest",
+      "slot": 2,
+      "field": "defensePct",
+      "value": [
+        25,
+        37.5,
+        50,
+        62.5,
+        70
+      ],
+      "source": "data/phalanx-chenko-ingame-validation-2026-10-12.json",
+      "category": "defense",
+      "unit": "percent"
+    },
+    {
+      "hero": "Chenko",
+      "skill": "Waffen-Aufwertung",
+      "mode": "conquest",
+      "slot": 3,
+      "field": "attackPct",
+      "value": [
+        8,
+        12,
+        16,
+        20,
+        24
+      ],
+      "source": "data/phalanx-chenko-ingame-validation-2026-10-12.json",
+      "category": "attack",
+      "unit": "percent"
+    },
+    {
+      "hero": "Chenko",
+      "skill": "Bewaffnung",
+      "mode": "expedition",
+      "slot": 1,
+      "field": "allSquadsLethalityPct",
+      "value": [
+        5,
+        10,
+        15,
+        20,
+        25
+      ],
+      "source": "data/phalanx-chenko-ingame-validation-2026-10-12.json",
+      "category": "lethality",
+      "unit": "percent"
+    },
+    {
+      "hero": "Chenko",
+      "skill": "Schildmauer",
+      "mode": "expedition",
+      "slot": 2,
+      "field": "allSquadsDamageTakenReductionPct",
+      "value": [
+        4,
+        8,
+        12,
+        16,
+        20
+      ],
+      "source": "data/phalanx-chenko-ingame-validation-2026-10-12.json",
+      "category": "defense",
+      "unit": "percent"
+    },
+    {
+      "hero": "Amane",
+      "skill": "Sakura Blüte",
+      "mode": "conquest",
+      "slot": 1,
+      "field": "attackPct",
+      "value": [
+        1.5,
+        2,
+        2.5,
+        3,
+        3.5
+      ],
+      "source": "data/phalanx-amane-ingame-validation-2026-10-12.json",
+      "category": "attack",
+      "unit": "percent"
+    },
+    {
+      "hero": "Amane",
+      "skill": "Sakura Blüte",
+      "mode": "conquest",
+      "slot": 1,
+      "field": "attackSpeedPct",
+      "value": [
+        2.5,
+        3,
+        3.5,
+        4,
+        4.5
+      ],
+      "source": "data/phalanx-amane-ingame-validation-2026-10-12.json",
+      "category": "attack",
+      "unit": "percent"
+    },
+    {
+      "hero": "Amane",
+      "skill": "Feuersiegel",
+      "mode": "conquest",
+      "slot": 2,
+      "field": "damagePct",
+      "value": [
+        150,
+        165,
+        180,
+        195,
+        210
+      ],
+      "source": "data/phalanx-amane-ingame-validation-2026-10-12.json",
+      "category": "damage",
+      "unit": "percent"
+    },
+    {
+      "hero": "Amane",
+      "skill": "Göttliche Melodie",
+      "mode": "conquest",
+      "slot": 3,
+      "field": "attackSpeedPct",
+      "value": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "source": "data/phalanx-amane-ingame-validation-2026-10-12.json",
+      "category": "attack",
+      "unit": "percent"
+    },
+    {
+      "hero": "Amane",
+      "skill": "Tri-Phalanx",
+      "mode": "expedition",
+      "slot": 1,
+      "field": "allSquadsAttackPct",
+      "value": [
+        5,
+        10,
+        15,
+        20,
+        25
+      ],
+      "source": "data/phalanx-amane-ingame-validation-2026-10-12.json",
+      "category": "attack",
+      "unit": "percent"
+    },
+    {
+      "hero": "Amane",
+      "skill": "Exorzismus",
+      "mode": "expedition",
+      "slot": 2,
+      "field": "infirmaryHealingSpeedPct",
+      "value": [
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "source": "data/phalanx-amane-ingame-validation-2026-10-12.json",
+      "category": "economy",
+      "unit": "percent"
+    },
+    {
+      "hero": "Yeonwoo",
+      "skill": "Blühblüte",
+      "mode": "conquest",
+      "slot": 1,
+      "field": "wave1Pct",
+      "value": [
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json",
+      "category": "damage",
+      "unit": "percent"
+    },
+    {
+      "hero": "Yeonwoo",
+      "skill": "Blühblüte",
+      "mode": "conquest",
+      "slot": 1,
+      "field": "wave2Pct",
+      "value": [
+        125,
+        137.5,
+        150,
+        162.5,
+        175
+      ],
+      "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json",
+      "category": "damage",
+      "unit": "percent"
+    },
+    {
+      "hero": "Yeonwoo",
+      "skill": "Blühblüte",
+      "mode": "conquest",
+      "slot": 1,
+      "field": "wave3Pct",
+      "value": [
+        150,
+        165,
+        180,
+        195,
+        210
+      ],
+      "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json",
+      "category": "damage",
+      "unit": "percent"
+    },
+    {
+      "hero": "Yeonwoo",
+      "skill": "Fallende Schwalbe",
+      "mode": "conquest",
+      "slot": 2,
+      "field": "damagePct",
+      "value": [
+        100,
+        110,
+        120,
+        130,
+        140
+      ],
+      "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json",
+      "category": "damage",
+      "unit": "percent"
+    },
+    {
+      "hero": "Yeonwoo",
+      "skill": "Fallende Schwalbe",
+      "mode": "conquest",
+      "slot": 2,
+      "field": "targetAttackSpeedReductionPct",
+      "value": [
+        30,
+        35,
+        40,
+        45,
+        50
+      ],
+      "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json",
+      "category": "defense",
+      "unit": "percent"
+    },
+    {
+      "hero": "Yeonwoo",
+      "skill": "Zwillingsreißzähne",
+      "mode": "conquest",
+      "slot": 3,
+      "field": "attackPct",
+      "value": [
+        8,
+        12,
+        16,
+        20,
+        24
+      ],
+      "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json",
+      "category": "attack",
+      "unit": "percent"
+    },
+    {
+      "hero": "Yeonwoo",
+      "skill": "Wachsam",
+      "mode": "expedition",
+      "slot": 1,
+      "field": "allSquadsLethalityPct",
+      "value": [
+        5,
+        10,
+        15,
+        20,
+        25
+      ],
+      "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json",
+      "category": "lethality",
+      "unit": "percent"
+    },
+    {
+      "hero": "Yeonwoo",
+      "skill": "Gut bereist",
+      "mode": "expedition",
+      "slot": 2,
+      "field": "researchSpeedPct",
+      "value": [
+        3,
+        6,
+        9,
+        12,
+        15
+      ],
+      "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json",
+      "category": "economy",
+      "unit": "percent"
+    },
+    {
+      "hero": "Hilde",
+      "skill": "Erlöser",
+      "mode": "conquest",
+      "slot": 1,
+      "field": "healWeakestAllyPct",
+      "value": [
+        100,
+        110,
+        120,
+        130,
+        140
+      ],
+      "source": "data/phalanx-hilde-ingame-validation-2026-10-12.json",
+      "category": "healing",
+      "unit": "percent"
+    },
+    {
+      "hero": "Hilde",
+      "skill": "Nobler Weg",
+      "mode": "expedition",
+      "slot": 1,
+      "field": "allSquadsAttackPct",
+      "value": [
+        3,
+        6,
+        9,
+        12,
+        15
+      ],
+      "source": "data/phalanx-hilde-ingame-validation-2026-10-12.json",
+      "category": "attack",
+      "unit": "percent"
+    },
+    {
+      "hero": "Hilde",
+      "skill": "Nobler Weg",
+      "mode": "expedition",
+      "slot": 1,
+      "field": "allSquadsDefensePct",
+      "value": [
+        2,
+        4,
+        6,
+        8,
+        10
+      ],
+      "source": "data/phalanx-hilde-ingame-validation-2026-10-12.json",
+      "category": "defense",
+      "unit": "percent"
+    },
+    {
+      "hero": "Hilde",
+      "skill": "Elixier der Stärke",
+      "mode": "expedition",
+      "slot": 2,
+      "field": "procChancePct",
+      "value": 25,
+      "source": "data/phalanx-hilde-ingame-validation-2026-10-12.json",
+      "category": "probability",
+      "unit": "percent"
+    },
+    {
+      "hero": "Hilde",
+      "skill": "Elixier der Stärke",
+      "mode": "expedition",
+      "slot": 2,
+      "field": "damagePct",
+      "value": [
+        120,
+        140,
+        160,
+        180,
+        200
+      ],
+      "source": "data/phalanx-hilde-ingame-validation-2026-10-12.json",
+      "category": "damage",
+      "unit": "percent"
+    },
+    {
+      "hero": "Hilde",
+      "skill": "Feuerprobe",
+      "mode": "expedition",
+      "slot": 3,
+      "field": "procChancePct",
+      "value": [
+        8,
+        16,
+        24,
+        32,
+        40
+      ],
+      "source": "data/phalanx-hilde-ingame-validation-2026-10-12.json",
+      "category": "probability",
+      "unit": "percent"
+    },
+    {
+      "hero": "Hilde",
+      "skill": "Feuerprobe",
+      "mode": "expedition",
+      "slot": 3,
+      "field": "allSquadsDamageTakenReductionPctAtLevel5",
+      "value": 50,
+      "source": "data/phalanx-hilde-ingame-validation-2026-10-12.json",
+      "category": "defense",
+      "unit": "percent"
+    }
+  ],
+  "unmappedFields": [],
+  "limitations": [
+    "A category is not an assertion that two effects stack or share the same combat phase",
+    "Source field names are preserved without unit conversion",
+    "Level-5-only values are not substituted for five-level arrays",
+    "Chance skills do not imply independent RNG",
+    "Original skills and UI are unchanged"
+  ]
+}
