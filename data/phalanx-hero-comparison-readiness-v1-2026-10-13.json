@@ -1,0 +1,627 @@
+{
+  "schema": "phalanx-hero-comparison-readiness-v1",
+  "date": "2026-10-13",
+  "purpose": "Read-only eligibility matrix for hero comparison; not a combat ranking or game-calibrated prediction",
+  "inputs": [
+    "data/phalanx-effect-model-bridge-v1-2026-10-13.json",
+    "data/phalanx-skill-effect-taxonomy-v1-2026-10-13.json"
+  ],
+  "releaseGate": "RESEARCH_ONLY_NO_COMBAT_RANKINGS",
+  "eligibleEffectCount": 18,
+  "excludedEffectCount": 29,
+  "eligibleEffects": [
+    {
+      "hero": "Amadeus",
+      "skill": "Ansturm",
+      "mode": "conquest",
+      "slot": 3,
+      "field": "attackPct",
+      "value": [
+        16,
+        24,
+        32,
+        40,
+        48
+      ],
+      "category": "attack",
+      "status": "conditional_input_only",
+      "guard": "Attack component only; troop scope and stacking unresolved",
+      "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+      "usage": "display_as_source_backed_stat_only; no implicit stacking or cross-mode comparison"
+    },
+    {
+      "hero": "Amadeus",
+      "skill": "Kampfbereit",
+      "mode": "expedition",
+      "slot": 1,
+      "field": "allSquadsLethalityPct",
+      "value": [
+        5,
+        10,
+        15,
+        20,
+        25
+      ],
+      "category": "lethality",
+      "status": "conditional_input_only",
+      "guard": "Lethality component only; no automatic additive stacking",
+      "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+      "usage": "display_as_source_backed_stat_only; no implicit stacking or cross-mode comparison"
+    },
+    {
+      "hero": "Amadeus",
+      "skill": "Weg der Klinge",
+      "mode": "expedition",
+      "slot": 2,
+      "field": "allSquadsAttackPct",
+      "value": [
+        5,
+        10,
+        15,
+        20,
+        25
+      ],
+      "category": "attack",
+      "status": "conditional_input_only",
+      "guard": "Attack component only; troop scope and stacking unresolved",
+      "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+      "usage": "display_as_source_backed_stat_only; no implicit stacking or cross-mode comparison"
+    },
+    {
+      "hero": "Helga",
+      "skill": "Zorn",
+      "mode": "conquest",
+      "slot": 3,
+      "field": "attackPct",
+      "value": [
+        4,
+        6,
+        8,
+        10,
+        12
+      ],
+      "category": "attack",
+      "status": "conditional_input_only",
+      "guard": "Attack component only; troop scope and stacking unresolved",
+      "source": "data/phalanx-helga-ingame-validation-2026-10-12.json",
+      "usage": "display_as_source_backed_stat_only; no implicit stacking or cross-mode comparison"
+    },
+    {
+      "hero": "Helga",
+      "skill": "Echos aus Valhalla",
+      "mode": "expedition",
+      "slot": 1,
+      "field": "allSquadsAttackPct",
+      "value": [
+        5,
+        10,
+        15,
+        20,
+        25
+      ],
+      "category": "attack",
+      "status": "conditional_input_only",
+      "guard": "Attack component only; troop scope and stacking unresolved",
+      "source": "data/phalanx-helga-ingame-validation-2026-10-12.json",
+      "usage": "display_as_source_backed_stat_only; no implicit stacking or cross-mode comparison"
+    },
+    {
+      "hero": "Helga",
+      "skill": "Das Gleichgewicht der Natur",
+      "mode": "expedition",
+      "slot": 2,
+      "field": "allSquadsLethalityPct",
+      "value": [
+        5,
+        10,
+        15,
+        20,
+        25
+      ],
+      "category": "lethality",
+      "status": "conditional_input_only",
+      "guard": "Lethality component only; no automatic additive stacking",
+      "source": "data/phalanx-helga-ingame-validation-2026-10-12.json",
+      "usage": "display_as_source_backed_stat_only; no implicit stacking or cross-mode comparison"
+    },
+    {
+      "hero": "Saul",
+      "skill": "Letztes Gebet",
+      "mode": "conquest",
+      "slot": null,
+      "field": "defensePct",
+      "value": [
+        50,
+        75,
+        100,
+        125,
+        150
+      ],
+      "category": "defense",
+      "status": "conditional_input_only",
+      "guard": "Only defensePct fields may enter defense model; reductions and attack speed debuffs are excluded",
+      "source": "data/phalanx-saul-skill-evidence-v1.json",
+      "usage": "display_as_source_backed_stat_only; no implicit stacking or cross-mode comparison"
+    },
+    {
+      "hero": "Saul",
+      "skill": "Task-Force-Ausbildung",
+      "mode": "expedition",
+      "slot": 1,
+      "field": "defensePct",
+      "value": [
+        2,
+        4,
+        6,
+        8,
+        10
+      ],
+      "category": "defense",
+      "status": "conditional_input_only",
+      "guard": "Only defensePct fields may enter defense model; reductions and attack speed debuffs are excluded",
+      "source": "data/phalanx-saul-skill-evidence-v1.json",
+      "usage": "display_as_source_backed_stat_only; no implicit stacking or cross-mode comparison"
+    },
+    {
+      "hero": "Saul",
+      "skill": "Task-Force-Ausbildung",
+      "mode": "expedition",
+      "slot": 1,
+      "field": "healthPct",
+      "value": [
+        3,
+        6,
+        9,
+        12,
+        15
+      ],
+      "category": "health",
+      "status": "conditional_input_only",
+      "guard": "Health component only; cannot infer healing",
+      "source": "data/phalanx-saul-skill-evidence-v1.json",
+      "usage": "display_as_source_backed_stat_only; no implicit stacking or cross-mode comparison"
+    },
+    {
+      "hero": "Chenko",
+      "skill": "Verteidigungs-Aufwertung",
+      "mode": "conquest",
+      "slot": 2,
+      "field": "defensePct",
+      "value": [
+        25,
+        37.5,
+        50,
+        62.5,
+        70
+      ],
+      "category": "defense",
+      "status": "conditional_input_only",
+      "guard": "Only defensePct fields may enter defense model; reductions and attack speed debuffs are excluded",
+      "source": "data/phalanx-chenko-ingame-validation-2026-10-12.json",
+      "usage": "display_as_source_backed_stat_only; no implicit stacking or cross-mode comparison"
+    },
+    {
+      "hero": "Chenko",
+      "skill": "Waffen-Aufwertung",
+      "mode": "conquest",
+      "slot": 3,
+      "field": "attackPct",
+      "value": [
+        8,
+        12,
+        16,
+        20,
+        24
+      ],
+      "category": "attack",
+      "status": "conditional_input_only",
+      "guard": "Attack component only; troop scope and stacking unresolved",
+      "source": "data/phalanx-chenko-ingame-validation-2026-10-12.json",
+      "usage": "display_as_source_backed_stat_only; no implicit stacking or cross-mode comparison"
+    },
+    {
+      "hero": "Chenko",
+      "skill": "Bewaffnung",
+      "mode": "expedition",
+      "slot": 1,
+      "field": "allSquadsLethalityPct",
+      "value": [
+        5,
+        10,
+        15,
+        20,
+        25
+      ],
+      "category": "lethality",
+      "status": "conditional_input_only",
+      "guard": "Lethality component only; no automatic additive stacking",
+      "source": "data/phalanx-chenko-ingame-validation-2026-10-12.json",
+      "usage": "display_as_source_backed_stat_only; no implicit stacking or cross-mode comparison"
+    },
+    {
+      "hero": "Amane",
+      "skill": "Sakura Blüte",
+      "mode": "conquest",
+      "slot": 1,
+      "field": "attackPct",
+      "value": [
+        1.5,
+        2,
+        2.5,
+        3,
+        3.5
+      ],
+      "category": "attack",
+      "status": "conditional_input_only",
+      "guard": "Attack component only; troop scope and stacking unresolved",
+      "source": "data/phalanx-amane-ingame-validation-2026-10-12.json",
+      "usage": "display_as_source_backed_stat_only; no implicit stacking or cross-mode comparison"
+    },
+    {
+      "hero": "Amane",
+      "skill": "Tri-Phalanx",
+      "mode": "expedition",
+      "slot": 1,
+      "field": "allSquadsAttackPct",
+      "value": [
+        5,
+        10,
+        15,
+        20,
+        25
+      ],
+      "category": "attack",
+      "status": "conditional_input_only",
+      "guard": "Attack component only; troop scope and stacking unresolved",
+      "source": "data/phalanx-amane-ingame-validation-2026-10-12.json",
+      "usage": "display_as_source_backed_stat_only; no implicit stacking or cross-mode comparison"
+    },
+    {
+      "hero": "Yeonwoo",
+      "skill": "Zwillingsreißzähne",
+      "mode": "conquest",
+      "slot": 3,
+      "field": "attackPct",
+      "value": [
+        8,
+        12,
+        16,
+        20,
+        24
+      ],
+      "category": "attack",
+      "status": "conditional_input_only",
+      "guard": "Attack component only; troop scope and stacking unresolved",
+      "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json",
+      "usage": "display_as_source_backed_stat_only; no implicit stacking or cross-mode comparison"
+    },
+    {
+      "hero": "Yeonwoo",
+      "skill": "Wachsam",
+      "mode": "expedition",
+      "slot": 1,
+      "field": "allSquadsLethalityPct",
+      "value": [
+        5,
+        10,
+        15,
+        20,
+        25
+      ],
+      "category": "lethality",
+      "status": "conditional_input_only",
+      "guard": "Lethality component only; no automatic additive stacking",
+      "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json",
+      "usage": "display_as_source_backed_stat_only; no implicit stacking or cross-mode comparison"
+    },
+    {
+      "hero": "Hilde",
+      "skill": "Nobler Weg",
+      "mode": "expedition",
+      "slot": 1,
+      "field": "allSquadsAttackPct",
+      "value": [
+        3,
+        6,
+        9,
+        12,
+        15
+      ],
+      "category": "attack",
+      "status": "conditional_input_only",
+      "guard": "Attack component only; troop scope and stacking unresolved",
+      "source": "data/phalanx-hilde-ingame-validation-2026-10-12.json",
+      "usage": "display_as_source_backed_stat_only; no implicit stacking or cross-mode comparison"
+    },
+    {
+      "hero": "Hilde",
+      "skill": "Nobler Weg",
+      "mode": "expedition",
+      "slot": 1,
+      "field": "allSquadsDefensePct",
+      "value": [
+        2,
+        4,
+        6,
+        8,
+        10
+      ],
+      "category": "defense",
+      "status": "conditional_input_only",
+      "guard": "Only defensePct fields may enter defense model; reductions and attack speed debuffs are excluded",
+      "source": "data/phalanx-hilde-ingame-validation-2026-10-12.json",
+      "usage": "display_as_source_backed_stat_only; no implicit stacking or cross-mode comparison"
+    }
+  ],
+  "excludedEffects": [
+    {
+      "hero": "Amadeus",
+      "skill": "Kombo-Schlag",
+      "mode": "conquest",
+      "field": "damagePerHitPct",
+      "status": "blocked",
+      "reason": "Skill damage coefficients and target modifiers cannot be substituted for global attack",
+      "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json"
+    },
+    {
+      "hero": "Amadeus",
+      "skill": "Geheimnisvolle Schwertkunst",
+      "mode": "conquest",
+      "field": "additionalDamagePerSwordHitPct",
+      "status": "blocked",
+      "reason": "Skill damage coefficients and target modifiers cannot be substituted for global attack",
+      "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json"
+    },
+    {
+      "hero": "Amadeus",
+      "skill": "Unheiliger Treffer",
+      "mode": "expedition",
+      "field": "procChancePct",
+      "status": "scenario_only",
+      "reason": "No independence, proc timing or RNG correlations established",
+      "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json"
+    },
+    {
+      "hero": "Amadeus",
+      "skill": "Unheiliger Treffer",
+      "mode": "expedition",
+      "field": "damageIncreasePct",
+      "status": "blocked",
+      "reason": "Skill damage coefficients and target modifiers cannot be substituted for global attack",
+      "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json"
+    },
+    {
+      "hero": "Amadeus",
+      "skill": "Unheiliger Treffer",
+      "mode": "expedition",
+      "field": "damageIncreasePctLevels",
+      "status": "requires_specialized_model",
+      "reason": "damage_bonus_levels_not_attack",
+      "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json"
+    },
+    {
+      "hero": "Helga",
+      "skill": "Geweih-Angriff",
+      "mode": "conquest",
+      "field": "damagePct",
+      "status": "blocked",
+      "reason": "Skill damage coefficients and target modifiers cannot be substituted for global attack",
+      "source": "data/phalanx-helga-ingame-validation-2026-10-12.json"
+    },
+    {
+      "hero": "Helga",
+      "skill": "Speer-Angriff",
+      "mode": "conquest",
+      "field": "damagePct",
+      "status": "blocked",
+      "reason": "Skill damage coefficients and target modifiers cannot be substituted for global attack",
+      "source": "data/phalanx-helga-ingame-validation-2026-10-12.json"
+    },
+    {
+      "hero": "Helga",
+      "skill": "Zorn",
+      "mode": "conquest",
+      "field": "procChancePct",
+      "status": "scenario_only",
+      "reason": "No independence, proc timing or RNG correlations established",
+      "source": "data/phalanx-helga-ingame-validation-2026-10-12.json"
+    },
+    {
+      "hero": "Helga",
+      "skill": "Eid des Wächters",
+      "mode": "expedition",
+      "field": "procChancePct",
+      "status": "scenario_only",
+      "reason": "No independence, proc timing or RNG correlations established",
+      "source": "data/phalanx-helga-ingame-validation-2026-10-12.json"
+    },
+    {
+      "hero": "Helga",
+      "skill": "Eid des Wächters",
+      "mode": "expedition",
+      "field": "allSquadsDamageTakenReductionPctAtLevel5",
+      "status": "requires_specialized_model",
+      "reason": "damage_taken_reduction_not_defense_stat",
+      "source": "data/phalanx-helga-ingame-validation-2026-10-12.json"
+    },
+    {
+      "hero": "Saul",
+      "skill": "Einfallsreich",
+      "mode": "expedition",
+      "field": "constructionSpeedPct",
+      "status": "requires_specialized_model",
+      "reason": "construction_speed_not_generic_speed",
+      "source": "data/phalanx-saul-skill-evidence-v1.json"
+    },
+    {
+      "hero": "Saul",
+      "skill": "Einfallsreich",
+      "mode": "expedition",
+      "field": "constructionCostReductionPct",
+      "status": "conditional_input_only",
+      "reason": "Only matching speed and cost reduction fields; distinct buildings and activities",
+      "source": "data/phalanx-saul-skill-evidence-v1.json"
+    },
+    {
+      "hero": "Chenko",
+      "skill": "Feuerstoß",
+      "mode": "conquest",
+      "field": "damagePct",
+      "status": "blocked",
+      "reason": "Skill damage coefficients and target modifiers cannot be substituted for global attack",
+      "source": "data/phalanx-chenko-ingame-validation-2026-10-12.json"
+    },
+    {
+      "hero": "Chenko",
+      "skill": "Schildmauer",
+      "mode": "expedition",
+      "field": "allSquadsDamageTakenReductionPct",
+      "status": "requires_specialized_model",
+      "reason": "damage_taken_reduction_not_defense_stat",
+      "source": "data/phalanx-chenko-ingame-validation-2026-10-12.json"
+    },
+    {
+      "hero": "Amane",
+      "skill": "Sakura Blüte",
+      "mode": "conquest",
+      "field": "attackSpeedPct",
+      "status": "requires_specialized_model",
+      "reason": "attack_speed_not_attack_stat",
+      "source": "data/phalanx-amane-ingame-validation-2026-10-12.json"
+    },
+    {
+      "hero": "Amane",
+      "skill": "Feuersiegel",
+      "mode": "conquest",
+      "field": "damagePct",
+      "status": "blocked",
+      "reason": "Skill damage coefficients and target modifiers cannot be substituted for global attack",
+      "source": "data/phalanx-amane-ingame-validation-2026-10-12.json"
+    },
+    {
+      "hero": "Amane",
+      "skill": "Göttliche Melodie",
+      "mode": "conquest",
+      "field": "attackSpeedPct",
+      "status": "requires_specialized_model",
+      "reason": "attack_speed_not_attack_stat",
+      "source": "data/phalanx-amane-ingame-validation-2026-10-12.json"
+    },
+    {
+      "hero": "Amane",
+      "skill": "Exorzismus",
+      "mode": "expedition",
+      "field": "infirmaryHealingSpeedPct",
+      "status": "requires_specialized_model",
+      "reason": "healing_speed_not_hp_heal",
+      "source": "data/phalanx-amane-ingame-validation-2026-10-12.json"
+    },
+    {
+      "hero": "Yeonwoo",
+      "skill": "Blühblüte",
+      "mode": "conquest",
+      "field": "wave1Pct",
+      "status": "requires_specialized_model",
+      "reason": "multiwave_skill_not_global_damage",
+      "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json"
+    },
+    {
+      "hero": "Yeonwoo",
+      "skill": "Blühblüte",
+      "mode": "conquest",
+      "field": "wave2Pct",
+      "status": "requires_specialized_model",
+      "reason": "multiwave_skill_not_global_damage",
+      "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json"
+    },
+    {
+      "hero": "Yeonwoo",
+      "skill": "Blühblüte",
+      "mode": "conquest",
+      "field": "wave3Pct",
+      "status": "requires_specialized_model",
+      "reason": "multiwave_skill_not_global_damage",
+      "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json"
+    },
+    {
+      "hero": "Yeonwoo",
+      "skill": "Fallende Schwalbe",
+      "mode": "conquest",
+      "field": "damagePct",
+      "status": "blocked",
+      "reason": "Skill damage coefficients and target modifiers cannot be substituted for global attack",
+      "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json"
+    },
+    {
+      "hero": "Yeonwoo",
+      "skill": "Fallende Schwalbe",
+      "mode": "conquest",
+      "field": "targetAttackSpeedReductionPct",
+      "status": "requires_specialized_model",
+      "reason": "enemy_attack_speed_debuff_not_defense_stat",
+      "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json"
+    },
+    {
+      "hero": "Yeonwoo",
+      "skill": "Gut bereist",
+      "mode": "expedition",
+      "field": "researchSpeedPct",
+      "status": "requires_specialized_model",
+      "reason": "research_speed_not_generic_speed",
+      "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json"
+    },
+    {
+      "hero": "Hilde",
+      "skill": "Erlöser",
+      "mode": "conquest",
+      "field": "healWeakestAllyPct",
+      "status": "blocked",
+      "reason": "Requires target HP, healing rules and timing",
+      "source": "data/phalanx-hilde-ingame-validation-2026-10-12.json"
+    },
+    {
+      "hero": "Hilde",
+      "skill": "Elixier der Stärke",
+      "mode": "expedition",
+      "field": "procChancePct",
+      "status": "scenario_only",
+      "reason": "No independence, proc timing or RNG correlations established",
+      "source": "data/phalanx-hilde-ingame-validation-2026-10-12.json"
+    },
+    {
+      "hero": "Hilde",
+      "skill": "Elixier der Stärke",
+      "mode": "expedition",
+      "field": "damagePct",
+      "status": "blocked",
+      "reason": "Skill damage coefficients and target modifiers cannot be substituted for global attack",
+      "source": "data/phalanx-hilde-ingame-validation-2026-10-12.json"
+    },
+    {
+      "hero": "Hilde",
+      "skill": "Feuerprobe",
+      "mode": "expedition",
+      "field": "procChancePct",
+      "status": "scenario_only",
+      "reason": "No independence, proc timing or RNG correlations established",
+      "source": "data/phalanx-hilde-ingame-validation-2026-10-12.json"
+    },
+    {
+      "hero": "Hilde",
+      "skill": "Feuerprobe",
+      "mode": "expedition",
+      "field": "allSquadsDamageTakenReductionPctAtLevel5",
+      "status": "requires_specialized_model",
+      "reason": "damage_taken_reduction_not_defense_stat",
+      "source": "data/phalanx-hilde-ingame-validation-2026-10-12.json"
+    }
+  ],
+  "limitations": [
+    "Expedition and conquest must not be mixed",
+    "Same field does not prove equal duration, scope or stacking",
+    "Skill level must be explicit; missing levels cannot be filled by interpolation",
+    "Other hero skill data exists beyond this 47-effect source-index subset",
+    "No comparison win probabilities without battle-report calibration"
+  ],
+  "uiChange": false
+}
