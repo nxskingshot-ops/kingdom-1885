@@ -17,9 +17,9 @@ export async function checkAllianceAccess(client) {
     .eq('kingdom', 1885).eq('snapshot_date', '2026-10-13');
   return {
     signedIn: true,
-    overview: overview.error ? 'DENIED_OR_ERROR' : 'READ_OK',
+    overview: overview.error ? 'DENIED_OR_ERROR' : overview.data?.length === 4 ? 'READ_OK' : 'EMPTY_OR_INCOMPLETE',
     allianceCount: overview.error ? null : overview.data?.length,
-    top40: top40.error ? 'DENIED_OR_ERROR' : 'READ_OK',
+    top40: top40.error ? 'DENIED_OR_ERROR' : top40.count === 160 ? 'READ_OK' : 'EMPTY_OR_INCOMPLETE',
     top40Count: top40.error ? null : top40.count,
     // This diagnostic intentionally returns no player names, IDs, or session tokens.
   };
