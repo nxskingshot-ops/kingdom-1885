@@ -17,7 +17,7 @@ Academies share parent color and are distinguished with hollow-ring markers in t
 
 | Alliance | Original user-supplied emblem recovered as distinct image? | State |
 |---|---|---|
-| NXS | No; previous design documentation identifies a green-and-gold original crest embedded in the earlier approved shared header | **SOURCE IDENTIFIED, ORIGINAL ASSET NOT EXTRACTED** |
+| NXS | Yes — one original embedded WebP image is present in `preview/kingdom-hub-branded-v2.html` (data URI, `img` tag), although the image has not yet been independently extracted and visually cross-checked against the user's original upload | **EMBEDDED IMAGE LOCATED; VISUAL MATCH PENDING** |
 | FRA | No | **NOT YET VERIFIED** |
 | OoO | No | **NOT YET VERIFIED** |
 | MYM | No | **NOT YET VERIFIED** |
@@ -36,3 +36,10 @@ Important: The ornate helmet, fleur-de-lis shield, pink ornament and purple bird
 ## What is *not* complete
 
 No actual emblem PNG/SVG/WEBP is added or verified here. This manifest prevents future confusion; it is not a finished graphics asset library.
+
+## Source inspection (2026-10-13)
+
+- Actual preserved embedded WebP found in the approved repository preview: [`preview/kingdom-hub-branded-v2.html`](../../preview/kingdom-hub-branded-v2.html) (blob SHA `ae55f639b8777cc822b558b38088ed6247d0d4c8`).
+- Contains exactly one `<img src="data:image/webp;base64,...">` according to source inspection. This is the first tangible prior emblem asset source and should be inspected visually before asserting it is the original NXS upload.
+- The design standard explicitly forbids replacing this crest with the generic `icon-192.png` helmet icon.
+- No individually identifiable source images for FRA, OoO, MYM were found by repository code search for `crest`, `wappen`, `alliance_emblem`, or `alliance_logo`. This is not proof they were never uploaded elsewhere.
