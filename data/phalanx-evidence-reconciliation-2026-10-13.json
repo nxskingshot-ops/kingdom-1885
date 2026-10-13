@@ -1,0 +1,81 @@
+{
+  "schema": "phalanx-existing-evidence-reconciliation-v1",
+  "date": "2026-10-13",
+  "scope": "Repository evidence availability and historical record reconciliation; not full hero skill or combat validation",
+  "rosterHeroes": 28,
+  "registryDocumentedSkills": 68,
+  "registrySkillEffectRows": 87,
+  "sourceFilesFound": [
+    {
+      "path": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+      "sha": "a6734f7199d3031b263aaf863b5ca9259f09b99a",
+      "bytes": 2193
+    },
+    {
+      "path": "data/phalanx-helga-ingame-validation-2026-10-12.json",
+      "sha": "cc129c3cb3f6de326e62cbd1e39c2f5aca75e9f5",
+      "bytes": 2087
+    },
+    {
+      "path": "data/phalanx-saul-skill-evidence-v1.json",
+      "sha": "b3de5095b3b8b12c5967a0577a544d8e8039a7f3",
+      "bytes": 987
+    },
+    {
+      "path": "data/phalanx-chenko-ingame-validation-2026-10-12.json",
+      "sha": "9a7c7fe41eab799c0b69ca3d561ce1ca83c78a81",
+      "bytes": 1782
+    },
+    {
+      "path": "data/phalanx-amane-ingame-validation-2026-10-12.json",
+      "sha": "2f1942227ed3ae71ef5d660bbd5419048a7c7f3a",
+      "bytes": 1939
+    },
+    {
+      "path": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json",
+      "sha": "35d79077369981c56e6982ef9e98715ade1f634e",
+      "bytes": 2106
+    },
+    {
+      "path": "data/phalanx-hilde-ingame-validation-2026-10-12.json",
+      "sha": "ba49653eebaba74b12ccb3f2009b1df3a2e94095",
+      "bytes": 1777
+    },
+    {
+      "path": "data/phalanx-gen3-ingame-skills-2026-10-12.json",
+      "sha": "3587cd2933571e65b35e171d69c2d9a124b7d895",
+      "bytes": 4511
+    },
+    {
+      "path": "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json",
+      "sha": "8241068c81f1ece4ac21b480f05f3b7a746af65a",
+      "bytes": 2912
+    }
+  ],
+  "sourceFilesMissing": [],
+  "rosterWithoutDirectEvidencePath": [
+    "Jabel",
+    "Howard",
+    "Gordon",
+    "Quinn",
+    "Diana",
+    "Fahd",
+    "Forrest",
+    "Seth",
+    "Edwin",
+    "Olive",
+    "Zoe",
+    "Marlin",
+    "Rosa",
+    "Long Fei",
+    "Thrud",
+    "Vivian"
+  ],
+  "rosa": "Six screenshots already received and archived in V12; no request for resubmission; original screenshot bytes not independently inspected in this audit",
+  "notes": [
+    "Missing direct evidence path does not imply user did not supply skills",
+    "Existing GitHub skill files found and fetched; earlier V12 reconstructed-document warning does not mean originals are missing from GitHub",
+    "Math and Monte Carlo prototypes already exist; empirical Kingshot mechanics calibration remains a separate gate",
+    "No changes to frozen UI, production, or skill values"
+  ]
+}
