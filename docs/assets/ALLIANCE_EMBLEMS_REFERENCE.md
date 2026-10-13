@@ -49,3 +49,18 @@ No actual emblem PNG/SVG/WEBP is added or verified here. This manifest prevents 
 The embedded WebP from `preview/kingdom-hub-branded-v2.html` was successfully rendered and visually inspected: a square **green-and-gold NXS/NEXUS crest, with a central white stylized motif**. This is distinct from the generated **golden knight helmet on green** shown in the current Alliance Intelligence dashboard. The earlier GitHub `DESIGN_STANDARD.md` specifically names that embedded image as the genuine NXS crest; accordingly, for the historical project design reference it is the canonical NXS asset, whereas the later helmet is not an interchangeable original.
 
 Caution: this establishes the earlier approved header source, not an independent proof of the in-game emblem at every historical date. FRA, OoO and MYM original icons are still outstanding. Do not replace the frozen visual dashboard until the integration is reviewed and image-based interactive hit regions are accounted for.
+
+## Definitive Kingshot reference located — 2026-10-13
+
+The user-confirmed single Kingshot **Alliance Ranking** screenshot was recovered from their uploaded project image **`43514.png`**, originally uploaded **2026-10-13 05:39:10 UTC**. It shows all four authentic **in-game alliance banners together** (not the generated fantasy dashboard shields):
+
+| Alliance | In-game banner | Visible symbol |
+|---|---|---|
+| NXS | Green | White stylized flourish/crest |
+| OoO | Pink | White stylized flourish/crest |
+| MYM | Violet | White castle tower |
+| FRA | Coral red | White castle tower |
+
+**Source identity:** File Library image `43514.png`, file ID `file_00000000e91481f4ac9ab7132942d89e`. Preserve the original image and crop each rectangular banner from it if implementing literal in-game symbols.
+
+**Important distinction:** The legacy embedded gold-and-green *NXS/NEXUS identity crest* in `preview/kingdom-hub-branded-v2.html` is a separate older approved **branding image**. The green NXS banner in the Kingshot ranking screenshot is the **in-game alliance insignia**. They serve different purposes. The generated alliance tiles in the frozen graphic are illustrative fantasy icons, not exact Kingshot in-game banners. Source precedence for alliance-map coloration and literal in-game emblem reproduction: **`43514.png`**. Do not alter the overall dashboard composition unless approved.
