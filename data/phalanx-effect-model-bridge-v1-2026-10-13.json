@@ -1,0 +1,529 @@
+{
+  "schema": "phalanx-effect-model-bridge-v1",
+  "date": "2026-10-13",
+  "input": "data/phalanx-skill-effect-taxonomy-v1-2026-10-13.json",
+  "reference": "data/phalanx-combat-formulas-v1-2026-10-12.json",
+  "policy": "Reference mapping only. No automatic numeric calculation, no inferred stacking, no combat calibration, no changes to frozen UI.",
+  "categoryMappings": {
+    "attack": {
+      "model": "attack_lethality",
+      "status": "conditional_input_only",
+      "require": "Attack component only; troop scope and stacking unresolved"
+    },
+    "lethality": {
+      "model": "attack_lethality",
+      "status": "conditional_input_only",
+      "require": "Lethality component only; no automatic additive stacking"
+    },
+    "defense": {
+      "model": "effectiveDefense",
+      "status": "conditional_input_only",
+      "require": "Only defensePct fields may enter defense model; reductions and attack speed debuffs are excluded"
+    },
+    "health": {
+      "model": "effectiveDefense",
+      "status": "conditional_input_only",
+      "require": "Health component only; cannot infer healing"
+    },
+    "damage": {
+      "model": null,
+      "status": "blocked",
+      "require": "Skill damage coefficients and target modifiers cannot be substituted for global attack"
+    },
+    "healing": {
+      "model": null,
+      "status": "blocked",
+      "require": "Requires target HP, healing rules and timing"
+    },
+    "probability": {
+      "model": "conditional_monte_carlo",
+      "status": "scenario_only",
+      "require": "No independence, proc timing or RNG correlations established"
+    },
+    "economy": {
+      "model": "speedSeconds / costAfterReduction",
+      "status": "conditional_input_only",
+      "require": "Only matching speed and cost reduction fields; distinct buildings and activities"
+    }
+  },
+  "effectMappings": [
+    {
+      "hero": "Amadeus",
+      "skill": "Kombo-Schlag",
+      "field": "damagePerHitPct",
+      "category": "damage",
+      "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+      "model": null,
+      "status": "blocked",
+      "guard": "Skill damage coefficients and target modifiers cannot be substituted for global attack"
+    },
+    {
+      "hero": "Amadeus",
+      "skill": "Geheimnisvolle Schwertkunst",
+      "field": "additionalDamagePerSwordHitPct",
+      "category": "damage",
+      "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+      "model": null,
+      "status": "blocked",
+      "guard": "Skill damage coefficients and target modifiers cannot be substituted for global attack"
+    },
+    {
+      "hero": "Amadeus",
+      "skill": "Ansturm",
+      "field": "attackPct",
+      "category": "attack",
+      "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+      "model": "attack_lethality",
+      "status": "conditional_input_only",
+      "guard": "Attack component only; troop scope and stacking unresolved"
+    },
+    {
+      "hero": "Amadeus",
+      "skill": "Kampfbereit",
+      "field": "allSquadsLethalityPct",
+      "category": "lethality",
+      "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+      "model": "attack_lethality",
+      "status": "conditional_input_only",
+      "guard": "Lethality component only; no automatic additive stacking"
+    },
+    {
+      "hero": "Amadeus",
+      "skill": "Weg der Klinge",
+      "field": "allSquadsAttackPct",
+      "category": "attack",
+      "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+      "model": "attack_lethality",
+      "status": "conditional_input_only",
+      "guard": "Attack component only; troop scope and stacking unresolved"
+    },
+    {
+      "hero": "Amadeus",
+      "skill": "Unheiliger Treffer",
+      "field": "procChancePct",
+      "category": "probability",
+      "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+      "model": "conditional_monte_carlo",
+      "status": "scenario_only",
+      "guard": "No independence, proc timing or RNG correlations established"
+    },
+    {
+      "hero": "Amadeus",
+      "skill": "Unheiliger Treffer",
+      "field": "damageIncreasePct",
+      "category": "damage",
+      "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+      "model": null,
+      "status": "blocked",
+      "guard": "Skill damage coefficients and target modifiers cannot be substituted for global attack"
+    },
+    {
+      "hero": "Amadeus",
+      "skill": "Unheiliger Treffer",
+      "field": "damageIncreasePctLevels",
+      "category": "damage",
+      "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+      "model": null,
+      "status": "requires_specialized_model",
+      "guard": "damage_bonus_levels_not_attack"
+    },
+    {
+      "hero": "Helga",
+      "skill": "Geweih-Angriff",
+      "field": "damagePct",
+      "category": "damage",
+      "source": "data/phalanx-helga-ingame-validation-2026-10-12.json",
+      "model": null,
+      "status": "blocked",
+      "guard": "Skill damage coefficients and target modifiers cannot be substituted for global attack"
+    },
+    {
+      "hero": "Helga",
+      "skill": "Speer-Angriff",
+      "field": "damagePct",
+      "category": "damage",
+      "source": "data/phalanx-helga-ingame-validation-2026-10-12.json",
+      "model": null,
+      "status": "blocked",
+      "guard": "Skill damage coefficients and target modifiers cannot be substituted for global attack"
+    },
+    {
+      "hero": "Helga",
+      "skill": "Zorn",
+      "field": "attackPct",
+      "category": "attack",
+      "source": "data/phalanx-helga-ingame-validation-2026-10-12.json",
+      "model": "attack_lethality",
+      "status": "conditional_input_only",
+      "guard": "Attack component only; troop scope and stacking unresolved"
+    },
+    {
+      "hero": "Helga",
+      "skill": "Zorn",
+      "field": "procChancePct",
+      "category": "probability",
+      "source": "data/phalanx-helga-ingame-validation-2026-10-12.json",
+      "model": "conditional_monte_carlo",
+      "status": "scenario_only",
+      "guard": "No independence, proc timing or RNG correlations established"
+    },
+    {
+      "hero": "Helga",
+      "skill": "Echos aus Valhalla",
+      "field": "allSquadsAttackPct",
+      "category": "attack",
+      "source": "data/phalanx-helga-ingame-validation-2026-10-12.json",
+      "model": "attack_lethality",
+      "status": "conditional_input_only",
+      "guard": "Attack component only; troop scope and stacking unresolved"
+    },
+    {
+      "hero": "Helga",
+      "skill": "Das Gleichgewicht der Natur",
+      "field": "allSquadsLethalityPct",
+      "category": "lethality",
+      "source": "data/phalanx-helga-ingame-validation-2026-10-12.json",
+      "model": "attack_lethality",
+      "status": "conditional_input_only",
+      "guard": "Lethality component only; no automatic additive stacking"
+    },
+    {
+      "hero": "Helga",
+      "skill": "Eid des Wächters",
+      "field": "procChancePct",
+      "category": "probability",
+      "source": "data/phalanx-helga-ingame-validation-2026-10-12.json",
+      "model": "conditional_monte_carlo",
+      "status": "scenario_only",
+      "guard": "No independence, proc timing or RNG correlations established"
+    },
+    {
+      "hero": "Helga",
+      "skill": "Eid des Wächters",
+      "field": "allSquadsDamageTakenReductionPctAtLevel5",
+      "category": "defense",
+      "source": "data/phalanx-helga-ingame-validation-2026-10-12.json",
+      "model": "effectiveDefense",
+      "status": "requires_specialized_model",
+      "guard": "damage_taken_reduction_not_defense_stat"
+    },
+    {
+      "hero": "Saul",
+      "skill": "Letztes Gebet",
+      "field": "defensePct",
+      "category": "defense",
+      "source": "data/phalanx-saul-skill-evidence-v1.json",
+      "model": "effectiveDefense",
+      "status": "conditional_input_only",
+      "guard": "Only defensePct fields may enter defense model; reductions and attack speed debuffs are excluded"
+    },
+    {
+      "hero": "Saul",
+      "skill": "Task-Force-Ausbildung",
+      "field": "defensePct",
+      "category": "defense",
+      "source": "data/phalanx-saul-skill-evidence-v1.json",
+      "model": "effectiveDefense",
+      "status": "conditional_input_only",
+      "guard": "Only defensePct fields may enter defense model; reductions and attack speed debuffs are excluded"
+    },
+    {
+      "hero": "Saul",
+      "skill": "Task-Force-Ausbildung",
+      "field": "healthPct",
+      "category": "health",
+      "source": "data/phalanx-saul-skill-evidence-v1.json",
+      "model": "effectiveDefense",
+      "status": "conditional_input_only",
+      "guard": "Health component only; cannot infer healing"
+    },
+    {
+      "hero": "Saul",
+      "skill": "Einfallsreich",
+      "field": "constructionSpeedPct",
+      "category": "economy",
+      "source": "data/phalanx-saul-skill-evidence-v1.json",
+      "model": "speedSeconds / costAfterReduction",
+      "status": "requires_specialized_model",
+      "guard": "construction_speed_not_generic_speed"
+    },
+    {
+      "hero": "Saul",
+      "skill": "Einfallsreich",
+      "field": "constructionCostReductionPct",
+      "category": "economy",
+      "source": "data/phalanx-saul-skill-evidence-v1.json",
+      "model": "speedSeconds / costAfterReduction",
+      "status": "conditional_input_only",
+      "guard": "Only matching speed and cost reduction fields; distinct buildings and activities"
+    },
+    {
+      "hero": "Chenko",
+      "skill": "Feuerstoß",
+      "field": "damagePct",
+      "category": "damage",
+      "source": "data/phalanx-chenko-ingame-validation-2026-10-12.json",
+      "model": null,
+      "status": "blocked",
+      "guard": "Skill damage coefficients and target modifiers cannot be substituted for global attack"
+    },
+    {
+      "hero": "Chenko",
+      "skill": "Verteidigungs-Aufwertung",
+      "field": "defensePct",
+      "category": "defense",
+      "source": "data/phalanx-chenko-ingame-validation-2026-10-12.json",
+      "model": "effectiveDefense",
+      "status": "conditional_input_only",
+      "guard": "Only defensePct fields may enter defense model; reductions and attack speed debuffs are excluded"
+    },
+    {
+      "hero": "Chenko",
+      "skill": "Waffen-Aufwertung",
+      "field": "attackPct",
+      "category": "attack",
+      "source": "data/phalanx-chenko-ingame-validation-2026-10-12.json",
+      "model": "attack_lethality",
+      "status": "conditional_input_only",
+      "guard": "Attack component only; troop scope and stacking unresolved"
+    },
+    {
+      "hero": "Chenko",
+      "skill": "Bewaffnung",
+      "field": "allSquadsLethalityPct",
+      "category": "lethality",
+      "source": "data/phalanx-chenko-ingame-validation-2026-10-12.json",
+      "model": "attack_lethality",
+      "status": "conditional_input_only",
+      "guard": "Lethality component only; no automatic additive stacking"
+    },
+    {
+      "hero": "Chenko",
+      "skill": "Schildmauer",
+      "field": "allSquadsDamageTakenReductionPct",
+      "category": "defense",
+      "source": "data/phalanx-chenko-ingame-validation-2026-10-12.json",
+      "model": "effectiveDefense",
+      "status": "requires_specialized_model",
+      "guard": "damage_taken_reduction_not_defense_stat"
+    },
+    {
+      "hero": "Amane",
+      "skill": "Sakura Blüte",
+      "field": "attackPct",
+      "category": "attack",
+      "source": "data/phalanx-amane-ingame-validation-2026-10-12.json",
+      "model": "attack_lethality",
+      "status": "conditional_input_only",
+      "guard": "Attack component only; troop scope and stacking unresolved"
+    },
+    {
+      "hero": "Amane",
+      "skill": "Sakura Blüte",
+      "field": "attackSpeedPct",
+      "category": "attack",
+      "source": "data/phalanx-amane-ingame-validation-2026-10-12.json",
+      "model": "attack_lethality",
+      "status": "requires_specialized_model",
+      "guard": "attack_speed_not_attack_stat"
+    },
+    {
+      "hero": "Amane",
+      "skill": "Feuersiegel",
+      "field": "damagePct",
+      "category": "damage",
+      "source": "data/phalanx-amane-ingame-validation-2026-10-12.json",
+      "model": null,
+      "status": "blocked",
+      "guard": "Skill damage coefficients and target modifiers cannot be substituted for global attack"
+    },
+    {
+      "hero": "Amane",
+      "skill": "Göttliche Melodie",
+      "field": "attackSpeedPct",
+      "category": "attack",
+      "source": "data/phalanx-amane-ingame-validation-2026-10-12.json",
+      "model": "attack_lethality",
+      "status": "requires_specialized_model",
+      "guard": "attack_speed_not_attack_stat"
+    },
+    {
+      "hero": "Amane",
+      "skill": "Tri-Phalanx",
+      "field": "allSquadsAttackPct",
+      "category": "attack",
+      "source": "data/phalanx-amane-ingame-validation-2026-10-12.json",
+      "model": "attack_lethality",
+      "status": "conditional_input_only",
+      "guard": "Attack component only; troop scope and stacking unresolved"
+    },
+    {
+      "hero": "Amane",
+      "skill": "Exorzismus",
+      "field": "infirmaryHealingSpeedPct",
+      "category": "economy",
+      "source": "data/phalanx-amane-ingame-validation-2026-10-12.json",
+      "model": "speedSeconds / costAfterReduction",
+      "status": "requires_specialized_model",
+      "guard": "healing_speed_not_hp_heal"
+    },
+    {
+      "hero": "Yeonwoo",
+      "skill": "Blühblüte",
+      "field": "wave1Pct",
+      "category": "damage",
+      "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json",
+      "model": null,
+      "status": "requires_specialized_model",
+      "guard": "multiwave_skill_not_global_damage"
+    },
+    {
+      "hero": "Yeonwoo",
+      "skill": "Blühblüte",
+      "field": "wave2Pct",
+      "category": "damage",
+      "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json",
+      "model": null,
+      "status": "requires_specialized_model",
+      "guard": "multiwave_skill_not_global_damage"
+    },
+    {
+      "hero": "Yeonwoo",
+      "skill": "Blühblüte",
+      "field": "wave3Pct",
+      "category": "damage",
+      "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json",
+      "model": null,
+      "status": "requires_specialized_model",
+      "guard": "multiwave_skill_not_global_damage"
+    },
+    {
+      "hero": "Yeonwoo",
+      "skill": "Fallende Schwalbe",
+      "field": "damagePct",
+      "category": "damage",
+      "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json",
+      "model": null,
+      "status": "blocked",
+      "guard": "Skill damage coefficients and target modifiers cannot be substituted for global attack"
+    },
+    {
+      "hero": "Yeonwoo",
+      "skill": "Fallende Schwalbe",
+      "field": "targetAttackSpeedReductionPct",
+      "category": "defense",
+      "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json",
+      "model": "effectiveDefense",
+      "status": "requires_specialized_model",
+      "guard": "enemy_attack_speed_debuff_not_defense_stat"
+    },
+    {
+      "hero": "Yeonwoo",
+      "skill": "Zwillingsreißzähne",
+      "field": "attackPct",
+      "category": "attack",
+      "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json",
+      "model": "attack_lethality",
+      "status": "conditional_input_only",
+      "guard": "Attack component only; troop scope and stacking unresolved"
+    },
+    {
+      "hero": "Yeonwoo",
+      "skill": "Wachsam",
+      "field": "allSquadsLethalityPct",
+      "category": "lethality",
+      "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json",
+      "model": "attack_lethality",
+      "status": "conditional_input_only",
+      "guard": "Lethality component only; no automatic additive stacking"
+    },
+    {
+      "hero": "Yeonwoo",
+      "skill": "Gut bereist",
+      "field": "researchSpeedPct",
+      "category": "economy",
+      "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json",
+      "model": "speedSeconds / costAfterReduction",
+      "status": "requires_specialized_model",
+      "guard": "research_speed_not_generic_speed"
+    },
+    {
+      "hero": "Hilde",
+      "skill": "Erlöser",
+      "field": "healWeakestAllyPct",
+      "category": "healing",
+      "source": "data/phalanx-hilde-ingame-validation-2026-10-12.json",
+      "model": null,
+      "status": "blocked",
+      "guard": "Requires target HP, healing rules and timing"
+    },
+    {
+      "hero": "Hilde",
+      "skill": "Nobler Weg",
+      "field": "allSquadsAttackPct",
+      "category": "attack",
+      "source": "data/phalanx-hilde-ingame-validation-2026-10-12.json",
+      "model": "attack_lethality",
+      "status": "conditional_input_only",
+      "guard": "Attack component only; troop scope and stacking unresolved"
+    },
+    {
+      "hero": "Hilde",
+      "skill": "Nobler Weg",
+      "field": "allSquadsDefensePct",
+      "category": "defense",
+      "source": "data/phalanx-hilde-ingame-validation-2026-10-12.json",
+      "model": "effectiveDefense",
+      "status": "conditional_input_only",
+      "guard": "Only defensePct fields may enter defense model; reductions and attack speed debuffs are excluded"
+    },
+    {
+      "hero": "Hilde",
+      "skill": "Elixier der Stärke",
+      "field": "procChancePct",
+      "category": "probability",
+      "source": "data/phalanx-hilde-ingame-validation-2026-10-12.json",
+      "model": "conditional_monte_carlo",
+      "status": "scenario_only",
+      "guard": "No independence, proc timing or RNG correlations established"
+    },
+    {
+      "hero": "Hilde",
+      "skill": "Elixier der Stärke",
+      "field": "damagePct",
+      "category": "damage",
+      "source": "data/phalanx-hilde-ingame-validation-2026-10-12.json",
+      "model": null,
+      "status": "blocked",
+      "guard": "Skill damage coefficients and target modifiers cannot be substituted for global attack"
+    },
+    {
+      "hero": "Hilde",
+      "skill": "Feuerprobe",
+      "field": "procChancePct",
+      "category": "probability",
+      "source": "data/phalanx-hilde-ingame-validation-2026-10-12.json",
+      "model": "conditional_monte_carlo",
+      "status": "scenario_only",
+      "guard": "No independence, proc timing or RNG correlations established"
+    },
+    {
+      "hero": "Hilde",
+      "skill": "Feuerprobe",
+      "field": "allSquadsDamageTakenReductionPctAtLevel5",
+      "category": "defense",
+      "source": "data/phalanx-hilde-ingame-validation-2026-10-12.json",
+      "model": "effectiveDefense",
+      "status": "requires_specialized_model",
+      "guard": "damage_taken_reduction_not_defense_stat"
+    }
+  ],
+  "counts": {
+    "effects": 47,
+    "blocked": 10,
+    "specialized": 13,
+    "conditional": 19,
+    "scenarioOnly": 5
+  },
+  "releaseGate": "NOT_READY_FOR_GAME_ACCURACY_CLAIMS"
+}
