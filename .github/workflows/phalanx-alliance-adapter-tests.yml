@@ -1,0 +1,23 @@
+name: PHALANX Alliance Adapter Contract
+on:
+  push:
+    paths:
+      - 'integration/alliance-*.mjs'
+      - '.github/workflows/phalanx-alliance-adapter-tests.yml'
+  pull_request:
+    paths:
+      - 'integration/alliance-*.mjs'
+      - '.github/workflows/phalanx-alliance-adapter-tests.yml'
+  workflow_dispatch:
+jobs:
+  adapter-contract:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run isolated adapter contract tests
+        run: node integration/alliance-adapter-contract-test.mjs
