@@ -1,0 +1,506 @@
+{
+  "schema": "phalanx-secondary-skill-reconciliation-v1",
+  "date": "2026-10-13",
+  "sources": [
+    "data/phalanx-hero-unified-evidence-index-v2-2026-10-13.json",
+    "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+    "data/hero-intelligence-skill-model-v1-2026-10-12.json"
+  ],
+  "summary": {
+    "SLOT_AND_LEVEL_VALUES_MATCH": 15,
+    "NO_UNIFIED_SLOT_RECORD": 12
+  },
+  "records": [
+    {
+      "hero": "Amadeus",
+      "mode": "expedition",
+      "sourceSkill": "Battle Ready",
+      "sourceSlot": 1,
+      "sourceValues": [
+        5,
+        10,
+        15,
+        20,
+        25
+      ],
+      "sourcePath": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "matchStatus": "SLOT_AND_LEVEL_VALUES_MATCH",
+      "unifiedCandidate": [
+        "Kampfbereit"
+      ],
+      "caution": "Numerical match is evidence of possible equivalence, not proof of identical mechanics"
+    },
+    {
+      "hero": "Amadeus",
+      "mode": "expedition",
+      "sourceSkill": "Way of the Blade",
+      "sourceSlot": 2,
+      "sourceValues": [
+        5,
+        10,
+        15,
+        20,
+        25
+      ],
+      "sourcePath": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "matchStatus": "SLOT_AND_LEVEL_VALUES_MATCH",
+      "unifiedCandidate": [
+        "Weg der Klinge"
+      ],
+      "caution": "Numerical match is evidence of possible equivalence, not proof of identical mechanics"
+    },
+    {
+      "hero": "Amadeus",
+      "mode": "expedition",
+      "sourceSkill": "Unrighteous Strike",
+      "sourceSlot": 3,
+      "sourceValues": [
+        8,
+        16,
+        24,
+        32,
+        40
+      ],
+      "sourcePath": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "matchStatus": "SLOT_AND_LEVEL_VALUES_MATCH",
+      "unifiedCandidate": [
+        "Unheiliger Treffer"
+      ],
+      "caution": "Numerical match is evidence of possible equivalence, not proof of identical mechanics"
+    },
+    {
+      "hero": "Amadeus",
+      "mode": "conquest",
+      "sourceSkill": "Combo Slash",
+      "sourceSlot": 1,
+      "sourceValues": [
+        160,
+        176,
+        192,
+        208,
+        224
+      ],
+      "sourcePath": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "matchStatus": "SLOT_AND_LEVEL_VALUES_MATCH",
+      "unifiedCandidate": [
+        "Kombo-Schlag"
+      ],
+      "caution": "Numerical match is evidence of possible equivalence, not proof of identical mechanics"
+    },
+    {
+      "hero": "Amadeus",
+      "mode": "conquest",
+      "sourceSkill": "Arcane Swordship",
+      "sourceSlot": 2,
+      "sourceValues": [
+        15,
+        17,
+        19,
+        21,
+        23
+      ],
+      "sourcePath": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "matchStatus": "SLOT_AND_LEVEL_VALUES_MATCH",
+      "unifiedCandidate": [
+        "Geheimnisvolle Schwertkunst"
+      ],
+      "caution": "Numerical match is evidence of possible equivalence, not proof of identical mechanics"
+    },
+    {
+      "hero": "Amadeus",
+      "mode": "conquest",
+      "sourceSkill": "Onslaught",
+      "sourceSlot": 3,
+      "sourceValues": [
+        16,
+        24,
+        32,
+        40,
+        48
+      ],
+      "sourcePath": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "matchStatus": "SLOT_AND_LEVEL_VALUES_MATCH",
+      "unifiedCandidate": [
+        "Ansturm"
+      ],
+      "caution": "Numerical match is evidence of possible equivalence, not proof of identical mechanics"
+    },
+    {
+      "hero": "Alcar",
+      "mode": "expedition",
+      "sourceSkill": "Rescuing Hands",
+      "sourceSlot": 1,
+      "sourceValues": [
+        14,
+        28,
+        42,
+        56,
+        70
+      ],
+      "sourcePath": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "matchStatus": "SLOT_AND_LEVEL_VALUES_MATCH",
+      "unifiedCandidate": [
+        "Helfende Hände"
+      ],
+      "caution": "Numerical match is evidence of possible equivalence, not proof of identical mechanics"
+    },
+    {
+      "hero": "Alcar",
+      "mode": "expedition",
+      "sourceSkill": "Praetorian Will",
+      "sourceSlot": 2,
+      "sourceValues": [
+        20,
+        40,
+        60,
+        80,
+        100
+      ],
+      "sourcePath": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "matchStatus": "SLOT_AND_LEVEL_VALUES_MATCH",
+      "unifiedCandidate": [
+        "Wille des Prätorianers"
+      ],
+      "caution": "Numerical match is evidence of possible equivalence, not proof of identical mechanics"
+    },
+    {
+      "hero": "Alcar",
+      "mode": "expedition",
+      "sourceSkill": "Carpe Diem",
+      "sourceSlot": 3,
+      "sourceValues": [
+        12,
+        24,
+        36,
+        48,
+        60
+      ],
+      "sourcePath": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "matchStatus": "SLOT_AND_LEVEL_VALUES_MATCH",
+      "unifiedCandidate": [
+        "Carpe Diem"
+      ],
+      "caution": "Numerical match is evidence of possible equivalence, not proof of identical mechanics"
+    },
+    {
+      "hero": "Alcar",
+      "mode": "conquest",
+      "sourceSkill": "Glorious Mark",
+      "sourceSlot": 1,
+      "sourceValues": [
+        30,
+        40,
+        50,
+        60,
+        70
+      ],
+      "sourcePath": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "matchStatus": "SLOT_AND_LEVEL_VALUES_MATCH",
+      "unifiedCandidate": [
+        "Glorreiches Zeichen"
+      ],
+      "caution": "Numerical match is evidence of possible equivalence, not proof of identical mechanics"
+    },
+    {
+      "hero": "Alcar",
+      "mode": "conquest",
+      "sourceSkill": "Boneshatter",
+      "sourceSlot": 2,
+      "sourceValues": [
+        70,
+        77,
+        84,
+        91,
+        98
+      ],
+      "sourcePath": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "matchStatus": "SLOT_AND_LEVEL_VALUES_MATCH",
+      "unifiedCandidate": [
+        "Knochenspalter"
+      ],
+      "caution": "Numerical match is evidence of possible equivalence, not proof of identical mechanics"
+    },
+    {
+      "hero": "Alcar",
+      "mode": "conquest",
+      "sourceSkill": "Second Wind",
+      "sourceSlot": 3,
+      "sourceValues": [
+        30,
+        33,
+        36,
+        39,
+        42
+      ],
+      "sourcePath": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "matchStatus": "SLOT_AND_LEVEL_VALUES_MATCH",
+      "unifiedCandidate": [
+        "Frischer Mut"
+      ],
+      "caution": "Numerical match is evidence of possible equivalence, not proof of identical mechanics"
+    },
+    {
+      "hero": "Long Fei",
+      "mode": "expedition",
+      "sourceSkill": "Mighty Paragon",
+      "sourceSlot": 1,
+      "sourceValues": [
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "sourcePath": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "matchStatus": "NO_UNIFIED_SLOT_RECORD",
+      "unifiedCandidate": [],
+      "caution": "Numerical match is evidence of possible equivalence, not proof of identical mechanics"
+    },
+    {
+      "hero": "Long Fei",
+      "mode": "expedition",
+      "sourceSkill": "Celestial Sustenance",
+      "sourceSlot": 2,
+      "sourceValues": [
+        5,
+        10,
+        15,
+        20,
+        25
+      ],
+      "sourcePath": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "matchStatus": "NO_UNIFIED_SLOT_RECORD",
+      "unifiedCandidate": [],
+      "caution": "Numerical match is evidence of possible equivalence, not proof of identical mechanics"
+    },
+    {
+      "hero": "Long Fei",
+      "mode": "expedition",
+      "sourceSkill": "Art of War",
+      "sourceSlot": 3,
+      "sourceValues": [
+        120,
+        140,
+        160,
+        180,
+        200
+      ],
+      "sourcePath": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "matchStatus": "NO_UNIFIED_SLOT_RECORD",
+      "unifiedCandidate": [],
+      "caution": "Numerical match is evidence of possible equivalence, not proof of identical mechanics"
+    },
+    {
+      "hero": "Long Fei",
+      "mode": "conquest",
+      "sourceSkill": "Above And Beyond",
+      "sourceSlot": 1,
+      "sourceValues": [
+        20,
+        30,
+        40,
+        50,
+        60
+      ],
+      "sourcePath": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "matchStatus": "NO_UNIFIED_SLOT_RECORD",
+      "unifiedCandidate": [],
+      "caution": "Numerical match is evidence of possible equivalence, not proof of identical mechanics"
+    },
+    {
+      "hero": "Long Fei",
+      "mode": "conquest",
+      "sourceSkill": "Ambrosia",
+      "sourceSlot": 2,
+      "sourceValues": [
+        80,
+        90,
+        100,
+        110,
+        120
+      ],
+      "sourcePath": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "matchStatus": "NO_UNIFIED_SLOT_RECORD",
+      "unifiedCandidate": [],
+      "caution": "Numerical match is evidence of possible equivalence, not proof of identical mechanics"
+    },
+    {
+      "hero": "Long Fei",
+      "mode": "conquest",
+      "sourceSkill": "Mountain Mover",
+      "sourceSlot": 3,
+      "sourceValues": [
+        16,
+        24,
+        32,
+        40,
+        48
+      ],
+      "sourcePath": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "matchStatus": "NO_UNIFIED_SLOT_RECORD",
+      "unifiedCandidate": [],
+      "caution": "Numerical match is evidence of possible equivalence, not proof of identical mechanics"
+    },
+    {
+      "hero": "Marlin",
+      "mode": "expedition",
+      "sourceSkill": "Wild Card",
+      "sourceSlot": 1,
+      "sourceValues": [
+        8,
+        16,
+        24,
+        32,
+        40
+      ],
+      "sourcePath": "data/hero-intelligence-skill-model-v1-2026-10-12.json",
+      "matchStatus": "NO_UNIFIED_SLOT_RECORD",
+      "unifiedCandidate": [],
+      "caution": "Numerical match is evidence of possible equivalence, not proof of identical mechanics"
+    },
+    {
+      "hero": "Marlin",
+      "mode": "expedition",
+      "sourceSkill": "Rumhead",
+      "sourceSlot": 2,
+      "sourceValues": [
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "sourcePath": "data/hero-intelligence-skill-model-v1-2026-10-12.json",
+      "matchStatus": "NO_UNIFIED_SLOT_RECORD",
+      "unifiedCandidate": [],
+      "caution": "Numerical match is evidence of possible equivalence, not proof of identical mechanics"
+    },
+    {
+      "hero": "Marlin",
+      "mode": "expedition",
+      "sourceSkill": "Dynamo",
+      "sourceSlot": 3,
+      "sourceValues": [
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "sourcePath": "data/hero-intelligence-skill-model-v1-2026-10-12.json",
+      "matchStatus": "NO_UNIFIED_SLOT_RECORD",
+      "unifiedCandidate": [],
+      "caution": "Numerical match is evidence of possible equivalence, not proof of identical mechanics"
+    },
+    {
+      "hero": "Petra",
+      "mode": "expedition",
+      "sourceSkill": "Evil Eye",
+      "sourceSlot": 1,
+      "sourceValues": [
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "sourcePath": "data/hero-intelligence-skill-model-v1-2026-10-12.json",
+      "matchStatus": "SLOT_AND_LEVEL_VALUES_MATCH",
+      "unifiedCandidate": [
+        "Böses Auge"
+      ],
+      "caution": "Numerical match is evidence of possible equivalence, not proof of identical mechanics"
+    },
+    {
+      "hero": "Petra",
+      "mode": "expedition",
+      "sourceSkill": "The Favor",
+      "sourceSlot": 2,
+      "sourceValues": [
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "sourcePath": "data/hero-intelligence-skill-model-v1-2026-10-12.json",
+      "matchStatus": "SLOT_AND_LEVEL_VALUES_MATCH",
+      "unifiedCandidate": [
+        "Der Gefallen"
+      ],
+      "caution": "Numerical match is evidence of possible equivalence, not proof of identical mechanics"
+    },
+    {
+      "hero": "Petra",
+      "mode": "expedition",
+      "sourceSkill": "The Shield",
+      "sourceSlot": 3,
+      "sourceValues": [
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "sourcePath": "data/hero-intelligence-skill-model-v1-2026-10-12.json",
+      "matchStatus": "SLOT_AND_LEVEL_VALUES_MATCH",
+      "unifiedCandidate": [
+        "Der Schild"
+      ],
+      "caution": "Numerical match is evidence of possible equivalence, not proof of identical mechanics"
+    },
+    {
+      "hero": "Thrud",
+      "mode": "expedition",
+      "sourceSkill": "Battle Hunger",
+      "sourceSlot": 1,
+      "sourceValues": [
+        3,
+        6,
+        9,
+        12,
+        15
+      ],
+      "sourcePath": "data/hero-intelligence-skill-model-v1-2026-10-12.json",
+      "matchStatus": "NO_UNIFIED_SLOT_RECORD",
+      "unifiedCandidate": [],
+      "caution": "Numerical match is evidence of possible equivalence, not proof of identical mechanics"
+    },
+    {
+      "hero": "Thrud",
+      "mode": "expedition",
+      "sourceSkill": "Reckless Charge",
+      "sourceSlot": 2,
+      "sourceValues": [
+        20,
+        40,
+        60,
+        80,
+        100
+      ],
+      "sourcePath": "data/hero-intelligence-skill-model-v1-2026-10-12.json",
+      "matchStatus": "NO_UNIFIED_SLOT_RECORD",
+      "unifiedCandidate": [],
+      "caution": "Numerical match is evidence of possible equivalence, not proof of identical mechanics"
+    },
+    {
+      "hero": "Thrud",
+      "mode": "expedition",
+      "sourceSkill": "Ancestral Guidance",
+      "sourceSlot": 3,
+      "sourceValues": [
+        5,
+        10,
+        15,
+        20,
+        25
+      ],
+      "sourcePath": "data/hero-intelligence-skill-model-v1-2026-10-12.json",
+      "matchStatus": "NO_UNIFIED_SLOT_RECORD",
+      "unifiedCandidate": [],
+      "caution": "Numerical match is evidence of possible equivalence, not proof of identical mechanics"
+    }
+  ],
+  "policy": "Read-only candidate reconciliation. No automatic merging, translation, effect mapping or recalculation; matching level arrays and slot is not proof of equivalent effect.",
+  "productionChanged": false
+}
