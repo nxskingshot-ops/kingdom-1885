@@ -1,0 +1,443 @@
+{
+  "schema": "phalanx-hero-comparison-coverage-v1",
+  "date": "2026-10-13",
+  "scope": "Non-destructive cross-reference of existing hero sources; no name-based merging of skill mechanics",
+  "sources": [
+    "data/phalanx-hero-comparison-readiness-v1-2026-10-13.json",
+    "data/phalanx-hero-unified-evidence-index-v2-2026-10-13.json",
+    "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+    "data/hero-intelligence-skill-model-v1-2026-10-12.json"
+  ],
+  "heroCount": 28,
+  "heroesWithEligibleEffects": 7,
+  "heroesWithSecondaryData": 6,
+  "entries": [
+    {
+      "name": "Amadeus",
+      "generation": 1,
+      "troopType": "infantry",
+      "structuredSkillEntries": 6,
+      "eligibleEffectFields": 3,
+      "sourceCoverage": {
+        "unified": true,
+        "infantrySecondary": true,
+        "skillModelSecondary": false
+      },
+      "secondarySkillRecords": 6,
+      "evidenceOnly": true,
+      "comparisonStatus": "SOURCE_BACKED_STAT_DISPLAY_ONLY"
+    },
+    {
+      "name": "Helga",
+      "generation": 1,
+      "troopType": "infantry",
+      "structuredSkillEntries": 6,
+      "eligibleEffectFields": 3,
+      "sourceCoverage": {
+        "unified": true,
+        "infantrySecondary": false,
+        "skillModelSecondary": false
+      },
+      "secondarySkillRecords": 0,
+      "evidenceOnly": true,
+      "comparisonStatus": "SOURCE_BACKED_STAT_DISPLAY_ONLY"
+    },
+    {
+      "name": "Jabel",
+      "generation": 1,
+      "troopType": "cavalry",
+      "structuredSkillEntries": 0,
+      "eligibleEffectFields": 0,
+      "sourceCoverage": {
+        "unified": true,
+        "infantrySecondary": false,
+        "skillModelSecondary": false
+      },
+      "secondarySkillRecords": 0,
+      "evidenceOnly": true,
+      "comparisonStatus": "NO_BRIDGE_ELIGIBLE_FIELDS_YET"
+    },
+    {
+      "name": "Saul",
+      "generation": 1,
+      "troopType": "archer",
+      "structuredSkillEntries": 3,
+      "eligibleEffectFields": 3,
+      "sourceCoverage": {
+        "unified": true,
+        "infantrySecondary": false,
+        "skillModelSecondary": false
+      },
+      "secondarySkillRecords": 0,
+      "evidenceOnly": true,
+      "comparisonStatus": "SOURCE_BACKED_STAT_DISPLAY_ONLY"
+    },
+    {
+      "name": "Howard",
+      "generation": 1,
+      "troopType": "infantry",
+      "structuredSkillEntries": 0,
+      "eligibleEffectFields": 0,
+      "sourceCoverage": {
+        "unified": true,
+        "infantrySecondary": false,
+        "skillModelSecondary": false
+      },
+      "secondarySkillRecords": 0,
+      "evidenceOnly": true,
+      "comparisonStatus": "NO_BRIDGE_ELIGIBLE_FIELDS_YET"
+    },
+    {
+      "name": "Gordon",
+      "generation": 1,
+      "troopType": "cavalry",
+      "structuredSkillEntries": 0,
+      "eligibleEffectFields": 0,
+      "sourceCoverage": {
+        "unified": true,
+        "infantrySecondary": false,
+        "skillModelSecondary": false
+      },
+      "secondarySkillRecords": 0,
+      "evidenceOnly": true,
+      "comparisonStatus": "NO_BRIDGE_ELIGIBLE_FIELDS_YET"
+    },
+    {
+      "name": "Quinn",
+      "generation": 1,
+      "troopType": "archer",
+      "structuredSkillEntries": 0,
+      "eligibleEffectFields": 0,
+      "sourceCoverage": {
+        "unified": true,
+        "infantrySecondary": false,
+        "skillModelSecondary": false
+      },
+      "secondarySkillRecords": 0,
+      "evidenceOnly": true,
+      "comparisonStatus": "NO_BRIDGE_ELIGIBLE_FIELDS_YET"
+    },
+    {
+      "name": "Chenko",
+      "generation": 1,
+      "troopType": "cavalry",
+      "structuredSkillEntries": 5,
+      "eligibleEffectFields": 3,
+      "sourceCoverage": {
+        "unified": true,
+        "infantrySecondary": false,
+        "skillModelSecondary": false
+      },
+      "secondarySkillRecords": 0,
+      "evidenceOnly": true,
+      "comparisonStatus": "SOURCE_BACKED_STAT_DISPLAY_ONLY"
+    },
+    {
+      "name": "Diana",
+      "generation": 1,
+      "troopType": "archer",
+      "structuredSkillEntries": 0,
+      "eligibleEffectFields": 0,
+      "sourceCoverage": {
+        "unified": true,
+        "infantrySecondary": false,
+        "skillModelSecondary": false
+      },
+      "secondarySkillRecords": 0,
+      "evidenceOnly": true,
+      "comparisonStatus": "NO_BRIDGE_ELIGIBLE_FIELDS_YET"
+    },
+    {
+      "name": "Amane",
+      "generation": 1,
+      "troopType": "archer",
+      "structuredSkillEntries": 5,
+      "eligibleEffectFields": 2,
+      "sourceCoverage": {
+        "unified": true,
+        "infantrySecondary": false,
+        "skillModelSecondary": false
+      },
+      "secondarySkillRecords": 0,
+      "evidenceOnly": true,
+      "comparisonStatus": "SOURCE_BACKED_STAT_DISPLAY_ONLY"
+    },
+    {
+      "name": "Yeonwoo",
+      "generation": 1,
+      "troopType": "archer",
+      "structuredSkillEntries": 5,
+      "eligibleEffectFields": 2,
+      "sourceCoverage": {
+        "unified": true,
+        "infantrySecondary": false,
+        "skillModelSecondary": false
+      },
+      "secondarySkillRecords": 0,
+      "evidenceOnly": true,
+      "comparisonStatus": "SOURCE_BACKED_STAT_DISPLAY_ONLY"
+    },
+    {
+      "name": "Fahd",
+      "generation": 1,
+      "troopType": "cavalry",
+      "structuredSkillEntries": 0,
+      "eligibleEffectFields": 0,
+      "sourceCoverage": {
+        "unified": true,
+        "infantrySecondary": false,
+        "skillModelSecondary": false
+      },
+      "secondarySkillRecords": 0,
+      "evidenceOnly": true,
+      "comparisonStatus": "NO_BRIDGE_ELIGIBLE_FIELDS_YET"
+    },
+    {
+      "name": "Forrest",
+      "generation": 1,
+      "troopType": "infantry",
+      "structuredSkillEntries": 0,
+      "eligibleEffectFields": 0,
+      "sourceCoverage": {
+        "unified": true,
+        "infantrySecondary": false,
+        "skillModelSecondary": false
+      },
+      "secondarySkillRecords": 0,
+      "evidenceOnly": true,
+      "comparisonStatus": "NO_BRIDGE_ELIGIBLE_FIELDS_YET"
+    },
+    {
+      "name": "Seth",
+      "generation": 1,
+      "troopType": "infantry",
+      "structuredSkillEntries": 0,
+      "eligibleEffectFields": 0,
+      "sourceCoverage": {
+        "unified": true,
+        "infantrySecondary": false,
+        "skillModelSecondary": false
+      },
+      "secondarySkillRecords": 0,
+      "evidenceOnly": true,
+      "comparisonStatus": "NO_BRIDGE_ELIGIBLE_FIELDS_YET"
+    },
+    {
+      "name": "Edwin",
+      "generation": 1,
+      "troopType": "cavalry",
+      "structuredSkillEntries": 0,
+      "eligibleEffectFields": 0,
+      "sourceCoverage": {
+        "unified": true,
+        "infantrySecondary": false,
+        "skillModelSecondary": false
+      },
+      "secondarySkillRecords": 0,
+      "evidenceOnly": true,
+      "comparisonStatus": "NO_BRIDGE_ELIGIBLE_FIELDS_YET"
+    },
+    {
+      "name": "Olive",
+      "generation": 1,
+      "troopType": "archer",
+      "structuredSkillEntries": 0,
+      "eligibleEffectFields": 0,
+      "sourceCoverage": {
+        "unified": true,
+        "infantrySecondary": false,
+        "skillModelSecondary": false
+      },
+      "secondarySkillRecords": 0,
+      "evidenceOnly": true,
+      "comparisonStatus": "NO_BRIDGE_ELIGIBLE_FIELDS_YET"
+    },
+    {
+      "name": "Zoe",
+      "generation": 2,
+      "troopType": "infantry",
+      "structuredSkillEntries": 0,
+      "eligibleEffectFields": 0,
+      "sourceCoverage": {
+        "unified": true,
+        "infantrySecondary": false,
+        "skillModelSecondary": false
+      },
+      "secondarySkillRecords": 0,
+      "evidenceOnly": true,
+      "comparisonStatus": "NO_BRIDGE_ELIGIBLE_FIELDS_YET"
+    },
+    {
+      "name": "Hilde",
+      "generation": 2,
+      "troopType": "cavalry",
+      "structuredSkillEntries": 4,
+      "eligibleEffectFields": 2,
+      "sourceCoverage": {
+        "unified": true,
+        "infantrySecondary": false,
+        "skillModelSecondary": false
+      },
+      "secondarySkillRecords": 0,
+      "evidenceOnly": true,
+      "comparisonStatus": "SOURCE_BACKED_STAT_DISPLAY_ONLY"
+    },
+    {
+      "name": "Marlin",
+      "generation": 2,
+      "troopType": "archer",
+      "structuredSkillEntries": 0,
+      "eligibleEffectFields": 0,
+      "sourceCoverage": {
+        "unified": true,
+        "infantrySecondary": false,
+        "skillModelSecondary": true
+      },
+      "secondarySkillRecords": 3,
+      "evidenceOnly": true,
+      "comparisonStatus": "NO_BRIDGE_ELIGIBLE_FIELDS_YET"
+    },
+    {
+      "name": "Eric",
+      "generation": 3,
+      "troopType": "infantry",
+      "structuredSkillEntries": 6,
+      "eligibleEffectFields": 0,
+      "sourceCoverage": {
+        "unified": true,
+        "infantrySecondary": false,
+        "skillModelSecondary": false
+      },
+      "secondarySkillRecords": 0,
+      "evidenceOnly": true,
+      "comparisonStatus": "NO_BRIDGE_ELIGIBLE_FIELDS_YET"
+    },
+    {
+      "name": "Petra",
+      "generation": 3,
+      "troopType": "cavalry",
+      "structuredSkillEntries": 6,
+      "eligibleEffectFields": 0,
+      "sourceCoverage": {
+        "unified": true,
+        "infantrySecondary": false,
+        "skillModelSecondary": true
+      },
+      "secondarySkillRecords": 3,
+      "evidenceOnly": true,
+      "comparisonStatus": "NO_BRIDGE_ELIGIBLE_FIELDS_YET"
+    },
+    {
+      "name": "Jaeger",
+      "generation": 3,
+      "troopType": "archer",
+      "structuredSkillEntries": 6,
+      "eligibleEffectFields": 0,
+      "sourceCoverage": {
+        "unified": true,
+        "infantrySecondary": false,
+        "skillModelSecondary": false
+      },
+      "secondarySkillRecords": 0,
+      "evidenceOnly": true,
+      "comparisonStatus": "NO_BRIDGE_ELIGIBLE_FIELDS_YET"
+    },
+    {
+      "name": "Alcar",
+      "generation": 4,
+      "troopType": "infantry",
+      "structuredSkillEntries": 6,
+      "eligibleEffectFields": 0,
+      "sourceCoverage": {
+        "unified": true,
+        "infantrySecondary": true,
+        "skillModelSecondary": false
+      },
+      "secondarySkillRecords": 6,
+      "evidenceOnly": true,
+      "comparisonStatus": "NO_BRIDGE_ELIGIBLE_FIELDS_YET"
+    },
+    {
+      "name": "Margot",
+      "generation": 4,
+      "troopType": "cavalry",
+      "structuredSkillEntries": 4,
+      "eligibleEffectFields": 0,
+      "sourceCoverage": {
+        "unified": true,
+        "infantrySecondary": false,
+        "skillModelSecondary": false
+      },
+      "secondarySkillRecords": 0,
+      "evidenceOnly": true,
+      "comparisonStatus": "NO_BRIDGE_ELIGIBLE_FIELDS_YET"
+    },
+    {
+      "name": "Rosa",
+      "generation": 4,
+      "troopType": "archer",
+      "structuredSkillEntries": 0,
+      "eligibleEffectFields": 0,
+      "sourceCoverage": {
+        "unified": true,
+        "infantrySecondary": false,
+        "skillModelSecondary": false
+      },
+      "secondarySkillRecords": 0,
+      "evidenceOnly": true,
+      "comparisonStatus": "NO_BRIDGE_ELIGIBLE_FIELDS_YET"
+    },
+    {
+      "name": "Long Fei",
+      "generation": 5,
+      "troopType": "infantry",
+      "structuredSkillEntries": 0,
+      "eligibleEffectFields": 0,
+      "sourceCoverage": {
+        "unified": true,
+        "infantrySecondary": true,
+        "skillModelSecondary": false
+      },
+      "secondarySkillRecords": 6,
+      "evidenceOnly": true,
+      "comparisonStatus": "NO_BRIDGE_ELIGIBLE_FIELDS_YET"
+    },
+    {
+      "name": "Thrud",
+      "generation": 5,
+      "troopType": "cavalry",
+      "structuredSkillEntries": 0,
+      "eligibleEffectFields": 0,
+      "sourceCoverage": {
+        "unified": true,
+        "infantrySecondary": false,
+        "skillModelSecondary": true
+      },
+      "secondarySkillRecords": 3,
+      "evidenceOnly": true,
+      "comparisonStatus": "NO_BRIDGE_ELIGIBLE_FIELDS_YET"
+    },
+    {
+      "name": "Vivian",
+      "generation": 5,
+      "troopType": "archer",
+      "structuredSkillEntries": 0,
+      "eligibleEffectFields": 0,
+      "sourceCoverage": {
+        "unified": true,
+        "infantrySecondary": false,
+        "skillModelSecondary": false
+      },
+      "secondarySkillRecords": 0,
+      "evidenceOnly": true,
+      "comparisonStatus": "NO_BRIDGE_ELIGIBLE_FIELDS_YET"
+    }
+  ],
+  "guardrails": [
+    "Do not treat missing bridge fields as missing hero skills",
+    "Secondary source data is not automatically equivalent to in-game skill data",
+    "No inferred level values or translated skill equivalence",
+    "No cross-mode comparison, summation or combat win probability",
+    "Frozen UI and production remain unchanged"
+  ]
+}
