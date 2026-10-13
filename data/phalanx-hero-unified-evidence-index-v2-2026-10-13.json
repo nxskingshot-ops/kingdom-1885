@@ -1,0 +1,1444 @@
+{
+  "schema": "phalanx-hero-unified-evidence-index-v2",
+  "date": "2026-10-13",
+  "scope": "Non-destructive consolidated index of existing sources, NOT a complete or battle-validated hero database",
+  "heroes": [
+    {
+      "name": "Amadeus",
+      "generation": 1,
+      "troopType": "infantry",
+      "rarity": "mythic",
+      "evidence": [
+        {
+          "path": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+          "kind": "roster_reference"
+        },
+        {
+          "path": "data/phalanx-seven-hero-first-expedition-skills-2026-10-12.json",
+          "kind": "first_expedition_level_values"
+        },
+        {
+          "path": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+          "kind": "structured_skills"
+        }
+      ],
+      "skills": [
+        {
+          "name": "Kombo-Schlag",
+          "mode": "conquest",
+          "slot": 1,
+          "damagePerHitPct": [
+            160,
+            176,
+            192,
+            208,
+            224
+          ],
+          "hits": 3,
+          "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        },
+        {
+          "name": "Geheimnisvolle Schwertkunst",
+          "mode": "conquest",
+          "slot": 2,
+          "additionalDamagePerSwordHitPct": [
+            15,
+            17,
+            19,
+            21,
+            23
+          ],
+          "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        },
+        {
+          "name": "Ansturm",
+          "mode": "conquest",
+          "slot": 3,
+          "attackPct": [
+            16,
+            24,
+            32,
+            40,
+            48
+          ],
+          "condition": "health above 50%",
+          "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        },
+        {
+          "name": "Kampfbereit",
+          "mode": "expedition",
+          "slot": 1,
+          "allSquadsLethalityPct": [
+            5,
+            10,
+            15,
+            20,
+            25
+          ],
+          "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        },
+        {
+          "name": "Weg der Klinge",
+          "mode": "expedition",
+          "slot": 2,
+          "allSquadsAttackPct": [
+            5,
+            10,
+            15,
+            20,
+            25
+          ],
+          "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        },
+        {
+          "name": "Unheiliger Treffer",
+          "mode": "expedition",
+          "slot": 3,
+          "procChancePct": [
+            8,
+            16,
+            24,
+            32,
+            40
+          ],
+          "damageIncreasePct": 50,
+          "damageIncreasePctLevels": "Only level 5 value visible; lower-level damage increase unverified",
+          "expectedUpliftPctAtLevel5UnderSimpleIndependentModel": 20,
+          "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        }
+      ],
+      "firstExpedition": {
+        "stat": "lethality",
+        "pct": [
+          5,
+          10,
+          15,
+          20,
+          25
+        ]
+      }
+    },
+    {
+      "name": "Helga",
+      "generation": 1,
+      "troopType": "infantry",
+      "rarity": "mythic",
+      "evidence": [
+        {
+          "path": "data/phalanx-helga-ingame-validation-2026-10-12.json",
+          "kind": "roster_reference"
+        },
+        {
+          "path": "data/phalanx-seven-hero-first-expedition-skills-2026-10-12.json",
+          "kind": "first_expedition_level_values"
+        },
+        {
+          "path": "data/phalanx-helga-ingame-validation-2026-10-12.json",
+          "kind": "structured_skills"
+        }
+      ],
+      "skills": [
+        {
+          "name": "Geweih-Angriff",
+          "mode": "conquest",
+          "slot": 1,
+          "damagePct": [
+            160,
+            176,
+            192,
+            208,
+            224
+          ],
+          "otherEffects": "not independently rechecked",
+          "source": "data/phalanx-helga-ingame-validation-2026-10-12.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        },
+        {
+          "name": "Speer-Angriff",
+          "mode": "conquest",
+          "slot": 2,
+          "damagePct": [
+            150,
+            165,
+            180,
+            195,
+            210
+          ],
+          "source": "data/phalanx-helga-ingame-validation-2026-10-12.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        },
+        {
+          "name": "Zorn",
+          "mode": "conquest",
+          "slot": 3,
+          "attackPct": [
+            4,
+            6,
+            8,
+            10,
+            12
+          ],
+          "procChancePct": 10,
+          "durationSeconds": 3,
+          "maxStacks": 5,
+          "source": "data/phalanx-helga-ingame-validation-2026-10-12.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        },
+        {
+          "name": "Echos aus Valhalla",
+          "mode": "expedition",
+          "slot": 1,
+          "allSquadsAttackPct": [
+            5,
+            10,
+            15,
+            20,
+            25
+          ],
+          "source": "data/phalanx-helga-ingame-validation-2026-10-12.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        },
+        {
+          "name": "Das Gleichgewicht der Natur",
+          "mode": "expedition",
+          "slot": 2,
+          "allSquadsLethalityPct": [
+            5,
+            10,
+            15,
+            20,
+            25
+          ],
+          "source": "data/phalanx-helga-ingame-validation-2026-10-12.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        },
+        {
+          "name": "Eid des Wächters",
+          "mode": "expedition",
+          "slot": 3,
+          "procChancePct": [
+            8,
+            16,
+            24,
+            32,
+            40
+          ],
+          "allSquadsDamageTakenReductionPctAtLevel5": 50,
+          "source": "data/phalanx-helga-ingame-validation-2026-10-12.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        }
+      ],
+      "firstExpedition": {
+        "stat": "attack",
+        "pct": [
+          5,
+          10,
+          15,
+          20,
+          25
+        ]
+      }
+    },
+    {
+      "name": "Jabel",
+      "generation": 1,
+      "troopType": "cavalry",
+      "rarity": "mythic",
+      "evidence": [],
+      "skills": []
+    },
+    {
+      "name": "Saul",
+      "generation": 1,
+      "troopType": "archer",
+      "rarity": "mythic",
+      "evidence": [
+        {
+          "path": "data/phalanx-saul-skill-evidence-v1.json",
+          "kind": "roster_reference"
+        },
+        {
+          "path": "data/phalanx-seven-hero-first-expedition-skills-2026-10-12.json",
+          "kind": "first_expedition_level_values"
+        },
+        {
+          "path": "data/phalanx-saul-skill-evidence-v1.json",
+          "kind": "structured_skills"
+        }
+      ],
+      "skills": [
+        {
+          "name": "Letztes Gebet",
+          "mode": "conquest",
+          "defensePct": [
+            50,
+            75,
+            100,
+            125,
+            150
+          ],
+          "condition": "HP below 50%",
+          "source": "data/phalanx-saul-skill-evidence-v1.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        },
+        {
+          "name": "Task-Force-Ausbildung",
+          "mode": "expedition",
+          "slot": 1,
+          "defensePct": [
+            2,
+            4,
+            6,
+            8,
+            10
+          ],
+          "healthPct": [
+            3,
+            6,
+            9,
+            12,
+            15
+          ],
+          "source": "data/phalanx-saul-skill-evidence-v1.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        },
+        {
+          "name": "Einfallsreich",
+          "mode": "expedition",
+          "slot": 2,
+          "constructionSpeedPct": [
+            3,
+            6,
+            9,
+            12,
+            15
+          ],
+          "constructionCostReductionPct": [
+            3,
+            6,
+            9,
+            12,
+            15
+          ],
+          "source": "data/phalanx-saul-skill-evidence-v1.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        }
+      ],
+      "firstExpedition": {
+        "stat": "defense_and_health",
+        "defensePct": [
+          2,
+          4,
+          6,
+          8,
+          10
+        ],
+        "healthPct": [
+          3,
+          6,
+          9,
+          12,
+          15
+        ]
+      }
+    },
+    {
+      "name": "Howard",
+      "generation": 1,
+      "troopType": "infantry",
+      "rarity": "epic",
+      "evidence": [],
+      "skills": []
+    },
+    {
+      "name": "Gordon",
+      "generation": 1,
+      "troopType": "cavalry",
+      "rarity": "epic",
+      "evidence": [],
+      "skills": []
+    },
+    {
+      "name": "Quinn",
+      "generation": 1,
+      "troopType": "archer",
+      "rarity": "epic",
+      "evidence": [],
+      "skills": []
+    },
+    {
+      "name": "Chenko",
+      "generation": 1,
+      "troopType": "cavalry",
+      "rarity": "epic",
+      "evidence": [
+        {
+          "path": "data/phalanx-chenko-ingame-validation-2026-10-12.json",
+          "kind": "roster_reference"
+        },
+        {
+          "path": "data/phalanx-seven-hero-first-expedition-skills-2026-10-12.json",
+          "kind": "first_expedition_level_values"
+        },
+        {
+          "path": "data/phalanx-chenko-ingame-validation-2026-10-12.json",
+          "kind": "structured_skills"
+        }
+      ],
+      "skills": [
+        {
+          "name": "Feuerstoß",
+          "mode": "conquest",
+          "slot": 1,
+          "damagePct": [
+            55,
+            60,
+            65,
+            70,
+            75
+          ],
+          "intervalSeconds": 0.5,
+          "durationSeconds": 2,
+          "source": "data/phalanx-chenko-ingame-validation-2026-10-12.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        },
+        {
+          "name": "Verteidigungs-Aufwertung",
+          "mode": "conquest",
+          "slot": 2,
+          "defensePct": [
+            25,
+            37.5,
+            50,
+            62.5,
+            70
+          ],
+          "source": "data/phalanx-chenko-ingame-validation-2026-10-12.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        },
+        {
+          "name": "Waffen-Aufwertung",
+          "mode": "conquest",
+          "slot": 3,
+          "attackPct": [
+            8,
+            12,
+            16,
+            20,
+            24
+          ],
+          "source": "data/phalanx-chenko-ingame-validation-2026-10-12.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        },
+        {
+          "name": "Bewaffnung",
+          "mode": "expedition",
+          "slot": 1,
+          "allSquadsLethalityPct": [
+            5,
+            10,
+            15,
+            20,
+            25
+          ],
+          "source": "data/phalanx-chenko-ingame-validation-2026-10-12.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        },
+        {
+          "name": "Schildmauer",
+          "mode": "expedition",
+          "slot": 2,
+          "allSquadsDamageTakenReductionPct": [
+            4,
+            8,
+            12,
+            16,
+            20
+          ],
+          "source": "data/phalanx-chenko-ingame-validation-2026-10-12.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        }
+      ],
+      "firstExpedition": {
+        "stat": "lethality",
+        "pct": [
+          5,
+          10,
+          15,
+          20,
+          25
+        ]
+      }
+    },
+    {
+      "name": "Diana",
+      "generation": 1,
+      "troopType": "archer",
+      "rarity": "epic",
+      "evidence": [],
+      "skills": []
+    },
+    {
+      "name": "Amane",
+      "generation": 1,
+      "troopType": "archer",
+      "rarity": "epic",
+      "evidence": [
+        {
+          "path": "data/phalanx-amane-ingame-validation-2026-10-12.json",
+          "kind": "roster_reference"
+        },
+        {
+          "path": "data/phalanx-seven-hero-first-expedition-skills-2026-10-12.json",
+          "kind": "first_expedition_level_values"
+        },
+        {
+          "path": "data/phalanx-amane-ingame-validation-2026-10-12.json",
+          "kind": "structured_skills"
+        }
+      ],
+      "skills": [
+        {
+          "name": "Sakura Blüte",
+          "mode": "conquest",
+          "slot": 1,
+          "attackPct": [
+            1.5,
+            2,
+            2.5,
+            3,
+            3.5
+          ],
+          "attackSpeedPct": [
+            2.5,
+            3,
+            3.5,
+            4,
+            4.5
+          ],
+          "durationSeconds": 4,
+          "source": "data/phalanx-amane-ingame-validation-2026-10-12.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        },
+        {
+          "name": "Feuersiegel",
+          "mode": "conquest",
+          "slot": 2,
+          "damagePct": [
+            150,
+            165,
+            180,
+            195,
+            210
+          ],
+          "source": "data/phalanx-amane-ingame-validation-2026-10-12.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        },
+        {
+          "name": "Göttliche Melodie",
+          "mode": "conquest",
+          "slot": 3,
+          "attackSpeedPct": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "trigger": "every 3 basic attacks",
+          "duration": "until end of fight",
+          "stacking": "unknown",
+          "source": "data/phalanx-amane-ingame-validation-2026-10-12.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        },
+        {
+          "name": "Tri-Phalanx",
+          "mode": "expedition",
+          "slot": 1,
+          "allSquadsAttackPct": [
+            5,
+            10,
+            15,
+            20,
+            25
+          ],
+          "source": "data/phalanx-amane-ingame-validation-2026-10-12.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        },
+        {
+          "name": "Exorzismus",
+          "mode": "expedition",
+          "slot": 2,
+          "infirmaryHealingSpeedPct": [
+            10,
+            20,
+            30,
+            40,
+            50
+          ],
+          "source": "data/phalanx-amane-ingame-validation-2026-10-12.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        }
+      ],
+      "firstExpedition": {
+        "stat": "attack",
+        "pct": [
+          5,
+          10,
+          15,
+          20,
+          25
+        ]
+      }
+    },
+    {
+      "name": "Yeonwoo",
+      "generation": 1,
+      "troopType": "archer",
+      "rarity": "epic",
+      "evidence": [
+        {
+          "path": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json",
+          "kind": "roster_reference"
+        },
+        {
+          "path": "data/phalanx-seven-hero-first-expedition-skills-2026-10-12.json",
+          "kind": "first_expedition_level_values"
+        },
+        {
+          "path": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json",
+          "kind": "structured_skills"
+        }
+      ],
+      "skills": [
+        {
+          "name": "Blühblüte",
+          "mode": "conquest",
+          "slot": 1,
+          "wave1Pct": [
+            100,
+            100,
+            100,
+            100,
+            100
+          ],
+          "wave2Pct": [
+            125,
+            137.5,
+            150,
+            162.5,
+            175
+          ],
+          "wave3Pct": [
+            150,
+            165,
+            180,
+            195,
+            210
+          ],
+          "thirdWaveArea": true,
+          "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        },
+        {
+          "name": "Fallende Schwalbe",
+          "mode": "conquest",
+          "slot": 2,
+          "damagePct": [
+            100,
+            110,
+            120,
+            130,
+            140
+          ],
+          "targetAttackSpeedReductionPct": [
+            30,
+            35,
+            40,
+            45,
+            50
+          ],
+          "durationSeconds": 2,
+          "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        },
+        {
+          "name": "Zwillingsreißzähne",
+          "mode": "conquest",
+          "slot": 3,
+          "attackPct": [
+            8,
+            12,
+            16,
+            20,
+            24
+          ],
+          "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        },
+        {
+          "name": "Wachsam",
+          "mode": "expedition",
+          "slot": 1,
+          "allSquadsLethalityPct": [
+            5,
+            10,
+            15,
+            20,
+            25
+          ],
+          "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        },
+        {
+          "name": "Gut bereist",
+          "mode": "expedition",
+          "slot": 2,
+          "researchSpeedPct": [
+            3,
+            6,
+            9,
+            12,
+            15
+          ],
+          "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        }
+      ],
+      "firstExpedition": {
+        "stat": "lethality",
+        "pct": [
+          5,
+          10,
+          15,
+          20,
+          25
+        ]
+      }
+    },
+    {
+      "name": "Fahd",
+      "generation": 1,
+      "troopType": "cavalry",
+      "rarity": "epic",
+      "evidence": [],
+      "skills": []
+    },
+    {
+      "name": "Forrest",
+      "generation": 1,
+      "troopType": "infantry",
+      "rarity": "rare",
+      "evidence": [],
+      "skills": []
+    },
+    {
+      "name": "Seth",
+      "generation": 1,
+      "troopType": "infantry",
+      "rarity": "rare",
+      "evidence": [],
+      "skills": []
+    },
+    {
+      "name": "Edwin",
+      "generation": 1,
+      "troopType": "cavalry",
+      "rarity": "rare",
+      "evidence": [],
+      "skills": []
+    },
+    {
+      "name": "Olive",
+      "generation": 1,
+      "troopType": "archer",
+      "rarity": "rare",
+      "evidence": [],
+      "skills": []
+    },
+    {
+      "name": "Zoe",
+      "generation": 2,
+      "troopType": "infantry",
+      "rarity": "mythic",
+      "evidence": [],
+      "skills": []
+    },
+    {
+      "name": "Hilde",
+      "generation": 2,
+      "troopType": "cavalry",
+      "rarity": "mythic",
+      "evidence": [
+        {
+          "path": "data/phalanx-hilde-ingame-validation-2026-10-12.json",
+          "kind": "roster_reference"
+        },
+        {
+          "path": "data/phalanx-seven-hero-first-expedition-skills-2026-10-12.json",
+          "kind": "first_expedition_level_values"
+        },
+        {
+          "path": "data/phalanx-hilde-ingame-validation-2026-10-12.json",
+          "kind": "structured_skills"
+        }
+      ],
+      "skills": [
+        {
+          "name": "Erlöser",
+          "mode": "conquest",
+          "slot": 1,
+          "healWeakestAllyPct": [
+            100,
+            110,
+            120,
+            130,
+            140
+          ],
+          "source": "data/phalanx-hilde-ingame-validation-2026-10-12.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        },
+        {
+          "name": "Nobler Weg",
+          "mode": "expedition",
+          "slot": 1,
+          "allSquadsAttackPct": [
+            3,
+            6,
+            9,
+            12,
+            15
+          ],
+          "allSquadsDefensePct": [
+            2,
+            4,
+            6,
+            8,
+            10
+          ],
+          "source": "data/phalanx-hilde-ingame-validation-2026-10-12.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        },
+        {
+          "name": "Elixier der Stärke",
+          "mode": "expedition",
+          "slot": 2,
+          "procChancePct": 25,
+          "damagePct": [
+            120,
+            140,
+            160,
+            180,
+            200
+          ],
+          "damageInterpretation": "replacement versus additional unknown",
+          "source": "data/phalanx-hilde-ingame-validation-2026-10-12.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        },
+        {
+          "name": "Feuerprobe",
+          "mode": "expedition",
+          "slot": 3,
+          "procChancePct": [
+            8,
+            16,
+            24,
+            32,
+            40
+          ],
+          "allSquadsDamageTakenReductionPctAtLevel5": 50,
+          "source": "data/phalanx-hilde-ingame-validation-2026-10-12.json",
+          "confidence": "source_transcription_not_combat_calibration"
+        }
+      ],
+      "firstExpedition": {
+        "stat": "attack_and_defense",
+        "attackPct": [
+          3,
+          6,
+          9,
+          12,
+          15
+        ],
+        "defensePct": [
+          2,
+          4,
+          6,
+          8,
+          10
+        ]
+      }
+    },
+    {
+      "name": "Marlin",
+      "generation": 2,
+      "troopType": "archer",
+      "rarity": "mythic",
+      "evidence": [],
+      "skills": []
+    },
+    {
+      "name": "Eric",
+      "generation": 3,
+      "troopType": "infantry",
+      "rarity": "mythic",
+      "evidence": [
+        {
+          "path": "data/phalanx-gen3-ingame-skills-2026-10-12.json",
+          "kind": "roster_reference"
+        },
+        {
+          "path": "data/phalanx-gen3-ingame-skills-2026-10-12.json",
+          "kind": "structured_skills"
+        }
+      ],
+      "skills": [
+        {
+          "mode": "conquest",
+          "slot": 1,
+          "name": "Bodenschock",
+          "levels": [
+            120,
+            132,
+            144,
+            156,
+            168
+          ],
+          "description": "damage; target attack speed -50% for 4s",
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json",
+          "confidence": "screenshot_transcription_not_combat_calibration"
+        },
+        {
+          "mode": "conquest",
+          "slot": 2,
+          "name": "Veteranentum",
+          "levels": [
+            8,
+            10,
+            12,
+            14,
+            16
+          ],
+          "description": "proc chance when attacked; defense bonus [8,11,14,17,20]%; 2s; max 5 stacks",
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json",
+          "confidence": "screenshot_transcription_not_combat_calibration"
+        },
+        {
+          "mode": "conquest",
+          "slot": 3,
+          "name": "Hammer der Gerechtigkeit",
+          "levels": [
+            80,
+            88,
+            96,
+            104,
+            112
+          ],
+          "description": "damage; 30% stun chance 1s",
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json",
+          "confidence": "screenshot_transcription_not_combat_calibration"
+        },
+        {
+          "mode": "expedition",
+          "slot": 1,
+          "name": "Heiliger Krieger",
+          "levels": [
+            4,
+            8,
+            12,
+            16,
+            20
+          ],
+          "description": "enemy squad attack reduction",
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json",
+          "confidence": "screenshot_transcription_not_combat_calibration"
+        },
+        {
+          "mode": "expedition",
+          "slot": 2,
+          "name": "Überzeugung",
+          "levels": [
+            4,
+            8,
+            12,
+            16,
+            20
+          ],
+          "description": "own squad damage taken reduction",
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json",
+          "confidence": "screenshot_transcription_not_combat_calibration"
+        },
+        {
+          "mode": "expedition",
+          "slot": 3,
+          "name": "Mahnende Worte",
+          "levels": [
+            5,
+            10,
+            15,
+            20,
+            25
+          ],
+          "description": "own squad health increase",
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json",
+          "confidence": "screenshot_transcription_not_combat_calibration"
+        }
+      ]
+    },
+    {
+      "name": "Petra",
+      "generation": 3,
+      "troopType": "cavalry",
+      "rarity": "mythic",
+      "evidence": [
+        {
+          "path": "data/phalanx-gen3-ingame-skills-2026-10-12.json",
+          "kind": "roster_reference"
+        },
+        {
+          "path": "data/phalanx-gen3-ingame-skills-2026-10-12.json",
+          "kind": "structured_skills"
+        }
+      ],
+      "skills": [
+        {
+          "mode": "conquest",
+          "slot": 1,
+          "name": "Zwiespalt",
+          "levels": [
+            270,
+            297,
+            324,
+            351,
+            378
+          ],
+          "description": "damage; enemy attack -20% for 2s or stun 1.5s",
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json",
+          "confidence": "screenshot_transcription_not_combat_calibration"
+        },
+        {
+          "mode": "conquest",
+          "slot": 2,
+          "name": "Wendepunkt",
+          "levels": [
+            50,
+            55,
+            60,
+            65,
+            70
+          ],
+          "description": "base attack damage; random 5%-600% of base",
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json",
+          "confidence": "screenshot_transcription_not_combat_calibration"
+        },
+        {
+          "mode": "conquest",
+          "slot": 3,
+          "name": "Karte umdrehen",
+          "levels": [
+            100,
+            110,
+            120,
+            130,
+            140
+          ],
+          "description": "healing base; random 5%-400% of base",
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json",
+          "confidence": "screenshot_transcription_not_combat_calibration"
+        },
+        {
+          "mode": "expedition",
+          "slot": 1,
+          "name": "Böses Auge",
+          "levels": [
+            10,
+            20,
+            30,
+            40,
+            50
+          ],
+          "description": "50% proc chance; enemy damage received increase",
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json",
+          "confidence": "screenshot_transcription_not_combat_calibration"
+        },
+        {
+          "mode": "expedition",
+          "slot": 2,
+          "name": "Der Gefallen",
+          "levels": [
+            10,
+            20,
+            30,
+            40,
+            50
+          ],
+          "description": "50% proc chance; squad attack increase",
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json",
+          "confidence": "screenshot_transcription_not_combat_calibration"
+        },
+        {
+          "mode": "expedition",
+          "slot": 3,
+          "name": "Der Schild",
+          "levels": [
+            10,
+            20,
+            30,
+            40,
+            50
+          ],
+          "description": "40% proc chance; damage received reduction",
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json",
+          "confidence": "screenshot_transcription_not_combat_calibration"
+        }
+      ]
+    },
+    {
+      "name": "Jaeger",
+      "generation": 3,
+      "troopType": "archer",
+      "rarity": "mythic",
+      "evidence": [
+        {
+          "path": "data/phalanx-gen3-ingame-skills-2026-10-12.json",
+          "kind": "roster_reference"
+        },
+        {
+          "path": "data/phalanx-gen3-ingame-skills-2026-10-12.json",
+          "kind": "structured_skills"
+        }
+      ],
+      "skills": [
+        {
+          "mode": "conquest",
+          "slot": 1,
+          "name": "Eine tödliche Affäre",
+          "levels": [
+            160,
+            176,
+            192,
+            208,
+            224
+          ],
+          "description": "damage_pct; stun 2s",
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json",
+          "confidence": "screenshot_transcription_not_combat_calibration"
+        },
+        {
+          "mode": "conquest",
+          "slot": 2,
+          "name": "Glücksspiel",
+          "levels": [
+            220,
+            240,
+            260,
+            280,
+            300
+          ],
+          "description": "damage_pct or heal 50% of attack; outcome random",
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json",
+          "confidence": "screenshot_transcription_not_combat_calibration"
+        },
+        {
+          "mode": "conquest",
+          "slot": 3,
+          "name": "Klatschmaul",
+          "levels": [
+            10,
+            15,
+            20,
+            25,
+            30
+          ],
+          "description": "enemy damage received increase 3s",
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json",
+          "confidence": "screenshot_transcription_not_combat_calibration"
+        },
+        {
+          "mode": "expedition",
+          "slot": 1,
+          "name": "Der Sturm",
+          "levels": [
+            8,
+            16,
+            24,
+            32,
+            40
+          ],
+          "description": "20% proc chance; squad damage increase 3 rounds",
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json",
+          "confidence": "screenshot_transcription_not_combat_calibration"
+        },
+        {
+          "mode": "expedition",
+          "slot": 2,
+          "name": "Der Widerstand",
+          "levels": [
+            10,
+            20,
+            30,
+            40,
+            50
+          ],
+          "description": "20% proc chance; enemy lethality reduction 2 rounds",
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json",
+          "confidence": "screenshot_transcription_not_combat_calibration"
+        },
+        {
+          "mode": "expedition",
+          "slot": 3,
+          "name": "Die Feier",
+          "levels": [
+            5,
+            10,
+            15,
+            20,
+            25
+          ],
+          "description": "squad health increase",
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json",
+          "confidence": "screenshot_transcription_not_combat_calibration"
+        }
+      ]
+    },
+    {
+      "name": "Alcar",
+      "generation": 4,
+      "troopType": "infantry",
+      "rarity": "mythic",
+      "evidence": [
+        {
+          "path": "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json",
+          "kind": "roster_reference"
+        },
+        {
+          "path": "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json",
+          "kind": "structured_skills"
+        }
+      ],
+      "skills": [
+        {
+          "mode": "exploration",
+          "slot": 1,
+          "name": "Glorreiches Zeichen",
+          "levels": [
+            30,
+            40,
+            50,
+            60,
+            70
+          ],
+          "description": "nearby allies damage reduction for 2 seconds; self immobilized, control immune",
+          "source": "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json",
+          "confidence": "screenshot_transcription_not_combat_calibration"
+        },
+        {
+          "mode": "exploration",
+          "slot": 2,
+          "name": "Knochenspalter",
+          "levels": [
+            70,
+            77,
+            84,
+            91,
+            98
+          ],
+          "description": "attack damage; target takes 20% more damage for 2 seconds",
+          "source": "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json",
+          "confidence": "screenshot_transcription_not_combat_calibration"
+        },
+        {
+          "mode": "exploration",
+          "slot": 3,
+          "name": "Frischer Mut",
+          "levels": [
+            30,
+            33,
+            36,
+            39,
+            42
+          ],
+          "description": "heal % of attack every second for 5 seconds after Glorreiches Zeichen",
+          "source": "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json",
+          "confidence": "screenshot_transcription_not_combat_calibration"
+        },
+        {
+          "mode": "expedition",
+          "slot": 1,
+          "name": "Helfende Hände",
+          "levels": [
+            14,
+            28,
+            42,
+            56,
+            70
+          ],
+          "description": "infantry and archers damage taken reduction for 2 rounds every 5 rounds",
+          "source": "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json",
+          "confidence": "screenshot_transcription_not_combat_calibration"
+        },
+        {
+          "mode": "expedition",
+          "slot": 2,
+          "name": "Wille des Prätorianers",
+          "levels": [
+            20,
+            40,
+            60,
+            80,
+            100
+          ],
+          "description": "infantry damage increase; cavalry/archer damage increase [2,4,6,8,10]",
+          "source": "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json",
+          "confidence": "screenshot_transcription_not_combat_calibration"
+        },
+        {
+          "mode": "expedition",
+          "slot": 3,
+          "name": "Carpe Diem",
+          "levels": [
+            12,
+            24,
+            36,
+            48,
+            60
+          ],
+          "description": "infantry damage per attack for 1 round; target incoming damage increase [5,10,15,20,25]",
+          "source": "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json",
+          "confidence": "screenshot_transcription_not_combat_calibration"
+        }
+      ]
+    },
+    {
+      "name": "Margot",
+      "generation": 4,
+      "troopType": "cavalry",
+      "rarity": "mythic",
+      "evidence": [
+        {
+          "path": "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json",
+          "kind": "roster_reference"
+        },
+        {
+          "path": "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json",
+          "kind": "structured_skills"
+        }
+      ],
+      "skills": [
+        {
+          "mode": "exploration",
+          "slot": 1,
+          "name": "Hinterhalt",
+          "levels": [
+            300,
+            330,
+            360,
+            390,
+            420
+          ],
+          "description": "area attack damage",
+          "source": "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json",
+          "confidence": "screenshot_transcription_not_combat_calibration"
+        },
+        {
+          "mode": "exploration",
+          "slot": 2,
+          "name": "Parade",
+          "levels": [
+            5,
+            10,
+            15,
+            20,
+            25
+          ],
+          "description": "chance to evade enemy attack damage",
+          "source": "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json",
+          "confidence": "screenshot_transcription_not_combat_calibration"
+        },
+        {
+          "mode": "exploration",
+          "slot": 3,
+          "name": "Stilett",
+          "levels": [
+            100,
+            110,
+            120,
+            130,
+            140
+          ],
+          "description": "attack damage, hero priority; immobilize 1.5 seconds",
+          "source": "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json",
+          "confidence": "screenshot_transcription_not_combat_calibration"
+        },
+        {
+          "mode": "expedition",
+          "slot": 1,
+          "name": "Kriegsbringer",
+          "levels": [
+            5,
+            10,
+            15,
+            20,
+            25
+          ],
+          "description": "all squads attack increase",
+          "source": "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json",
+          "confidence": "screenshot_transcription_not_combat_calibration"
+        }
+      ]
+    },
+    {
+      "name": "Rosa",
+      "generation": 4,
+      "troopType": "archer",
+      "rarity": "mythic",
+      "evidence": [],
+      "skills": []
+    },
+    {
+      "name": "Long Fei",
+      "generation": 5,
+      "troopType": "infantry",
+      "rarity": "mythic",
+      "evidence": [],
+      "skills": []
+    },
+    {
+      "name": "Thrud",
+      "generation": 5,
+      "troopType": "cavalry",
+      "rarity": "mythic",
+      "evidence": [],
+      "skills": []
+    },
+    {
+      "name": "Vivian",
+      "generation": 5,
+      "troopType": "archer",
+      "rarity": "mythic",
+      "evidence": [],
+      "skills": []
+    }
+  ],
+  "rules": [
+    "Source paths retained for traceability",
+    "No inferred missing skills or levels",
+    "No assumption that three modes represent unique skills",
+    "No change to frozen UI or original source files",
+    "Existing first expedition data kept separate from mode skill arrays"
+  ],
+  "sourceIndexVersion": "v13",
+  "notes": [
+    "All nine GitHub skill source files were retrieved in this audit",
+    "V1 entries preserved without overwriting",
+    "Duplicate matching requires identical hero, mode, slot and name; no effect stacking inferred",
+    "Source-reported skill preview levels are not owned levels",
+    "Skills without slot may need human source reconciliation; no guessed slots"
+  ]
+}
