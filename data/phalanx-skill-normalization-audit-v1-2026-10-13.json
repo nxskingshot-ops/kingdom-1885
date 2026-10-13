@@ -1,0 +1,259 @@
+{
+  "schema": "phalanx-skill-normalization-audit-v1",
+  "date": "2026-10-13",
+  "input": "data/phalanx-hero-unified-evidence-index-v2-2026-10-13.json",
+  "heroCount": 28,
+  "skillEntries": 62,
+  "sourceCoverage": [
+    {
+      "hero": "Amadeus",
+      "skills": 6,
+      "modes": [
+        "conquest",
+        "expedition"
+      ],
+      "sources": [
+        "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+        "data/phalanx-seven-hero-first-expedition-skills-2026-10-12.json"
+      ]
+    },
+    {
+      "hero": "Helga",
+      "skills": 6,
+      "modes": [
+        "conquest",
+        "expedition"
+      ],
+      "sources": [
+        "data/phalanx-helga-ingame-validation-2026-10-12.json",
+        "data/phalanx-seven-hero-first-expedition-skills-2026-10-12.json"
+      ]
+    },
+    {
+      "hero": "Jabel",
+      "skills": 0,
+      "modes": [],
+      "sources": []
+    },
+    {
+      "hero": "Saul",
+      "skills": 3,
+      "modes": [
+        "conquest",
+        "expedition"
+      ],
+      "sources": [
+        "data/phalanx-saul-skill-evidence-v1.json",
+        "data/phalanx-seven-hero-first-expedition-skills-2026-10-12.json"
+      ]
+    },
+    {
+      "hero": "Howard",
+      "skills": 0,
+      "modes": [],
+      "sources": []
+    },
+    {
+      "hero": "Gordon",
+      "skills": 0,
+      "modes": [],
+      "sources": []
+    },
+    {
+      "hero": "Quinn",
+      "skills": 0,
+      "modes": [],
+      "sources": []
+    },
+    {
+      "hero": "Chenko",
+      "skills": 5,
+      "modes": [
+        "conquest",
+        "expedition"
+      ],
+      "sources": [
+        "data/phalanx-chenko-ingame-validation-2026-10-12.json",
+        "data/phalanx-seven-hero-first-expedition-skills-2026-10-12.json"
+      ]
+    },
+    {
+      "hero": "Diana",
+      "skills": 0,
+      "modes": [],
+      "sources": []
+    },
+    {
+      "hero": "Amane",
+      "skills": 5,
+      "modes": [
+        "conquest",
+        "expedition"
+      ],
+      "sources": [
+        "data/phalanx-amane-ingame-validation-2026-10-12.json",
+        "data/phalanx-seven-hero-first-expedition-skills-2026-10-12.json"
+      ]
+    },
+    {
+      "hero": "Yeonwoo",
+      "skills": 5,
+      "modes": [
+        "conquest",
+        "expedition"
+      ],
+      "sources": [
+        "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json",
+        "data/phalanx-seven-hero-first-expedition-skills-2026-10-12.json"
+      ]
+    },
+    {
+      "hero": "Fahd",
+      "skills": 0,
+      "modes": [],
+      "sources": []
+    },
+    {
+      "hero": "Forrest",
+      "skills": 0,
+      "modes": [],
+      "sources": []
+    },
+    {
+      "hero": "Seth",
+      "skills": 0,
+      "modes": [],
+      "sources": []
+    },
+    {
+      "hero": "Edwin",
+      "skills": 0,
+      "modes": [],
+      "sources": []
+    },
+    {
+      "hero": "Olive",
+      "skills": 0,
+      "modes": [],
+      "sources": []
+    },
+    {
+      "hero": "Zoe",
+      "skills": 0,
+      "modes": [],
+      "sources": []
+    },
+    {
+      "hero": "Hilde",
+      "skills": 4,
+      "modes": [
+        "conquest",
+        "expedition"
+      ],
+      "sources": [
+        "data/phalanx-hilde-ingame-validation-2026-10-12.json",
+        "data/phalanx-seven-hero-first-expedition-skills-2026-10-12.json"
+      ]
+    },
+    {
+      "hero": "Marlin",
+      "skills": 0,
+      "modes": [],
+      "sources": []
+    },
+    {
+      "hero": "Eric",
+      "skills": 6,
+      "modes": [
+        "conquest",
+        "expedition"
+      ],
+      "sources": [
+        "data/phalanx-gen3-ingame-skills-2026-10-12.json"
+      ]
+    },
+    {
+      "hero": "Petra",
+      "skills": 6,
+      "modes": [
+        "conquest",
+        "expedition"
+      ],
+      "sources": [
+        "data/phalanx-gen3-ingame-skills-2026-10-12.json"
+      ]
+    },
+    {
+      "hero": "Jaeger",
+      "skills": 6,
+      "modes": [
+        "conquest",
+        "expedition"
+      ],
+      "sources": [
+        "data/phalanx-gen3-ingame-skills-2026-10-12.json"
+      ]
+    },
+    {
+      "hero": "Alcar",
+      "skills": 6,
+      "modes": [
+        "exploration",
+        "expedition"
+      ],
+      "sources": [
+        "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json"
+      ]
+    },
+    {
+      "hero": "Margot",
+      "skills": 4,
+      "modes": [
+        "exploration",
+        "expedition"
+      ],
+      "sources": [
+        "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json"
+      ]
+    },
+    {
+      "hero": "Rosa",
+      "skills": 0,
+      "modes": [],
+      "sources": []
+    },
+    {
+      "hero": "Long Fei",
+      "skills": 0,
+      "modes": [],
+      "sources": []
+    },
+    {
+      "hero": "Thrud",
+      "skills": 0,
+      "modes": [],
+      "sources": []
+    },
+    {
+      "hero": "Vivian",
+      "skills": 0,
+      "modes": [],
+      "sources": []
+    }
+  ],
+  "findings": [
+    {
+      "type": "missing_slot",
+      "hero": "Saul",
+      "skill": "Letztes Gebet",
+      "source": "data/phalanx-saul-skill-evidence-v1.json"
+    }
+  ],
+  "policy": [
+    "No overwrite or inferred missing skill slots",
+    "A missing source link is not evidence the user failed to provide data",
+    "Do not merge distinct effect aliases without semantic confirmation",
+    "No Kingshot combat mechanics claimed as verified"
+  ],
+  "result": "Structural checks only; full effect-semantic normalization and empirical calibration remain open"
+}
