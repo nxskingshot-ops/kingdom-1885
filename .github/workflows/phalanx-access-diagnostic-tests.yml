@@ -21,3 +21,4 @@ jobs:
       - run: node integration/phalanx-access-mock-contract.mjs
       - run: node integration/phalanx-count-only-contract.mjs
       - run: node integration/phalanx-empty-access-contract.mjs
+      - run: node integration/phalanx-identity-date-contract.mjs
