@@ -19,3 +19,4 @@ jobs:
           node-version: '22'
       - run: node integration/phalanx-guest-contract.mjs
       - run: node integration/phalanx-access-mock-contract.mjs
+      - run: node integration/phalanx-count-only-contract.mjs
