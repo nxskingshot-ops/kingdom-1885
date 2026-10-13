@@ -1,0 +1,675 @@
+{
+  "schema": "phalanx-hero-skill-source-index-v1",
+  "created": "2026-10-13",
+  "purpose": "Lossless pointer index to already existing original GitHub source files, not a recalculated or verified game mechanics dataset",
+  "heroes": [
+    {
+      "name": "Amadeus",
+      "generation": 1,
+      "troopType": "infantry",
+      "rarity": "mythic",
+      "sourceRefs": [
+        "data/phalanx-amadeus-ingame-validation-2026-10-12.json"
+      ],
+      "skillRecords": [
+        {
+          "name": "Kombo-Schlag",
+          "mode": "conquest",
+          "slot": 1,
+          "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json"
+        },
+        {
+          "name": "Geheimnisvolle Schwertkunst",
+          "mode": "conquest",
+          "slot": 2,
+          "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json"
+        },
+        {
+          "name": "Ansturm",
+          "mode": "conquest",
+          "slot": 3,
+          "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json"
+        },
+        {
+          "name": "Kampfbereit",
+          "mode": "expedition",
+          "slot": 1,
+          "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json"
+        },
+        {
+          "name": "Weg der Klinge",
+          "mode": "expedition",
+          "slot": 2,
+          "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json"
+        },
+        {
+          "name": "Unheiliger Treffer",
+          "mode": "expedition",
+          "slot": 3,
+          "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json"
+        }
+      ],
+      "recordStatus": "source_linked"
+    },
+    {
+      "name": "Helga",
+      "generation": 1,
+      "troopType": "infantry",
+      "rarity": "mythic",
+      "sourceRefs": [
+        "data/phalanx-helga-ingame-validation-2026-10-12.json"
+      ],
+      "skillRecords": [
+        {
+          "name": "Geweih-Angriff",
+          "mode": "conquest",
+          "slot": 1,
+          "source": "data/phalanx-helga-ingame-validation-2026-10-12.json"
+        },
+        {
+          "name": "Speer-Angriff",
+          "mode": "conquest",
+          "slot": 2,
+          "source": "data/phalanx-helga-ingame-validation-2026-10-12.json"
+        },
+        {
+          "name": "Zorn",
+          "mode": "conquest",
+          "slot": 3,
+          "source": "data/phalanx-helga-ingame-validation-2026-10-12.json"
+        },
+        {
+          "name": "Echos aus Valhalla",
+          "mode": "expedition",
+          "slot": 1,
+          "source": "data/phalanx-helga-ingame-validation-2026-10-12.json"
+        },
+        {
+          "name": "Das Gleichgewicht der Natur",
+          "mode": "expedition",
+          "slot": 2,
+          "source": "data/phalanx-helga-ingame-validation-2026-10-12.json"
+        },
+        {
+          "name": "Eid des Wächters",
+          "mode": "expedition",
+          "slot": 3,
+          "source": "data/phalanx-helga-ingame-validation-2026-10-12.json"
+        }
+      ],
+      "recordStatus": "source_linked"
+    },
+    {
+      "name": "Jabel",
+      "generation": 1,
+      "troopType": "cavalry",
+      "rarity": "mythic",
+      "sourceRefs": [],
+      "skillRecords": [],
+      "recordStatus": "not_yet_linked"
+    },
+    {
+      "name": "Saul",
+      "generation": 1,
+      "troopType": "archer",
+      "rarity": "mythic",
+      "sourceRefs": [
+        "data/phalanx-saul-skill-evidence-v1.json"
+      ],
+      "skillRecords": [
+        {
+          "name": "Letztes Gebet",
+          "mode": "conquest",
+          "slot": null,
+          "source": "data/phalanx-saul-skill-evidence-v1.json"
+        },
+        {
+          "name": "Task-Force-Ausbildung",
+          "mode": "expedition",
+          "slot": 1,
+          "source": "data/phalanx-saul-skill-evidence-v1.json"
+        },
+        {
+          "name": "Einfallsreich",
+          "mode": "expedition",
+          "slot": 2,
+          "source": "data/phalanx-saul-skill-evidence-v1.json"
+        }
+      ],
+      "recordStatus": "source_linked"
+    },
+    {
+      "name": "Howard",
+      "generation": 1,
+      "troopType": "infantry",
+      "rarity": "epic",
+      "sourceRefs": [],
+      "skillRecords": [],
+      "recordStatus": "not_yet_linked"
+    },
+    {
+      "name": "Gordon",
+      "generation": 1,
+      "troopType": "cavalry",
+      "rarity": "epic",
+      "sourceRefs": [],
+      "skillRecords": [],
+      "recordStatus": "not_yet_linked"
+    },
+    {
+      "name": "Quinn",
+      "generation": 1,
+      "troopType": "archer",
+      "rarity": "epic",
+      "sourceRefs": [],
+      "skillRecords": [],
+      "recordStatus": "not_yet_linked"
+    },
+    {
+      "name": "Chenko",
+      "generation": 1,
+      "troopType": "cavalry",
+      "rarity": "epic",
+      "sourceRefs": [
+        "data/phalanx-chenko-ingame-validation-2026-10-12.json"
+      ],
+      "skillRecords": [
+        {
+          "name": "Feuerstoß",
+          "mode": "conquest",
+          "slot": 1,
+          "source": "data/phalanx-chenko-ingame-validation-2026-10-12.json"
+        },
+        {
+          "name": "Verteidigungs-Aufwertung",
+          "mode": "conquest",
+          "slot": 2,
+          "source": "data/phalanx-chenko-ingame-validation-2026-10-12.json"
+        },
+        {
+          "name": "Waffen-Aufwertung",
+          "mode": "conquest",
+          "slot": 3,
+          "source": "data/phalanx-chenko-ingame-validation-2026-10-12.json"
+        },
+        {
+          "name": "Bewaffnung",
+          "mode": "expedition",
+          "slot": 1,
+          "source": "data/phalanx-chenko-ingame-validation-2026-10-12.json"
+        },
+        {
+          "name": "Schildmauer",
+          "mode": "expedition",
+          "slot": 2,
+          "source": "data/phalanx-chenko-ingame-validation-2026-10-12.json"
+        }
+      ],
+      "recordStatus": "source_linked"
+    },
+    {
+      "name": "Diana",
+      "generation": 1,
+      "troopType": "archer",
+      "rarity": "epic",
+      "sourceRefs": [],
+      "skillRecords": [],
+      "recordStatus": "not_yet_linked"
+    },
+    {
+      "name": "Amane",
+      "generation": 1,
+      "troopType": "archer",
+      "rarity": "epic",
+      "sourceRefs": [
+        "data/phalanx-amane-ingame-validation-2026-10-12.json"
+      ],
+      "skillRecords": [
+        {
+          "name": "Sakura Blüte",
+          "mode": "conquest",
+          "slot": 1,
+          "source": "data/phalanx-amane-ingame-validation-2026-10-12.json"
+        },
+        {
+          "name": "Feuersiegel",
+          "mode": "conquest",
+          "slot": 2,
+          "source": "data/phalanx-amane-ingame-validation-2026-10-12.json"
+        },
+        {
+          "name": "Göttliche Melodie",
+          "mode": "conquest",
+          "slot": 3,
+          "source": "data/phalanx-amane-ingame-validation-2026-10-12.json"
+        },
+        {
+          "name": "Tri-Phalanx",
+          "mode": "expedition",
+          "slot": 1,
+          "source": "data/phalanx-amane-ingame-validation-2026-10-12.json"
+        },
+        {
+          "name": "Exorzismus",
+          "mode": "expedition",
+          "slot": 2,
+          "source": "data/phalanx-amane-ingame-validation-2026-10-12.json"
+        }
+      ],
+      "recordStatus": "source_linked"
+    },
+    {
+      "name": "Yeonwoo",
+      "generation": 1,
+      "troopType": "archer",
+      "rarity": "epic",
+      "sourceRefs": [
+        "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json"
+      ],
+      "skillRecords": [
+        {
+          "name": "Blühblüte",
+          "mode": "conquest",
+          "slot": 1,
+          "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json"
+        },
+        {
+          "name": "Fallende Schwalbe",
+          "mode": "conquest",
+          "slot": 2,
+          "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json"
+        },
+        {
+          "name": "Zwillingsreißzähne",
+          "mode": "conquest",
+          "slot": 3,
+          "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json"
+        },
+        {
+          "name": "Wachsam",
+          "mode": "expedition",
+          "slot": 1,
+          "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json"
+        },
+        {
+          "name": "Gut bereist",
+          "mode": "expedition",
+          "slot": 2,
+          "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json"
+        }
+      ],
+      "recordStatus": "source_linked"
+    },
+    {
+      "name": "Fahd",
+      "generation": 1,
+      "troopType": "cavalry",
+      "rarity": "epic",
+      "sourceRefs": [],
+      "skillRecords": [],
+      "recordStatus": "not_yet_linked"
+    },
+    {
+      "name": "Forrest",
+      "generation": 1,
+      "troopType": "infantry",
+      "rarity": "rare",
+      "sourceRefs": [],
+      "skillRecords": [],
+      "recordStatus": "not_yet_linked"
+    },
+    {
+      "name": "Seth",
+      "generation": 1,
+      "troopType": "infantry",
+      "rarity": "rare",
+      "sourceRefs": [],
+      "skillRecords": [],
+      "recordStatus": "not_yet_linked"
+    },
+    {
+      "name": "Edwin",
+      "generation": 1,
+      "troopType": "cavalry",
+      "rarity": "rare",
+      "sourceRefs": [],
+      "skillRecords": [],
+      "recordStatus": "not_yet_linked"
+    },
+    {
+      "name": "Olive",
+      "generation": 1,
+      "troopType": "archer",
+      "rarity": "rare",
+      "sourceRefs": [],
+      "skillRecords": [],
+      "recordStatus": "not_yet_linked"
+    },
+    {
+      "name": "Zoe",
+      "generation": 2,
+      "troopType": "infantry",
+      "rarity": "mythic",
+      "sourceRefs": [],
+      "skillRecords": [],
+      "recordStatus": "not_yet_linked"
+    },
+    {
+      "name": "Hilde",
+      "generation": 2,
+      "troopType": "cavalry",
+      "rarity": "mythic",
+      "sourceRefs": [
+        "data/phalanx-hilde-ingame-validation-2026-10-12.json"
+      ],
+      "skillRecords": [
+        {
+          "name": "Erlöser",
+          "mode": "conquest",
+          "slot": 1,
+          "source": "data/phalanx-hilde-ingame-validation-2026-10-12.json"
+        },
+        {
+          "name": "Nobler Weg",
+          "mode": "expedition",
+          "slot": 1,
+          "source": "data/phalanx-hilde-ingame-validation-2026-10-12.json"
+        },
+        {
+          "name": "Elixier der Stärke",
+          "mode": "expedition",
+          "slot": 2,
+          "source": "data/phalanx-hilde-ingame-validation-2026-10-12.json"
+        },
+        {
+          "name": "Feuerprobe",
+          "mode": "expedition",
+          "slot": 3,
+          "source": "data/phalanx-hilde-ingame-validation-2026-10-12.json"
+        }
+      ],
+      "recordStatus": "source_linked"
+    },
+    {
+      "name": "Marlin",
+      "generation": 2,
+      "troopType": "archer",
+      "rarity": "mythic",
+      "sourceRefs": [],
+      "skillRecords": [],
+      "recordStatus": "not_yet_linked"
+    },
+    {
+      "name": "Eric",
+      "generation": 3,
+      "troopType": "infantry",
+      "rarity": "mythic",
+      "sourceRefs": [
+        "data/phalanx-gen3-ingame-skills-2026-10-12.json"
+      ],
+      "skillRecords": [
+        {
+          "name": "Bodenschock",
+          "mode": "conquest",
+          "slot": null,
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json"
+        },
+        {
+          "name": "Veteranentum",
+          "mode": "conquest",
+          "slot": null,
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json"
+        },
+        {
+          "name": "Hammer der Gerechtigkeit",
+          "mode": "conquest",
+          "slot": null,
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json"
+        },
+        {
+          "name": "Heiliger Krieger",
+          "mode": "expedition",
+          "slot": null,
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json"
+        },
+        {
+          "name": "Überzeugung",
+          "mode": "expedition",
+          "slot": null,
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json"
+        },
+        {
+          "name": "Mahnende Worte",
+          "mode": "expedition",
+          "slot": null,
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json"
+        }
+      ],
+      "recordStatus": "source_linked"
+    },
+    {
+      "name": "Petra",
+      "generation": 3,
+      "troopType": "cavalry",
+      "rarity": "mythic",
+      "sourceRefs": [
+        "data/phalanx-gen3-ingame-skills-2026-10-12.json"
+      ],
+      "skillRecords": [
+        {
+          "name": "Zwiespalt",
+          "mode": "conquest",
+          "slot": null,
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json"
+        },
+        {
+          "name": "Wendepunkt",
+          "mode": "conquest",
+          "slot": null,
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json"
+        },
+        {
+          "name": "Karte umdrehen",
+          "mode": "conquest",
+          "slot": null,
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json"
+        },
+        {
+          "name": "Böses Auge",
+          "mode": "expedition",
+          "slot": null,
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json"
+        },
+        {
+          "name": "Der Gefallen",
+          "mode": "expedition",
+          "slot": null,
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json"
+        },
+        {
+          "name": "Der Schild",
+          "mode": "expedition",
+          "slot": null,
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json"
+        }
+      ],
+      "recordStatus": "source_linked"
+    },
+    {
+      "name": "Jaeger",
+      "generation": 3,
+      "troopType": "archer",
+      "rarity": "mythic",
+      "sourceRefs": [
+        "data/phalanx-gen3-ingame-skills-2026-10-12.json"
+      ],
+      "skillRecords": [
+        {
+          "name": "Eine tödliche Affäre",
+          "mode": "conquest",
+          "slot": null,
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json"
+        },
+        {
+          "name": "Glücksspiel",
+          "mode": "conquest",
+          "slot": null,
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json"
+        },
+        {
+          "name": "Klatschmaul",
+          "mode": "conquest",
+          "slot": null,
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json"
+        },
+        {
+          "name": "Der Sturm",
+          "mode": "expedition",
+          "slot": null,
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json"
+        },
+        {
+          "name": "Der Widerstand",
+          "mode": "expedition",
+          "slot": null,
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json"
+        },
+        {
+          "name": "Die Feier",
+          "mode": "expedition",
+          "slot": null,
+          "source": "data/phalanx-gen3-ingame-skills-2026-10-12.json"
+        }
+      ],
+      "recordStatus": "source_linked"
+    },
+    {
+      "name": "Alcar",
+      "generation": 4,
+      "troopType": "infantry",
+      "rarity": "mythic",
+      "sourceRefs": [
+        "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json"
+      ],
+      "skillRecords": [
+        {
+          "name": "Glorreiches Zeichen",
+          "mode": "exploration",
+          "slot": null,
+          "source": "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json"
+        },
+        {
+          "name": "Knochenspalter",
+          "mode": "exploration",
+          "slot": null,
+          "source": "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json"
+        },
+        {
+          "name": "Frischer Mut",
+          "mode": "exploration",
+          "slot": null,
+          "source": "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json"
+        },
+        {
+          "name": "Helfende Hände",
+          "mode": "expedition",
+          "slot": null,
+          "source": "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json"
+        },
+        {
+          "name": "Wille des Prätorianers",
+          "mode": "expedition",
+          "slot": null,
+          "source": "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json"
+        },
+        {
+          "name": "Carpe Diem",
+          "mode": "expedition",
+          "slot": null,
+          "source": "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json"
+        }
+      ],
+      "recordStatus": "source_linked"
+    },
+    {
+      "name": "Margot",
+      "generation": 4,
+      "troopType": "cavalry",
+      "rarity": "mythic",
+      "sourceRefs": [
+        "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json"
+      ],
+      "skillRecords": [
+        {
+          "name": "Hinterhalt",
+          "mode": "exploration",
+          "slot": null,
+          "source": "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json"
+        },
+        {
+          "name": "Parade",
+          "mode": "exploration",
+          "slot": null,
+          "source": "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json"
+        },
+        {
+          "name": "Stilett",
+          "mode": "exploration",
+          "slot": null,
+          "source": "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json"
+        },
+        {
+          "name": "Kriegsbringer",
+          "mode": "expedition",
+          "slot": null,
+          "source": "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json"
+        }
+      ],
+      "recordStatus": "source_linked"
+    },
+    {
+      "name": "Rosa",
+      "generation": 4,
+      "troopType": "archer",
+      "rarity": "mythic",
+      "sourceRefs": [],
+      "skillRecords": [],
+      "recordStatus": "not_yet_linked"
+    },
+    {
+      "name": "Long Fei",
+      "generation": 5,
+      "troopType": "infantry",
+      "rarity": "mythic",
+      "sourceRefs": [],
+      "skillRecords": [],
+      "recordStatus": "not_yet_linked"
+    },
+    {
+      "name": "Thrud",
+      "generation": 5,
+      "troopType": "cavalry",
+      "rarity": "mythic",
+      "sourceRefs": [],
+      "skillRecords": [],
+      "recordStatus": "not_yet_linked"
+    },
+    {
+      "name": "Vivian",
+      "generation": 5,
+      "troopType": "archer",
+      "rarity": "mythic",
+      "sourceRefs": [],
+      "skillRecords": [],
+      "recordStatus": "not_yet_linked"
+    }
+  ],
+  "rules": [
+    "Original source files are authoritative; do not replace values with guessed data",
+    "Skill records here are references, not unique effect counts; deduplicate only after matching mode, slot and semantics",
+    "Unlinked is not equivalent to user never supplied screenshots",
+    "Rosa six screenshots archived in local V12; original bytes not independently verified here",
+    "Owned skill levels must not be inferred from level-5 preview values",
+    "No modification to frozen UI or production"
+  ]
+}
