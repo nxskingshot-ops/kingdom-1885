@@ -18,7 +18,7 @@ const client = {
           then(resolve, reject) {
             const result = name === 'phalanx_alliance_top40'
               ? { data: null, count: 160, error: null }
-              : { data: [{ alliance: 'NXS' }, { alliance: 'OoO' }, { alliance: 'MYM' }, { alliance: 'FRA' }], error: null };
+              : { data: [{ alliance: 'NXS', snapshot_date: '2026-10-13' }, { alliance: 'OoO', snapshot_date: '2026-10-13' }, { alliance: 'MYM', snapshot_date: '2026-10-13' }, { alliance: 'FRA', snapshot_date: '2026-10-13' }], error: null };
             return Promise.resolve(result).then(resolve, reject);
           }
         };
