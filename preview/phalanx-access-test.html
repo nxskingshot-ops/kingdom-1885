@@ -1,0 +1,17 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><title>NEXUS PHALANX · Zugriffstest</title><style>
+*{box-sizing:border-box}body{margin:0;min-height:100dvh;background:radial-gradient(ellipse at top,#604321,#170f0a 70%);color:#f6e1b8;font:15px/1.5 system-ui;padding:24px 15px}main{max-width:540px;margin:auto;border:1px solid #bc9859;border-radius:16px;padding:22px;background:#2b2019;box-shadow:0 12px 35px #0006}h1{font:700 25px Georgia,serif;margin:0 0 5px;color:#f5d49a}.sub{font-size:12px;letter-spacing:1px;color:#d6b77e}p{margin:13px 0}button,a.button{display:inline-block;cursor:pointer;border:1px solid #d2a75f;background:#e8c58a;color:#291a10;border-radius:9px;padding:11px 15px;font-weight:700;text-decoration:none;margin:5px 4px 5px 0}button:disabled{opacity:.55}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#18120f;padding:15px;border:1px solid #6e5234;border-radius:10px;line-height:1.8}small{color:#d5c29e}a{color:#f6d49a}
+</style></head><body><main><div class="sub">KINGDOM #1885 · SEPARATER DIAGNOSEBEREICH</div><h1>🔒 NEXUS PHALANX</h1><p>Dieser Test verwendet die bestehende Supabase-Anmeldung derselben Website. Er liest nur aggregierte Allianzstände und die Anzahl der Top-40-Einträge. Keine Spielerlisten, Passwörter oder Tokens werden angezeigt.</p><button id="run" type="button">Zugriff prüfen</button><button id="copy" type="button">Ergebnis kopieren</button><pre id="result" aria-live="polite">Noch nicht geprüft.</pre><p><small>Erwartet: signedIn true, overview READ_OK (4), top40 READ_OK (160). Falls signedIn false erscheint, melde dich in der normalen NEXUS-App auf demselben Browser und derselben Website an. Bitte keine Zugangsdaten senden.</small></p><a href="./kingdom-hub-menu-test.html">← Zur NEXUS-Test-App</a></main><script type="module">
+const result=document.getElementById('result'),run=document.getElementById('run');
+run.addEventListener('click',async()=>{
+ run.disabled=true;result.textContent='Prüfe Anmeldung und geschützte Daten …';
+ try{
+  const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2');
+  const client=createClient('https://hcjrdofkdkasznywvcxo.supabase.co','sb_publishable_hkqBaMme70g2f3wcxvaTKg_FczqkpCh',{auth:{persistSession:true,autoRefreshToken:true}});
+  const {checkAllianceAccess}=await import('../integration/phalanx-access-diagnostic.mjs');
+  const d=await checkAllianceAccess(client);
+  result.textContent=['signedIn: '+d.signedIn,'overview: '+d.overview,'allianceCount: '+(d.allianceCount??'-'),'top40: '+d.top40,'top40Count: '+(d.top40Count??'-')].join('\n');
+ }catch(_){result.textContent='TEST_ERROR: Test konnte nicht ausgeführt werden. Keine Zugangsdaten senden.'}
+ finally{run.disabled=false}
+});
+document.getElementById('copy').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(result.textContent)}catch(_){result.textContent+='\nKopieren im Browser nicht erlaubt – Screenshot ohne private Daten genügt.'}});
+</script></body></html>
