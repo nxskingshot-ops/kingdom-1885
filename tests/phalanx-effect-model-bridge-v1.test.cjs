@@ -19,6 +19,6 @@ for (let i=0;i<bridge.effectMappings.length;i++){
   if(['attackSpeedPct','allSquadsDamageTakenReductionPct','targetAttackSpeedReductionPct'].includes(e.field))assert.equal(e.status,'requires_specialized_model');
   counts[map[e.status]]++;
 }
-assert.deepEqual(counts,bridge.counts);
+assert.deepEqual({effects:bridge.effectMappings.length,...counts},bridge.counts);
 assert.equal(bridge.releaseGate,'NOT_READY_FOR_GAME_ACCURACY_CLAIMS');
 console.log('PASS: PHALANX effect bridge 47 mappings, provenance, guards, counts and release gate');
