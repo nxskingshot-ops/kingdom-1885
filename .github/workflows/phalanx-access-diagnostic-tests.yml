@@ -1,0 +1,21 @@
+name: PHALANX Access Diagnostic Tests
+on:
+  push:
+    branches:
+      - 'test/phalanx-alliance-integration-20261013'
+    paths:
+      - 'integration/phalanx-*.mjs'
+      - '.github/workflows/phalanx-access-diagnostic-tests.yml'
+  workflow_dispatch:
+jobs:
+  diagnostic:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node integration/phalanx-guest-contract.mjs
+      - run: node integration/phalanx-access-mock-contract.mjs
