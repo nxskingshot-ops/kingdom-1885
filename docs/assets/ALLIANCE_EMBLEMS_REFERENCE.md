@@ -43,3 +43,9 @@ No actual emblem PNG/SVG/WEBP is added or verified here. This manifest prevents 
 - Contains exactly one `<img src="data:image/webp;base64,...">` according to source inspection. This is the first tangible prior emblem asset source and should be inspected visually before asserting it is the original NXS upload.
 - The design standard explicitly forbids replacing this crest with the generic `icon-192.png` helmet icon.
 - No individually identifiable source images for FRA, OoO, MYM were found by repository code search for `crest`, `wappen`, `alliance_emblem`, or `alliance_logo`. This is not proof they were never uploaded elsewhere.
+
+## Visual verification — 2026-10-13
+
+The embedded WebP from `preview/kingdom-hub-branded-v2.html` was successfully rendered and visually inspected: a square **green-and-gold NXS/NEXUS crest, with a central white stylized motif**. This is distinct from the generated **golden knight helmet on green** shown in the current Alliance Intelligence dashboard. The earlier GitHub `DESIGN_STANDARD.md` specifically names that embedded image as the genuine NXS crest; accordingly, for the historical project design reference it is the canonical NXS asset, whereas the later helmet is not an interchangeable original.
+
+Caution: this establishes the earlier approved header source, not an independent proof of the in-game emblem at every historical date. FRA, OoO and MYM original icons are still outstanding. Do not replace the frozen visual dashboard until the integration is reviewed and image-based interactive hit regions are accounted for.
