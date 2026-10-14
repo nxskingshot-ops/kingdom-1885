@@ -19,3 +19,8 @@ Der Assistent arbeitet bei autorisierten PHALANX-Entwicklungsaufgaben eigenstän
 
 ## Verbindlicher Bezug
 `docs/PHALANX_V1_UPDATED_ROADMAP_2026-10-14.md`.
+
+## Kommunikationsregel: Nutzeraktion GRÜN hervorheben (2026-10-14)
+- Wenn der Nutzer etwas lesen, prüfen, beantworten, entscheiden oder freigeben **muss**, diesen Handlungsbedarf in der Chat-Antwort deutlich **grün** hervorheben (sofern die Oberfläche Textfarbe unterstützt).
+- Ohne Nutzer-Handlungsbedarf normale, kurze Fortschrittsmeldung; keine unnötige Aufforderung.
+- Farbkennzeichnung immer zusätzlich mit eindeutiger Beschriftung (z. B. `FAQU – DEINE ENTSCHEIDUNG IST GEFRAGT`), damit die Information auch ohne Farbe erkennbar bleibt.
