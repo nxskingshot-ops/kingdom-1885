@@ -1,0 +1,21 @@
+{
+  "schema": "phalanx-display-gate-check-v1",
+  "checkedAt": "2026-10-14",
+  "sourceFiles": [
+    "data/phalanx-hero-comparison-display-gate-v1-2026-10-14.json",
+    "data/phalanx-hero-comparison-readiness-v1-2026-10-13.json",
+    "data/phalanx-hero-comparison-trigger-safety-overlay-v1-2026-10-14.json"
+  ],
+  "checked": 18,
+  "failed": 0,
+  "checks": [
+    "source identity",
+    "display permission",
+    "calculation prohibition",
+    "conflict flag",
+    "unique entries"
+  ],
+  "status": "PASS",
+  "scope": "JSON structural validation only; no game combat accuracy claim",
+  "productionChanged": false
+}
