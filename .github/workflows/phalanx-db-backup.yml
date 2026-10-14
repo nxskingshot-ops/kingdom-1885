@@ -1,0 +1,119 @@
+name: PHALANX encrypted database backup
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 2 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phalanx-db-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      PGHOST: aws-0-eu-central-1.pooler.supabase.com
+      PGPORT: "5432"
+      PGUSER: postgres.hcjrdofkdkasznywvcxo
+      PGDATABASE: postgres
+      PGSSLMODE: require
+      PGCONNECT_TIMEOUT: "20"
+      PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.B2_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.B2_APPLICATION_KEY }}
+      AWS_DEFAULT_REGION: eu-central-003
+      AWS_EC2_METADATA_DISABLED: "true"
+      BACKUP_PASSPHRASE: ${{ secrets.PHALANX_BACKUP_ENCRYPTION_KEY }}
+      B2_ENDPOINT: https://s3.eu-central-003.backblazeb2.com
+      B2_BUCKET: nexus-phalanx-backup
+    steps:
+      - name: Check secret presence (never print values)
+        shell: bash
+        run: |
+          set -euo pipefail
+          for name in PGPASSWORD AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY BACKUP_PASSPHRASE; do
+            if [[ -z "${!name}" ]]; then echo "::error::Missing required secret for $name"; exit 1; fi
+          done
+
+      - name: Install PostgreSQL client and AWS CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-common ca-certificates curl unzip openssl
+          sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-client-18
+          curl -fsSL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o /tmp/awscliv2.zip
+          unzip -q /tmp/awscliv2.zip -d /tmp
+          sudo /tmp/aws/install --update
+          /usr/lib/postgresql/18/bin/pg_dump --version
+          aws --version
+
+      - name: Create encrypted PostgreSQL dump and validate locally
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          mkdir -p "$RUNNER_TEMP/phalanx-backup"
+          cd "$RUNNER_TEMP/phalanx-backup"
+          stamp="$(date -u +%Y%m%dT%H%M%SZ)"
+          filename="phalanx-postgres-${stamp}-run${GITHUB_RUN_ID}.dump.enc"
+          echo "BACKUP_FILENAME=$filename" >> "$GITHUB_ENV"
+          /usr/lib/postgresql/18/bin/pg_dump --format=custom --no-owner --no-acl --file=database.dump
+          test -s database.dump
+          /usr/lib/postgresql/18/bin/pg_restore --list database.dump > /dev/null
+          openssl enc -aes-256-cbc -salt -pbkdf2 -iter 200000 -in database.dump -out "$filename" -pass env:BACKUP_PASSPHRASE
+          openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in "$filename" -out check.dump -pass env:BACKUP_PASSPHRASE
+          cmp database.dump check.dump
+          sha256sum "$filename" > "$filename.sha256"
+          rm -f database.dump check.dump
+
+      - name: Upload to private Backblaze B2 and verify remote copy
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/phalanx-backup"
+          prefix="postgres/daily"
+          remote="s3://$B2_BUCKET/$prefix/$BACKUP_FILENAME"
+          aws --endpoint-url "$B2_ENDPOINT" s3 cp "$BACKUP_FILENAME" "$remote" --no-progress
+          aws --endpoint-url "$B2_ENDPOINT" s3 cp "$BACKUP_FILENAME.sha256" "$remote.sha256" --no-progress
+          aws --endpoint-url "$B2_ENDPOINT" s3 cp "$remote" downloaded.enc --no-progress
+          cmp "$BACKUP_FILENAME" downloaded.enc
+          rm -f downloaded.enc
+
+      - name: Prune daily backups older than 35 days
+        shell: bash
+        run: |
+          set -euo pipefail
+          cutoff="$(date -u -d '35 days ago' +%Y%m%dT%H%M%SZ)"
+          aws --endpoint-url "$B2_ENDPOINT" s3api list-objects-v2 --bucket "$B2_BUCKET" --prefix "postgres/daily/" --output text --query 'Contents[].Key' |
+          while IFS= read -r key; do
+            [[ -z "$key" || "$key" == "None" ]] && continue
+            base="${key##*/}"
+            stamp="${base#phalanx-postgres-}"
+            stamp="${stamp%%-run*}"
+            if [[ "$stamp" =~ ^[0-9]{8}T[0-9]{6}Z$ && "$stamp" < "$cutoff" ]]; then
+              aws --endpoint-url "$B2_ENDPOINT" s3 rm "s3://$B2_BUCKET/$key" --no-progress
+            fi
+          done
+
+      - name: Write summary
+        if: success()
+        shell: bash
+        run: |
+          {
+            echo "### PHALANX automatic encrypted backup verified"
+            echo "- Source: Supabase Postgres, session pooler"
+            echo "- Destination: private Backblaze B2 /postgres/daily/"
+            echo "- Object: `$BACKUP_FILENAME`"
+            echo "- PostgreSQL tooling: 18"
+            echo "- Checks: archive listing, decrypt roundtrip, remote download byte comparison"
+            echo "- Retention: daily objects older than 35 days are pruned"
+            echo "- Note: DB dump does not include Supabase Storage object contents or project secrets."
+          } >> "$GITHUB_STEP_SUMMARY"
