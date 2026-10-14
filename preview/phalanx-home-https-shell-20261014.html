@@ -1,0 +1,17 @@
+<!doctype html><html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PHALANX RC HTTPS</title><p id="state">Loading isolated PHALANX candidate…</p><script>
+(async()=>{
+try{
+const u='https://raw.githubusercontent.com/nxskingshot-ops/kingdom-1885/4d710903700ea27208b591180420c89cc9df9faa/backups/NEXUS_PHALANX_HOME_FROZEN_2026-10-11.html';
+const r=await fetch(u);if(!r.ok)throw Error('Source HTTP '+r.status);
+let s=await r.text();
+const old="home.querySelector('.ph-userfoot span').textContent='🟢 '+x.signed;";
+const replacement="home.querySelector('.ph-userfoot span').textContent='⚪ Session not verified';";
+if(s.split(old).length!==2)throw Error('Unexpected frozen source version');
+s=s.replace(old,replacement);
+const marker="home.querySelector('#ph-profile').textContent=x.profile;";
+if(s.split(marker).length!==2)throw Error('Profile marker missing');
+s=s.replace(marker,marker+"home.querySelector('.ph-userfoot span').textContent='⚪ Session check pending';");
+document.open();document.write(s);document.close();
+}catch(e){document.getElementById('state').textContent='Could not load: '+e.message}
+})();
+</script></html>
