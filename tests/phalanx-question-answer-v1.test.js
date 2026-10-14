@@ -1,0 +1,13 @@
+"use strict";
+const assert=require("node:assert/strict");
+const {respond}=require("../src/phalanx-question-answer-v1.js");
+assert.equal(respond("Bär Ratio").status,"needs-connection");
+assert.equal(respond("???").status,"clarify");
+assert.equal(respond("Bär Ratio",null,{bear:()=>({answer:"85k",verified:false})}).status,"insufficient-data");
+assert.equal(respond("Bär Ratio",null,{bear:()=>{throw Error("private detail")}}).status,"error");
+assert.equal(respond("Bär Ratio",null,{bear:async()=>({answer:"no",verified:true})}).status,"error");
+const r=respond("Bär Ratio",null,{bear:()=>({answer:"Prüfergebnis",verified:true,source:"test fixture",asOf:"2026-10-14"})});
+assert.equal(r.status,"answered");assert.equal(r.source,"test fixture");
+assert.equal(respond("Und mit 50/20/30?",r.context).intent,"bear");
+assert.equal(respond("Top 40").module,"player-intelligence");
+console.log("8 assistant answer adapter assertions passed");
