@@ -1,0 +1,24 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PHALANX Worker Browser Isolation Test</title><style>body{font:16px system-ui;background:#091323;color:#f3e9d6;padding:16px;max-width:700px;margin:auto}button{font-size:1rem;padding:12px;background:#d6b56b;border:0;border-radius:8px}pre{white-space:pre-wrap;overflow-wrap:anywhere}#result{border:1px solid #80643b;padding:14px;border-radius:8px}</style></head><body><h1>⚔️ PHALANX Worker – isolierter Browsertest</h1><p>Keine Verbindung zu Live-Daten; keine Änderung an der produktiven App.</p><button id="run">Worker prüfen</button><p id="heartbeat">Oberfläche bereit</p><pre id="result">Noch nicht gestartet.</pre><script src="../src/phalanx-monte-carlo-v2.js"></script><script>
+const button=document.getElementById('run'),result=document.getElementById('result'),heartbeat=document.getElementById('heartbeat');
+button.addEventListener('click',async()=>{
+  button.disabled=true;result.textContent='Worker läuft…';
+  const options={skills:Array.from({length:4},()=>({chance:0.4,bonus:1,cooldown:0})),rounds:10,trials:10000,seed:1885};
+  let worker;
+  try {
+    worker=new Worker('./phalanx-monte-carlo-worker-prototype-20261014.js');
+    const response=await new Promise((resolve,reject)=>{
+      const timeout=setTimeout(()=>reject(Error('Worker timeout after 30 seconds')),30000);
+      worker.onerror=e=>{clearTimeout(timeout);reject(Error(e.message||'Worker load failed'));};
+      worker.onmessage=e=>{if(e.data.id!=='browser-smoke')return;clearTimeout(timeout);resolve(e.data);};
+      worker.postMessage({id:'browser-smoke',options});
+    });
+    if(!response.ok)throw Error(response.error);
+    const independent=PhalanxMonteCarlo.simulate({...options,dependence:'independent'});
+    const shared=PhalanxMonteCarlo.simulate({...options,dependence:'shared'});
+    const same=JSON.stringify(response.independent)===JSON.stringify(independent)&&JSON.stringify(response.shared)===JSON.stringify(shared);
+    result.textContent=(same?'PASS':'FAIL')+' – Worker / direkte Berechnung identisch\n'+JSON.stringify({workerIndependent:response.independent.mean,workerShared:response.shared.mean},null,2);
+  }catch(e){result.textContent='FAIL – '+String(e.message||e);}
+  finally{if(worker)worker.terminate();button.disabled=false;}
+});
+let count=0;setInterval(()=>{heartbeat.textContent='Oberfläche aktiv: '+(++count)+' Sekunden';},1000);
+</script></body></html>
