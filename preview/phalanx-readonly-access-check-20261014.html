@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PHALANX · Read-only Access Check</title><style>
+*{box-sizing:border-box}body{margin:0;background:#031522;color:#e9edf3;font:15px system-ui,Arial;padding:18px;max-width:700px;margin-inline:auto}h1{font:700 25px Georgia;color:#f3ce72}h2{font-size:16px;color:#f3ce72}p{line-height:1.5;color:#b7c7d3}.card{background:#09263b;border:1px solid #8f712f;border-radius:12px;padding:15px;margin:12px 0}.item{border-top:1px solid #315064;padding:11px 0}.status{font-weight:700}button{background:#d7ae55;border:0;border-radius:9px;padding:13px 18px;font-weight:700;font-size:15px;cursor:pointer}small{color:#a8b9c6}code{color:#f4cf78}#results{overflow-wrap:anywhere}</style></head><body>
+<h1>🛡️ PHALANX Access Check</h1><p>Isolierter Lesetest · Keine Datenänderungen · Kein Zugriff auf fremde Profile</p>
+<div class="card"><div id="identity">Noch nicht geprüft</div><p><small>Die Seite verwendet ausschließlich die bestehende lokale Supabase-Sitzung. Ergebnisse zeigen nur Erfolg/Fehler, niemals Datensätze oder Benutzer-IDs.</small></p><button id="run" type="button">Leserechte prüfen</button></div>
+<div class="card"><h2>Ergebnisse</h2><div id="results">Noch kein Test gestartet.</div></div>
+<p><small>Ein erfolgreicher SELECT-Test beweist keine Schreibberechtigung. Andere Rollen müssen separat getestet werden.</small></p>
+<script type="module">
+const endpoint='https://hcjrdofkdkasznywvcxo.supabase.co';
+const publishable='sb_publishable_hkqBaMme70g2f3wcxvaTKg_FczqkpCh';
+const identity=document.getElementById('identity'),results=document.getElementById('results'),button=document.getElementById('run');
+const checks=[['Profil','app_profiles','display_name'],['Mitgliedschaft','nxs_memberships','role'],['KvK-Snapshots','kvk_snapshots','*'],['Battle Readiness','nxs_battle_readiness_plans','*'],['Alliance Players','phalanx_alliance_players','*'],['Alliance Snapshots','phalanx_alliance_snapshots','*'],['Transfer Scouting','transfer_candidates','*']];
+button.addEventListener('click',async()=>{
+button.disabled=true;identity.textContent='Prüfe Anmeldung …';results.textContent='Test läuft …';
+try{
+const lib=await import('https://esm.sh/@supabase/supabase-js@2');
+const c=lib.createClient(endpoint,publishable);
+const {data,error}=await c.auth.getUser();if(error)throw error;
+if(!data.user){identity.textContent='⚪ Keine aktive Sitzung';results.textContent='Keine Tests ohne Anmeldung.';return;}
+const profile=await c.from('app_profiles').select('display_name').eq('user_id',data.user.id).maybeSingle();
+const member=await c.from('nxs_memberships').select('role,active,expires_at').eq('user_id',data.user.id).maybeSingle();
+const valid=member.data&&member.data.active&&(!member.data.expires_at||Date.parse(member.data.expires_at)>Date.now());
+identity.textContent=(profile.data?.display_name||'Angemeldeter Benutzer')+' · '+(valid?'🟢 gültige NXS-Mitgliedschaft':'⚪ Mitgliedschaft nicht bestätigt')+' · Rolle: '+(valid?member.data.role:'nicht bestätigt');
+results.replaceChildren();
+for(const [label,table,columns] of checks){
+const line=document.createElement('div');line.className='item';line.textContent=label+' · prüfe …';results.append(line);
+try{
+const q=c.from(table).select(columns,{head:true,count:'exact'});const {error:err}=await q;
+line.textContent=label+' · '+(err?'⚠️ Abfrage abgelehnt ('+err.code+')':'✅ SELECT erlaubt (Inhalt kann leer sein)');
+}catch(e){line.textContent=label+' · ⚠️ Anfrage fehlgeschlagen';}
+}
+}catch(e){identity.textContent='⚠️ Prüfung fehlgeschlagen';results.textContent='Bitte Sitzung und Netzwerk prüfen.';}finally{button.disabled=false;}
+});
+</script></body></html>
