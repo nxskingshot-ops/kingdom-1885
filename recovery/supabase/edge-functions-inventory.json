@@ -1,7 +1,7 @@
 {
   "project_id": "hcjrdofkdkasznywvcxo",
   "project_name": "kingdom-1885-app",
-  "scope": "Non-secret inventory; metadata enrichment in progress; not a full restore",
+  "scope": "Non-secret deployed function metadata, static environment variable names, and source backup coverage; not a full restore",
   "source_backups_confirmed": [
     "kvk-sync",
     "outpost-sync",
@@ -286,31 +286,71 @@
       "slug": "phalanx-mightpulse-status",
       "version": 4,
       "status": "ACTIVE",
-      "verify_jwt": true
+      "verify_jwt": true,
+      "ezbr_sha256": "c4e4eea7f1e3de2a073d78d638986beaa73dda0feb030f3f34fd68a096e73c8e",
+      "source_files": [
+        "index.ts"
+      ],
+      "environment_variable_names": [
+        "SUPABASE_ANON_KEY",
+        "SUPABASE_SERVICE_ROLE_KEY",
+        "SUPABASE_URL"
+      ]
     },
     {
       "slug": "phalanx-mightpulse-scheduled",
       "version": 2,
       "status": "ACTIVE",
-      "verify_jwt": false
+      "verify_jwt": false,
+      "ezbr_sha256": "6dd0351463fef00d2991c679a28e0a1b423d249cc2c6f58884fe468cf09a7662",
+      "source_files": [
+        "index.ts"
+      ],
+      "environment_variable_names": [
+        "SUPABASE_SERVICE_ROLE_KEY",
+        "SUPABASE_URL"
+      ]
     },
     {
       "slug": "phalanx-mightpulse-value-diff-test",
       "version": 2,
       "status": "ACTIVE",
-      "verify_jwt": true
+      "verify_jwt": true,
+      "ezbr_sha256": "38116468e49de6495ae4c760327727b0d7132e3db538ac54a0c53bb97897cc53",
+      "source_files": [
+        "index.ts"
+      ],
+      "environment_variable_names": [
+        "SUPABASE_ANON_KEY",
+        "SUPABASE_SERVICE_ROLE_KEY",
+        "SUPABASE_URL"
+      ]
     },
     {
       "slug": "phalanx-kingdom-1913-scout-test",
       "version": 2,
       "status": "ACTIVE",
-      "verify_jwt": true
+      "verify_jwt": true,
+      "ezbr_sha256": "ff2fd32927e10c89069c5ebe41d0f27092b6bdc1a9d29f6916ac12a4a357737e",
+      "source_files": [
+        "index.ts"
+      ],
+      "environment_variable_names": [
+        "MIGHTPULSE_API_KEY"
+      ]
     },
     {
       "slug": "phalanx-kingdom-scout-report-test",
       "version": 3,
       "status": "ACTIVE",
-      "verify_jwt": true
+      "verify_jwt": true,
+      "ezbr_sha256": "42bf06327e6a950d68f8a4bb5d30660dfc12c53000b3297106cb2de076f70c2f",
+      "source_files": [
+        "index.ts"
+      ],
+      "environment_variable_names": [
+        "MIGHTPULSE_API_KEY"
+      ]
     }
   ]
 }
