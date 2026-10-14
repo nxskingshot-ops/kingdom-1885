@@ -1,7 +1,7 @@
 {
   "project_id": "hcjrdofkdkasznywvcxo",
   "project_name": "kingdom-1885-app",
-  "scope": "Non-secret inventory only; source and environment values are NOT included",
+  "scope": "Non-secret inventory; metadata enrichment in progress; not a full restore",
   "source_backups_confirmed": [
     "kvk-sync",
     "outpost-sync",
@@ -14,25 +14,56 @@
       "slug": "kvk-sync",
       "version": 4,
       "status": "ACTIVE",
-      "verify_jwt": false
+      "verify_jwt": false,
+      "ezbr_sha256": "c2b8de2f2004266e3307f060ac7c149854c430e09dfe4866daf693154a7db0f2",
+      "source_files": [
+        "index.ts"
+      ],
+      "environment_variable_names": [
+        "KVK_SYNC_WEBHOOK_TOKEN",
+        "SUPABASE_SERVICE_ROLE_KEY",
+        "SUPABASE_URL"
+      ]
     },
     {
       "slug": "outpost-sync",
       "version": 4,
       "status": "ACTIVE",
-      "verify_jwt": false
+      "verify_jwt": false,
+      "ezbr_sha256": "75ff598c4a8cafeb7d98ce22c7e4480e2a2005d0f9b50ea29dceb6768e18611d",
+      "source_files": [
+        "index.ts"
+      ],
+      "environment_variable_names": [
+        "OUTPOST_SYNC_SECRET",
+        "SUPABASE_SERVICE_ROLE_KEY",
+        "SUPABASE_URL"
+      ]
     },
     {
       "slug": "outpost-editor",
       "version": 6,
       "status": "ACTIVE",
-      "verify_jwt": false
+      "verify_jwt": false,
+      "ezbr_sha256": "8ce5ae485d8481c6ebc3c2b84d9db0b81ed8c01a58e37d2823aaa2403aca033a",
+      "source_files": [
+        "index.ts"
+      ],
+      "environment_variable_names": []
     },
     {
       "slug": "nxs-guest-setup",
       "version": 5,
       "status": "ACTIVE",
-      "verify_jwt": true
+      "verify_jwt": true,
+      "ezbr_sha256": "9705d149e9aae5f851ae076bf4951f623ce8b48e248f74e2912447bcdb6394f1",
+      "source_files": [
+        "index.ts"
+      ],
+      "environment_variable_names": [
+        "SUPABASE_SERVICE_ROLE_KEY",
+        "SUPABASE_URL"
+      ]
     },
     {
       "slug": "nexus-feedback",
