@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b1425"><title>NEXUS PHALANX · Monte Carlo Lab Alpha31</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#091323;color:#f3e9d6}
+*{box-sizing:border-box}body{margin:0;padding:18px 12px 40px;max-width:780px;margin-inline:auto}
+header{border:1px solid #80643b;background:#111e32;border-radius:14px;padding:17px;margin-bottom:13px}
+h1{font-size:1.4rem;color:#e8c77e;margin:0 0 5px}h2{font-size:1.05rem;margin:0 0 12px;color:#e8c77e}
+small,.sub{color:#b7bfd0}.sub{font-size:.86rem;line-height:1.5}
+section{background:#142137;border:1px solid #36445a;border-radius:12px;padding:15px;margin-bottom:12px}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+label{display:block;color:#e0d5bf;font-size:.82rem}input,select{display:block;width:100%;margin-top:5px;background:#081323;color:white;border:1px solid #64718a;border-radius:8px;padding:10px;font-size:1rem}
+button{background:#d6b56b;color:#162034;border:0;border-radius:10px;padding:12px 16px;font-weight:800;width:100%;font-size:1rem;margin-top:13px}
+.results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.tile{background:#0a172a;border:1px solid #58617a;padding:12px;border-radius:9px}
+.value{font-size:1.5rem;color:#f0cf85;font-weight:750}.tag{font-size:.78rem;color:#aab9ce}
+table{width:100%;border-collapse:collapse;font-size:.86rem}th,td{text-align:left;padding:8px 4px;border-bottom:1px solid #33455c}td{text-align:right}
+.note{border-left:3px solid #d6b56b;padding-left:10px;margin-top:12px;font-size:.84rem;line-height:1.5}
+a{color:#f0cf85}#error{color:#ffac9e}#output{display:none}
+</style></head><body>
+<header><h1>⚔️ NEXUS PHALANX</h1><strong>Monte Carlo Lab · Alpha31</strong><div class="sub">Experimentelle Wahrscheinlichkeitsanalyse · Kingdom #1885 · Keine Schadens- oder Siegprognose</div></header>
+<section><h2>Simulation einstellen</h2><div class="fields">
+<label>Fähigkeiten<select id="skills"><option>2</option><option selected>4</option><option>6</option><option>8</option></select></label>
+<label>Auslösechance (%)<input id="chance" type="number" min="0" max="100" step="1" value="40"></label>
+<label>Kampfrunden<input id="rounds" type="number" min="1" max="1000" value="10"></label>
+<label>Abklingzeit (Runden)<input id="cooldown" type="number" min="0" max="1000" value="0"></label>
+<label>Simulationen<input id="trials" type="number" min="100" max="100000" step="100" value="10000"></label>
+<label>Zufallsstartwert<input id="seed" type="number" step="1" value="1885"></label>
+</div><button id="run">Beide Modelle vergleichen</button><div id="error" role="alert"></div></section>
+<section id="output"><h2>Modellvergleich</h2><div class="results"><div class="tile"><div class="tag">Unabhängig · Mittelwert</div><div class="value" id="im"></div><div class="tag" id="isd"></div></div><div class="tile"><div class="tag">Gemeinsamer Auslöser · Mittelwert</div><div class="value" id="sm"></div><div class="tag" id="ssd"></div></div></div>
+<table><thead><tr><th>Kennzahl</th><th>Unabhängig</th><th>Gekoppelt</th></tr></thead><tbody id="rows"></tbody></table>
+<div class="note" id="bounds"></div></section>
+<section><h2>Was wird hier berechnet?</h2><div class="sub">Jede Fähigkeit liefert bei Auslösung genau einen abstrakten Punkt. Der Rechner wiederholt die festgelegten Runden, berücksichtigt die gewählte Abklingzeit und vergleicht unabhängige Auslösungen mit einem gemeinsamen Zufallswert pro Runde. Alle Parameter sind hypothetisch. Echte Kingshot-Fähigkeiten können andere Mechaniken, Effekte und Bedingungen besitzen.</div><p class="sub">Das <a href="./phalanx-screenshot-joiner-alpha30-2026-10-12.html">Joiner-Labor Alpha30</a> bleibt separat. Das eingefrorene Command Center wurde nicht verändert.</p></section>
+<script src="../src/phalanx-monte-carlo-v2.js"></script><script src="../src/phalanx-dependence-bounds-v1.js"></script>
+<script>
+(function(){
+const $=id=>document.getElementById(id),fmt=x=>Number(x).toLocaleString('de-DE',{maximumFractionDigits:4});
+$('run').addEventListener('click',function(){
+try{
+for(const id of ['skills','chance','rounds','cooldown','trials','seed']){if($(id).value.trim()==='')throw Error('Bitte alle Eingabefelder ausfüllen.');}
+const n=Number($('skills').value),chance=Number($('chance').value)/100,rounds=Number($('rounds').value),cooldown=Number($('cooldown').value),trials=Number($('trials').value),seed=Number($('seed').value);
+if(!Number.isInteger(n)||!Number.isFinite(chance)||chance<0||chance>1||!Number.isInteger(rounds)||rounds<1||rounds>1000||!Number.isInteger(cooldown)||cooldown<0||cooldown>1000||!Number.isInteger(trials)||trials<100||trials>100000||!Number.isInteger(seed))throw Error('Bitte gültige Zahlen innerhalb der angegebenen Grenzen verwenden.');
+const skills=Array.from({length:n},()=>({chance,bonus:1,cooldown})),opts={skills,rounds,trials,seed};
+const a=PhalanxMonteCarlo.simulate({...opts,dependence:'independent'}),b=PhalanxMonteCarlo.simulate({...opts,dependence:'shared'});
+const bounds=PhalanxDependenceBounds.analyze(Array(n).fill(chance));
+$('im').textContent=fmt(a.mean);$('sm').textContent=fmt(b.mean);
+$('isd').textContent='Streuung: '+fmt(a.standardDeviation);$('ssd').textContent='Streuung: '+fmt(b.standardDeviation);
+$('rows').replaceChildren();
+for(const [name,field] of [['5%-Quantil','p05'],['Median','median'],['95%-Quantil','p95'],['Auslösungen je Simulation','meanTriggers']]){
+const tr=document.createElement('tr');for(const val of [name,fmt(a[field]),fmt(b[field])]){const td=document.createElement('td');td.textContent=val;tr.append(td);}$('rows').append(tr);}
+$('bounds').textContent='Für eine einzelne Runde ohne Cooldown liegen die mathematisch möglichen Grenzen für mindestens eine Auslösung bei '+fmt(bounds.anyBounds[0]*100)+'–'+fmt(bounds.anyBounds[1]*100)+' %. Diese Grenzen gelten nicht als empirische Kingshot-Werte.';
+$('output').style.display='block';$('error').textContent='';
+}catch(e){$('error').textContent=e.message;$('output').style.display='none';}
+});$('run').click();
+})();
+</script></body></html>
