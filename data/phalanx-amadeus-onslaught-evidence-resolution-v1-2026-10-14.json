@@ -1,0 +1,45 @@
+{
+  "schema": "phalanx-amadeus-onslaught-evidence-resolution-v1",
+  "date": "2026-10-14",
+  "hero": "Amadeus",
+  "skillGerman": "Ansturm",
+  "skillEnglishCandidate": "Onslaught",
+  "slot": 3,
+  "mode": "conquest",
+  "sourcePriority": [
+    {
+      "path": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+      "evidence": "Existing user-screenshot transcription (six German screenshots)",
+      "condition": "health above 50%",
+      "values": [
+        16,
+        24,
+        32,
+        40,
+        48
+      ],
+      "confidence": "in_game_transcription_not_independently_reinspected"
+    },
+    {
+      "path": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "evidence": "Secondary English guide transcription",
+      "effect": "attack_bonus_when_health_above_50_percent",
+      "values": [
+        16,
+        24,
+        32,
+        40,
+        48
+      ],
+      "confidence": "secondary_source"
+    }
+  ],
+  "crosswalk": "data/phalanx-skill-name-crosswalk-v1-2026-10-13.json",
+  "numericLevelAgreement": true,
+  "preferredInterpretation": "attack bonus conditional on health ABOVE 50%",
+  "conflict": "A different public guide was previously flagged as saying BELOW 50%; retain as disputed external claim",
+  "reviewStatus": "PREFERRED_BY_EXISTING_IN_GAME_TRANSCRIPTION_NOT_BATTLE_VALIDATED",
+  "usageGate": "DISPLAY_EVIDENCE_ONLY_NO_COMBAT_CALCULATION",
+  "nextVerification": "Reinspect original six screenshots if an exact bilingual mechanic proof is needed",
+  "productionChanged": false
+}
