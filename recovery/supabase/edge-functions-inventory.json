@@ -231,25 +231,56 @@
       "slug": "mightpulse-quality-overview-16",
       "version": 5,
       "status": "ACTIVE",
-      "verify_jwt": true
+      "verify_jwt": true,
+      "ezbr_sha256": "bc55e63fee296af3c8e6fe0cfa820356ab2420e35bdd23e21040bc4ae150963d",
+      "source_files": [
+        "index.ts"
+      ],
+      "environment_variable_names": [
+        "MIGHTPULSE_API_KEY"
+      ]
     },
     {
       "slug": "mightpulse-alliance-schema-diagnostic",
       "version": 2,
       "status": "ACTIVE",
-      "verify_jwt": true
+      "verify_jwt": true,
+      "ezbr_sha256": "f03c886dd61019069c063d15037697d79f408ceb13d736e08e03c6e5f388c695",
+      "source_files": [
+        "index.ts"
+      ],
+      "environment_variable_names": [
+        "MIGHTPULSE_API_KEY"
+      ]
     },
     {
       "slug": "mightpulse-kills-diagnostic",
       "version": 3,
       "status": "ACTIVE",
-      "verify_jwt": true
+      "verify_jwt": true,
+      "ezbr_sha256": "1640b287637b8dddb5c9e7fda55d91810f20739883b01ea65a4bfc67b0261962",
+      "source_files": [
+        "index.ts"
+      ],
+      "environment_variable_names": [
+        "MIGHTPULSE_API_KEY"
+      ]
     },
     {
       "slug": "phalanx-mightpulse-poll",
       "version": 7,
       "status": "ACTIVE",
-      "verify_jwt": true
+      "verify_jwt": true,
+      "ezbr_sha256": "87bb4902890672571fb6f55b511927ca04117cca2a8982d10ae0ee394830e182",
+      "source_files": [
+        "index.ts"
+      ],
+      "environment_variable_names": [
+        "MIGHTPULSE_API_KEY",
+        "SUPABASE_ANON_KEY",
+        "SUPABASE_SERVICE_ROLE_KEY",
+        "SUPABASE_URL"
+      ]
     },
     {
       "slug": "phalanx-mightpulse-status",
