@@ -1,0 +1,26 @@
+<!doctype html><meta charset="utf-8"><title>PHALANX HOME HTTPS Auth RC7</title><p id="status">Loading PHALANX…</p><script>
+(async()=>{try{
+const url='https://raw.githubusercontent.com/nxskingshot-ops/kingdom-1885/4d710903700ea27208b591180420c89cc9df9faa/backups/NEXUS_PHALANX_HOME_FROZEN_2026-10-11.html';
+const r=await fetch(url);if(!r.ok)throw Error('Source HTTP '+r.status);let html=await r.text();
+const original="home.querySelector('.ph-userfoot span').textContent='🟢 '+x.signed;";
+if(html.split(original).length!==2)throw Error('Source marker changed');
+const replacement="home.querySelector('.ph-userfoot span').textContent='⚪ Checking session';verifyPhalanxSession(home);";
+html=html.replace(original,replacement);
+const hook="function translateHome(){";
+if(html.split(hook).length!==2)throw Error('Translation hook changed');
+const verifier="async function verifyPhalanxSession(home){\nconst label=home.querySelector('.ph-userfoot span'),rank=home.querySelector('.ph-rank');\nif(!label)return;\nif(rank){rank.querySelector('strong').textContent='—';rank.querySelectorAll('div').forEach(el=>el.textContent='');}\ntry{\nconst lib=await import('https://esm.sh/@supabase/supabase-js@2');\nconst c=lib.createClient('https://hcjrdofkdkasznywvcxo.supabase.co','sb_publishable_hkqBaMme70g2f3wcxvaTKg_FczqkpCh');\nconst a=await c.auth.getUser();if(a.error)throw a.error;\nif(!a.data.user){label.textContent='⚪ Not signed in';return}\nconst m=await c.from('nxs_memberships').select('role,active,expires_at').eq('user_id',a.data.user.id).eq('active',true);\nif(m.error)throw m.error;\nconst active=(m.data||[]).filter(v=>!v.expires_at||Date.parse(v.expires_at)>Date.now());\nif(!active.length){label.textContent='🟠 Membership not verified';return}\nlabel.textContent='🟢 NXS membership verified';\nconst playerName=home.querySelector('#ph-player-name');
+if(playerName){
+playerName.textContent='Commander';
+try{
+const profile=await c.from('app_profiles').select('*').eq('user_id',a.data.user.id).maybeSingle();
+if(!profile.error&&profile.data){
+const p=profile.data;
+const candidate=[p.game_name,p.player_name,p.display_name,p.username,p.nickname,p.ingame_name].find(v=>typeof v==='string'&&v.trim());
+if(candidate)playerName.textContent=candidate.trim();
+}
+}catch(e){}
+}\nif(rank){const role=String(active[0].role||'member').toUpperCase();rank.querySelector('strong').textContent=role;rank.querySelectorAll('div')[0].textContent='Verified DB role';}\n}catch(e){label.textContent='⚪ Session check unavailable'}\n}\n";
+html=html.replace(hook,verifier+hook);
+document.open();document.write(html);document.close();
+}catch(e){document.getElementById('status').textContent='Loading failed: '+e.message}})();
+</script>
