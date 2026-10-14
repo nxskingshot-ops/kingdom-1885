@@ -5,10 +5,12 @@ on:
     paths:
       - 'src/phalanx-troop-allocation-v1.js'
       - 'src/phalanx-bear-deployment-v1.js'
+      - 'src/phalanx-viking-phases-v1.js'
       - 'src/phalanx-question-router-v1.js'
       - 'src/phalanx-question-answer-v1.js'
       - 'tests/phalanx-troop-allocation-v1.test.js'
       - 'tests/phalanx-bear-deployment-v1.test.js'
+      - 'tests/phalanx-viking-phases-v1.test.js'
       - 'tests/phalanx-question-router-v1.test.js'
       - 'tests/phalanx-question-answer-v1.test.js'
       - '.github/workflows/phalanx-troop-planner-regression.yml'
@@ -28,5 +30,6 @@ jobs:
         run: |
           node tests/phalanx-troop-allocation-v1.test.js
           node tests/phalanx-bear-deployment-v1.test.js
+          node tests/phalanx-viking-phases-v1.test.js
           node tests/phalanx-question-router-v1.test.js
           node tests/phalanx-question-answer-v1.test.js
