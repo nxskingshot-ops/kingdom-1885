@@ -13,6 +13,7 @@ function route(question,context=null){
   const q=question.normalize("NFKC").trim();
   const matches=patterns.filter(p=>p.terms.some(t=>t.test(q))).map(p=>p.id);
   const contextIntent=context&&patterns.some(p=>p.id===context.intent)?context.intent:null;
+  if(contextIntent&&/^(und|and|what about|wie|mit)\b/i.test(q)&&matches.length===1&&matches[0]==="troops"&&contextIntent==="bear")return {intent:"bear",status:"routed",contextual:true,related:["troops"]};
   if(matches.length===0)return contextIntent&&/^(und|and|what about|wie|mit)\b/i.test(q)?{intent:contextIntent,status:"routed",contextual:true}:{intent:null,status:"clarify",question:"Geht es um Bär, Truppen, Helden, KvK, Spieler oder Outposts?"};
   if(matches.includes("bear")&&matches.includes("troops"))return {intent:"bear",status:"routed",related:["troops"]};
   if(matches.includes("kvk")&&matches.includes("players"))return {intent:"kvk",status:"routed",related:["players"]};
