@@ -1,0 +1,164 @@
+{
+  "project_id": "hcjrdofkdkasznywvcxo",
+  "project_name": "kingdom-1885-app",
+  "scope": "Non-secret inventory only; source and environment values are NOT included",
+  "source_backups_confirmed": [
+    "kvk-sync",
+    "outpost-sync",
+    "outpost-editor",
+    "nxs-guest-setup",
+    "mightpulse-ranking-identity-audit"
+  ],
+  "functions": [
+    {
+      "slug": "kvk-sync",
+      "version": 4,
+      "status": "ACTIVE",
+      "verify_jwt": false
+    },
+    {
+      "slug": "outpost-sync",
+      "version": 4,
+      "status": "ACTIVE",
+      "verify_jwt": false
+    },
+    {
+      "slug": "outpost-editor",
+      "version": 6,
+      "status": "ACTIVE",
+      "verify_jwt": false
+    },
+    {
+      "slug": "nxs-guest-setup",
+      "version": 5,
+      "status": "ACTIVE",
+      "verify_jwt": true
+    },
+    {
+      "slug": "nexus-feedback",
+      "version": 3,
+      "status": "ACTIVE",
+      "verify_jwt": true
+    },
+    {
+      "slug": "nexus-true-power",
+      "version": 6,
+      "status": "ACTIVE",
+      "verify_jwt": true
+    },
+    {
+      "slug": "nexus-access-review",
+      "version": 6,
+      "status": "ACTIVE",
+      "verify_jwt": true
+    },
+    {
+      "slug": "verified-outpost-sync",
+      "version": 3,
+      "status": "ACTIVE",
+      "verify_jwt": false
+    },
+    {
+      "slug": "mightpulse-ranking-test",
+      "version": 2,
+      "status": "ACTIVE",
+      "verify_jwt": true
+    },
+    {
+      "slug": "mightpulse-ranking-audit",
+      "version": 3,
+      "status": "ACTIVE",
+      "verify_jwt": true
+    },
+    {
+      "slug": "mightpulse-ranking-identity-audit",
+      "version": 2,
+      "status": "ACTIVE",
+      "verify_jwt": true
+    },
+    {
+      "slug": "mightpulse-board-coverage-audit",
+      "version": 2,
+      "status": "ACTIVE",
+      "verify_jwt": true
+    },
+    {
+      "slug": "mightpulse-coverage-round2-fixed",
+      "version": 2,
+      "status": "ACTIVE",
+      "verify_jwt": true
+    },
+    {
+      "slug": "mightpulse-freshness-quality-audit",
+      "version": 2,
+      "status": "ACTIVE",
+      "verify_jwt": true
+    },
+    {
+      "slug": "mightpulse-quality-batch-audit",
+      "version": 2,
+      "status": "ACTIVE",
+      "verify_jwt": true
+    },
+    {
+      "slug": "mightpulse-quality-batch-4-7",
+      "version": 2,
+      "status": "ACTIVE",
+      "verify_jwt": true
+    },
+    {
+      "slug": "mightpulse-quality-overview-16",
+      "version": 5,
+      "status": "ACTIVE",
+      "verify_jwt": true
+    },
+    {
+      "slug": "mightpulse-alliance-schema-diagnostic",
+      "version": 2,
+      "status": "ACTIVE",
+      "verify_jwt": true
+    },
+    {
+      "slug": "mightpulse-kills-diagnostic",
+      "version": 3,
+      "status": "ACTIVE",
+      "verify_jwt": true
+    },
+    {
+      "slug": "phalanx-mightpulse-poll",
+      "version": 7,
+      "status": "ACTIVE",
+      "verify_jwt": true
+    },
+    {
+      "slug": "phalanx-mightpulse-status",
+      "version": 4,
+      "status": "ACTIVE",
+      "verify_jwt": true
+    },
+    {
+      "slug": "phalanx-mightpulse-scheduled",
+      "version": 2,
+      "status": "ACTIVE",
+      "verify_jwt": false
+    },
+    {
+      "slug": "phalanx-mightpulse-value-diff-test",
+      "version": 2,
+      "status": "ACTIVE",
+      "verify_jwt": true
+    },
+    {
+      "slug": "phalanx-kingdom-1913-scout-test",
+      "version": 2,
+      "status": "ACTIVE",
+      "verify_jwt": true
+    },
+    {
+      "slug": "phalanx-kingdom-scout-report-test",
+      "version": 3,
+      "status": "ACTIVE",
+      "verify_jwt": true
+    }
+  ]
+}
