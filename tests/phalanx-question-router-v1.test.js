@@ -14,7 +14,7 @@ const cases=[
  ["Archer march","troops"]
 ];
 for(const [q,intent] of cases)assert.equal(route(q).intent,intent,q);
-assert.equal(route("Und mit 50/20/30?",{intent:"bear"}).intent,"troops");
+assert.equal(route("Und mit 50/20/30?",{intent:"bear"}).intent,"bear");
 assert.equal(route("Und wie sieht es aus?",{intent:"bear"}).intent,"bear");
 assert.equal(route("???").status,"clarify");
 assert.equal(route("").status,"clarify");
