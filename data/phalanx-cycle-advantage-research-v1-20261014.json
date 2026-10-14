@@ -1,0 +1,33 @@
+{
+  "schema":"phalanx.cycle-advantage.v1",
+  "createdAt":"2026-10-14",
+  "status":"research_prototype_unvalidated",
+  "scope":{"kingdoms":[1885,1913],"productionChanges":false,"alpha35Changes":false},
+  "evidencePolicy":{"observedUnlockDate":"required_for_confirmed","estimatedUnlockWindow":"estimate_only","kingdomNumberToAge":"not_accepted","missingData":"unknown_not_zero"},
+  "milestones":[
+    {"id":"gen4","ageDaysMin":190,"ageDaysMax":200,"impact":["hero_shards","hero_upgrades"]},
+    {"id":"war_academy","ageDaysMin":220,"ageDaysMax":225,"impact":["research","troops"]},
+    {"id":"gen5","ageDaysMin":270,"ageDaysMax":283,"impact":["hero_shards","hero_upgrades","pets"]},
+    {"id":"tg8","ageDaysMin":310,"ageDaysMax":323,"impact":["building_upgrades","troop_upgrades"]}
+  ],
+  "prepOpportunityFactors":[
+    {"key":"unlockedDuringPrep","meaning":"new point-scoring systems available during Prep"},
+    {"key":"remainingUpgradeCapacity","meaning":"point-scoring upgrades not yet completed"},
+    {"key":"storedResources","meaning":"shards, pet items, truegold, research materials and speedups"},
+    {"key":"prepScoringRules","meaning":"exact event phase and scoring action mapping"},
+    {"key":"participation","meaning":"players actually contributing during Prep"}
+  ],
+  "comparison":{"relativeToKingdom":1885,"targetKingdom":1913,"cycleAdvantage":"unknown","prepPotential":"unknown","battleThreat":"separate","confidence":"insufficient_evidence"},
+  "calculationRules":[
+    "Use verified kingdom open dates or actual in-game unlock observations, not numerical kingdom ID gaps.",
+    "Represent milestone timing as a window until confirmed.",
+    "An older kingdom can have fewer remaining upgrades but more saved materials; neither age nor open upgrades alone determines Prep winner.",
+    "Calculate Prep Opportunity by phase-specific scoring rules and actual remaining resources; otherwise present qualitative hypotheses only.",
+    "Separate historical Prep and Castle outcomes; do not infer cause from win/loss."
+  ],
+  "sources":[
+    "https://www.kingshotguide.com/database/server-timeline",
+    "https://kingshotdata.kr/en/guides/server-timeline.html",
+    "https://v2.kingshot.net/kingdom-timeline"
+  ]
+}
