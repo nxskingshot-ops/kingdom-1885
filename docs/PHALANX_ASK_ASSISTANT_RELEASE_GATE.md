@@ -9,7 +9,7 @@ Make the extensive PHALANX capabilities approachable for all alliance members. A
 - Bear trap marches, troop ratios, capacities and troop counts
 - Hero and joiner comparisons with explicit model limitations
 - KvK opponents, Head-to-Head, Players to Watch and data freshness
-- True Power / Top 40 trends
+- Player Intelligence: personal strength, True Power, top-100 coverage where available, development trends, Mystic Trial categories, and dated Top 40 snapshots as one optional view. Never imply an old snapshot is current.
 - Outpost intelligence and permitted reports
 - Contextual help and navigation
 
@@ -24,6 +24,8 @@ Make the extensive PHALANX capabilities approachable for all alliance members. A
 8. Mobile portrait usability and frozen design are preserved; integration requires separate UI approval.
 9. No paid AI API, paid Supabase branch or extra infrastructure without explicit user approval.
 10. A regression test set and novice-user acceptance test must pass before go-live.
+11. For development questions, require at least two comparable dated observations; if absent, report insufficient history instead of inferring change from a single ranking.
+12. Route legacy keyword `Top 40` to Player Intelligence with an optional Top 40 view; prefer task language such as `Who improved most in our alliance?`.
 
 ## Scope note
 A free rules-and-tools assistant cannot promise general ChatGPT-level language understanding. An optional LLM integration may be evaluated separately, with explicit privacy, cost and security review. Do not mark release ready before acceptance tests pass.
