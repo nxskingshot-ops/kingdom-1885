@@ -15,7 +15,7 @@ export function mountMightPulseRefresh({container,supabase}){
   status.setAttribute("role","status");
   status.setAttribute("aria-live","polite");
   status.textContent="Noch keine manuelle Aktualisierung gestartet.";
-  root.append(button,status);
+  const source=document.createElement("p");source.setAttribute("aria-live","polite");source.textContent="Datenstand: wird geladen …";root.append(button,status,source);const fmt=v=>v?new Date(v).toLocaleString("de-DE"):"unbekannt";async function loadStatus(){try{const {data,error}=await supabase.functions.invoke("phalanx-mightpulse-status",{method:"GET"});if(error)throw error;source.textContent=data?.lastCheck?"Letzter Abruf: "+fmt(data.lastCheck)+" · MightPulse-Datenstand: "+fmt(data.sourceLatest)+" · Automatik: noch nicht aktiv":"Noch kein gespeicherter Abruf · Automatik: noch nicht aktiv";}catch{source.textContent="Aktualisierungsstatus derzeit nicht abrufbar."}}loadStatus();
   container.append(root);
   let busy=false;
   button.addEventListener("click",async()=>{
@@ -27,7 +27,7 @@ export function mountMightPulseRefresh({container,supabase}){
       if(error)throw error;
       if(!data?.historySaved)throw new Error("Abruf wurde nicht gespeichert.");
       const time=data.checkedAtUtc?new Date(data.checkedAtUtc).toLocaleString("de-DE"):"unbekannt";
-      status.textContent=data.ok
+      await loadStatus();status.textContent=data.ok
         ? "✓ 16/16 geprüft · Letzter Abruf: "+time
         : "⚠ "+(data.passed??"?")+"/16 geprüft · Letzter Abruf: "+time+" · Details im Prüfprotokoll.";
     }catch(err){
