@@ -15,7 +15,33 @@ export function mountMightPulseRefresh({container,supabase}){
   status.setAttribute("role","status");
   status.setAttribute("aria-live","polite");
   status.textContent="Noch keine manuelle Aktualisierung gestartet.";
-  const source=document.createElement("p");source.setAttribute("aria-live","polite");source.textContent="Datenstand: wird geladen …";root.append(button,status,source);const fmt=v=>v?new Date(v).toLocaleString("de-DE"):"unbekannt";async function loadStatus(){try{const {data,error}=await supabase.functions.invoke("phalanx-mightpulse-status",{method:"GET"});if(error)throw error;source.textContent=data?.lastCheck?"Letzter Abruf: "+fmt(data.lastCheck)+" · MightPulse-Datenstand: "+fmt(data.sourceLatest)+" · Nächster automatischer Abruf: "+fmt(data.nextScheduled):"Noch kein gespeicherter Abruf · Nächster automatischer Abruf: "+fmt(data.nextScheduled);}catch{source.textContent="Aktualisierungsstatus derzeit nicht abrufbar."}}loadStatus();
+  const source=document.createElement("div");
+  source.setAttribute("aria-live","polite");
+  source.style.cssText="margin-top:14px;padding:14px;border:1px solid #887044;border-radius:12px;background:#101a2a;line-height:1.6";
+  root.append(button,status,source);
+  const fmt=v=>v&&Number.isFinite(Date.parse(v))?new Date(v).toLocaleString("de-DE"):"unbekannt";
+  const line=(label,value)=>{const p=document.createElement("div");const b=document.createElement("strong");b.textContent=label+": ";p.append(b,document.createTextNode(value));return p;};
+  let lastData=null,alive=true;
+  function draw(){
+    if(!alive)return;
+    source.replaceChildren();
+    if(!lastData){source.append(line("Status","Wird geladen …"));return;}
+    const data=lastData;
+    const latest=data.sourceLatest?Date.parse(data.sourceLatest):NaN;
+    const age=Number.isFinite(latest)?Math.max(0,Math.floor((Date.now()-latest)/60000)):null;
+    const health=!data.successful?"⚠ Letzter Abruf unvollständig":age===null?"⚪ Datenalter unbekannt":age<=360?"🟢 Aktuell (bis 6 Stunden)":age<=1440?"🟡 Älter (6–24 Stunden)":"🔴 Veraltet (über 24 Stunden)";
+    source.append(line("MightPulse-Status",health),line("Letzter Abruf",fmt(data.lastCheck)),line("MightPulse-Datenstand",fmt(data.sourceLatest)),line("Datenalter",age===null?"unbekannt":Math.floor(age/60)+" Std. "+age%60+" Min."),line("Qualitätsprüfung",data.lastCheck?(data.passed??"?")+"/"+(data.total??16)+" Rankings":"Noch kein Abruf"),line("Nächster automatischer Abruf",fmt(data.nextScheduled)));
+    if(data.automaticEnabled!==true)source.append(line("Automatik","Nicht aktiv"));
+  }
+  async function loadStatus(){
+    try{
+      const {data,error}=await supabase.functions.invoke("phalanx-mightpulse-status",{method:"GET"});
+      if(error)throw error;
+      lastData=data;draw();
+    }catch{source.replaceChildren(line("Status","Aktualisierungsstatus derzeit nicht abrufbar."));}
+  }
+  draw();loadStatus();
+  const refreshTimer=setInterval(()=>{if(alive)loadStatus()},60000);
   container.append(root);
   let busy=false;
   button.addEventListener("click",async()=>{
@@ -35,5 +61,5 @@ export function mountMightPulseRefresh({container,supabase}){
       console.error("PHALANX MightPulse manual refresh failed",err);
     }finally{busy=false;button.disabled=false;button.textContent="↻ Rankings aktualisieren";}
   });
-  return ()=>root.remove();
+  return ()=>{alive=false;clearInterval(refreshTimer);root.remove();};
 }
