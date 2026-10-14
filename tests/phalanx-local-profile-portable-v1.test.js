@@ -1,0 +1,14 @@
+"use strict";
+const assert=require("node:assert/strict");
+const {exportProfile,importProfile}=require("../src/phalanx-local-profile-portable-v1.js");
+const profile={inventory:{infantry:100,cavalry:200,archers:300},marches:[{capacity:150,ratio:[50,20,30]}],heroes:[{key:"marlin",stars:5}]};
+const json=exportProfile(profile,{createdAt:"2026-10-14T00:00:00Z"});
+assert.deepEqual(importProfile(json).profile,profile);
+assert.equal(importProfile(json).createdAt,"2026-10-14T00:00:00Z");
+assert.throws(()=>importProfile("not-json"),/invalid-backup-json/);
+assert.throws(()=>importProfile("x".repeat(1024*1024+1)),/invalid-backup-size/);
+assert.throws(()=>importProfile(JSON.stringify({format:"phalanx-local-profile",schema:99,profile})),/unsupported/);
+assert.throws(()=>exportProfile({...profile,inventory:{...profile.inventory,archers:-1}}),/invalid-local-profile/);
+assert.throws(()=>exportProfile({...profile,heroes:[{key:"bad<>",stars:1}]}),/invalid-local-profile/);
+assert.throws(()=>exportProfile({...profile,marches:[{capacity:10,ratio:[0,0,0]}]}),/invalid-local-profile/);
+console.log("PHALANX local portable profile tests passed");
