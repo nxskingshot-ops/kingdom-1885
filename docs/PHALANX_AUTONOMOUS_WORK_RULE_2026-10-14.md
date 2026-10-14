@@ -24,3 +24,8 @@ Der Assistent arbeitet bei autorisierten PHALANX-Entwicklungsaufgaben eigenstän
 - Wenn der Nutzer etwas lesen, prüfen, beantworten, entscheiden oder freigeben **muss**, diesen Handlungsbedarf in der Chat-Antwort deutlich **grün** hervorheben (sofern die Oberfläche Textfarbe unterstützt).
 - Ohne Nutzer-Handlungsbedarf normale, kurze Fortschrittsmeldung; keine unnötige Aufforderung.
 - Farbkennzeichnung immer zusätzlich mit eindeutiger Beschriftung (z. B. `FAQU – DEINE ENTSCHEIDUNG IST GEFRAGT`), damit die Information auch ohne Farbe erkennbar bleibt.
+
+## Präzisierung: Nutzer liest ALLE Fortschritte mit (2026-10-14)
+- Nach jedem substanziellen Arbeitspaket einen kurzen, verständlichen Status geben: **was wirklich getan/geprüft wurde**, Ergebnis, offene Punkte und nächster Schritt. So kann der Nutzer Fehler oder Vergessenes früh bemerken.
+- **Grün ausschließlich für notwendige Nutzeraktion** (Lesen eines konkreten kritischen Punkts, Prüfen, Entscheiden, Freigeben), nicht für allgemeine Fortschritte.
+- Autonom weiterarbeiten, solange keine Nutzerentscheidung erforderlich ist; Statusmeldungen sind Transparenz, keine Go-Anfragen.
