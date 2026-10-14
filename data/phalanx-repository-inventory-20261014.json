@@ -1,0 +1,1933 @@
+{
+  "schema": "phalanx.inventory.v1",
+  "generatedDate": "2026-10-14",
+  "scope": "top-level entries in data/, docs/, preview/ (not recursive)",
+  "total": 319,
+  "counts": {
+    "data": 62,
+    "docs": 22,
+    "preview": 235
+  },
+  "entries": [
+    {
+      "path": "data/hero-intelligence-gen4-gen5-expedition-v2-2026-10-12.json",
+      "sha": "403641404709835c32ce61509ffa97afd1340e27",
+      "type": "file",
+      "size": 4035
+    },
+    {
+      "path": "data/hero-intelligence-gen4-gen5-plan-2026-10-12.json",
+      "sha": "eb60905ccbf4e406ba0f7cd4c32b7d95a4dd4d13",
+      "type": "file",
+      "size": 1176
+    },
+    {
+      "path": "data/hero-intelligence-infantry-skills-v2-2026-10-12.json",
+      "sha": "aa7ad360be16df50d7044422d58aca13e3f935d1",
+      "type": "file",
+      "size": 6269
+    },
+    {
+      "path": "data/hero-intelligence-research-v1-2026-10-12.json",
+      "sha": "7f47a8ea69f4d799fd8d4b80ef96f3b177502edf",
+      "type": "file",
+      "size": 3306
+    },
+    {
+      "path": "data/hero-intelligence-skill-model-v1-2026-10-12.json",
+      "sha": "681464325cf9e209c8fbaaed6ec831f83adf7c03",
+      "type": "file",
+      "size": 3893
+    },
+    {
+      "path": "data/hero-intelligence-verified-skills-v1-2026-10-12.json",
+      "sha": "2700d10578701af7ab4f0f7588f78f05e5ebf39e",
+      "type": "file",
+      "size": 2747
+    },
+    {
+      "path": "data/imports",
+      "sha": "996a078030907d89362b81c4d7f924ebebdb65ec",
+      "type": "dir",
+      "size": 0
+    },
+    {
+      "path": "data/kvk-opponent-intelligence-current.json",
+      "sha": "1a7c46f20030663a2fdc7ac53faa0c803942d88f",
+      "type": "file",
+      "size": 25275
+    },
+    {
+      "path": "data/kvk-opponent-intelligence-test-1842.json",
+      "sha": "2ab09c9599dd056d7cddb6deea230986d36ea9a7",
+      "type": "file",
+      "size": 7582
+    },
+    {
+      "path": "data/phalanx-alpha29-status-2026-10-12.json",
+      "sha": "9a73fb2ce10af75a48d48728438f92153e615648",
+      "type": "file",
+      "size": 789
+    },
+    {
+      "path": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+      "sha": "a6734f7199d3031b263aaf863b5ca9259f09b99a",
+      "type": "file",
+      "size": 2193
+    },
+    {
+      "path": "data/phalanx-amadeus-onslaught-evidence-resolution-v1-2026-10-14.json",
+      "sha": "e3e900568efd0a1f44127b412f53ccc33aac50fe",
+      "type": "file",
+      "size": 1529
+    },
+    {
+      "path": "data/phalanx-amane-ingame-validation-2026-10-12.json",
+      "sha": "2f1942227ed3ae71ef5d660bbd5419048a7c7f3a",
+      "type": "file",
+      "size": 1941
+    },
+    {
+      "path": "data/phalanx-calculation-database-v1-2026-10-12.json",
+      "sha": "c8106e7acab1820e5caa8174515ef8aa1397b938",
+      "type": "file",
+      "size": 6729
+    },
+    {
+      "path": "data/phalanx-chenko-ingame-validation-2026-10-12.json",
+      "sha": "9a7c7fe41eab799c0b69ca3d561ce1ca83c78a81",
+      "type": "file",
+      "size": 1783
+    },
+    {
+      "path": "data/phalanx-combat-formulas-v1-2026-10-12.json",
+      "sha": "f7194adebef467ea2a7f311bde13e37d11e7d884",
+      "type": "file",
+      "size": 1985
+    },
+    {
+      "path": "data/phalanx-combat-modifier-engine-v1-2026-10-12.json",
+      "sha": "b84c9a34e2793d2f1152cd15adf105c17c4dc63a",
+      "type": "file",
+      "size": 3982
+    },
+    {
+      "path": "data/phalanx-combat-qualification-v2-2026-10-12.json",
+      "sha": "42b6bd5431bd39702bbc2d5187e3c3ffbada6242",
+      "type": "file",
+      "size": 2850
+    },
+    {
+      "path": "data/phalanx-combat-sensitivity-v3-2026-10-12.json",
+      "sha": "317e0fba370e8cf081c945c99ab2c6120ff91d02",
+      "type": "file",
+      "size": 1431
+    },
+    {
+      "path": "data/phalanx-combat-verification-audit-v1-2026-10-12.json",
+      "sha": "ab0ced9c0ba3b782b5bb5c694a132e2ef096bfd0",
+      "type": "file",
+      "size": 3681
+    },
+    {
+      "path": "data/phalanx-command-center-integration-audit-2026-10-12.json",
+      "sha": "47b616ec5199cd75e97c89cc45c08822b1870911",
+      "type": "file",
+      "size": 2210
+    },
+    {
+      "path": "data/phalanx-cycle-advantage-research-v1-20261014.json",
+      "sha": "9c0655789ba7c69f8706955987c4f31b292c99b9",
+      "type": "file",
+      "size": 2226
+    },
+    {
+      "path": "data/phalanx-database-qualification-audit-v1-2026-10-12.json",
+      "sha": "49d8d123d8b6a6e75a3d7219bacf2bc6a7ef926b",
+      "type": "file",
+      "size": 4537
+    },
+    {
+      "path": "data/phalanx-display-gate-check-v1-2026-10-14.json",
+      "sha": "7f221c7e1aa2f158f9ad2e52e2a416c3d67cf6cc",
+      "type": "file",
+      "size": 611
+    },
+    {
+      "path": "data/phalanx-double-audit-math-v1.json",
+      "sha": "9b8a4e484a7fa2c2375b7e75ae83236755a671ae",
+      "type": "file",
+      "size": 544
+    },
+    {
+      "path": "data/phalanx-effect-model-bridge-v1-2026-10-13.json",
+      "sha": "1b61ad4c4e39c9eb40680fb5abb8d455de8c2e03",
+      "type": "file",
+      "size": 18730
+    },
+    {
+      "path": "data/phalanx-evidence-reconciliation-2026-10-13.json",
+      "sha": "bea1907dfe877dfc4e87ad407f92d4424b939bc6",
+      "type": "file",
+      "size": 2623
+    },
+    {
+      "path": "data/phalanx-exhaustive-math-audit-2026-10-12.json",
+      "sha": "b8dcd0009e94a30de28c700949865933958e1e9e",
+      "type": "file",
+      "size": 1409
+    },
+    {
+      "path": "data/phalanx-gen3-ingame-skills-2026-10-12.json",
+      "sha": "3587cd2933571e65b35e171d69c2d9a124b7d895",
+      "type": "file",
+      "size": 4516
+    },
+    {
+      "path": "data/phalanx-gen4-alcar-margot-ingame-2026-10-12.json",
+      "sha": "8241068c81f1ece4ac21b480f05f3b7a746af65a",
+      "type": "file",
+      "size": 2914
+    },
+    {
+      "path": "data/phalanx-helga-ingame-validation-2026-10-12.json",
+      "sha": "cc129c3cb3f6de326e62cbd1e39c2f5aca75e9f5",
+      "type": "file",
+      "size": 2088
+    },
+    {
+      "path": "data/phalanx-hero-comparison-coverage-v1-2026-10-13.json",
+      "sha": "39642422d8efbc748abacb1f46646f3cf5131ee5",
+      "type": "file",
+      "size": 12420
+    },
+    {
+      "path": "data/phalanx-hero-comparison-display-gate-v1-2026-10-14.json",
+      "sha": "825438dc235193cecaf2d91038240d6ec7bb313e",
+      "type": "file",
+      "size": 6489
+    },
+    {
+      "path": "data/phalanx-hero-comparison-readiness-v1-2026-10-13.json",
+      "sha": "e3882bdb5a63417f1ef16feed8282116e2a20bc8",
+      "type": "file",
+      "size": 20115
+    },
+    {
+      "path": "data/phalanx-hero-comparison-trigger-safety-overlay-v1-2026-10-14.json",
+      "sha": "c40e8a3e0692e122620e152c3e32c0428c5573b3",
+      "type": "file",
+      "size": 1096
+    },
+    {
+      "path": "data/phalanx-hero-generation-policy-2026-10-12.json",
+      "sha": "0f089ef8f3f5c79cba98574cc23b94f1c618d18a",
+      "type": "file",
+      "size": 1539
+    },
+    {
+      "path": "data/phalanx-hero-roster-gen1-gen5-v1-2026-10-12.json",
+      "sha": "5ecadc2d8fae520233f68654fb37ec104cbd46ec",
+      "type": "file",
+      "size": 7906
+    },
+    {
+      "path": "data/phalanx-hero-skill-source-index-v1-2026-10-13.json",
+      "sha": "ec5c62194303b58219ddada4af4c91de6bf3dff6",
+      "type": "file",
+      "size": 18731
+    },
+    {
+      "path": "data/phalanx-hero-unified-evidence-index-v1-2026-10-13.json",
+      "sha": "bdc678565bc2c84c6523072ff2265126d6d796cd",
+      "type": "file",
+      "size": 22064
+    },
+    {
+      "path": "data/phalanx-hero-unified-evidence-index-v2-2026-10-13.json",
+      "sha": "b84f58958aa5596be99eecd16da23aca49bd3385",
+      "type": "file",
+      "size": 38116
+    },
+    {
+      "path": "data/phalanx-hilde-ingame-validation-2026-10-12.json",
+      "sha": "ba49653eebaba74b12ccb3f2009b1df3a2e94095",
+      "type": "file",
+      "size": 1779
+    },
+    {
+      "path": "data/phalanx-independent-math-validation-2026-10-12.json",
+      "sha": "09c1327bc1ff0ef38bc1c1808559989f2aee8f57",
+      "type": "file",
+      "size": 1289
+    },
+    {
+      "path": "data/phalanx-independent-validation-2026-10-12.json",
+      "sha": "df1b2ef6e7af6980506c8e846530fee7495de3b0",
+      "type": "file",
+      "size": 2530
+    },
+    {
+      "path": "data/phalanx-joiner-heroes-researched-v1-2026-10-12.json",
+      "sha": "6657b7635c0ef512445972186f9a746de1e7c75c",
+      "type": "file",
+      "size": 1311
+    },
+    {
+      "path": "data/phalanx-mechanics-audit-2026-10-12.json",
+      "sha": "65a57779680ad3b0910edbda89da8a7693b902b1",
+      "type": "file",
+      "size": 329
+    },
+    {
+      "path": "data/phalanx-pets-masters-buffs-research-v1-2026-10-12.json",
+      "sha": "17d75eead5aa4b62d3c976f946cc23a3da23dc43",
+      "type": "file",
+      "size": 5028
+    },
+    {
+      "path": "data/phalanx-phase1-ingame-evidence-index-2026-10-12.json",
+      "sha": "6d65b36bea56e087ad6817ed35f23eb719ffa2ca",
+      "type": "file",
+      "size": 628
+    },
+    {
+      "path": "data/phalanx-rally-mechanics-source-audit-2026-10-12.json",
+      "sha": "bb6ef866d0be151411b426fa72c583b407caf719",
+      "type": "file",
+      "size": 2148
+    },
+    {
+      "path": "data/phalanx-release-quality-gate-v1-2026-10-12.json",
+      "sha": "0f1b16dd406cf67ac09c60b4b80571611f0d3450",
+      "type": "file",
+      "size": 4069
+    },
+    {
+      "path": "data/phalanx-robust-optimizer-policy-v1-2026-10-12.json",
+      "sha": "024adf14b2ffc9a8a665c24cc7139bb434b1818e",
+      "type": "file",
+      "size": 1870
+    },
+    {
+      "path": "data/phalanx-sandbox-access-audit-2026-10-12.json",
+      "sha": "9f91544c8b4cbb9409d13ff0e354efec6a11e478",
+      "type": "file",
+      "size": 1927
+    },
+    {
+      "path": "data/phalanx-saul-skill-evidence-v1.json",
+      "sha": "b3de5095b3b8b12c5967a0577a544d8e8039a7f3",
+      "type": "file",
+      "size": 987
+    },
+    {
+      "path": "data/phalanx-secondary-skill-reconciliation-v1-2026-10-13.json",
+      "sha": "ace2fefbe4d0c1324706fa84123649beb87a6708",
+      "type": "file",
+      "size": 14109
+    },
+    {
+      "path": "data/phalanx-secondary-skill-source-links-v1-2026-10-13.json",
+      "sha": "5c6c9a1da773044fd36a931346822f5f5773e7d8",
+      "type": "file",
+      "size": 4171
+    },
+    {
+      "path": "data/phalanx-sensitivity-2026-10-12.json",
+      "sha": "d15db9ad607bc588209d3339b90fda755d738640",
+      "type": "file",
+      "size": 228
+    },
+    {
+      "path": "data/phalanx-seven-hero-first-expedition-skills-2026-10-12.json",
+      "sha": "d8b02a8b2703422b09c49df4b63777b270eaa47c",
+      "type": "file",
+      "size": 1415
+    },
+    {
+      "path": "data/phalanx-skill-effect-taxonomy-v1-2026-10-13.json",
+      "sha": "52c4958241b66dc6dd953cd47ce4287626896665",
+      "type": "file",
+      "size": 17410
+    },
+    {
+      "path": "data/phalanx-skill-name-crosswalk-v1-2026-10-13.json",
+      "sha": "c30059b25d3e49b4304542478da7cc6d471e6106",
+      "type": "file",
+      "size": 5649
+    },
+    {
+      "path": "data/phalanx-skill-normalization-audit-v1-2026-10-13.json",
+      "sha": "450abdb79e1db056dc58a02e7d576601da3cf7f4",
+      "type": "file",
+      "size": 5353
+    },
+    {
+      "path": "data/phalanx-source-registry-v13-2026-10-12.json",
+      "sha": "203741917a884ff425d70b2c636390a5910ecf65",
+      "type": "file",
+      "size": 1519
+    },
+    {
+      "path": "data/phalanx-verified-math-audit-2026-10-12.json",
+      "sha": "9a2a5b9aaca444c9a3a25a7abbfac78eef033eca",
+      "type": "file",
+      "size": 1912
+    },
+    {
+      "path": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json",
+      "sha": "35d79077369981c56e6982ef9e98715ade1f634e",
+      "type": "file",
+      "size": 2110
+    },
+    {
+      "path": "docs/ALLIANCE_CHAT_REPORT_STANDARD.md",
+      "sha": "c411cc68e5736decb9b463b66dccc62b59d58748",
+      "type": "file",
+      "size": 9060
+    },
+    {
+      "path": "docs/KVK_INTELLIGENCE_LAYOUT_FREEZE_2026-10-03.md",
+      "sha": "1f5947cfeb9e1c971c8344a3804190573f9ae095",
+      "type": "file",
+      "size": 2270
+    },
+    {
+      "path": "docs/NEXUS-PHALANX-CANONICAL-HOME-FREEZE-2026-10-12.md",
+      "sha": "fd037aefb7d48686fd112e0e6e3e1fd06c3b8e4b",
+      "type": "file",
+      "size": 2863
+    },
+    {
+      "path": "docs/NEXUS-PHALANX-COMPUTATIONAL-INTELLIGENCE-MILESTONE-2026-10-12.md",
+      "sha": "a4e893560fd203a8cd165ae16baf8340c984ef26",
+      "type": "file",
+      "size": 6699
+    },
+    {
+      "path": "docs/NEXUS-PHALANX-HOME-APPROVED-ALPHA12-2026-10-12.md",
+      "sha": "611bff1c125691e40d1d1bbd75f3e56d2305201d",
+      "type": "file",
+      "size": 1314
+    },
+    {
+      "path": "docs/NEXUS-PHALANX-OUTPOST-MAP-ALPHA1-DESIGN-AUDIT-2026-10-12.md",
+      "sha": "f91d048f04867aadcc6baf491de219cd58864681",
+      "type": "file",
+      "size": 2466
+    },
+    {
+      "path": "docs/NEXUS-PHALANX-OUTPOST-MAP-V2-DESIGN-FREEZE-2026-10-12.md",
+      "sha": "a6606b40aad95b24a066c4129ecbb2649b6c80a9",
+      "type": "file",
+      "size": 2843
+    },
+    {
+      "path": "docs/NEXUS-PHALANX-OUTPOST-MAP-V2-GEOMETRY-PLAN-2026-10-12.md",
+      "sha": "67b577068a5dc5bfab76b7fc64eb3f25e1b7ed87",
+      "type": "file",
+      "size": 6476
+    },
+    {
+      "path": "docs/NEXUS_APP_HELP_CENTER_V1.md",
+      "sha": "0cac9140b878433694ac765d749bb5cd54202559",
+      "type": "file",
+      "size": 3864
+    },
+    {
+      "path": "docs/NEXUS_APP_TRILINGUAL_TEST_V2.md",
+      "sha": "503045577db6ee91e26ba246b79098f158c9b268",
+      "type": "file",
+      "size": 2805
+    },
+    {
+      "path": "docs/NEXUS_APP_TRILINGUAL_UNIFIED_V3.md",
+      "sha": "bb542b4c9eedc52e0faa11ccbd2f0dbd6c24767c",
+      "type": "file",
+      "size": 2537
+    },
+    {
+      "path": "docs/PHALANX-PROJECT-MEMORY-2026-10-14.md",
+      "sha": "7c92e855a5eaeda6ea1443fdfd45093bb1f2518d",
+      "type": "file",
+      "size": 3071
+    },
+    {
+      "path": "docs/SUPABASE_BACKUP_RESTORE.md",
+      "sha": "900a93fbf118a42c917514e1f8b233f74336e46b",
+      "type": "file",
+      "size": 2480
+    },
+    {
+      "path": "docs/assets",
+      "sha": "8afd65b693989f7c713998b305529af909716377",
+      "type": "dir",
+      "size": 0
+    },
+    {
+      "path": "docs/freezes",
+      "sha": "91844e444c41f9f21b7214d785a016edb7903eaa",
+      "type": "dir",
+      "size": 0
+    },
+    {
+      "path": "docs/go-live-hardening-2026-10-04.md",
+      "sha": "c42f12ed6e5f7014fed6448dced5428f27972638",
+      "type": "file",
+      "size": 5251
+    },
+    {
+      "path": "docs/go-live-priority-2026-10-03.md",
+      "sha": "756af0cd312c21e55089ed2aabf8d8b2d4fea9fd",
+      "type": "file",
+      "size": 2792
+    },
+    {
+      "path": "docs/kvk-opponent-intelligence-test-1842-final.md",
+      "sha": "0140d58a15b8e766bbdcef6dd10134d27dafc873",
+      "type": "file",
+      "size": 4781
+    },
+    {
+      "path": "docs/kvk-opponent-intelligence-test-1842.md",
+      "sha": "9cbb93efb778bdde261b527f270b1808bf6e5c0a",
+      "type": "file",
+      "size": 2604
+    },
+    {
+      "path": "docs/nexus-app-2-design-freeze.md",
+      "sha": "6852ccd24386b19a375e74524ea66d8ff2697001",
+      "type": "file",
+      "size": 10143
+    },
+    {
+      "path": "docs/phalanx-kingdom-scout-threat-intelligence-v0-20261014.md",
+      "sha": "1795d68e5da9629532ad625620ea1dacf5a120e3",
+      "type": "file",
+      "size": 3820
+    },
+    {
+      "path": "docs/transfer-scouting-functionality-baseline-2026-09-29.md",
+      "sha": "9e0265bc888ddf5869531285af81bf12dcf7edd0",
+      "type": "file",
+      "size": 3051
+    },
+    {
+      "path": "preview/alliance-trends-ring-test.html",
+      "sha": "2a45a7437c2fc9a7daf215b22b9deeeca543bf60",
+      "type": "file",
+      "size": 37126
+    },
+    {
+      "path": "preview/alliance-trends-v1.html",
+      "sha": "277e29124831bc5a6cadc4665ab25f05a92a5c66",
+      "type": "file",
+      "size": 17227
+    },
+    {
+      "path": "preview/alliance-trends-v2.html",
+      "sha": "2bef4f64775fa36b8bc581993a2761bdee27c446",
+      "type": "file",
+      "size": 17481
+    },
+    {
+      "path": "preview/alliance-trends-v3.html",
+      "sha": "9365226b9085c16eef232860ed412859a86a576f",
+      "type": "file",
+      "size": 20177
+    },
+    {
+      "path": "preview/data",
+      "sha": "8182e699abe68584f836340ee229ca42d04d6588",
+      "type": "dir",
+      "size": 0
+    },
+    {
+      "path": "preview/for-an-single-header-test.html",
+      "sha": "c8e748a7f6f5b19e0d9185fb60ddd206d0c5a3bf",
+      "type": "file",
+      "size": 7457
+    },
+    {
+      "path": "preview/for-an.html",
+      "sha": "3feff7c90fa1138f5c9aba583493ff7739eb76ab",
+      "type": "file",
+      "size": 2866
+    },
+    {
+      "path": "preview/guest-access-setup.html",
+      "sha": "f50dc67d27dc0fea86841e6f61469d63258f58a7",
+      "type": "file",
+      "size": 6715
+    },
+    {
+      "path": "preview/hero-intelligence-advisor-prototype-2026-10-12.html",
+      "sha": "d3e379d46b7cdbff6194baf8db98eac26c05ea72",
+      "type": "file",
+      "size": 3181
+    },
+    {
+      "path": "preview/hero-intelligence-advisor-v2-2026-10-12.html",
+      "sha": "c890b68707fc2c72ef98b2f56a4ae551cdffa2ca",
+      "type": "file",
+      "size": 4709
+    },
+    {
+      "path": "preview/hero-intelligence-clear-entry-fixed-v14-2026-10-12.html",
+      "sha": "32efc1354f0b41b5cdb25817aeb5e3c881cb314b",
+      "type": "file",
+      "size": 23790
+    },
+    {
+      "path": "preview/hero-intelligence-clear-entry-v13-2026-10-12.html",
+      "sha": "d8aff065b0ca73d78e458a3e11a2781c9c4f4b6b",
+      "type": "file",
+      "size": 23665
+    },
+    {
+      "path": "preview/hero-intelligence-combined-advisor-v5-2026-10-12.html",
+      "sha": "96d3463be4a1ec7a6693a93a8a142240e3add96d",
+      "type": "file",
+      "size": 6441
+    },
+    {
+      "path": "preview/hero-intelligence-combined-advisor-v6-2026-10-12.html",
+      "sha": "4571adbdf5efe964e3075618c061d384be70566f",
+      "type": "file",
+      "size": 7609
+    },
+    {
+      "path": "preview/hero-intelligence-combined-advisor-v7-2026-10-12.html",
+      "sha": "0904a7572da78d82eeac337eacaaa379e84ff89b",
+      "type": "file",
+      "size": 8365
+    },
+    {
+      "path": "preview/hero-intelligence-compact-comparison-v12-2026-10-12.html",
+      "sha": "608c5b147ee761a5490998e2915ace8228486992",
+      "type": "file",
+      "size": 21373
+    },
+    {
+      "path": "preview/hero-intelligence-compact-v8-2026-10-12.html",
+      "sha": "9f211f7775237bbdba3fa1e25d33ca9dab438587",
+      "type": "file",
+      "size": 11591
+    },
+    {
+      "path": "preview/hero-intelligence-evidence-advisor-v15-2026-10-12.html",
+      "sha": "f4ae1f429a5d582a64d399e4f64b7674c2ebf2f6",
+      "type": "file",
+      "size": 28685
+    },
+    {
+      "path": "preview/hero-intelligence-shard-calculator-v3-2026-10-12.html",
+      "sha": "429c990b7fb3da7e0eaae251c0bc485f5cf00ec4",
+      "type": "file",
+      "size": 4118
+    },
+    {
+      "path": "preview/hero-intelligence-shard-calculator-v4-2026-10-12.html",
+      "sha": "5bcf6b4eaf39fd44e9ee9a2373af1c88b56deeb0",
+      "type": "file",
+      "size": 3577
+    },
+    {
+      "path": "preview/hero-intelligence-skill-first-v11-2026-10-12.html",
+      "sha": "d7d9ff977c124602b08176d39509bc830af7e6c9",
+      "type": "file",
+      "size": 19233
+    },
+    {
+      "path": "preview/hero-intelligence-skills-v10-2026-10-12.html",
+      "sha": "2358eebaa0fa820c80d7b47a5078424c2ea262ea",
+      "type": "file",
+      "size": 17027
+    },
+    {
+      "path": "preview/hero-intelligence-skills-v9-2026-10-12.html",
+      "sha": "4e1b8512f3c28483f4c3347b39f5800af64da555",
+      "type": "file",
+      "size": 14439
+    },
+    {
+      "path": "preview/kingdom-hub-branded-v2.html",
+      "sha": "ae55f639b8777cc822b558b38088ed6247d0d4c8",
+      "type": "file",
+      "size": 8390
+    },
+    {
+      "path": "preview/kingdom-hub-branded.html",
+      "sha": "ab360651a29abb7c7313d4f9ac8f91959cbb5bb8",
+      "type": "file",
+      "size": 8379
+    },
+    {
+      "path": "preview/kingdom-hub-compact-test.html",
+      "sha": "02f7997838d5ba793349197b701f79aa6457d005",
+      "type": "file",
+      "size": 18904
+    },
+    {
+      "path": "preview/kingdom-hub-fixed.html",
+      "sha": "ee10a4d546822e61a8138310dd5602d6e2049eb3",
+      "type": "file",
+      "size": 2138
+    },
+    {
+      "path": "preview/kingdom-hub-menu-test.html",
+      "sha": "b6c50fa8a7fe8436d5a0e9f968ea86af9e071bc3",
+      "type": "file",
+      "size": 76428
+    },
+    {
+      "path": "preview/kingdom-hub-original.html",
+      "sha": "562aa448bb65f727e385ef169b78a1495c5f7034",
+      "type": "file",
+      "size": 2420
+    },
+    {
+      "path": "preview/kingdom-hub-scouting-demo.html",
+      "sha": "77c96fa9703c02082e370f524468bed1e00fc54b",
+      "type": "file",
+      "size": 9403
+    },
+    {
+      "path": "preview/kingdom-hub-scouting-open-test.html",
+      "sha": "8b648cb85efc63b2c1369eefca0557563e79bc1b",
+      "type": "file",
+      "size": 11937
+    },
+    {
+      "path": "preview/kingdom-hub-scouting-v2.html",
+      "sha": "0e2c48a99ce40645e8f11d404b7136a71c070a20",
+      "type": "file",
+      "size": 9409
+    },
+    {
+      "path": "preview/kingdom-hub-scouting-v3.html",
+      "sha": "2576b535004013c03ebb4aafe2cfd7d35fc41a4f",
+      "type": "file",
+      "size": 11899
+    },
+    {
+      "path": "preview/kingdom-hub-scouting-v4.html",
+      "sha": "94144dfaebecdf51b372ac1a5251946b85aaa2c5",
+      "type": "file",
+      "size": 11910
+    },
+    {
+      "path": "preview/kingdom-hub-scouting-v5.html",
+      "sha": "193e31268066cd17419e052a748deb9504b7df17",
+      "type": "file",
+      "size": 11896
+    },
+    {
+      "path": "preview/kingdom-hub-scouting-v6.html",
+      "sha": "d4ddc9c42a2d828f4348e458cd36cbfe8da8e317",
+      "type": "file",
+      "size": 25564
+    },
+    {
+      "path": "preview/kingdom-hub-trends-motto-test.html",
+      "sha": "8fcf34a3dd74ae9c3577285fe1c801aa5d1bdd76",
+      "type": "file",
+      "size": 18767
+    },
+    {
+      "path": "preview/kingdom-hub-trends-v7.html",
+      "sha": "f4148b1356d0fac8a0d51e2c47ed1497508718df",
+      "type": "file",
+      "size": 18359
+    },
+    {
+      "path": "preview/kingdom-hub-trends-v8.html",
+      "sha": "f4148b1356d0fac8a0d51e2c47ed1497508718df",
+      "type": "file",
+      "size": 18359
+    },
+    {
+      "path": "preview/kingdom-hub-v2.html",
+      "sha": "3ed3ea98b3a31f55b092831b8f12e2b971b5da2b",
+      "type": "file",
+      "size": 1956
+    },
+    {
+      "path": "preview/kingdom-hub-v3.html",
+      "sha": "93df3d63f1631f665ed887427590fed9d65e496d",
+      "type": "file",
+      "size": 1956
+    },
+    {
+      "path": "preview/kingdom-hub-v4.html",
+      "sha": "67058086227dbe8c1e6847c78a7b35e823d6b458",
+      "type": "file",
+      "size": 1956
+    },
+    {
+      "path": "preview/kingdom-hub.html",
+      "sha": "9b98a7c7477453c1c035af1cc03de48fd7c154ca",
+      "type": "file",
+      "size": 1950
+    },
+    {
+      "path": "preview/kvk-cycle-status-test-2026-10-02.html",
+      "sha": "04642c3a742ff773c1be2c57d8e8db3e26bc79cc",
+      "type": "file",
+      "size": 21634
+    },
+    {
+      "path": "preview/kvk-enemy-1913.html",
+      "sha": "b16a683a2a59add9905cd7cd9a50117b19f609b0",
+      "type": "file",
+      "size": 14674
+    },
+    {
+      "path": "preview/kvk-prep-five-contrast-v12.html",
+      "sha": "77e4b8839d19099a8760234431d0404a79a96405",
+      "type": "file",
+      "size": 40690
+    },
+    {
+      "path": "preview/kvk-prep-five-contrast-v13.html",
+      "sha": "20752b2d831efb8969e39f9cd75d4aa8d1f6f038",
+      "type": "file",
+      "size": 68606
+    },
+    {
+      "path": "preview/kvk-prep-fixed.html",
+      "sha": "203a7083ed4a0a08ad08e4f691b375ff6af450de",
+      "type": "file",
+      "size": 23434
+    },
+    {
+      "path": "preview/kvk-prep-original.html",
+      "sha": "08697dab0935a8d1fa2897a36af4c501f105b4fe",
+      "type": "file",
+      "size": 40573
+    },
+    {
+      "path": "preview/kvk-prep-public-demo.html",
+      "sha": "c4da20f25fa143f4ca637de206702c1bb5421810",
+      "type": "file",
+      "size": 17485
+    },
+    {
+      "path": "preview/kvk-prep-v1.html",
+      "sha": "1f7cdfde71dd35d0d86fd5c7a6db53ff23b55dd5",
+      "type": "file",
+      "size": 14309
+    },
+    {
+      "path": "preview/kvk-prep-v2.html",
+      "sha": "a3bef08572ab24cf21936817c4b98600404051ad",
+      "type": "file",
+      "size": 14325
+    },
+    {
+      "path": "preview/kvk-prep-v3.html",
+      "sha": "c0fe4d7f42dd5174f1db74ae327f5d10456f39f8",
+      "type": "file",
+      "size": 16207
+    },
+    {
+      "path": "preview/kvk-prep-v4.html",
+      "sha": "ee4bf54e427015e60f77bb5a029aa484795649fa",
+      "type": "file",
+      "size": 21340
+    },
+    {
+      "path": "preview/live-test.html",
+      "sha": "a7551185f60cdd48525d497c1aa55a86bcf69664",
+      "type": "file",
+      "size": 2031
+    },
+    {
+      "path": "preview/manage-outposts-v7.html",
+      "sha": "4b8f61e9d819ddfab8086206b46a38d3dad70894",
+      "type": "file",
+      "size": 1637
+    },
+    {
+      "path": "preview/nexus-app-2-command-center-frozen-layout-test.html",
+      "sha": "6c02f16b02a8a19a1a8d1ce9e0b4f763b7d9fc24",
+      "type": "file",
+      "size": 28323
+    },
+    {
+      "path": "preview/nexus-app-2-command-center-portrait-compact-test.html",
+      "sha": "363516775435f474cb3009fa3b72c9db92a4565f",
+      "type": "file",
+      "size": 30871
+    },
+    {
+      "path": "preview/nexus-app-2-command-center-portrait-final-polish-test.html",
+      "sha": "411bf5da862b76a06abcfa7c8b30c3a8dbe92774",
+      "type": "file",
+      "size": 33930
+    },
+    {
+      "path": "preview/nexus-app-2-command-center-portrait-fix-test.html",
+      "sha": "9020d71722861af794debadb601da87935325ebe",
+      "type": "file",
+      "size": 28298
+    },
+    {
+      "path": "preview/nexus-app-2-command-center-portrait-polish-test.html",
+      "sha": "ac671c7dc9a7d8b6c2168d99c4c8b595c1277666",
+      "type": "file",
+      "size": 32215
+    },
+    {
+      "path": "preview/nexus-app-2-command-center-portrait-truepower-test.html",
+      "sha": "c1c23b22ea5d519ac875b3113b7b866b68f883ea",
+      "type": "file",
+      "size": 33221
+    },
+    {
+      "path": "preview/nexus-app-2-command-center-v1.html",
+      "sha": "8a6b7d86cd880a74bc089d6b498ee788af539548",
+      "type": "file",
+      "size": 28146
+    },
+    {
+      "path": "preview/nexus-help-menu-v1.html",
+      "sha": "df445698c5636e76c303d516540f67f5158d1e27",
+      "type": "file",
+      "size": 40501
+    },
+    {
+      "path": "preview/nexus-i18n-help-v2.html",
+      "sha": "8387da1200efab5716072a8b31f304fba8f6876b",
+      "type": "file",
+      "size": 46179
+    },
+    {
+      "path": "preview/nexus-i18n-layout-v1.html",
+      "sha": "f35787a18e88924a83d8753d1f9d79db23736430",
+      "type": "file",
+      "size": 46167
+    },
+    {
+      "path": "preview/nexus-i18n-protected-v6.html",
+      "sha": "31b555c16d84b433378bddeb70f5514ef18d61cc",
+      "type": "file",
+      "size": 59446
+    },
+    {
+      "path": "preview/nexus-i18n-unified-v3.html",
+      "sha": "f3467508505f35f472d2ec22c90c19baf5b4fea4",
+      "type": "file",
+      "size": 46602
+    },
+    {
+      "path": "preview/nexus-i18n-unified-v4.html",
+      "sha": "4a85c51930fe4ec1862d4daa9374bd543f643760",
+      "type": "file",
+      "size": 46599
+    },
+    {
+      "path": "preview/nexus-i18n-unified-v5.html",
+      "sha": "f9ba4a9cf6237c2f75533e1c28a20e26d93a46ed",
+      "type": "file",
+      "size": 46603
+    },
+    {
+      "path": "preview/nexus-menu-clean-test-2026-10-02.html",
+      "sha": "5e1122768419d0ef5d37f6d18093e54518028068",
+      "type": "file",
+      "size": 61191
+    },
+    {
+      "path": "preview/nexus-phalanx-battle-readiness-clean-test-2026-10-12.html",
+      "sha": "874659b31efabe493107b43c7280ab4376743797",
+      "type": "file",
+      "size": 58454
+    },
+    {
+      "path": "preview/nexus-phalanx-battle-readiness-history-test-2026-10-12.html",
+      "sha": "f466d4eba8a428637e19cb4973d81951b4a6e6dc",
+      "type": "file",
+      "size": 50270
+    },
+    {
+      "path": "preview/nexus-phalanx-battle-readiness-live-status-test-2026-10-12.html",
+      "sha": "f4dd6ee06b86c661471492e8e03f482c94c4f3df",
+      "type": "file",
+      "size": 59616
+    },
+    {
+      "path": "preview/nexus-phalanx-battle-readiness-member-guard-test-2026-10-12.html",
+      "sha": "12b62ed9609d46d0f755d1b4e6c3be855bea5977",
+      "type": "file",
+      "size": 60227
+    },
+    {
+      "path": "preview/nexus-phalanx-battle-readiness-member-test-2026-10-12.html",
+      "sha": "fae78dca8ecfac133a210e797521986229f4aa47",
+      "type": "file",
+      "size": 59873
+    },
+    {
+      "path": "preview/nexus-phalanx-battle-readiness-planner-test-2026-10-12.html",
+      "sha": "74e287537577fbc94fe7c44773d9f9a5a1fe7eb0",
+      "type": "file",
+      "size": 40396
+    },
+    {
+      "path": "preview/nexus-phalanx-battle-readiness-role-safety-test-2026-10-12.html",
+      "sha": "bf3dde8c74c0a560ae5245558acad72143de22cb",
+      "type": "file",
+      "size": 51696
+    },
+    {
+      "path": "preview/nexus-phalanx-battle-readiness-save-test-2026-10-12.html",
+      "sha": "0709fa9fff3b0b04d3b159593bdc71ebdfe4988a",
+      "type": "file",
+      "size": 42742
+    },
+    {
+      "path": "preview/nexus-phalanx-battle-readiness-shared-test-2026-10-12.html",
+      "sha": "5d4b133f45c5daf18bb48557a332c95472377d0e",
+      "type": "file",
+      "size": 48873
+    },
+    {
+      "path": "preview/nexus-phalanx-battle-readiness-simple-test-2026-10-12.html",
+      "sha": "38e721e0c268da8b83c56397c4f38b3aa5b8cc57",
+      "type": "file",
+      "size": 57958
+    },
+    {
+      "path": "preview/nexus-phalanx-battle-readiness-status-test-2026-10-12.html",
+      "sha": "c238b96b127262f10175f055227a920c5f244960",
+      "type": "file",
+      "size": 59442
+    },
+    {
+      "path": "preview/nexus-phalanx-battle-readiness-sync-fix-2026-10-12.html",
+      "sha": "a90e21251632f87b68f40884c6127da094991f60",
+      "type": "file",
+      "size": 51304
+    },
+    {
+      "path": "preview/nexus-phalanx-battle-readiness-test-2026-10-12.html",
+      "sha": "040ebae325b34d2fff74c9b90c8b433805f24b8a",
+      "type": "file",
+      "size": 36885
+    },
+    {
+      "path": "preview/nexus-phalanx-battle-readiness-unified-test-2026-10-12.html",
+      "sha": "9c482c79e884325f622bbbaf2093fc96586324cb",
+      "type": "file",
+      "size": 51666
+    },
+    {
+      "path": "preview/nexus-phalanx-battle-readiness-verified-status-test-2026-10-12.html",
+      "sha": "65e02940731ad8fe6b3fa132d5bc0784ca474d15",
+      "type": "file",
+      "size": 59501
+    },
+    {
+      "path": "preview/nexus-phalanx-command-center-alpha26-standalone-start-test-2026-10-13.html",
+      "sha": "47d631d94e085ef5a05483f514bdcc52ff0f984a",
+      "type": "file",
+      "size": 34196
+    },
+    {
+      "path": "preview/nexus-phalanx-command-center-alpha27-offline-navigation-test-2026-10-13.html",
+      "sha": "8b0484743b07b709092c040a2d43ae29a2138bd0",
+      "type": "file",
+      "size": 34460
+    },
+    {
+      "path": "preview/nexus-phalanx-command-center-alpha28-local-pair-test-2026-10-13.html",
+      "sha": "3ba8c9eca424081682aae0947a8dc5c35ccb0144",
+      "type": "file",
+      "size": 34445
+    },
+    {
+      "path": "preview/nexus-phalanx-command-center-design-integration-alpha10-2026-10-12.html",
+      "sha": "eeb77da349bab3b778002dfcb477eeb0fbcb748d",
+      "type": "file",
+      "size": 36447
+    },
+    {
+      "path": "preview/nexus-phalanx-command-center-integration-test-2026-10-12.html",
+      "sha": "511aef92ca9e795ae0e8f38b71ee2ff5e4edd907",
+      "type": "file",
+      "size": 34921
+    },
+    {
+      "path": "preview/nexus-phalanx-frozen-command-center-functional-alpha11-2026-10-12.html",
+      "sha": "d7b4865fda24ec3dcd1d664eec72fc39469d279a",
+      "type": "file",
+      "size": 34162
+    },
+    {
+      "path": "preview/nexus-phalanx-hero-integration-test-2026-10-12.html",
+      "sha": "d18e462e89df59e25610475c96c0eebfda198b4f",
+      "type": "file",
+      "size": 1894
+    },
+    {
+      "path": "preview/nexus-phalanx-intelligence-workspace-alpha1-2026-10-12.html",
+      "sha": "1d1130832d20fba7c3c4a9e0ade1692fe5bcd12a",
+      "type": "file",
+      "size": 6810
+    },
+    {
+      "path": "preview/nexus-phalanx-intelligence-workspace-alpha2-2026-10-12.html",
+      "sha": "d1339f80b99155ec4407142c00d10790e5426b0b",
+      "type": "file",
+      "size": 7051
+    },
+    {
+      "path": "preview/nexus-phalanx-intelligence-workspace-alpha3-2026-10-12.html",
+      "sha": "f5d00039e977562095ed7846a18fd0fff97d01c3",
+      "type": "file",
+      "size": 7033
+    },
+    {
+      "path": "preview/nexus-phalanx-intelligence-workspace-alpha4-2026-10-12.html",
+      "sha": "630ebed6e3cbe94f75c0a92a4c23aaf5592c6fe4",
+      "type": "file",
+      "size": 7071
+    },
+    {
+      "path": "preview/nexus-phalanx-intelligence-workspace-alpha5-2026-10-12.html",
+      "sha": "e121366dd28e5922fd9fbd62032280d8d776ec19",
+      "type": "file",
+      "size": 7082
+    },
+    {
+      "path": "preview/nexus-phalanx-intelligence-workspace-alpha6-2026-10-12.html",
+      "sha": "fd946a2badbbd5ff91cc3b147015ddb1334a1f4f",
+      "type": "file",
+      "size": 7046
+    },
+    {
+      "path": "preview/nexus-phalanx-intelligence-workspace-alpha7-2026-10-12.html",
+      "sha": "df994e2b320ba55a0f5c34a43ba60e72ffc210f7",
+      "type": "file",
+      "size": 7052
+    },
+    {
+      "path": "preview/nexus-phalanx-intelligence-workspace-alpha8-2026-10-12.html",
+      "sha": "1394bf34203076baa12d7af827d2294b7765ca63",
+      "type": "file",
+      "size": 7052
+    },
+    {
+      "path": "preview/nexus-phalanx-intelligence-workspace-compact-alpha9-2026-10-12.html",
+      "sha": "226e9d2480f694c96bb0d0c1d5a22952027b34e6",
+      "type": "file",
+      "size": 4920
+    },
+    {
+      "path": "preview/nexus-phalanx-mobile-module-launcher-2026-10-12.html",
+      "sha": "f8fd7c4da4ab80699073091e2fdce888a24aa973",
+      "type": "file",
+      "size": 2427
+    },
+    {
+      "path": "preview/nexus-phalanx-navigation-sandbox-2026-10-12.html",
+      "sha": "e5a9930c038512ffb5a4eb8b7512b6a41dc4e46d",
+      "type": "file",
+      "size": 3742
+    },
+    {
+      "path": "preview/nexus-user-guide-i18n-v1.html",
+      "sha": "81fdaa0f487e9f1160024e6e9b05e3178b38ccd2",
+      "type": "file",
+      "size": 46498
+    },
+    {
+      "path": "preview/nexus-user-guide-v1.html",
+      "sha": "f0675f815d2cc0cbb9f2bfb2096e6b635ea4b18b",
+      "type": "file",
+      "size": 13618
+    },
+    {
+      "path": "preview/outpost-controls-an-v1.js",
+      "sha": "d8e1db32f89a43c1073d1b92ef207fd2c5b54d46",
+      "type": "file",
+      "size": 10363
+    },
+    {
+      "path": "preview/outpost-controls-v7.js",
+      "sha": "ac8e642ee502e3b73820e82ea4829f4c01b7ce36",
+      "type": "file",
+      "size": 10319
+    },
+    {
+      "path": "preview/outpost-editor-menu-test.html",
+      "sha": "220d0d99cccee22cd211b1b31945daeb66b67391",
+      "type": "file",
+      "size": 13151
+    },
+    {
+      "path": "preview/outpost-editor-v4.html",
+      "sha": "55418bcc6118d1519d950817170045ce03bb7bc1",
+      "type": "file",
+      "size": 12379
+    },
+    {
+      "path": "preview/outpost-editor-v4.js",
+      "sha": "d1b17e8d1336a8f9c2fcfc05e436890e4d457bd2",
+      "type": "file",
+      "size": 5091
+    },
+    {
+      "path": "preview/outpost-editor-v5.html",
+      "sha": "7386cb1a6f5ea4c4fcd92a4596fa7ea541f3f2c5",
+      "type": "file",
+      "size": 13097
+    },
+    {
+      "path": "preview/outpost-editor-v5.js",
+      "sha": "3117859929d31ca1319d6453109bcdcf39761780",
+      "type": "file",
+      "size": 5057
+    },
+    {
+      "path": "preview/outpost-editor.html",
+      "sha": "76c46d7d18b231ee5238d717f12f0d09206bbbd1",
+      "type": "file",
+      "size": 12380
+    },
+    {
+      "path": "preview/outpost-editor.js",
+      "sha": "8ddba7cc1e086a46a51e184e9636706b230726fa",
+      "type": "file",
+      "size": 4837
+    },
+    {
+      "path": "preview/outpost-i18n-layout-v1.html",
+      "sha": "23a9201b20b552be3d10729cb0cdf32698d19b10",
+      "type": "file",
+      "size": 16054
+    },
+    {
+      "path": "preview/outpost-i18n-layout-v2.html",
+      "sha": "bbc041f3912b1e03a2546450c601af1f106c4e60",
+      "type": "file",
+      "size": 18222
+    },
+    {
+      "path": "preview/outpost-i18n-layout-v3.html",
+      "sha": "46fdac7576053fd2f344f561c057a9610a0d0d9f",
+      "type": "file",
+      "size": 18837
+    },
+    {
+      "path": "preview/outpost-i18n-layout-v4.html",
+      "sha": "6120e8ccd0206edec5fcd15860894137c6aecab9",
+      "type": "file",
+      "size": 20593
+    },
+    {
+      "path": "preview/outpost-i18n-layout-v5.html",
+      "sha": "99a36858a093e4716cb97c5c284f81045233a27e",
+      "type": "file",
+      "size": 30928
+    },
+    {
+      "path": "preview/outpost-live.js",
+      "sha": "ac8e642ee502e3b73820e82ea4829f4c01b7ce36",
+      "type": "file",
+      "size": 10319
+    },
+    {
+      "path": "preview/outpost-report-v10.html",
+      "sha": "c01fe6fa1ca9944dc918d6557fb6e0b00a731144",
+      "type": "file",
+      "size": 5627
+    },
+    {
+      "path": "preview/outpost-report-v11.html",
+      "sha": "d7d6b94e4df8fed4c4029cd6aa8ec3c4b22de584",
+      "type": "file",
+      "size": 5631
+    },
+    {
+      "path": "preview/outpost-report-v4.html",
+      "sha": "6ac1dd1a67b22be26844694f559893381e6e9c1f",
+      "type": "file",
+      "size": 5640
+    },
+    {
+      "path": "preview/outpost-report-v5.html",
+      "sha": "6c9b2e6a78b872decaa40dc03b555057988dfc9e",
+      "type": "file",
+      "size": 5627
+    },
+    {
+      "path": "preview/outpost-report-v7.html",
+      "sha": "e6b10bbd6ddc4c517450698a75f1c3e5733eb170",
+      "type": "file",
+      "size": 5621
+    },
+    {
+      "path": "preview/outpost-report-v8.html",
+      "sha": "041aa41add153f64acb0d70c8682cccede064b2b",
+      "type": "file",
+      "size": 5626
+    },
+    {
+      "path": "preview/outpost-report-v9.html",
+      "sha": "260c8053a6d4ad775e2db0ea94e3781bb28be264",
+      "type": "file",
+      "size": 5622
+    },
+    {
+      "path": "preview/outpost-viewer-an-v1.js",
+      "sha": "083e5d189fc42548148b0497457f4e9d51514e87",
+      "type": "file",
+      "size": 21922
+    },
+    {
+      "path": "preview/phalanx-access-test.html",
+      "sha": "434b5700d66aa45f45e66ca44123a0dc9d4d15f8",
+      "type": "file",
+      "size": 3130
+    },
+    {
+      "path": "preview/phalanx-alliance-integration-stage-20261013.html",
+      "sha": "85132544640efe56bdedaaa5969dc86f51f83942",
+      "type": "file",
+      "size": 2424
+    },
+    {
+      "path": "preview/phalanx-alliance-live-test.html",
+      "sha": "1a2d9daab7fbee7a20164db37ee384baee4a4826",
+      "type": "file",
+      "size": 45045
+    },
+    {
+      "path": "preview/phalanx-alpha35-alliance-top40-stage-20261013.html",
+      "sha": "1a42699bde387017a0b2e068bc64641ff1321cd2",
+      "type": "file",
+      "size": 1913667
+    },
+    {
+      "path": "preview/phalanx-alpha35-alliance-top40-stage-v2-20261013.html",
+      "sha": "6f90deadaf5a76c11293da2ab39d8e80f8c410eb",
+      "type": "file",
+      "size": 1913840
+    },
+    {
+      "path": "preview/phalanx-alpha35-alliance-top40-stage-v3-20261013.html",
+      "sha": "f9d010e78b2e62bed07e8dce173f44eecaf77028",
+      "type": "file",
+      "size": 1914364
+    },
+    {
+      "path": "preview/phalanx-battle-optimizer-alpha23-2026-10-12.html",
+      "sha": "b94829d2f3a8a627ae9a9a00c33755a5410ecbe7",
+      "type": "file",
+      "size": 35744
+    },
+    {
+      "path": "preview/phalanx-calculation-lab-alpha22-2026-10-12.html",
+      "sha": "a50e7a425498b83e32559d28ac359a95800289fc",
+      "type": "file",
+      "size": 34190
+    },
+    {
+      "path": "preview/phalanx-combat-modifiers-alpha25-2026-10-12.html",
+      "sha": "69787dfc3ce8b9f38fefa5e0a7a18cf615968aed",
+      "type": "file",
+      "size": 38790
+    },
+    {
+      "path": "preview/phalanx-combat-modifiers-alpha26-2026-10-12.html",
+      "sha": "d52318f28b431d60a1f8a5733928af7fa81c87d4",
+      "type": "file",
+      "size": 40450
+    },
+    {
+      "path": "preview/phalanx-current-20261013.html",
+      "sha": "ee8c39667cbf7a0e0ce1b70f6f296d4f2043a30c",
+      "type": "file",
+      "size": 6926
+    },
+    {
+      "path": "preview/phalanx-fantasy-home-alliance-stage-20261013.html",
+      "sha": "246e1011ae083335f327780b90deea2d3729ab5e",
+      "type": "file",
+      "size": 436725
+    },
+    {
+      "path": "preview/phalanx-hero-investment-advisor-alpha7-2026-10-12.html",
+      "sha": "008d2ac65a274f547d8bf8b9ea0a78d3084e730b",
+      "type": "file",
+      "size": 11855
+    },
+    {
+      "path": "preview/phalanx-hero-investment-autoskills-alpha5-2026-10-12.html",
+      "sha": "bb7427fe7c84cd23454228427f1cd5d8dd50a5f1",
+      "type": "file",
+      "size": 11340
+    },
+    {
+      "path": "preview/phalanx-hero-investment-compact-alpha13-2026-10-12.html",
+      "sha": "ef8b4231af76fd7a2e5fc4d9129985d29ee2a723",
+      "type": "file",
+      "size": 20501
+    },
+    {
+      "path": "preview/phalanx-hero-investment-f2p-alpha11-2026-10-12.html",
+      "sha": "962991b4784d9b4c027ac219539c3b88167348cc",
+      "type": "file",
+      "size": 17419
+    },
+    {
+      "path": "preview/phalanx-hero-investment-lab-alpha1-2026-10-12.html",
+      "sha": "c79584a025e34b6fa8afef4a0fed00cf66e7e872",
+      "type": "file",
+      "size": 7407
+    },
+    {
+      "path": "preview/phalanx-hero-investment-lab-alpha2-2026-10-12.html",
+      "sha": "2c53b2a7a35b673c3ae26cb1652aa3548fa69fbe",
+      "type": "file",
+      "size": 8269
+    },
+    {
+      "path": "preview/phalanx-hero-investment-maxskills-alpha6-2026-10-12.html",
+      "sha": "0ca21ca7c4e8215d1519e0b25a67d41ee47bd13e",
+      "type": "file",
+      "size": 11304
+    },
+    {
+      "path": "preview/phalanx-hero-investment-recommendation-alpha4-2026-10-12.html",
+      "sha": "303388c736a5e56f52b4c02e788d4ee6df9a9dd0",
+      "type": "file",
+      "size": 10543
+    },
+    {
+      "path": "preview/phalanx-hero-investment-shared-roster-alpha3-2026-10-12.html",
+      "sha": "589f9aa705c9c0b17d2540e36af59c855f2f477b",
+      "type": "file",
+      "size": 8942
+    },
+    {
+      "path": "preview/phalanx-hero-investment-shared-roster-alpha4-2026-10-12.html",
+      "sha": "1b3f3d6b6b7a358eb0fe59f35fadd9cc8549083c",
+      "type": "file",
+      "size": 8943
+    },
+    {
+      "path": "preview/phalanx-hero-investment-skills-alpha3-2026-10-12.html",
+      "sha": "15272d6d0e882031c3ce4af5fcc100609617ba73",
+      "type": "file",
+      "size": 6967
+    },
+    {
+      "path": "preview/phalanx-hero-investment-spender-alpha12-2026-10-12.html",
+      "sha": "3ca2e2cebd326c67f118fe37dd152f725a07f2af",
+      "type": "file",
+      "size": 19134
+    },
+    {
+      "path": "preview/phalanx-hero-investment-strategy-alpha10-2026-10-12.html",
+      "sha": "d8c1bce9d7485d5d7b1d3d683e5a5a5700b3bd88",
+      "type": "file",
+      "size": 16227
+    },
+    {
+      "path": "preview/phalanx-hero-investment-strategy-alpha9-2026-10-12.html",
+      "sha": "a0c5379c64df4666345c08850824582dace1521b",
+      "type": "file",
+      "size": 15848
+    },
+    {
+      "path": "preview/phalanx-hero-investment-trafficlight-alpha8-2026-10-12.html",
+      "sha": "0b9fd0cdb232c5a615111f93925e1c793a2063fa",
+      "type": "file",
+      "size": 13951
+    },
+    {
+      "path": "preview/phalanx-hero-investment-whale-alpha14-2026-10-12.html",
+      "sha": "503363c80bb628fd0d3d621429defdca163adee9",
+      "type": "file",
+      "size": 21625
+    },
+    {
+      "path": "preview/phalanx-hero-synergy-alpha15-2026-10-12.html",
+      "sha": "534cefc5a1adfc5548ea2376386c11dd521936bc",
+      "type": "file",
+      "size": 23183
+    },
+    {
+      "path": "preview/phalanx-hero-synergy-alpha16-2026-10-12.html",
+      "sha": "fcb75ce90665970fe86cf64d0150d63d8e9d634e",
+      "type": "file",
+      "size": 24476
+    },
+    {
+      "path": "preview/phalanx-joiner-optimizer-alpha29-2026-10-12.html",
+      "sha": "e08da95d818f7b6de070fb20dd0eccd9e5f7c47a",
+      "type": "file",
+      "size": 5845
+    },
+    {
+      "path": "preview/phalanx-joiner-research-alpha24-2026-10-12.html",
+      "sha": "404c9b338467fa64e949ed66dd8b99d7ea62e5b7",
+      "type": "file",
+      "size": 36904
+    },
+    {
+      "path": "preview/phalanx-kingdom-scout-report-v1-20261014.html",
+      "sha": "18572b17cf432adc81cc5989b653038ef2a84e20",
+      "type": "file",
+      "size": 8834
+    },
+    {
+      "path": "preview/phalanx-mathematics-needs-you-alpha27-2026-10-12.html",
+      "sha": "f12541eb22c5e0b6e43d6c26ad7f2601b36b6d1b",
+      "type": "file",
+      "size": 4428
+    },
+    {
+      "path": "preview/phalanx-mightpulse-refresh-test-20261014.html",
+      "sha": "3a4a9174a090a398980897e62e674473748d8ac6",
+      "type": "file",
+      "size": 2939
+    },
+    {
+      "path": "preview/phalanx-mightpulse-value-diff-auth-test-20261014.html",
+      "sha": "e7db53047c7358074d5491c62e782e7339d97d8a",
+      "type": "file",
+      "size": 4856
+    },
+    {
+      "path": "preview/phalanx-modifier-lab-alpha1-2026-10-12.html",
+      "sha": "5514d6ae102821f5a8d1235b39fc47f4ab99f211",
+      "type": "file",
+      "size": 5869
+    },
+    {
+      "path": "preview/phalanx-modifier-lab-alpha2-2026-10-12.html",
+      "sha": "c8be70ac3fb70bdc1beade9d4e27e1952736e7d8",
+      "type": "file",
+      "size": 5842
+    },
+    {
+      "path": "preview/phalanx-modifier-lab-compact-alpha3-2026-10-12.html",
+      "sha": "b41728356bf3e0bdaa80fabb632d8dda9b25146b",
+      "type": "file",
+      "size": 6464
+    },
+    {
+      "path": "preview/phalanx-monte-carlo-lab-alpha31-2026-10-12.html",
+      "sha": "e450c35a710c1dca38de6b9a0d465f89f43e252d",
+      "type": "file",
+      "size": 6123
+    },
+    {
+      "path": "preview/phalanx-rally-combined-alpha20-2026-10-12.html",
+      "sha": "7c957d00de7a7aeda3126ead6d41e46afbb75d67",
+      "type": "file",
+      "size": 32428
+    },
+    {
+      "path": "preview/phalanx-rally-leader-joiner-alpha17-2026-10-12.html",
+      "sha": "a1418dac32c24e9e7017a58fe9268d2fc3d98ece",
+      "type": "file",
+      "size": 28184
+    },
+    {
+      "path": "preview/phalanx-rally-leader-skill-audit-alpha18-2026-10-12.html",
+      "sha": "736b47e00e7a3cc1665a9b0ecee91cd8a80f771b",
+      "type": "file",
+      "size": 29427
+    },
+    {
+      "path": "preview/phalanx-rally-leader-synergy-alpha19-2026-10-12.html",
+      "sha": "2e606bca5e47b620bc8e0ff9927268f486133ff3",
+      "type": "file",
+      "size": 30891
+    },
+    {
+      "path": "preview/phalanx-rally-roster-bridge-alpha1-2026-10-12.html",
+      "sha": "fdf1189ed8862e6fcf0c20c1aa3f83f0422f9a71",
+      "type": "file",
+      "size": 2574
+    },
+    {
+      "path": "preview/phalanx-rally-roster-bridge-alpha2-2026-10-12.html",
+      "sha": "ad77c70b34146a227c4f69d9d7540850f3ffb878",
+      "type": "file",
+      "size": 3442
+    },
+    {
+      "path": "preview/phalanx-rally-selection-alpha32-2026-10-12.html",
+      "sha": "061e9ea33cb9d1b744c0fd7ef545afce170dd0db",
+      "type": "file",
+      "size": 5393
+    },
+    {
+      "path": "preview/phalanx-robust-optimizer-alpha28-2026-10-12.html",
+      "sha": "1688f8da8a6a7d91ffe73f7c537a8f096ceaa6b5",
+      "type": "file",
+      "size": 4838
+    },
+    {
+      "path": "preview/phalanx-screenshot-joiner-alpha30-2026-10-12.html",
+      "sha": "b0b6cbb5c1c2acf816c2574182ce7376b98ea854",
+      "type": "file",
+      "size": 2992
+    },
+    {
+      "path": "preview/phalanx-team-optimizer-autofill-alpha10-2026-10-12.html",
+      "sha": "ba4cc80a76764861a4ec3e06a50edb93f320609f",
+      "type": "file",
+      "size": 21310
+    },
+    {
+      "path": "preview/phalanx-team-optimizer-compact-alpha3-2026-10-12.html",
+      "sha": "ddfdd0cb10ee3062ffe2d17a3fcd4d83270ee737",
+      "type": "file",
+      "size": 10691
+    },
+    {
+      "path": "preview/phalanx-team-optimizer-compact-alpha4-2026-10-12.html",
+      "sha": "d911657581bc7ba361cd836e7a3362b75f123dd6",
+      "type": "file",
+      "size": 12616
+    },
+    {
+      "path": "preview/phalanx-team-optimizer-context-alpha9-2026-10-12.html",
+      "sha": "6e47bba3712e75027143e0f7436298093041d517",
+      "type": "file",
+      "size": 20008
+    },
+    {
+      "path": "preview/phalanx-team-optimizer-evidence-alpha5-2026-10-12.html",
+      "sha": "7b48febcc272111ca1f0f13a38935980420fd42d",
+      "type": "file",
+      "size": 14232
+    },
+    {
+      "path": "preview/phalanx-team-optimizer-formation-alpha6-2026-10-12.html",
+      "sha": "08fbd86a495cafd4ab0283dd4652b9a99d96630b",
+      "type": "file",
+      "size": 16285
+    },
+    {
+      "path": "preview/phalanx-team-optimizer-polish-alpha7-2026-10-12.html",
+      "sha": "907a44bda82d3b4e99855b9ec22ec6f6216a8e9b",
+      "type": "file",
+      "size": 17101
+    },
+    {
+      "path": "preview/phalanx-team-optimizer-position-aware-alpha11-2026-10-12.html",
+      "sha": "5bd44ced6a365f563e8712c267d764b58a8c572a",
+      "type": "file",
+      "size": 21673
+    },
+    {
+      "path": "preview/phalanx-team-optimizer-role-advisor-alpha12-2026-10-12.html",
+      "sha": "d1cf91008ea1f3b323a5cf37708b8c34017b1637",
+      "type": "file",
+      "size": 23266
+    },
+    {
+      "path": "preview/phalanx-team-optimizer-roster-alpha-2026-10-12.html",
+      "sha": "ef6453f5be82e77d89f6e683138bbca6d43506cf",
+      "type": "file",
+      "size": 9360
+    },
+    {
+      "path": "preview/phalanx-team-optimizer-roster-alpha2-2026-10-12.html",
+      "sha": "1f646678995419b83902a9667edb4817ae37e3a2",
+      "type": "file",
+      "size": 11356
+    },
+    {
+      "path": "preview/phalanx-team-optimizer-shared-roster-alpha4-2026-10-12.html",
+      "sha": "37910d79daa98e85a07382b59c1e9efabed6c549",
+      "type": "file",
+      "size": 11439
+    },
+    {
+      "path": "preview/phalanx-team-optimizer-shared-roster-alpha5-2026-10-12.html",
+      "sha": "3964221b716c212930772a4e562b6387b41ec86d",
+      "type": "file",
+      "size": 11440
+    },
+    {
+      "path": "preview/phalanx-team-optimizer-skill-evidence-alpha8-2026-10-12.html",
+      "sha": "5082689d0e608a2f453a8c79576bf6c5699b2dc3",
+      "type": "file",
+      "size": 18673
+    },
+    {
+      "path": "preview/phalanx-top40-diagnostic.html",
+      "sha": "cde086f6bbecf73526885903f76deca86fb6a6cd",
+      "type": "file",
+      "size": 7231
+    },
+    {
+      "path": "preview/phalanx-top40-v4.html",
+      "sha": "152670c2287b812388390f3b21912b14f5264f03",
+      "type": "file",
+      "size": 7494
+    },
+    {
+      "path": "preview/phalanx-top40-v5.html",
+      "sha": "6a9fc9b2afab5f4bf3075da180b0687c3c678416",
+      "type": "file",
+      "size": 8159
+    },
+    {
+      "path": "preview/scouting-player-profile-demo.html",
+      "sha": "7704050c0f4e1bf46fefe30f7319a127b5f75ef3",
+      "type": "file",
+      "size": 20150
+    },
+    {
+      "path": "preview/transfer-scouting-demo-v2.html",
+      "sha": "453f9ee8f631c822496d460778977c13f5aab679",
+      "type": "file",
+      "size": 11743
+    },
+    {
+      "path": "preview/transfer-scouting-demo-v3.html",
+      "sha": "3cc1b0c5bcad09be08ab57d2a9062d644cb649aa",
+      "type": "file",
+      "size": 11852
+    },
+    {
+      "path": "preview/transfer-scouting-demo-v3.js",
+      "sha": "0a6be3381afa974f6d03c1e7c398c9a425181499",
+      "type": "file",
+      "size": 12791
+    },
+    {
+      "path": "preview/transfer-scouting-demo-v4.html",
+      "sha": "e1ff0e377d8c22304944bb50f2ab61f58c0e0c97",
+      "type": "file",
+      "size": 14289
+    },
+    {
+      "path": "preview/transfer-scouting-demo-v4.js",
+      "sha": "eba81d694e1f98cb73e60f50c748dc62985e757e",
+      "type": "file",
+      "size": 13958
+    },
+    {
+      "path": "preview/transfer-scouting-demo-v5.html",
+      "sha": "7672f967c4f2cf4638ac33be1614d806b0a07207",
+      "type": "file",
+      "size": 16851
+    },
+    {
+      "path": "preview/transfer-scouting-demo-v5.js",
+      "sha": "756b4557c42b78eadc665ed92299324387f7d3fd",
+      "type": "file",
+      "size": 16639
+    },
+    {
+      "path": "preview/transfer-scouting-demo.html",
+      "sha": "b03c24f875f3e0fafcd908021ae95b66b6660321",
+      "type": "file",
+      "size": 11707
+    },
+    {
+      "path": "preview/transfer-scouting-demo.js",
+      "sha": "4012d5411f6191ab0fec50441c565e1dc630a442",
+      "type": "file",
+      "size": 12701
+    },
+    {
+      "path": "preview/transfer-scouting-integrated-v10.html",
+      "sha": "c80bca2262989a5ceb5dc931bd2b4b6be3545d2a",
+      "type": "file",
+      "size": 19873
+    },
+    {
+      "path": "preview/transfer-scouting-integrated-v10.js",
+      "sha": "c8102cb0014ba5be8c95d8b7fba8c5430008ad74",
+      "type": "file",
+      "size": 30060
+    },
+    {
+      "path": "preview/transfer-scouting-integrated-v8.html",
+      "sha": "30209460de8b9807f88beff3da8f2d4ca134f19b",
+      "type": "file",
+      "size": 19872
+    },
+    {
+      "path": "preview/transfer-scouting-integrated-v8.js",
+      "sha": "b586e7c6f1342798e7a584b1ced032fee490f055",
+      "type": "file",
+      "size": 27222
+    },
+    {
+      "path": "preview/transfer-scouting-integrated-v9.html",
+      "sha": "2580cd5fd3457e06e8cb35646eb2dd353394d86a",
+      "type": "file",
+      "size": 19872
+    },
+    {
+      "path": "preview/transfer-scouting-integrated-v9.js",
+      "sha": "7f1662974617004955821d6c3859f640c1565000",
+      "type": "file",
+      "size": 28276
+    },
+    {
+      "path": "preview/transfer-scouting-integration-stage.html",
+      "sha": "3913472fd53e0c2fbe9e1b92720dec44d71aa740",
+      "type": "file",
+      "size": 18787
+    },
+    {
+      "path": "preview/transfer-scouting-integration-stage.js",
+      "sha": "8fa2094e01e7c67fce0841903a5c8fb4bb57079f",
+      "type": "file",
+      "size": 22550
+    },
+    {
+      "path": "preview/transfer-scouting-intelligence-v4-check.html",
+      "sha": "33c9b239556755f674d4896e5ecd2d2b51a89f47",
+      "type": "file",
+      "size": 18755
+    },
+    {
+      "path": "preview/transfer-scouting-intelligence-v4-check.js",
+      "sha": "8fa2094e01e7c67fce0841903a5c8fb4bb57079f",
+      "type": "file",
+      "size": 22550
+    },
+    {
+      "path": "preview/transfer-scouting-intelligence-v5-check.html",
+      "sha": "0fda5d1e53b2e16405f0ddf84f7459ca9e7010b2",
+      "type": "file",
+      "size": 18911
+    },
+    {
+      "path": "preview/transfer-scouting-intelligence-v5-check.js",
+      "sha": "8294bd145ff49d7e2d8444ccbf02b5c09e8a7ed2",
+      "type": "file",
+      "size": 26164
+    },
+    {
+      "path": "preview/transfer-scouting-intelligence-v6-check.html",
+      "sha": "899df6a1d2681ebc7d10553c76cf815cc7175b8d",
+      "type": "file",
+      "size": 19234
+    },
+    {
+      "path": "preview/transfer-scouting-intelligence-v6-check.js",
+      "sha": "67867e0f12266baa686350f557dc78c000a8822b",
+      "type": "file",
+      "size": 26491
+    },
+    {
+      "path": "preview/transfer-scouting-intelligence-v7-check.html",
+      "sha": "94e4e5d3affdaf3eba18763ea39ebc7e00acd476",
+      "type": "file",
+      "size": 19880
+    },
+    {
+      "path": "preview/transfer-scouting-intelligence-v7-check.js",
+      "sha": "267833fc92654c65529ee4916aecae59da00dfce",
+      "type": "file",
+      "size": 27250
+    },
+    {
+      "path": "preview/transfer-scouting-live-v2.html",
+      "sha": "3e15c137d5d510e96188e12ebfe4a3585d31685a",
+      "type": "file",
+      "size": 18223
+    },
+    {
+      "path": "preview/transfer-scouting-live-v2.js",
+      "sha": "3be5b8d9eb1e38a38454033fa47677181c0adc4e",
+      "type": "file",
+      "size": 17447
+    },
+    {
+      "path": "preview/transfer-scouting-live-v3.html",
+      "sha": "b7562d080f393d303fbf159a05578935e6ef4cd7",
+      "type": "file",
+      "size": 19087
+    },
+    {
+      "path": "preview/transfer-scouting-live-v3.js",
+      "sha": "7baf6debb2ae1f4159be9d572f166b81f7f5b2e5",
+      "type": "file",
+      "size": 19146
+    },
+    {
+      "path": "preview/transfer-scouting-live-v4.html",
+      "sha": "9cc9ee54bd6b7f211d6ced192cb528cf236f1e41",
+      "type": "file",
+      "size": 22272
+    },
+    {
+      "path": "preview/transfer-scouting-live-v4.js",
+      "sha": "8c43c4a982f92c58f6f2ffba8961dd58a1a94ea0",
+      "type": "file",
+      "size": 25157
+    },
+    {
+      "path": "preview/transfer-scouting-live-v5.html",
+      "sha": "92b2ee04e4bfa379384caea8e4833052b8623546",
+      "type": "file",
+      "size": 24183
+    },
+    {
+      "path": "preview/transfer-scouting-live-v5.js",
+      "sha": "96adfbb05e9f014319328e8a1b7ded3b7dab22bd",
+      "type": "file",
+      "size": 27783
+    },
+    {
+      "path": "preview/transfer-scouting-live.html",
+      "sha": "cb75050548bc6ab577da55db8b0d1a294dbc82e9",
+      "type": "file",
+      "size": 15606
+    },
+    {
+      "path": "preview/transfer-scouting-live.js",
+      "sha": "8ff9d74ef40965a647a695c363c6eb8984cab361",
+      "type": "file",
+      "size": 9900
+    },
+    {
+      "path": "preview/true-power-development-v2.html",
+      "sha": "1c8f4ab7587fa2511111540214fbbfc786194e39",
+      "type": "file",
+      "size": 34378
+    },
+    {
+      "path": "preview/true-power-development-v3.html",
+      "sha": "ac42bf8f6d079cccd0c80b041b3a3900ce61ad60",
+      "type": "file",
+      "size": 38922
+    },
+    {
+      "path": "preview/true-power-intelligence-v1.html",
+      "sha": "7111d349c934704e4773170c91201a10c9891dd1",
+      "type": "file",
+      "size": 35447
+    },
+    {
+      "path": "preview/true-power-kvk-head-to-head-v1.html",
+      "sha": "69773cd8edbc6a2f44b5a1e5062d8cfd7483c724",
+      "type": "file",
+      "size": 9040
+    }
+  ],
+  "limitations": [
+    "GitHub contents SHA is a blob/tree identifier, not a separate offsite backup",
+    "Nested directory contents are not included",
+    "Supabase database, secrets, Edge Function code and deployment settings are not backed up by this manifest",
+    "No automated recurring backup is created by this file"
+  ]
+}
