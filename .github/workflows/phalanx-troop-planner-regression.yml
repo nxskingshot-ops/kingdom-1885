@@ -9,6 +9,7 @@ on:
       - 'src/phalanx-universal-marches-v1.js'
       - 'src/phalanx-kvk-assistant-tool-v1.js'
       - 'src/phalanx-profile-kvk-bridge-v1.js'
+      - 'src/phalanx-personal-profile-validation-v1.js'
       - 'src/phalanx-question-router-v1.js'
       - 'src/phalanx-question-answer-v1.js'
       - 'tests/phalanx-troop-allocation-v1.test.js'
@@ -17,6 +18,7 @@ on:
       - 'tests/phalanx-universal-marches-v1.test.js'
       - 'tests/phalanx-kvk-assistant-tool-v1.test.js'
       - 'tests/phalanx-profile-kvk-bridge-v1.test.js'
+      - 'tests/phalanx-personal-profile-validation-v1.test.js'
       - 'tests/phalanx-question-router-v1.test.js'
       - 'tests/phalanx-question-answer-v1.test.js'
       - '.github/workflows/phalanx-troop-planner-regression.yml'
@@ -40,5 +42,6 @@ jobs:
           node tests/phalanx-universal-marches-v1.test.js
           node tests/phalanx-kvk-assistant-tool-v1.test.js
           node tests/phalanx-profile-kvk-bridge-v1.test.js
+          node tests/phalanx-personal-profile-validation-v1.test.js
           node tests/phalanx-question-router-v1.test.js
           node tests/phalanx-question-answer-v1.test.js
