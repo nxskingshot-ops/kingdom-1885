@@ -1,0 +1,90 @@
+name: PHALANX encrypted database backup (manual test)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phalanx-db-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      PGHOST: aws-0-eu-central-1.pooler.supabase.com
+      PGPORT: "5432"
+      PGUSER: postgres.hcjrdofkdkasznywvcxo
+      PGDATABASE: postgres
+      PGSSLMODE: require
+      PGCONNECT_TIMEOUT: "20"
+      PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.B2_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.B2_APPLICATION_KEY }}
+      AWS_DEFAULT_REGION: eu-central-003
+      AWS_EC2_METADATA_DISABLED: "true"
+      BACKUP_PASSPHRASE: ${{ secrets.PHALANX_BACKUP_ENCRYPTION_KEY }}
+      B2_ENDPOINT: https://s3.eu-central-003.backblazeb2.com
+      B2_BUCKET: nexus-phalanx-backup
+    steps:
+      - name: Check secret presence (never print values)
+        shell: bash
+        run: |
+          set -euo pipefail
+          for name in PGPASSWORD AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY BACKUP_PASSPHRASE; do
+            if [[ -z "${!name}" ]]; then echo "::error::Missing required secret for $name"; exit 1; fi
+          done
+      - name: Install PostgreSQL client and AWS CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-client-17 awscli openssl
+          pg_dump --version
+      - name: Create encrypted PostgreSQL dump and validate locally
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          mkdir -p "$RUNNER_TEMP/phalanx-backup"
+          cd "$RUNNER_TEMP/phalanx-backup"
+          stamp="$(date -u +%Y%m%dT%H%M%SZ)"
+          filename="phalanx-postgres-${stamp}-run${GITHUB_RUN_ID}.dump.enc"
+          echo "BACKUP_FILENAME=$filename" >> "$GITHUB_ENV"
+          pg_dump --format=custom --no-owner --no-acl --file=database.dump
+          test -s database.dump
+          pg_restore --list database.dump > /dev/null
+          openssl enc -aes-256-cbc -salt -pbkdf2 -iter 200000 -in database.dump -out "$filename" -pass env:BACKUP_PASSPHRASE
+          openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in "$filename" -out check.dump -pass env:BACKUP_PASSPHRASE
+          cmp database.dump check.dump
+          sha256sum "$filename" > "$filename.sha256"
+          rm -f database.dump check.dump
+          echo "Encrypted dump and local decrypt check passed."
+      - name: Upload to private Backblaze B2 and verify remote checksum
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/phalanx-backup"
+          remote="s3://$B2_BUCKET/postgres/manual/$BACKUP_FILENAME"
+          aws --endpoint-url "$B2_ENDPOINT" s3 cp "$BACKUP_FILENAME" "$remote" --no-progress
+          aws --endpoint-url "$B2_ENDPOINT" s3 cp "$BACKUP_FILENAME.sha256" "$remote.sha256" --no-progress
+          aws --endpoint-url "$B2_ENDPOINT" s3 cp "$remote" downloaded.enc --no-progress
+          cmp "$BACKUP_FILENAME" downloaded.enc
+          rm -f downloaded.enc
+          echo "Encrypted backup uploaded and download comparison passed."
+      - name: Write summary (no credentials)
+        if: success()
+        shell: bash
+        run: |
+          {
+            echo "### PHALANX manual backup verified"
+            echo "- Source: Supabase Postgres, session pooler"
+            echo "- Destination: private Backblaze B2 /postgres/manual/"
+            echo "- Object: \`$BACKUP_FILENAME\`"
+            echo "- Checks: pg_restore listing, decrypt roundtrip, remote download byte comparison"
+            echo "- Automatic schedule: **not enabled**"
+            echo "- Note: Database dump does not include Supabase Storage object contents or project secrets."
+          } >> "$GITHUB_STEP_SUMMARY"
