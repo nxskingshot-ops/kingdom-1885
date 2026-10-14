@@ -1,0 +1,32 @@
+name: PHALANX Troop Planner Regression
+on:
+  push:
+    branches: [phalanx-edge-recovery-audit]
+    paths:
+      - 'src/phalanx-troop-allocation-v1.js'
+      - 'src/phalanx-bear-deployment-v1.js'
+      - 'src/phalanx-question-router-v1.js'
+      - 'src/phalanx-question-answer-v1.js'
+      - 'tests/phalanx-troop-allocation-v1.test.js'
+      - 'tests/phalanx-bear-deployment-v1.test.js'
+      - 'tests/phalanx-question-router-v1.test.js'
+      - 'tests/phalanx-question-answer-v1.test.js'
+      - '.github/workflows/phalanx-troop-planner-regression.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run pure-JS regression tests
+        run: |
+          node tests/phalanx-troop-allocation-v1.test.js
+          node tests/phalanx-bear-deployment-v1.test.js
+          node tests/phalanx-question-router-v1.test.js
+          node tests/phalanx-question-answer-v1.test.js
