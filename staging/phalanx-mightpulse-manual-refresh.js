@@ -15,30 +15,38 @@ export function mountMightPulseRefresh({container,supabase}){
   status.setAttribute("role","status");
   status.setAttribute("aria-live","polite");
   status.textContent="Noch keine manuelle Aktualisierung gestartet.";
-  const source=document.createElement("div");
-  source.setAttribute("aria-live","polite");
-  source.style.cssText="margin-top:14px;padding:14px;border:1px solid #887044;border-radius:12px;background:#101a2a;line-height:1.6";
+  const source=document.createElement("details");
+  source.style.cssText="margin-top:10px;border:1px solid #887044;border-radius:12px;background:#101a2a;color:#f1e2be;overflow:hidden";
+  const summary=document.createElement("summary");
+  summary.style.cssText="cursor:pointer;list-style-position:inside;padding:12px 14px;line-height:1.5;font-weight:600";
+  summary.textContent="◯ MightPulse · Status wird geladen …";
+  const details=document.createElement("div");
+  details.style.cssText="padding:0 14px 12px;line-height:1.6;font-size:.92em;overflow-wrap:anywhere";
+  source.append(summary,details);
   root.append(button,status,source);
   const fmt=v=>v&&Number.isFinite(Date.parse(v))?new Date(v).toLocaleString("de-DE"):"unbekannt";
   const line=(label,value)=>{const p=document.createElement("div");const b=document.createElement("strong");b.textContent=label+": ";p.append(b,document.createTextNode(value));return p;};
-  let lastData=null,alive=true;
+  let lastData=null,alive=true,statusError=false;
   function draw(){
     if(!alive)return;
-    source.replaceChildren();
-    if(!lastData){source.append(line("Status","Wird geladen …"));return;}
+    details.replaceChildren();
+    if(statusError){summary.textContent="⚠ MightPulse · Status nicht abrufbar";details.append(line("Hinweis","Verbindung oder Anmeldung prüfen."));return;}
+    if(!lastData){summary.textContent="◯ MightPulse · Status wird geladen …";return;}
     const data=lastData;
     const latest=data.sourceLatest?Date.parse(data.sourceLatest):NaN;
     const age=Number.isFinite(latest)?Math.max(0,Math.floor((Date.now()-latest)/60000)):null;
-    const health=!data.successful?"⚠ Letzter Abruf unvollständig":age===null?"⚪ Datenalter unbekannt":age<=360?"🟢 Aktuell (bis 6 Stunden)":age<=1440?"🟡 Älter (6–24 Stunden)":"🔴 Veraltet (über 24 Stunden)";
-    source.append(line("MightPulse-Status",health),line("Letzter Abruf",fmt(data.lastCheck)),line("MightPulse-Datenstand",fmt(data.sourceLatest)),line("Datenalter",age===null?"unbekannt":Math.floor(age/60)+" Std. "+age%60+" Min."),line("Qualitätsprüfung",data.lastCheck?(data.passed??"?")+"/"+(data.total??16)+" Rankings":"Noch kein Abruf"),line("Nächster automatischer Abruf",fmt(data.nextScheduled)));
-    if(data.automaticEnabled!==true)source.append(line("Automatik","Nicht aktiv"));
+    const health=!data.lastCheck?"⚪ Kein Abruf":data.successful===false?"⚠ Abruf fehlgeschlagen":age===null?"⚪ Datenstand unbekannt":age<=360?"🟢 Aktuell":age<=1440?"🟡 Älter":"🔴 Veraltet";
+    const ageText=age===null?"unbekannt":Math.floor(age/60)+" Std. "+age%60+" Min.";
+    summary.textContent=health+" · "+(data.passed??"?")+"/"+(data.total??16)+" · Datenalter "+ageText;
+    details.append(line("Letzter Abruf",fmt(data.lastCheck)),line("MightPulse-Datenstand",fmt(data.sourceLatest)),line("Datenalter",ageText),line("Qualitätsprüfung",data.lastCheck?(data.passed??"?")+"/"+(data.total??16)+" Rankings":"Noch kein Abruf"),line("Nächster automatischer Abruf",fmt(data.nextScheduled)));
+    if(data.automaticEnabled!==true)details.append(line("Automatik","Nicht aktiv"));
   }
   async function loadStatus(){
     try{
       const {data,error}=await supabase.functions.invoke("phalanx-mightpulse-status",{method:"GET"});
       if(error)throw error;
-      lastData=data;draw();
-    }catch{source.replaceChildren(line("Status","Aktualisierungsstatus derzeit nicht abrufbar."));}
+      lastData=data;statusError=false;draw();
+    }catch{statusError=true;draw();}
   }
   draw();loadStatus();
   const refreshTimer=setInterval(()=>{if(alive)loadStatus()},60000);
