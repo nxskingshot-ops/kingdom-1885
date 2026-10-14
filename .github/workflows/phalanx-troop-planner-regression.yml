@@ -12,6 +12,7 @@ on:
       - 'src/phalanx-personal-profile-validation-v1.js'
       - 'src/phalanx-local-profile-portable-v1.js'
       - 'src/phalanx-local-profile-indexeddb-v1.js'
+      - 'src/phalanx-local-backup-flow-v1.js'
       - 'src/phalanx-question-router-v1.js'
       - 'src/phalanx-question-answer-v1.js'
       - 'tests/phalanx-troop-allocation-v1.test.js'
@@ -23,6 +24,7 @@ on:
       - 'tests/phalanx-personal-profile-validation-v1.test.js'
       - 'tests/phalanx-local-profile-portable-v1.test.js'
       - 'tests/phalanx-local-profile-indexeddb-v1.test.js'
+      - 'tests/phalanx-local-backup-flow-v1.test.js'
       - 'tests/phalanx-question-router-v1.test.js'
       - 'tests/phalanx-question-answer-v1.test.js'
       - '.github/workflows/phalanx-troop-planner-regression.yml'
@@ -49,5 +51,6 @@ jobs:
           node tests/phalanx-personal-profile-validation-v1.test.js
           node tests/phalanx-local-profile-portable-v1.test.js
           node tests/phalanx-local-profile-indexeddb-v1.test.js
+          node tests/phalanx-local-backup-flow-v1.test.js
           node tests/phalanx-question-router-v1.test.js
           node tests/phalanx-question-answer-v1.test.js
