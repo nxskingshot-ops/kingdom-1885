@@ -35,11 +35,11 @@ export function mountMightPulseRefresh({container,supabase}){
     const data=lastData;
     const latest=data.sourceLatest?Date.parse(data.sourceLatest):NaN;
     const age=Number.isFinite(latest)?Math.max(0,Math.floor((Date.now()-latest)/60000)):null;
-    const health=!data.lastCheck?"⚪ Kein Abruf":data.successful===false?"⚠ Abruf fehlgeschlagen":age===null?"⚪ Datenstand unbekannt":age<=360?"🟢 Aktuell":age<=1440?"🟡 Älter":"🔴 Veraltet";
+    const health=!data.lastCheck?"⚪ Noch kein Abruf":data.successful===false?"⚠ Abruf fehlgeschlagen":age===null?"⚪ Datenstand unbekannt":age<=360?"🟢":age<=1440?"🟡":"🔴";
     const ageText=age===null?"unbekannt":Math.floor(age/60)+" Std. "+age%60+" Min.";
-    summary.textContent=health+" · "+(data.passed??"?")+"/"+(data.total??16)+" · Datenalter "+ageText;
-    details.append(line("Letzter Abruf",fmt(data.lastCheck)),line("MightPulse-Datenstand",fmt(data.sourceLatest)),line("Datenalter",ageText),line("Qualitätsprüfung",data.lastCheck?(data.passed??"?")+"/"+(data.total??16)+" Rankings":"Noch kein Abruf"),line("Nächster automatischer Abruf",fmt(data.nextScheduled)));
-    if(data.automaticEnabled!==true)details.append(line("Automatik","Nicht aktiv"));
+    summary.textContent=health+" Daten "+(age===null?"unbekannt":Math.floor(age/60)+"h "+age%60+"m")+" alt · "+(data.passed??"?")+"/"+(data.total??16)+" geprüft";
+    details.append(line("Letzter PHALANX-Abruf",fmt(data.lastCheck)),line("Datenstand laut MightPulse",fmt(data.sourceLatest)),line("Alter der MightPulse-Daten",ageText),line("PHALANX-Qualitätsprüfung",data.lastCheck?(data.passed??"?")+"/"+(data.total??16)+" Rankings geprüft":"Noch kein Abruf"),line("Nächster geplanter PHALANX-Abruf",fmt(data.nextScheduled)));
+    details.append(line("Hinweis","Ein erfolgreicher Abruf bedeutet nicht, dass MightPulse neue Spielwerte geliefert hat."));if(data.automaticEnabled!==true)details.append(line("Automatik","Nicht aktiv"));
   }
   async function loadStatus(){
     try{
