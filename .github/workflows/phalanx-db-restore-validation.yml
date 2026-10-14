@@ -1,0 +1,83 @@
+name: PHALANX backup restore validation (read-only)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phalanx-db-restore-validation
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.B2_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.B2_APPLICATION_KEY }}
+      AWS_DEFAULT_REGION: eu-central-003
+      AWS_EC2_METADATA_DISABLED: "true"
+      BACKUP_PASSPHRASE: ${{ secrets.PHALANX_BACKUP_ENCRYPTION_KEY }}
+      B2_ENDPOINT: https://s3.eu-central-003.backblazeb2.com
+      B2_BUCKET: nexus-phalanx-backup
+      BACKUP_OBJECT: postgres/manual/phalanx-postgres-20261014T084627Z-run38537463488.dump.enc
+    steps:
+      - name: Check secret presence
+        shell: bash
+        run: |
+          set -euo pipefail
+          for name in AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY BACKUP_PASSPHRASE; do
+            if [[ -z "${!name}" ]]; then echo "::error::Missing required secret for $name"; exit 1; fi
+          done
+      - name: Install PostgreSQL client and AWS CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-common ca-certificates curl unzip openssl
+          sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-client-17
+          curl -fsSL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o /tmp/awscliv2.zip
+          unzip -q /tmp/awscliv2.zip -d /tmp
+          sudo /tmp/aws/install --update
+      - name: Download encrypted backup and checksum
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          mkdir -p "$RUNNER_TEMP/phalanx-restore-check"
+          cd "$RUNNER_TEMP/phalanx-restore-check"
+          aws --endpoint-url "$B2_ENDPOINT" s3 cp "s3://$B2_BUCKET/$BACKUP_OBJECT" backup.dump.enc --no-progress
+          aws --endpoint-url "$B2_ENDPOINT" s3 cp "s3://$B2_BUCKET/$BACKUP_OBJECT.sha256" backup.dump.enc.sha256 --no-progress
+          expected="$(awk '{print $1}' backup.dump.enc.sha256)"
+          actual="$(sha256sum backup.dump.enc | awk '{print $1}')"
+          test "$expected" = "$actual"
+          echo "Remote encrypted object checksum verified."
+      - name: Decrypt and validate PostgreSQL archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/phalanx-restore-check"
+          openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in backup.dump.enc -out restored.dump -pass env:BACKUP_PASSPHRASE
+          test -s restored.dump
+          pg_restore --list restored.dump > restore.list
+          test -s restore.list
+          entries="$(grep -cv '^;' restore.list || true)"
+          test "$entries" -gt 0
+          echo "RESTORE_ENTRIES=$entries" >> "$GITHUB_ENV"
+          rm -f restored.dump backup.dump.enc
+      - name: Write validation summary
+        shell: bash
+        run: |
+          {
+            echo "### PHALANX restore validation passed"
+            echo "- Backup was downloaded from private Backblaze B2."
+            echo "- Stored SHA-256 checksum matched."
+            echo "- AES-256/PBKDF2 decryption succeeded."
+            echo "- PostgreSQL 17 pg_restore successfully parsed the archive."
+            echo "- Archive entries parsed: $RESTORE_ENTRIES"
+            echo "- **No database connection or restore command was used; production was untouched.**"
+          } >> "$GITHUB_STEP_SUMMARY"
