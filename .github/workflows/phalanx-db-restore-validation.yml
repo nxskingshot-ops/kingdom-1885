@@ -39,10 +39,11 @@ jobs:
           sudo apt-get install -y -qq postgresql-common ca-certificates curl unzip openssl
           sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
           sudo apt-get update -qq
-          sudo apt-get install -y -qq postgresql-client-17
+          sudo apt-get install -y -qq postgresql-client-18
           curl -fsSL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o /tmp/awscliv2.zip
           unzip -q /tmp/awscliv2.zip -d /tmp
           sudo /tmp/aws/install --update
+          /usr/lib/postgresql/18/bin/pg_restore --version
       - name: Download encrypted backup and checksum
         shell: bash
         run: |
@@ -63,7 +64,7 @@ jobs:
           cd "$RUNNER_TEMP/phalanx-restore-check"
           openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in backup.dump.enc -out restored.dump -pass env:BACKUP_PASSPHRASE
           test -s restored.dump
-          pg_restore --list restored.dump > restore.list
+          /usr/lib/postgresql/18/bin/pg_restore --list restored.dump > restore.list
           test -s restore.list
           entries="$(grep -cv '^;' restore.list || true)"
           test "$entries" -gt 0
