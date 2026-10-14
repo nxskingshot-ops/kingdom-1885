@@ -15,7 +15,7 @@ Die ältere Baseline `PHALANX-STATUS-QUO-RELEASE-BASELINE-2026-10-14.md` sah umf
 | Priorität | Paket | Konkrete Akzeptanz | Status |
 | --- | --- | --- | --- |
 | P0 | Bestand & Sicherheits-Audit | Bestehende Auth, Rollen, Supabase-RLS, Storage, Edge Functions, produktive UI, Backup/Restore prüfen und wiederverwenden | **Offen / Bestandsaufnahme** |
-| P0 | Regression / reproduzierbare Tests | Vorhandene Troop-, Bear-, Viking-, PvP/KvK- und Assistant-Tests tatsächlich ausführen, Fehler korrigieren und CI-Status nachweisen | **Code/Tests angelegt; grüne Ausführung nicht bestätigt** |
+| P0 | Regression / reproduzierbare Tests | Vorhandene Troop-, Bear-, Viking-, PvP/KvK- und Assistant-Tests tatsächlich ausführen, Fehler korrigieren und CI-Status nachweisen | **GitHub Actions: Troop Planner Regression erfolgreich auf Commit d1163d2; math regression erfolgreich auf f5fcb4d; Integration/E2E noch offen** |
 | P1 | Account-Onboarding | Wahl Basis- oder Vollprofil beim ersten Einstieg; Upgrade später; getrennte PHALANX-Identität | **Spezifiziert, nicht implementiert** |
 | P1 | Kingshot-ID / Datenimport | ID-Suche, Kandidaten bestätigen, erlaubte Mighty/MightPulse-Felder mit Zeitstempel importieren; bei API-Ausfall manuell fortfahren | **Spezifiziert; API-Zugriff/Berechtigung prüfen** |
 | P1 | Privates Spielerprofil | Helden, Sterne, Skills, Ausrüstung, Truppen, Tier, Marschkapazitäten, Locks; editierbar, löschbar, private RLS | **Spezifiziert, nicht integriert** |
@@ -27,7 +27,7 @@ Die ältere Baseline `PHALANX-STATUS-QUO-RELEASE-BASELINE-2026-10-14.md` sah umf
 
 ## Konkrete nächste Entwicklungsschritte (ohne Nutzereingriff)
 1. **Repository/Bestand prüfen**: bestehende Login-/Profile-/Upload-/Mighty-Integration und Supabase-Schema inventarisieren, nichts doppelt implementieren.
-2. **Tests wirklich laufen lassen**: GitHub CI/Node-Suite, Fehlerberichte und reproduzierbare Resultate; mathematische Erhaltung und Berechtigungen.
+2. **Tests und Integrationsabdeckung erweitern**: vorhandene grüne GitHub-Actions-Runs nachgewiesen; noch nicht abgedeckte Profil-, Upload-, Auth- und E2E-Szenarien hinzufügen.
 3. **Datenvertrag**: Nutzeridentität, verknüpfte Kingshot-ID, private Profilfelder, Quellen-/Zeitstempel, Import- und Uploadstatus, explizite Bestätigung definieren.
 4. **Sicherer Import/Upload-Prototyp** nur auf isoliertem Branch, ohne Produktion/Secrets/Kosten.
 5. **Assistent verbinden**: Nutzerziel -> autorisierte Profildaten -> passender Rechenkern -> nachvollziehbare Antwort.
@@ -42,3 +42,8 @@ Basiszugang und Vollprofil funktionieren; ID-Suche mit Bestätigung; erlaubter I
 - `docs/PHALANX_SMART_MARCH_INPUT_GOAL_CONTRACT.md`
 - `docs/PHALANX_TROOP_PLANNER_RECOVERED_REQUIREMENTS.md`
 - `docs/PHALANX-STATUS-QUO-RELEASE-BASELINE-2026-10-14.md` (historischer Ausgangspunkt; bei V1-Scope durch diese Entscheidung überholt)
+
+## Verifizierter Fortschritt — CI-Nachtrag
+- GitHub Actions **PHALANX Troop Planner Regression**: erfolgreicher Lauf für Commit `d1163d2` (inkl. Universal-Marches-Test gemäß Workflow).
+- GitHub Actions **PHALANX math regression suite**: erfolgreicher Lauf für Commit `f5fcb4d`.
+- Dies beweist **nicht** die Funktion von Anmeldung, Datenimport, Upload, Datenbank-RLS oder KI-End-to-End in der Live-App.
