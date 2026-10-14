@@ -127,25 +127,53 @@
       "slug": "mightpulse-ranking-test",
       "version": 2,
       "status": "ACTIVE",
-      "verify_jwt": true
+      "verify_jwt": true,
+      "ezbr_sha256": "47b14b0b2830b86db6c4652469ae6337e68ff6daabb4a970fa02881707dab974",
+      "source_files": [
+        "index.ts"
+      ],
+      "environment_variable_names": [
+        "MIGHTPULSE_API_KEY"
+      ]
     },
     {
       "slug": "mightpulse-ranking-audit",
       "version": 3,
       "status": "ACTIVE",
-      "verify_jwt": true
+      "verify_jwt": true,
+      "ezbr_sha256": "cd3071786d23e97ad03ca5bb43a3cf2f301bf47d7c36f5c29201dd23c3049ef5",
+      "source_files": [
+        "index.ts"
+      ],
+      "environment_variable_names": [
+        "MIGHTPULSE_API_KEY"
+      ]
     },
     {
       "slug": "mightpulse-ranking-identity-audit",
       "version": 2,
       "status": "ACTIVE",
-      "verify_jwt": true
+      "verify_jwt": true,
+      "ezbr_sha256": "67e15929b203c0fcf5ae6fb90cfd468c1547c70a61b3b4fe5f42ef77193c1d40",
+      "source_files": [
+        "index.ts"
+      ],
+      "environment_variable_names": [
+        "MIGHTPULSE_API_KEY"
+      ]
     },
     {
       "slug": "mightpulse-board-coverage-audit",
       "version": 2,
       "status": "ACTIVE",
-      "verify_jwt": true
+      "verify_jwt": true,
+      "ezbr_sha256": "2cef47806d64ad55a56c398fc1581133b17290b1da9cad04d60e60cf95215b84",
+      "source_files": [
+        "index.ts"
+      ],
+      "environment_variable_names": [
+        "MIGHTPULSE_API_KEY"
+      ]
     },
     {
       "slug": "mightpulse-coverage-round2-fixed",
