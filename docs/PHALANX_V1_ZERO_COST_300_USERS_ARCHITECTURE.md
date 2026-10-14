@@ -1,9 +1,9 @@
 # PHALANX V1 – ZERO-COST TARGET FOR 300 USERS
-Decision requirement recorded 2026-10-14: PHALANX **should remain free for the owner and all players at 300 registered accounts**. This is a hard design target, **not a proven capacity or guarantee**. No paid service, billing enablement or tier upgrade without explicit approval.
+**APPROVED BY PROJECT OWNER 2026-10-14: Hybrid / Local First is binding for V1.** Personal data local on device; free export/import required; Google Drive optional; Supabase for shared data and authentication; zero-euro target for 300 registered users. No paid services or automatic upgrades.\n\nDecision requirement recorded 2026-10-14: PHALANX **should remain free for the owner and all players at 300 registered accounts**. This is a hard design target, **not a proven capacity or guarantee**. No paid service, billing enablement or tier upgrade without explicit approval.
 
-## Architecture recommendation (subject to implementation validation)
+## Binding V1 architecture (implementation still subject to validation)
 - Local-first personal heroes, troop inventory, marches, user preferences and draft screenshots in IndexedDB on each device. Use explicit schema versions, migration, checksums and clear offline/eviction warnings.
-- Free local export/import first; optional encrypted user-owned Google Drive backup only after consent, Google OAuth integration and quota/billing review. Google Drive is **not required** for V1.
+- **Required** free local export/import first; optional encrypted user-owned Google Drive backup only after consent, Google OAuth integration and quota/billing review. Google Drive is **not required** for V1.
 - Supabase only for existing login, roles and shared alliance/KvK intelligence, plus minimal account metadata where needed. Do not centrally store raw screenshots by default.
 - Process image extraction locally when technically feasible; otherwise explicit consent, temporary transfer, strict size limits and deletion. No promise of free cloud OCR/AI.
 - 'Frag PHALANX' first uses deterministic local calculation tools; optional paid external AI must never be silently enabled.
