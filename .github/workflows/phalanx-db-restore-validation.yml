@@ -78,7 +78,7 @@ jobs:
             echo "- Backup was downloaded from private Backblaze B2."
             echo "- Stored SHA-256 checksum matched."
             echo "- AES-256/PBKDF2 decryption succeeded."
-            echo "- PostgreSQL 17 pg_restore successfully parsed the archive."
+            echo "- PostgreSQL 18 pg_restore successfully parsed the archive."
             echo "- Archive entries parsed: $RESTORE_ENTRIES"
             echo "- **No database connection or restore command was used; production was untouched.**"
           } >> "$GITHUB_STEP_SUMMARY"
