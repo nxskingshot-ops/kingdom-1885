@@ -23,10 +23,45 @@ export function mountMightPulseRefresh({container,supabase}){
   const details=document.createElement("div");
   details.style.cssText="padding:0 14px 12px;line-height:1.6;font-size:.92em;overflow-wrap:anywhere";
   source.append(summary,details);
-  root.append(button,status,source);
+  const notice=document.createElement("div");
+  notice.style.cssText="display:none;margin-top:12px;border:1px solid #b7964d;border-radius:12px;padding:12px 14px;background:#1d2b32;line-height:1.5";
+  const noticeTitle=document.createElement("strong");
+  const noticeBody=document.createElement("div");
+  const noticeButton=document.createElement("button");
+  noticeButton.type="button";noticeButton.textContent="Als gesehen markieren";
+  noticeButton.style.cssText="width:auto;padding:8px 12px;margin-top:8px;font-size:.9em";
+  notice.append(noticeTitle,noticeBody,noticeButton);
+  root.append(button,status,notice,source);
   const fmt=v=>v&&Number.isFinite(Date.parse(v))?new Date(v).toLocaleString("de-DE"):"unbekannt";
   const line=(label,value)=>{const p=document.createElement("div");const b=document.createElement("strong");b.textContent=label+": ";p.append(b,document.createTextNode(value));return p;};
   let lastData=null,alive=true,statusError=false;
+  const seenKey="phalanx_mightpulse_seen_captures_v1_1885";
+  let seen=null;
+  try{seen=JSON.parse(localStorage.getItem(seenKey)||"null");}catch{seen=null;}
+  function sourceMap(data){
+    const raw=data?.boardCapturedAt;
+    if(!raw||typeof raw!=="object")return {};
+    return Object.fromEntries(Object.entries(raw).filter(([k,v])=>typeof k==="string"&&typeof v==="string"&&Number.isFinite(Date.parse(v))));
+  }
+  function saveSeen(map){seen={...map};try{localStorage.setItem(seenKey,JSON.stringify(seen));}catch{}}
+  function drawNotice(){
+    const current=sourceMap(lastData);
+    const names=Object.keys(current);
+    if(!names.length){notice.style.display="none";return;}
+    if(seen===null){saveSeen(current);notice.style.display="none";return;}
+    const changed=names.filter(k=>!seen[k]||Date.parse(current[k])>Date.parse(seen[k]));
+    notice.style.display="";
+    if(changed.length){
+      noticeTitle.textContent="✨ Neue MightPulse-Quelldaten verfügbar";
+      noticeBody.textContent=changed.length+" von "+names.length+" Rankings haben seit deinem letzten bestätigten Datenstand einen neueren Quellenzeitstempel. Das bedeutet nicht zwingend, dass sich Spielerwerte geändert haben.";
+      noticeButton.hidden=false;
+    }else{
+      noticeTitle.textContent="✓ Keine neueren MightPulse-Quelldaten";
+      noticeBody.textContent="PHALANX hat geprüft. Seit deinem bestätigten Datenstand gibt es keinen neueren Quellenzeitstempel.";
+      noticeButton.hidden=true;
+    }
+  }
+  noticeButton.addEventListener("click",()=>{saveSeen(sourceMap(lastData));drawNotice();});
   function draw(){
     if(!alive)return;
     details.replaceChildren();
@@ -45,8 +80,8 @@ export function mountMightPulseRefresh({container,supabase}){
     try{
       const {data,error}=await supabase.functions.invoke("phalanx-mightpulse-status",{method:"GET"});
       if(error)throw error;
-      lastData=data;statusError=false;draw();
-    }catch{statusError=true;draw();}
+      lastData=data;statusError=false;draw();drawNotice();
+    }catch{statusError=true;draw();notice.style.display="none";}
   }
   draw();loadStatus();
   const refreshTimer=setInterval(()=>{if(alive)loadStatus()},60000);
