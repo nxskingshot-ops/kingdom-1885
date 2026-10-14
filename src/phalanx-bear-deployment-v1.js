@@ -18,7 +18,7 @@ function planBear({inventory,mode="lead-and-joiners",lead=null,joiners=[]}){
  const deployments=[],required={infantry:0,cavalry:0,archers:0};
  for(const spec of specs){
   const target=allocate(spec.capacity,spec.ratio);
-  for(const k of keys)required[k]+=target[k];
+  for(const k of keys){required[k]+=target[k];if(!Number.isSafeInteger(required[k]))throw Error("total requirement exceeds safe integer precision");}
   const assigned={};for(const k of keys){assigned[k]=Math.min(target[k],available[k]);available[k]-=assigned[k];}
   const assignedTotal=keys.reduce((s,k)=>s+assigned[k],0);
   deployments.push({role:spec.role,index:spec.index||null,capacity:spec.capacity,ratio:spec.ratio.slice(),target:{infantry:target.infantry,cavalry:target.cavalry,archers:target.archers},assigned,assignedTotal,shortfall:spec.capacity-assignedTotal,fullyFeasible:assignedTotal===spec.capacity});
