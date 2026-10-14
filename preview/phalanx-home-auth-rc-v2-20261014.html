@@ -1,0 +1,15 @@
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PHALANX HTTPS HOME auth RC</title><div id="app">Loading…</div><script type="module">
+import{createClient}from'https://esm.sh/@supabase/supabase-js@2';
+const base='https://raw.githubusercontent.com/nxskingshot-ops/kingdom-1885/4d710903700ea27208b591180420c89cc9df9faa/backups/NEXUS_PHALANX_HOME_FROZEN_2026-10-11.html';
+try{
+const r=await fetch(base);if(!r.ok)throw Error('Source unavailable');
+let html=await r.text();
+const old="home.querySelector('.ph-userfoot span').textContent='🟢 '+x.signed;";
+if(html.split(old).length!==2)throw Error('Unexpected source revision');
+html=html.replace(old,"home.querySelector('.ph-userfoot span').textContent='⚪ Session not verified';");
+document.open();document.write(html);document.close();
+const c=createClient('https://hcjrdofkdkasznywvcxo.supabase.co','sb_publishable_hkqBaMme70g2f3wcxvaTKg_FczqkpCh');
+const label=document.querySelector('.ph-userfoot span');
+if(label){try{const{data,error}=await c.auth.getUser();if(error)throw error;if(!data.user){label.textContent='⚪ Not signed in'}else{const{data:rows,error:e}=await c.from('nxs_memberships').select('active,expires_at').eq('user_id',data.user.id).eq('active',true);if(e)throw e;label.textContent=(rows||[]).some(x=>!x.expires_at||Date.parse(x.expires_at)>Date.now())?'🟢 NXS membership verified':'🟠 Membership not verified'}}catch(e){label.textContent='⚪ Session check unavailable'}}
+}catch(e){document.getElementById('app').textContent='Load failed: '+e.message}
+</script>
