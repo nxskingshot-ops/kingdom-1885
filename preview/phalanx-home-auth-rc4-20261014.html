@@ -1,0 +1,15 @@
+<!doctype html><meta charset="utf-8"><title>PHALANX HOME HTTPS Auth RC4</title><p id="status">Loading PHALANX…</p><script>
+(async()=>{try{
+const url='https://raw.githubusercontent.com/nxskingshot-ops/kingdom-1885/4d710903700ea27208b591180420c89cc9df9faa/backups/NEXUS_PHALANX_HOME_FROZEN_2026-10-11.html';
+const r=await fetch(url);if(!r.ok)throw Error('Source HTTP '+r.status);let html=await r.text();
+const original="home.querySelector('.ph-userfoot span').textContent='🟢 '+x.signed;";
+if(html.split(original).length!==2)throw Error('Source marker changed');
+const replacement="home.querySelector('.ph-userfoot span').textContent='⚪ Checking session';verifyPhalanxSession(home);";
+html=html.replace(original,replacement);
+const hook="function translateHome(){";
+if(html.split(hook).length!==2)throw Error('Translation hook changed');
+const verifier="async function verifyPhalanxSession(home){const label=home.querySelector('.ph-userfoot span');if(!label)return;try{const lib=await import('https://esm.sh/@supabase/supabase-js@2');const c=lib.createClient('https://hcjrdofkdkasznywvcxo.supabase.co','sb_publishable_hkqBaMme70g2f3wcxvaTKg_FczqkpCh');const a=await c.auth.getUser();if(a.error)throw a.error;if(!a.data.user){label.textContent='⚪ Not signed in';return}const m=await c.from('nxs_memberships').select('active,expires_at').eq('user_id',a.data.user.id).eq('active',true);if(m.error)throw m.error;label.textContent=(m.data||[]).some(v=>!v.expires_at||Date.parse(v.expires_at)>Date.now())?'🟢 NXS membership verified':'🟠 Membership not verified'}catch(e){label.textContent='⚪ Session check unavailable'}}\n ";
+html=html.replace(hook,verifier+hook);
+document.open();document.write(html);document.close();
+}catch(e){document.getElementById('status').textContent='Loading failed: '+e.message}})();
+</script>
