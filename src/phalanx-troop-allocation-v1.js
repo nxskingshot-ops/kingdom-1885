@@ -4,6 +4,7 @@ function allocate(capacity,ratio){
  if(!Number.isSafeInteger(capacity)||capacity<0)throw Error("capacity must be a nonnegative safe integer");
  if(!Array.isArray(ratio)||ratio.length!==3||ratio.some(n=>!Number.isSafeInteger(n)||n<0)||ratio.every(n=>n===0))throw Error("ratio must be three nonnegative integers with a positive sum");
  const sum=ratio.reduce((a,b)=>a+b,0);
+ if(!Number.isSafeInteger(sum)||ratio.some(n=>!Number.isSafeInteger(capacity*n)))throw Error("ratio arithmetic exceeds safe integer precision");
  const raw=ratio.map(n=>capacity*n/sum);
  const base=raw.map(Math.floor);
  let remaining=capacity-base.reduce((a,b)=>a+b,0);
