@@ -1,0 +1,25 @@
+{
+  "schema": "phalanx-hero-comparison-trigger-safety-overlay-v1",
+  "date": "2026-10-14",
+  "purpose": "Non-destructive overlay preventing provisional skill triggers from being promoted to combat calculation",
+  "sources": [
+    "data/phalanx-amadeus-onslaught-evidence-resolution-v1-2026-10-14.json",
+    "data/phalanx-hero-comparison-readiness-v1-2026-10-13.json"
+  ],
+  "entries": [
+    {
+      "hero": "Amadeus",
+      "skill": "Ansturm",
+      "mode": "conquest",
+      "field": "attackPct",
+      "displayStatus": "SOURCE_BACKED_VALUE_DISPLAY",
+      "calculationStatus": "BLOCKED_UNTIL_TRIGGER_VALIDATION",
+      "preferredCondition": "attack bonus conditional on health ABOVE 50%",
+      "provenance": "data/phalanx-amadeus-onslaught-evidence-resolution-v1-2026-10-14.json",
+      "reason": "Trigger interpretation remains provisional; numeric value agreement does not validate damage outcome"
+    }
+  ],
+  "invariant": "Existing readiness records unchanged; this overlay is a stricter usage restriction",
+  "releaseGate": "NO_UNVERIFIED_TRIGGER_IN_COMBAT_MODEL",
+  "uiChanged": false
+}
