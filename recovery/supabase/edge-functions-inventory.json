@@ -69,25 +69,59 @@
       "slug": "nexus-feedback",
       "version": 3,
       "status": "ACTIVE",
-      "verify_jwt": true
+      "verify_jwt": true,
+      "ezbr_sha256": "4acb74efd48cc740c42bbcee6ef582a8d7099980cdc944e8b85479f2404f7dfd",
+      "source_files": [
+        "index.ts"
+      ],
+      "environment_variable_names": [
+        "DISCORD_FEEDBACK_WEBHOOK_URL",
+        "SUPABASE_SERVICE_ROLE_KEY",
+        "SUPABASE_URL"
+      ]
     },
     {
       "slug": "nexus-true-power",
       "version": 6,
       "status": "ACTIVE",
-      "verify_jwt": true
+      "verify_jwt": true,
+      "ezbr_sha256": "a655806a83377e78db0cdf4b81f29537c91c718d04a02e2d4f5ccd8164828628",
+      "source_files": [
+        "index.ts"
+      ],
+      "environment_variable_names": [
+        "SUPABASE_SERVICE_ROLE_KEY",
+        "SUPABASE_URL"
+      ]
     },
     {
       "slug": "nexus-access-review",
       "version": 6,
       "status": "ACTIVE",
-      "verify_jwt": true
+      "verify_jwt": true,
+      "ezbr_sha256": "3896faeb2e03981b9e9d65ae8bb8b3d15679334f84de02ca76aa833b716bbbb2",
+      "source_files": [
+        "index.ts"
+      ],
+      "environment_variable_names": [
+        "SUPABASE_SERVICE_ROLE_KEY",
+        "SUPABASE_URL"
+      ]
     },
     {
       "slug": "verified-outpost-sync",
       "version": 3,
       "status": "ACTIVE",
-      "verify_jwt": false
+      "verify_jwt": false,
+      "ezbr_sha256": "b198980e5d21ea93c9d7a6075eed2629099030dcc0e8f33427056341d96ef0b7",
+      "source_files": [
+        "index.ts"
+      ],
+      "environment_variable_names": [
+        "OUTPOST_SYNC_SECRET",
+        "SUPABASE_SERVICE_ROLE_KEY",
+        "SUPABASE_URL"
+      ]
     },
     {
       "slug": "mightpulse-ranking-test",
