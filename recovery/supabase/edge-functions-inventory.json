@@ -179,25 +179,53 @@
       "slug": "mightpulse-coverage-round2-fixed",
       "version": 2,
       "status": "ACTIVE",
-      "verify_jwt": true
+      "verify_jwt": true,
+      "ezbr_sha256": "124a312528cb1ee3b348ddde425551e1ac8600646964408353060105d2abe599",
+      "source_files": [
+        "index.ts"
+      ],
+      "environment_variable_names": [
+        "MIGHTPULSE_API_KEY"
+      ]
     },
     {
       "slug": "mightpulse-freshness-quality-audit",
       "version": 2,
       "status": "ACTIVE",
-      "verify_jwt": true
+      "verify_jwt": true,
+      "ezbr_sha256": "263445320135d83e551db674de4ba52ff8b6ec2cf60c126f5e5200b6bfd67893",
+      "source_files": [
+        "index.ts"
+      ],
+      "environment_variable_names": [
+        "MIGHTPULSE_API_KEY"
+      ]
     },
     {
       "slug": "mightpulse-quality-batch-audit",
       "version": 2,
       "status": "ACTIVE",
-      "verify_jwt": true
+      "verify_jwt": true,
+      "ezbr_sha256": "cbe1b4aa9d693d57c268c279be24268c21c6757807d66067391ac24cdf612b96",
+      "source_files": [
+        "index.ts"
+      ],
+      "environment_variable_names": [
+        "MIGHTPULSE_API_KEY"
+      ]
     },
     {
       "slug": "mightpulse-quality-batch-4-7",
       "version": 2,
       "status": "ACTIVE",
-      "verify_jwt": true
+      "verify_jwt": true,
+      "ezbr_sha256": "b7963797073a4eb3c25fd626b931eb64f68fb44741382a9e00a644324bf1eee7",
+      "source_files": [
+        "index.ts"
+      ],
+      "environment_variable_names": [
+        "MIGHTPULSE_API_KEY"
+      ]
     },
     {
       "slug": "mightpulse-quality-overview-16",
