@@ -1,0 +1,201 @@
+{
+  "schema": "phalanx-hero-comparison-display-gate-v1",
+  "date": "2026-10-14",
+  "sources": [
+    "data/phalanx-hero-comparison-readiness-v1-2026-10-13.json",
+    "data/phalanx-hero-comparison-trigger-safety-overlay-v1-2026-10-14.json"
+  ],
+  "scope": "Display-only whitelist with explicit no-calculation default; no runtime integration",
+  "total": 18,
+  "flaggedTriggerCount": 1,
+  "records": [
+    {
+      "hero": "Amadeus",
+      "skill": "Ansturm",
+      "mode": "conquest",
+      "field": "attackPct",
+      "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+      "displayAllowed": true,
+      "calculationAllowed": false,
+      "reviewFlag": "TRIGGER_CONFLICT"
+    },
+    {
+      "hero": "Amadeus",
+      "skill": "Kampfbereit",
+      "mode": "expedition",
+      "field": "allSquadsLethalityPct",
+      "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+      "displayAllowed": true,
+      "calculationAllowed": false,
+      "reviewFlag": "UNVALIDATED_STACKING_AND_SCOPE"
+    },
+    {
+      "hero": "Amadeus",
+      "skill": "Weg der Klinge",
+      "mode": "expedition",
+      "field": "allSquadsAttackPct",
+      "source": "data/phalanx-amadeus-ingame-validation-2026-10-12.json",
+      "displayAllowed": true,
+      "calculationAllowed": false,
+      "reviewFlag": "UNVALIDATED_STACKING_AND_SCOPE"
+    },
+    {
+      "hero": "Helga",
+      "skill": "Zorn",
+      "mode": "conquest",
+      "field": "attackPct",
+      "source": "data/phalanx-helga-ingame-validation-2026-10-12.json",
+      "displayAllowed": true,
+      "calculationAllowed": false,
+      "reviewFlag": "UNVALIDATED_STACKING_AND_SCOPE"
+    },
+    {
+      "hero": "Helga",
+      "skill": "Echos aus Valhalla",
+      "mode": "expedition",
+      "field": "allSquadsAttackPct",
+      "source": "data/phalanx-helga-ingame-validation-2026-10-12.json",
+      "displayAllowed": true,
+      "calculationAllowed": false,
+      "reviewFlag": "UNVALIDATED_STACKING_AND_SCOPE"
+    },
+    {
+      "hero": "Helga",
+      "skill": "Das Gleichgewicht der Natur",
+      "mode": "expedition",
+      "field": "allSquadsLethalityPct",
+      "source": "data/phalanx-helga-ingame-validation-2026-10-12.json",
+      "displayAllowed": true,
+      "calculationAllowed": false,
+      "reviewFlag": "UNVALIDATED_STACKING_AND_SCOPE"
+    },
+    {
+      "hero": "Saul",
+      "skill": "Letztes Gebet",
+      "mode": "conquest",
+      "field": "defensePct",
+      "source": "data/phalanx-saul-skill-evidence-v1.json",
+      "displayAllowed": true,
+      "calculationAllowed": false,
+      "reviewFlag": "UNVALIDATED_STACKING_AND_SCOPE"
+    },
+    {
+      "hero": "Saul",
+      "skill": "Task-Force-Ausbildung",
+      "mode": "expedition",
+      "field": "defensePct",
+      "source": "data/phalanx-saul-skill-evidence-v1.json",
+      "displayAllowed": true,
+      "calculationAllowed": false,
+      "reviewFlag": "UNVALIDATED_STACKING_AND_SCOPE"
+    },
+    {
+      "hero": "Saul",
+      "skill": "Task-Force-Ausbildung",
+      "mode": "expedition",
+      "field": "healthPct",
+      "source": "data/phalanx-saul-skill-evidence-v1.json",
+      "displayAllowed": true,
+      "calculationAllowed": false,
+      "reviewFlag": "UNVALIDATED_STACKING_AND_SCOPE"
+    },
+    {
+      "hero": "Chenko",
+      "skill": "Verteidigungs-Aufwertung",
+      "mode": "conquest",
+      "field": "defensePct",
+      "source": "data/phalanx-chenko-ingame-validation-2026-10-12.json",
+      "displayAllowed": true,
+      "calculationAllowed": false,
+      "reviewFlag": "UNVALIDATED_STACKING_AND_SCOPE"
+    },
+    {
+      "hero": "Chenko",
+      "skill": "Waffen-Aufwertung",
+      "mode": "conquest",
+      "field": "attackPct",
+      "source": "data/phalanx-chenko-ingame-validation-2026-10-12.json",
+      "displayAllowed": true,
+      "calculationAllowed": false,
+      "reviewFlag": "UNVALIDATED_STACKING_AND_SCOPE"
+    },
+    {
+      "hero": "Chenko",
+      "skill": "Bewaffnung",
+      "mode": "expedition",
+      "field": "allSquadsLethalityPct",
+      "source": "data/phalanx-chenko-ingame-validation-2026-10-12.json",
+      "displayAllowed": true,
+      "calculationAllowed": false,
+      "reviewFlag": "UNVALIDATED_STACKING_AND_SCOPE"
+    },
+    {
+      "hero": "Amane",
+      "skill": "Sakura Blüte",
+      "mode": "conquest",
+      "field": "attackPct",
+      "source": "data/phalanx-amane-ingame-validation-2026-10-12.json",
+      "displayAllowed": true,
+      "calculationAllowed": false,
+      "reviewFlag": "UNVALIDATED_STACKING_AND_SCOPE"
+    },
+    {
+      "hero": "Amane",
+      "skill": "Tri-Phalanx",
+      "mode": "expedition",
+      "field": "allSquadsAttackPct",
+      "source": "data/phalanx-amane-ingame-validation-2026-10-12.json",
+      "displayAllowed": true,
+      "calculationAllowed": false,
+      "reviewFlag": "UNVALIDATED_STACKING_AND_SCOPE"
+    },
+    {
+      "hero": "Yeonwoo",
+      "skill": "Zwillingsreißzähne",
+      "mode": "conquest",
+      "field": "attackPct",
+      "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json",
+      "displayAllowed": true,
+      "calculationAllowed": false,
+      "reviewFlag": "UNVALIDATED_STACKING_AND_SCOPE"
+    },
+    {
+      "hero": "Yeonwoo",
+      "skill": "Wachsam",
+      "mode": "expedition",
+      "field": "allSquadsLethalityPct",
+      "source": "data/phalanx-yeonwoo-ingame-validation-2026-10-12.json",
+      "displayAllowed": true,
+      "calculationAllowed": false,
+      "reviewFlag": "UNVALIDATED_STACKING_AND_SCOPE"
+    },
+    {
+      "hero": "Hilde",
+      "skill": "Nobler Weg",
+      "mode": "expedition",
+      "field": "allSquadsAttackPct",
+      "source": "data/phalanx-hilde-ingame-validation-2026-10-12.json",
+      "displayAllowed": true,
+      "calculationAllowed": false,
+      "reviewFlag": "UNVALIDATED_STACKING_AND_SCOPE"
+    },
+    {
+      "hero": "Hilde",
+      "skill": "Nobler Weg",
+      "mode": "expedition",
+      "field": "allSquadsDefensePct",
+      "source": "data/phalanx-hilde-ingame-validation-2026-10-12.json",
+      "displayAllowed": true,
+      "calculationAllowed": false,
+      "reviewFlag": "UNVALIDATED_STACKING_AND_SCOPE"
+    }
+  ],
+  "rules": [
+    "Every entry is display-only until explicit formula validation",
+    "The trigger overlay takes precedence over older conditional-input classification",
+    "Never infer unlisted hero skills are missing",
+    "Never combine conquest and expedition"
+  ],
+  "releaseGate": "DISPLAY_ONLY_NO_COMBAT_RANKINGS",
+  "productionChanged": false
+}
