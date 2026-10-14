@@ -11,3 +11,6 @@
 - Release gate: Use verified production screenshots/video and actual logo only; obtain owner's final signoff for visuals, sound, wording and publication. Video generation/editing capability to be confirmed when production begins.
 
 This document preserves the concept for later execution without changing the frozen application UI or live infrastructure.
+
+## Confirmed sound reference (2026-10-14)
+Owner explicitly confirmed the desired sound is **alien / apocalyptic tripod horn**, like the extraterrestrial tripod signal in *War of the Worlds* — NOT orchestral brass BRAAAM and not the earlier synthesized horn demo. Aim for enormous low metallic resonances, eerie rising/descending harmonics, distant reverb, ground-shaking bass, cinematic silence before the hit. Reference for direction only; source or design an original/licensed sound, do not copy copyrighted film audio. Sound approved as creative direction, not final mastered audio.
