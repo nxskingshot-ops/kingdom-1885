@@ -1,0 +1,72 @@
+{
+  "schema": "phalanx.rc1.route-contract.v1",
+  "date": "2026-10-15",
+  "verifiedFreezes": {
+    "home": {
+      "file": "NEXUS_PHALANX_HOME_ORIGINAL_2026-10-11.html",
+      "sha256": "f8e8a4c4a61cdaf89b9b6de8a8c8c906c0cace084e9b54ae6ac5ed4b90fa8031",
+      "bytes": 435650
+    },
+    "alpha35": {
+      "file": "NEXUS_PHALANX_ALPHA35_FUNCTION_FROZEN.html",
+      "sha256": "22336f5ec5cd438b1dbf3058f3820d4038df5f3e8f94061d8f15932cc74fc6ba",
+      "bytes": 1912593
+    }
+  },
+  "routes": [
+    {
+      "control": "Command Center",
+      "module": "home",
+      "current": "working in Alpha35",
+      "action": "preserve"
+    },
+    {
+      "control": "KvK Prep",
+      "module": "kvk",
+      "current": "working in Alpha35",
+      "action": "preserve"
+    },
+    {
+      "control": "Outpost Map",
+      "module": "outpost",
+      "current": "working in Alpha35 with embedded map payload",
+      "action": "preserve"
+    },
+    {
+      "control": "Battle Readiness",
+      "module": "battle-readiness",
+      "current": "external route in Alpha35",
+      "target": "preview/nexus-phalanx-battle-readiness-role-safety-test-2026-10-12.html",
+      "action": "preserve and verify"
+    },
+    {
+      "control": "Alliance Comparison",
+      "module": "alliance-intelligence",
+      "current": "placeholder in Alpha35",
+      "target": "preview/phalanx-alliance-integration-stage-20261013.html",
+      "action": "candidate integration, needs auth/data review"
+    },
+    {
+      "control": "Transfer Scouting",
+      "module": "transfer-scouting",
+      "current": "placeholder in Alpha35",
+      "target": "preview/transfer-scouting-integrated-v10.html",
+      "action": "candidate integration, needs live/demo review"
+    },
+    {
+      "control": "Existing Intelligence controls",
+      "module": "player/kingdom/opponent intelligence",
+      "current": "not mapped in Alpha35 navigation",
+      "target": "preview/phalanx-player-intelligence-isolated-20261014.html",
+      "action": "map existing control IDs before wiring"
+    },
+    {
+      "control": "Hero / Optimizer",
+      "module": "hero and march",
+      "current": "no proven route",
+      "target": "preview/hero-intelligence-evidence-advisor-v15-2026-10-12.html",
+      "action": "map existing control IDs before wiring"
+    }
+  ],
+  "policy": "Route contract only. Do not change approved UI or production. Do not treat preview presence as live readiness."
+}
