@@ -40,7 +40,7 @@ def main():
                 # Only intercept non-local HTTP(S) requests. Local requests are
                 # handled normally by Chromium; no Route.continue_ is needed.
                 # This also avoids the failing route continuation observed in CI #1.
-                def block_external(route, r=row):
+                def block_external(route, request, r=row):
                     r["blocked_external"]+=1
                     route.abort()
                 page.route(re.compile(r"^https?://(?!127\\.0\\.0\\.1:)"), block_external)
