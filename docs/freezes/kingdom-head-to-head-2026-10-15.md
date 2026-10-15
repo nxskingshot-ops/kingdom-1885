@@ -14,6 +14,13 @@ Approved reference: image generated and approved in ChatGPT conversation on 2026
 - Existing data status, date and source remain visible; historical snapshot must not be presented as live.
 - Preserve the approved Epic Navigation V2 header/navigation and working Battle Readiness switching.
 
+## Sword geometry — additional approved FREEZE requirement
+- Each helmet must have two complete, straight sword axes forming a **geometrically symmetric X**, crossing at the same central point behind the helmet.
+- Sword tips and pommels must align on their respective straight diagonals; no bent, disconnected, or offset blades.
+- Left and right emblems must have **identical crossing angles, sword lengths, centers, vertical alignment and overall scale**. Only their approved blue/gold versus red/silver material accents differ.
+- On mobile, both crossed-sword emblems must share the same horizontal baseline; no independent stretching or cropping that alters alignment.
+- Validate against an overlay/guide before visual acceptance; the prior generated image is a mood/composition reference but its sword geometry is **not** approved as-is.
+
 ## Asset contract (not yet satisfied)
 Expected files, once approved artwork has been exported and made available:
 - `deploy/phalanx-kvk-test/assets/h2h-1885-helmet-swords.webp`
