@@ -1,0 +1,32 @@
+name: RC5 isolated browser preview artifact
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - integration/epic-navigation-rc5-39-menu-20261015
+    paths:
+      - 'preview/rc5-outpost-details-readonly.html'
+      - 'preview/outpost-report-v11.html'
+      - 'preview/outpost-viewer-an-v1.js'
+      - '.github/workflows/rc5-preview-artifact.yml'
+permissions:
+  contents: read
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Package offline preview with existing relative paths
+        run: |
+          mkdir -p rc5-preview/preview
+          cp index.html rc5-preview/index.html
+          cp preview/rc5-outpost-details-readonly.html rc5-preview/preview/
+          cp preview/outpost-report-v11.html rc5-preview/preview/
+          cp preview/outpost-viewer-an-v1.js rc5-preview/preview/
+          cp preview/outpost-report-module.js rc5-preview/preview/ 2>/dev/null || true
+          find rc5-preview -type f -print
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rc5-outpost-details-preview
+          path: rc5-preview/
+          retention-days: 7
