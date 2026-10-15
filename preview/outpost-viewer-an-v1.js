@@ -69,7 +69,7 @@
 
   // RC5 isolated read-only deep link: resolve only against verified published rows.
   const deepLinkValue = new URLSearchParams(window.location.search).get('outpost_id');
-  const deepLinkId = deepLinkValue !== null && /^[1-9]\\d{0,14}$/.test(deepLinkValue)
+  const deepLinkId = deepLinkValue !== null && /^[1-9]\d{0,14}$/.test(deepLinkValue)
     && Number.isSafeInteger(Number(deepLinkValue)) ? Number(deepLinkValue) : null;
   let deepLinkPending = deepLinkValue !== null;
   function applyPublishedDeepLink() {
