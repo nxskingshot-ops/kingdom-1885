@@ -37,13 +37,13 @@ def main():
                 context=browser.new_context(viewport={"width":390,"height":844},service_workers="block")
                 page=context.new_page()
                 page.on("pageerror",lambda e,r=row:r["errors"].append(str(e)[:250]))
-                # Only intercept non-local HTTP(S) requests. Local requests are
-                # handled normally by Chromium; no Route.continue_ is needed.
-                # This also avoids the failing route continuation observed in CI #1.
+                # Playwright's regex-based route matching sees the entire URL.
+                # Block only HTTP(S) hosts other than our loopback test server.
+                # Match the port dynamically; localhost is not a production origin.
                 def block_external(route, request, r=row):
-                    r["blocked_external"]+=1
+                    r["blocked_external"] += 1
                     route.abort()
-                page.route(re.compile(r"^https?://(?!127\\.0\\.0\\.1:)"), block_external)
+                page.route(re.compile(r"^https?://(?!127\\.0\\.0\\.1:"+str(server.server_address[1])+r"(?:/|$))"), block_external)
                 try:
                     response=page.goto(base+"/"+path,wait_until="domcontentloaded",timeout=12000)
                     page.wait_for_timeout(700)
