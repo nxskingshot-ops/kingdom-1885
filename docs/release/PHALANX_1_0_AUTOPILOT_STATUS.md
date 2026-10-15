@@ -33,3 +33,8 @@ Stand: 2026-10-15
 - Der neue Preflight-Schritt ist damit Bestandteil des erfolgreichen Deploy-Jobs; die konkrete Warnungsausgabe des Skripts wurde nicht separat aus den Logs geprüft.
 - GitHub zeigt eine Node.js-20-Deprecation-Warnung für eine Action sowie einen Hinweis zur bevorstehenden Ubuntu-Runner-Umstellung; nicht blockierend für Run #5.
 - Backend-Isolation, Auth-/RLS-Rollenprüfungen und V2-Designintegration bleiben offene Release-Gates.
+
+## Testlauf #6 – 2026-10-15, 19:09
+- GitHub Actions Run #6, Commit `57be99a`, Branch `phalanx-cloudflare-test-deploy`: **Success**, 27 Sekunden (Screenshot des Projektinhabers).
+- Das isolierte Cloudflare-Deployment der Root-Weiterleitung ist damit erfolgreich abgeschlossen; das tatsächliche Weiterleitungsverhalten im Browser ist noch nicht geprüft.
+- Node.js-20-Deprecation-Warnung und Ubuntu-Runner-Hinweis nicht blockierend.
