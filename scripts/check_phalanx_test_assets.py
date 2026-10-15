@@ -32,8 +32,21 @@ if not errors:
         errors.append("Epic V2 test file lacks the expected V2 title")
     if not re.search(r'<a\s+href=["\']\./kvk-prep-v13-epic-v2-test\.html["\']>KvK Prep', epic_v2):
         errors.append("Epic V2 KvK Prep link missing or disabled")
-    if epic_v2.count('data-unlinked="1"') != 34:
+    if epic_v2.count('data-unlinked="1"') != 33:
         errors.append("Epic V2 placeholder count changed; check design freeze")
+    alliance_page = base / "alliance-trends-isolated.html"
+    alliance_data = base / "data" / "alliance-trends-2026-10-02.json"
+    if epic_v2.count('href="./alliance-trends-isolated.html"') != 1:
+        errors.append("Epic V2 must link exactly once to Alliance Trends")
+    if not alliance_page.is_file() or not alliance_data.is_file():
+        errors.append("Alliance Trends historical preview or snapshot missing")
+    else:
+        import json
+        snapshot = json.loads(alliance_data.read_text(encoding="utf-8"))
+        if snapshot.get("status") != "provisional_manual_transcription" or snapshot.get("snapshot_date") != "2026-10-02":
+            errors.append("Alliance Trends snapshot provenance changed")
+        if "NOT LIVE" not in alliance_page.read_text(encoding="utf-8"):
+            errors.append("Alliance Trends preview missing historical-data warning")
     battle_file = base / "battle-readiness-isolated.html"
     battle_data_file = base / "kvk-opponent-intelligence-current.json"
     if not battle_file.is_file() or not battle_file.stat().st_size:
