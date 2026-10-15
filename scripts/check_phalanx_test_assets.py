@@ -98,7 +98,7 @@ if crimson_page.is_file() or crimson_manifest.is_file():
             errors.append(f"Crimson PNG dimensions wrong: {icon_name} ({width}x{height}, expected {expected}x{expected})")
 
 # Epic V2 module routes: fail fast if a navigation target is absent or loses its return path.
-for module_name, filename in (("KvK Prep", "kvk-prep-v13-epic-v2-test.html"), ("Battle Readiness", "battle-readiness-isolated.html"), ("Rankings", "phalanx-ranking-integration-rc-20261015.html")):
+for module_name, filename in (("KvK Prep", "kvk-prep-v13-epic-v2-test.html"), ("Battle Readiness", "battle-readiness-isolated.html"), ("Rankings", "phalanx-ranking-integration-rc-20261015.html"), ("Hero Intelligence", "hero-intelligence-v15-isolated.html"), ("Player Intelligence", "player-intelligence-isolated.html")):
     route = './' + filename
     if epic_v2.count('href="' + route + '"') != 1:
         errors.append(f"Epic V2 {module_name} must link exactly once to {route}")
