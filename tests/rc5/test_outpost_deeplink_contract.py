@@ -13,7 +13,7 @@ class PublishedDeepLinkContract(unittest.TestCase):
 
     def test_strict_numeric_id(self):
         self.assertIn("get('outpost_id')", self.source)
-        self.assertIn(r"/^[1-9]\\d{0,14}$/", self.source)
+        self.assertIn(r"/^[1-9]\d{0,14}$/", self.source)
         self.assertIn("Number.isSafeInteger(Number(deepLinkValue))", self.source)
 
     def test_only_selects_loaded_published_data(self):
@@ -25,11 +25,11 @@ class PublishedDeepLinkContract(unittest.TestCase):
     def test_applies_after_validated_fetch(self):
         self.assertIn("published=eq.true", self.source)
         self.assertIn("if (valid.length !== rows.length) throw", self.source)
-        self.assertRegex(self.source, r"hasLiveSnapshot = true;[\\s\\S]*?redraw\\(\\);\\s*applyPublishedDeepLink\\(\\);")
+        self.assertRegex(self.source, r"hasLiveSnapshot = true;[\s\S]*?redraw\(\);[\s\S]*?applyPublishedDeepLink\(\);")
 
     def test_no_write_methods(self):
         for method in ("POST", "PATCH", "PUT", "DELETE"):
-            self.assertNotRegex(self.source, rf"method:\\s*['\\\"]{method}['\\\"]")
+            self.assertNotRegex(self.source, rf"method:\s*['\"]{method}['\"]")
 
 if __name__ == "__main__":
     unittest.main()
