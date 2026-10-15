@@ -1,0 +1,53 @@
+# REVIEW TEMPLATE ONLY — do not place under .github/workflows until approved.
+# Requires a PRIVATE repository or encrypted object store; NEVER commits source to this public repository.
+# Secrets: SUPABASE_ACCESS_TOKEN, B2_KEY_ID, B2_APP_KEY, B2_BUCKET.
+name: PHALANX private Edge source backup (PROPOSAL)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  backup:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      PROJECT_REF: hcjrdofkdkasznywvcxo
+      AWS_ACCESS_KEY_ID: ${{ secrets.B2_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.B2_APP_KEY }}
+      B2_BUCKET: ${{ secrets.B2_BUCKET }}
+      AWS_DEFAULT_REGION: eu-central-003
+    steps:
+      - name: Validate configured destination (no secret output)
+        shell: bash
+        run: |
+          set -euo pipefail
+          for key in SUPABASE_ACCESS_TOKEN AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY B2_BUCKET; do
+            if [ -z "${!key:-}" ]; then echo "::error::Missing required configuration: $key"; exit 1; fi
+          done
+      - name: Install tooling
+        run: |
+          npm install --global supabase
+          python -m pip install --quiet awscli
+      - name: Retrieve function sources to ephemeral runner only
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          mkdir -p "$RUNNER_TEMP/phalanx-edge"
+          cd "$RUNNER_TEMP/phalanx-edge"
+          supabase init
+          supabase link --project-ref "$PROJECT_REF"
+          supabase functions download
+          test -d supabase/functions
+          test "$(find supabase/functions -mindepth 1 -maxdepth 1 -type d | wc -l)" -gt 0
+      - name: Encrypt and upload privately
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          cd "$RUNNER_TEMP/phalanx-edge"
+          # BLOCKED BY DESIGN: implement independently reviewed authenticated encryption
+          # and checksum/retention strategy before enabling any upload.
+          echo "::error::Template intentionally cannot upload without reviewed encryption."
+          exit 1
