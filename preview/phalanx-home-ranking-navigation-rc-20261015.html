@@ -10,9 +10,20 @@ const hook="function translateHome(){";
 if(html.split(hook).length!==2)throw Error('Translation hook changed');
 const verifier="async function verifyPhalanxSession(home){\nconst label=home.querySelector('.ph-userfoot span'),rank=home.querySelector('.ph-rank');\nif(!label)return;\nif(rank){rank.querySelector('strong').textContent='—';rank.querySelectorAll('div').forEach(el=>el.textContent='');}\ntry{\nconst lib=await import('https://esm.sh/@supabase/supabase-js@2');\nconst c=lib.createClient('https://hcjrdofkdkasznywvcxo.supabase.co','sb_publishable_hkqBaMme70g2f3wcxvaTKg_FczqkpCh');\nconst a=await c.auth.getUser();if(a.error)throw a.error;\nif(!a.data.user){label.textContent='⚪ Not signed in';return}\nconst m=await c.from('nxs_memberships').select('role,active,expires_at').eq('user_id',a.data.user.id).eq('active',true);\nif(m.error)throw m.error;\nconst active=(m.data||[]).filter(v=>!v.expires_at||Date.parse(v.expires_at)>Date.now());\nif(!active.length){label.textContent='🟠 Membership not verified';return}\nlabel.textContent='🟢 NXS membership verified';\nconst playerName=home.querySelector('#ph-player-name');\nif(playerName){\nplayerName.textContent='Commander';\ntry{\nconst profile=await c.from('app_profiles').select('display_name').eq('user_id',a.data.user.id).maybeSingle();\nif(!profile.error&&profile.data){\nconst p=profile.data;\nconst candidate=typeof p.display_name==='string'&&p.display_name.trim()?p.display_name:null;\nif(candidate)playerName.textContent=candidate.trim();\n}\n}catch(e){}\n}\nif(rank){const role=String(active[0].role||'member').toUpperCase();rank.querySelector('strong').textContent=role;rank.querySelectorAll('div')[0].textContent='Verified DB role';}\n}catch(e){label.textContent='⚪ Session check unavailable'}\n}\n";
 html=html.replace(hook,verifier+hook);
-const rankingLink = '<a href="./phalanx-ranking-integration-rc-20261015.html" style="display:block;padding:12px;margin:10px;color:#f6d36b;background:#10263b;border:1px solid #9c7c38;border-radius:8px;text-decoration:none;font-weight:700">▥ PHALANX Rankings öffnen</a>';
-if(!html.includes('</body>'))throw Error('Missing body marker');
-html=html.replace('</body>',rankingLink+'</body>');
+const rankingMenuScript = [
+ '<script>',
+ "document.addEventListener('DOMContentLoaded',function(){",
+ "const nav=document.querySelector('nav.nav');",
+ "if(!nav||nav.querySelector('[data-phalanx-ranking-preview]'))return;",
+ "const b=document.createElement('button');b.type='button';",
+ "b.setAttribute('data-phalanx-ranking-preview','true');",
+ "b.innerHTML='<span class=\\\"ico\\\">▥</span><span>Rankings</span>';",
+ "b.addEventListener('click',function(){location.href='./phalanx-ranking-integration-rc-20261015.html'});",
+ "nav.appendChild(b);",
+ "});",
+ '</scr'+'ipt>'
+].join('\\n');
+html=html.replace('</body>',rankingMenuScript+'</body>');
 document.open();document.write(html);document.close();
 }catch(e){document.getElementById('status').textContent='Loading failed: '+e.message}})();
 </script>
