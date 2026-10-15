@@ -1,0 +1,45 @@
+name: RC5 isolated module smoke
+on:
+  push:
+    branches:
+      - integration/epic-navigation-rc5-39-menu-20261015
+    paths:
+      - 'tests/rc5/**'
+      - '.github/workflows/rc5-module-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Playwright Chromium
+        run: |
+          python -m pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: Run 12-module offline smoke
+        run: |
+          mkdir -p test-results
+          python tests/rc5/module_smoke.py > test-results/rc5-module-smoke.json
+          python - <<'PY'
+          import json
+          r=json.load(open('test-results/rc5-module-smoke.json'))
+          for x in r['results']:
+              print(x['path'], 'HTTP',x['status'],'errors',len(x['errors']),'external blocked',x['blocked_external'])
+          failed=[x for x in r['results'] if not x['exists'] or x['status']!=200 or x['errors']]
+          if failed:
+              print('SMOKE FAILURES:',len(failed))
+              raise SystemExit(1)
+          print('SMOKE PASSED:',len(r['results']))
+          PY
+      - name: Save smoke report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rc5-module-smoke
+          path: test-results/rc5-module-smoke.json
