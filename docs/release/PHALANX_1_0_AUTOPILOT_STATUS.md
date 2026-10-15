@@ -84,3 +84,8 @@ Stand: 2026-10-15
 - Aus GitHub-Backup des kanonischen HOME abgeleitet; einzige beabsichtigte Änderung: externe Command-Center-Abhängigkeit von `raw.githubusercontent.com/.../main/preview/nexus-app-2-command-center-portrait-final-polish-test.html` auf **Commit `8cd9fdd87dc46ff4f54775e992250e2b0ec6fd40`** fixiert.
 - Nachlesen der Testdatei bestätigt: gepinnter URL enthalten, bisheriger `main`-Pfad fehlt. Der Commit ist unveränderlich, aber ein Browser-/Funktions-/Sicherheitscheck der geladenen Abhängigkeit steht aus.
 - **Noch nicht deployed oder mobil getestet**; ursprüngliche HOME FREEZE, GitHub-Backup, `main`, V2, V1 und produktive Infrastruktur unverändert.
+
+## HOME pinned preview – Android-Sichttest (2026-10-15, Nutzer-Screenshot 19:55)
+- Nutzer öffnete `https://phalanx-cloudflare-test-depl.nexus-phalanx-kvk-test.pages.dev/home-freeze-pinned-preview.html` nach grün gemeldetem GitHub-Actions-Lauf. Screenshot zeigt gerendertes PHALANX-Queen/Helm-Banner, Command Center, Profil FaQu/R4/Kingdom #1885, Quick-Access-Kacheln und Kingdom Status ohne offensichtliches horizontales Überlaufen.
+- **Bestätigt:** HOME lädt und ist auf Android sichtbar; unveränderlich gepinnte Testkopie wurde im Branch statisch verifiziert. **Nicht bestätigt:** Daten-Aktualität, tatsächliche Authentifizierung, Rollen-/RLS-Autorisierung, Funktionsfähigkeit der Kacheln oder vollständige Pixelgleichheit mit FREEZE.
+- Beobachtungen: sichtbarer Status `Signed in` ist allein kein Auth-Nachweis; `Latest intelligence snapshot · 04.10.2026` ist potenziell veraltet. Keine realen Login-Versuche bis Auth/RLS-Release-Gate geschlossen.
