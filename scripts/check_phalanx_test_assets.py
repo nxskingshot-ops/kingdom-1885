@@ -44,6 +44,16 @@ if not errors:
             errors.append("Battle Readiness isolated view contains an active Supabase client/module")
         if "./kvk-opponent-intelligence-current.json" not in battle_html:
             errors.append("Battle Readiness snapshot path is not local to the deployment")
+    if battle_file.is_file():
+        battle_html = battle_file.read_text(encoding="utf-8")
+        if 'id="menuBtn"' in battle_html:
+            errors.append("Battle Readiness must not show a second hamburger menu")
+        if 'class="menu-btn phalanx-back"' not in battle_html or 'href="./epic-navigation-v2-kvk-test.html"' not in battle_html:
+            errors.append("Battle Readiness must provide an Epic V2 return link")
+        if "ARCHIVE / TEST DATA" not in battle_html:
+            errors.append("Historical Battle Readiness snapshot must be clearly marked as archive/test data")
+        if "../icon-192.png" in battle_html or "../assets/" in battle_html:
+            errors.append("Battle Readiness contains unresolved relative image assets")
     if not battle_data_file.is_file() or not battle_data_file.stat().st_size:
         errors.append("Battle Readiness local opponent snapshot missing")
     if epic_v2.count('href="./battle-readiness-isolated.html"') != 1:
