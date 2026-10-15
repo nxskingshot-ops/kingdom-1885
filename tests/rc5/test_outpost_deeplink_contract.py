@@ -39,6 +39,12 @@ class PublishedDeepLinkContract(unittest.TestCase):
         self.assertIn("get('outpost_id')", wrapper)
         self.assertIn("nested.searchParams.set('outpost_id',requestedOutpost)", wrapper)
 
+    def test_outer_preview_forwards_id(self):
+        """Integration gate: outer iframe must forward the requested ID."""
+        outer = (ROOT / "preview/rc5-outpost-details-readonly.html").read_text(encoding="utf-8")
+        self.assertIn("get('outpost_id')", outer)
+        self.assertIn("searchParams.set('outpost_id'", outer)
+
     def test_no_write_methods(self):
         for method in ("POST", "PATCH", "PUT", "DELETE"):
             self.assertNotRegex(self.source, rf"method:\s*['\"]{method}['\"]")
