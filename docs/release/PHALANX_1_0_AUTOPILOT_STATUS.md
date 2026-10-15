@@ -26,3 +26,10 @@ Stand: 2026-10-15
 - Read-only-Sicherheitsaudit für Supabase und KvK-Auth.
 - Test-Deploy-Root/Navigation vergleichen.
 - Bestehende Test- und CI-Workflows wiederverwenden, nicht duplizieren.
+
+## Verifiziert am 2026-10-15, 19:06
+- GitHub Actions Run #5 auf `phalanx-cloudflare-test-deploy` ist **Success** (Screenshot des Projektinhabers; 35 Sekunden).
+- Commit-Anzeige `b74d587` stimmt mit der Integration des Preflight-Schritts überein.
+- Der neue Preflight-Schritt ist damit Bestandteil des erfolgreichen Deploy-Jobs; die konkrete Warnungsausgabe des Skripts wurde nicht separat aus den Logs geprüft.
+- GitHub zeigt eine Node.js-20-Deprecation-Warnung für eine Action sowie einen Hinweis zur bevorstehenden Ubuntu-Runner-Umstellung; nicht blockierend für Run #5.
+- Backend-Isolation, Auth-/RLS-Rollenprüfungen und V2-Designintegration bleiben offene Release-Gates.
