@@ -23,7 +23,7 @@ jobs:
           python -m pip install playwright
           python -m playwright install --with-deps chromium
       - name: Verify Outpost Details read-only contract
-        run: python -m unittest discover -s tests/rc5 -p 'test_outpost_details_contract.py' -v
+        run: python -m unittest discover -s tests/rc5 -p 'test_*_contract.py' -v
       - name: Run RC5 offline module smoke
         run: |
           mkdir -p test-results
