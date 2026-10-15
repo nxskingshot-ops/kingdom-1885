@@ -86,6 +86,16 @@ if crimson_page.is_file() or crimson_manifest.is_file():
         icon_bytes = icon_path.read_bytes()
         if len(icon_bytes) < 100 or not icon_bytes.startswith(bytes((137, 80, 78, 71, 13, 10, 26, 10))):
             errors.append(f"Crimson PNG invalid or placeholder: {icon_name} ({len(icon_bytes)} bytes)")
+            continue
+        # PNG IHDR stores dimensions as two unsigned big-endian 32-bit integers.
+        if len(icon_bytes) < 33 or icon_bytes[12:16] != b"IHDR":
+            errors.append(f"Crimson PNG has no valid IHDR: {icon_name}")
+            continue
+        width = int.from_bytes(icon_bytes[16:20], "big")
+        height = int.from_bytes(icon_bytes[20:24], "big")
+        expected = 192 if icon_name == "crimson-icon-192.png" else 512
+        if (width, height) != (expected, expected):
+            errors.append(f"Crimson PNG dimensions wrong: {icon_name} ({width}x{height}, expected {expected}x{expected})")
 
 if errors:
     for error in errors:
