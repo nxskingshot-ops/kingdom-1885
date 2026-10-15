@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   link.style.cssText='display:block;padding:12px;color:#f6d36b;border:1px solid #9c7c38;border-radius:8px;margin:8px;text-decoration:none;font-weight:700';
   nav.append(link);
 });
-<\/script>`;
+<\\/script>`;
 if(!html.includes('</body>'))throw Error('Missing body marker');
 html=html.replace('</body>',rankingLink+'</body>');
 document.open();document.write(html);document.close();
