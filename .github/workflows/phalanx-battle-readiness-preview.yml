@@ -6,6 +6,7 @@ on:
       - fix/battle-readiness-navigation-isolated-20261015
     paths:
       - '.github/workflows/phalanx-battle-readiness-preview.yml'
+      - 'deploy/phalanx-kvk-test/battle-readiness-isolated.html'
   workflow_dispatch:
 
 permissions:
