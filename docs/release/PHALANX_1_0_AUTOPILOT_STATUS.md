@@ -95,3 +95,8 @@ Stand: 2026-10-15
 - **Bestätigt:** HOME-Kachel führt zu einer gerenderten KvK-Command-Ansicht; kein offensichtlicher Ladefehler oder horizontales Überlaufen im sichtbaren Ausschnitt.
 - **Nicht bestätigt:** genaue Ziel-URL/Version, Epic-V2-Integration, Klickfunktionen innerhalb der KvK-Ansicht, Auth/RLS oder Datenaktualität. Screenshot zeigt `Last Update 04.10.26` trotz `Core snapshot verified`; Daten sind für 2026-10-15 nicht als aktuell zu behandeln.
 - Keine Produktions- oder FREEZE-Änderung. Empfohlen: separate isolierte Navigation HOME ↔ Epic V2 planen, nur nach Prüfung des freigegebenen Navigations-FREEZE.
+
+## Defekt bestätigt: Battle Readiness ohne Klickfunktion (2026-10-15, Android)
+- Nutzer meldet nach HOME → KvK Command: `Battle Readiness` reagiert nicht.
+- Statische Prüfung der im gepinnten HOME geladenen Quelldatei `preview/nexus-app-2-command-center-portrait-final-polish-test.html` auf Commit `8cd9fdd87dc46ff4f54775e992250e2b0ec6fd40`: sichtbares Markup `<button class="switch"><b>🛡 Battle Readiness</b>...` ohne `onclick`, Ziel-URL oder im JavaScript erkennbare zugeordnete `switches`-Klickbehandlung. `Opponent Intelligence` trägt lediglich Klasse `active`.
+- **Befund:** visueller Button ohne implementierte Aktion im aktuell geladenen Quellstand. Keine Änderung am FREEZE oder an `main`. Nicht durch Dummy-Funktion ersetzen; vor Fix verbindliche Zielansicht/Interaktionsspezifikation ermitteln und isoliert testen.
