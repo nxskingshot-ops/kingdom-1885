@@ -2,7 +2,7 @@
 """RC5 module smoke tests: run from repository root with playwright installed.
 Read-only: local static server, no external network, no credentials, no writes to app data.
 """
-import json, threading, http.server, socketserver, pathlib
+import json, threading, http.server, socketserver, pathlib, re
 from playwright.sync_api import sync_playwright
 
 ROOT=pathlib.Path(__file__).resolve().parents[2]
@@ -37,14 +37,13 @@ def main():
                 context=browser.new_context(viewport={"width":390,"height":844},service_workers="block")
                 page=context.new_page()
                 page.on("pageerror",lambda e,r=row:r["errors"].append(str(e)[:250]))
-                def route(request,r=row):
-                    if not request.request.url.startswith(base+"/"):
-                        r["blocked_external"]+=1
-                        request.abort()
-                    elif request.request.method not in ("GET","HEAD"):
-                        request.abort()
-                    else:request.continue_()
-                page.route("**/*",route)
+                # Only intercept non-local HTTP(S) requests. Local requests are
+                # handled normally by Chromium; no Route.continue_ is needed.
+                # This also avoids the failing route continuation observed in CI #1.
+                def block_external(route, r=row):
+                    r["blocked_external"]+=1
+                    route.abort()
+                page.route(re.compile(r"^https?://(?!127\\.0\\.0\\.1:)"), block_external)
                 try:
                     response=page.goto(base+"/"+path,wait_until="domcontentloaded",timeout=12000)
                     page.wait_for_timeout(700)
