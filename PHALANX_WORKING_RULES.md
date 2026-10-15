@@ -22,6 +22,13 @@ Stand: 2026-10-15. Geltungsbereich: Entwicklung, Integration, Tests und Releasev
 9. Bei unsicherer Datenqualität Quellen, Erfassungszeit und Coverage anzeigen. Fehlender Top-100-Eintrag ist nicht Null; kein unbelegter Combat- oder Threat-Score.
 10. Keine Zugangsdaten, API-Keys, Tokens oder privaten Accountdaten ins Repository committen.
 
+
+## Grüne-Schrift-Regel (verbindlich)
+- **Grüne Schrift** kennzeichnet ausschließlich nachweislich **erledigte**, **erfolgreich geprüfte** oder vom Projektinhaber **freigegebene** Punkte.
+- Geplant, in Arbeit, ungetestet, blockiert oder nur vermutet wird **nicht grün** dargestellt.
+- Eine technische Implementierung allein ist keine erfolgreiche Android-Bestätigung; die jeweilige Prüf- bzw. Freigabestufe muss eindeutig benannt werden.
+- Wenn die Oberfläche keine grüne Schrift unterstützt, den Status ausdrücklich als Text benennen, statt einen grünen Erfolg vorzutäuschen.
+
 ## Schutzreferenzen
 - HOME-Design: `docs/NEXUS-PHALANX-CANONICAL-HOME-FREEZE-2026-10-12.md`; Original `NEXUS_PHALANX_HOME_ORIGINAL_2026-10-11.html` in der Projektbibliothek.
 - Alpha35-Funktions-FREEZE: `docs/freezes/NEXUS-PHALANX-ALPHA35-FUNCTION-FREEZE-2026-10-13.md`; Original `NEXUS_PHALANX_ALPHA35_FUNCTION_FROZEN.html` in der Projektbibliothek.
