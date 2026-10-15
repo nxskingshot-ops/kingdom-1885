@@ -43,3 +43,9 @@ Keine echten Zugangsdaten im Test eingeben, bis Authentifizierung und Zugriff se
 - **1 WARN**: Leaked Password Protection ist deaktiviert. Hinweis: https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection
 - `list_branches` meldet **keine Supabase-Entwicklungsbranches**; Cloudflare/GitHub-Isolation bedeutet keine Backend-Isolation.
 - **Release-Gate bleibt rot** für reale Login-Tests: RLS-Policy-Detail und Autorisierungs-Matrix nicht verifiziert. Keine Produktivänderungen vorgenommen.
+
+## SECURITY DEFINER – Review-Status (2026-10-15)
+- Read-only Versuch, die Definition von `public.phalanx_can_read_alliances()` über Supabase SQL zu lesen, wurde von Tool-Sicherheitschecks blockiert. **Keine Umgehung, kein Funktionscode eingesehen.**
+- GitHub-Defaultbranch-Suche nach `phalanx_can_read_alliances` fand nur die vorhandene Release-Audit-Notiz, **keine überprüfbare SQL-Funktionsdefinition**.
+- Laut offizieller Supabase-Dokumentation führt `SECURITY DEFINER` Code mit Owner-Rechten aus; `EXECUTE` für `anon` kann eine privilegierte RPC-Oberfläche eröffnen. Die konkrete Gefährdung ist ohne Funktionsdefinition und Berechtigungskontext **nicht nachgewiesen**. Dokumentation: https://supabase.com/docs/guides/observability/advisors?queryGroups=lint&lint=0028_anon_security_definer_function_executable
+- **Keine automatische Änderung** von EXECUTE-GRANTs, SECURITY DEFINER/INVOKER oder RLS, weil diese möglicherweise bewusst für existierende Workflows benötigt werden. Release-Gate bleibt offen bis autorisierte Code-/Policy-Inspektion möglich ist.
