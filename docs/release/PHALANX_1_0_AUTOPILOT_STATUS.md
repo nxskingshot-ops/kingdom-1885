@@ -89,3 +89,9 @@ Stand: 2026-10-15
 - Nutzer öffnete `https://phalanx-cloudflare-test-depl.nexus-phalanx-kvk-test.pages.dev/home-freeze-pinned-preview.html` nach grün gemeldetem GitHub-Actions-Lauf. Screenshot zeigt gerendertes PHALANX-Queen/Helm-Banner, Command Center, Profil FaQu/R4/Kingdom #1885, Quick-Access-Kacheln und Kingdom Status ohne offensichtliches horizontales Überlaufen.
 - **Bestätigt:** HOME lädt und ist auf Android sichtbar; unveränderlich gepinnte Testkopie wurde im Branch statisch verifiziert. **Nicht bestätigt:** Daten-Aktualität, tatsächliche Authentifizierung, Rollen-/RLS-Autorisierung, Funktionsfähigkeit der Kacheln oder vollständige Pixelgleichheit mit FREEZE.
 - Beobachtungen: sichtbarer Status `Signed in` ist allein kein Auth-Nachweis; `Latest intelligence snapshot · 04.10.2026` ist potenziell veraltet. Keine realen Login-Versuche bis Auth/RLS-Release-Gate geschlossen.
+
+## HOME → KvK Command – Android-Navigationstest (2026-10-15, Screenshot 19:56)
+- Nutzer tippte in der isolierten, gepinnten HOME-Vorschau auf `KvK Command`. Screenshot zeigt daraufhin eine KvK-Intelligence-Ansicht mit PHALANX-Banner, `Opponent Intelligence`, `Battle Readiness`, `Kingdom Head-to-Head` (#1885 gegen #1913), `Mega-Whale` und `Depth Comparison` auf Android.
+- **Bestätigt:** HOME-Kachel führt zu einer gerenderten KvK-Command-Ansicht; kein offensichtlicher Ladefehler oder horizontales Überlaufen im sichtbaren Ausschnitt.
+- **Nicht bestätigt:** genaue Ziel-URL/Version, Epic-V2-Integration, Klickfunktionen innerhalb der KvK-Ansicht, Auth/RLS oder Datenaktualität. Screenshot zeigt `Last Update 04.10.26` trotz `Core snapshot verified`; Daten sind für 2026-10-15 nicht als aktuell zu behandeln.
+- Keine Produktions- oder FREEZE-Änderung. Empfohlen: separate isolierte Navigation HOME ↔ Epic V2 planen, nur nach Prüfung des freigegebenen Navigations-FREEZE.
