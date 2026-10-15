@@ -12,6 +12,8 @@ on:
       - 'deploy/phalanx-kvk-test/hero-intelligence-v15-isolated.html'
       - 'deploy/phalanx-kvk-test/player-intelligence-isolated.html'
       - 'deploy/phalanx-kvk-test/outpost-audit-isolated.html'
+      - 'deploy/phalanx-kvk-test/alliance-trends-isolated.html'
+      - 'deploy/phalanx-kvk-test/data/alliance-trends-2026-10-02.json'
       - 'deploy/phalanx-kvk-test/crimson-icon-test.html'
       - 'deploy/phalanx-kvk-test/crimson-install-test-sw.js'
       - 'deploy/phalanx-kvk-test/crimson-icon-test.webmanifest'
