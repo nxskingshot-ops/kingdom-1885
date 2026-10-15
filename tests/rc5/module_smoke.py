@@ -20,6 +20,10 @@ TARGETS=[
 "preview/transfer-scouting-integrated-v10.html",
 "preview/hero-intelligence-evidence-advisor-v15-2026-10-12.html",
 "preview/phalanx-robust-optimizer-alpha28-2026-10-12.html",
+# Additional candidates for currently unlinked menu entries (not wired yet)
+"preview/true-power-kvk-head-to-head-v1.html",
+"preview/alliance-trends-v3.html",
+"preview/nexus-help-menu-v1.html",
 ]
 class Handler(http.server.SimpleHTTPRequestHandler):
     def __init__(self,*args,**kwargs):super().__init__(*args,directory=str(ROOT),**kwargs)
