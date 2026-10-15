@@ -5,7 +5,7 @@ import re
 import sys
 
 base = Path(__file__).resolve().parents[1] / "deploy" / "phalanx-kvk-test"
-required = ("index.html", "index-kvk.html", "kvk-prep-v13.html", "epic-navigation-v2-kvk-test.html", "kvk-prep-v13-epic-v2-test.html")
+required = ("index.html", "index-kvk.html", "kvk-prep-v13.html", "epic-navigation-v2-kvk-test.html", "kvk-prep-v13-epic-v2-test.html", "home-freeze-pinned-preview.html")
 errors = []
 for name in required:
     file = base / name
@@ -18,6 +18,14 @@ if not errors:
     kvk = (base / "kvk-prep-v13.html").read_text(encoding="utf-8")
     epic_v2 = (base / "epic-navigation-v2-kvk-test.html").read_text(encoding="utf-8")
     kvk_v2 = (base / "kvk-prep-v13-epic-v2-test.html").read_text(encoding="utf-8")
+    home = (base / "home-freeze-pinned-preview.html").read_text(encoding="utf-8")
+    pinned_url = "https://raw.githubusercontent.com/nxskingshot-ops/kingdom-1885/8cd9fdd87dc46ff4f54775e992250e2b0ec6fd40/preview/nexus-app-2-command-center-portrait-final-polish-test.html"
+    if home.count(pinned_url) != 1:
+        errors.append("HOME preview must reference the expected immutable dependency exactly once")
+    if "raw.githubusercontent.com/nxskingshot-ops/kingdom-1885/main/preview/" in home:
+        errors.append("HOME preview still loads mutable main branch")
+    if "NEXUS PHALANX" not in home:
+        errors.append("HOME preview missing PHALANX identity")
     if kvk_v2.count('href="./epic-navigation-v2-kvk-test.html"') < 2:
         errors.append("KvK V2 test copy lacks return links to Epic V2")
     if "Epic Navigation V2" not in epic_v2:
@@ -32,7 +40,7 @@ if not errors:
         errors.append("Navigation page lacks a title")
     if not re.search(r"<title[^>]*>.*?</title>", kvk, re.I | re.S):
         errors.append("KvK page lacks a title")
-    for name, data in (("index.html", root), ("index-kvk.html", nav), ("kvk-prep-v13.html", kvk), ("epic-navigation-v2-kvk-test.html", epic_v2), ("kvk-prep-v13-epic-v2-test.html", kvk_v2)):
+    for name, data in (("index.html", root), ("index-kvk.html", nav), ("kvk-prep-v13.html", kvk), ("epic-navigation-v2-kvk-test.html", epic_v2), ("kvk-prep-v13-epic-v2-test.html", kvk_v2), ("home-freeze-pinned-preview.html", home)):
         if re.search(r"service[_-]?role|sb_secret_", data, re.I):
             errors.append(f"Potential privileged key marker in {name}; manual security review required")
     if "Deployment-Test erfolgreich" in root:
