@@ -60,3 +60,8 @@ Stand: 2026-10-15
 - GitHub Actions Run #7, Commit `d9089f2`, Branch `phalanx-cloudflare-test-deploy`: **Success**, 34 Sekunden (Screenshot des Projektinhabers).
 - Der Deployment-Job lief nach Integration der separaten Datei `epic-navigation-v2-kvk-test.html` erfolgreich. Die tatsächliche V2-Anzeige und der Link auf KvK Prep müssen noch im Browser geprüft werden.
 - Die vorhandene Root-V1-Seite bleibt bestehen; keine Design-Freigabe allein durch Deployment.
+
+## Epic Navigation V2 – Android-Sichtprüfung erfolgreich (2026-10-15 19:38)
+- Der Projektinhaber hat die isolierte **Branch-URL** `https://phalanx-cloudflare-test-depl.nexus-phalanx-kvk-test.pages.dev/epic-navigation-v2-kvk-test.html` auf Android geöffnet; Screenshot zeigt eindeutig `EPIC NAVIGATION V2 · DESIGN FREEZE · ISOLATED PREVIEW` und sieben sichtbare Fantasy-Navigationsbereiche.
+- Die vorher verwendete allgemeine Projekt-URL `https://nexus-phalanx-kvk-test.pages.dev/` zeigte weiterhin Navigation V1; Branch-URL löst diese Verwechslung.
+- **Noch nicht getestet:** Aufklappen und KvK-Prep-Klick innerhalb der V2, Rücknavigation, Auth/RLS. Keine Anmeldung in der Testumgebung vor Security-Freigabe.
