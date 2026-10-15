@@ -44,3 +44,9 @@ Stand: 2026-10-15
 - Die Root-Weiterleitung zur Navigation ist damit **im Browser bestätigt**.
 - Der Rückweg aus KvK Prep über die Schaltfläche 'PHALANX Testnavigation' ist weiterhin separat zu testen.
 - Dies ist keine Freigabe der Navigation V1 als Release-Design; Epic Navigation V2 bleibt verbindlich.
+
+## Navigationstest – 2026-10-15, 19:10
+- Drei Android-Screenshots bestätigen: Navigation V1 → KvK Operations / KvK Prep → Member-access-Anmeldeseite → PHALANX Testnavigation → Navigation V1.
+- Der Hin- und Rückweg der isolierten Testnavigation ist damit im Browser erfolgreich geprüft.
+- Keine Anmeldung und keine Prüfung geschützter Daten vorgenommen.
+- Der Navigationspfad ist funktional; Epic Navigation V2 und Auth-/RLS-Sicherheit bleiben weiterhin offene Release-Gates.
