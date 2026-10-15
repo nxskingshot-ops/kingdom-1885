@@ -38,3 +38,9 @@ Stand: 2026-10-15
 - GitHub Actions Run #6, Commit `57be99a`, Branch `phalanx-cloudflare-test-deploy`: **Success**, 27 Sekunden (Screenshot des Projektinhabers).
 - Das isolierte Cloudflare-Deployment der Root-Weiterleitung ist damit erfolgreich abgeschlossen; das tatsächliche Weiterleitungsverhalten im Browser ist noch nicht geprüft.
 - Node.js-20-Deprecation-Warnung und Ubuntu-Runner-Hinweis nicht blockierend.
+
+## Browserprüfung 2026-10-15, 19:09
+- Der Projektinhaber hat einen Android-Browser-Screenshot der Cloudflare-Testdomain eingereicht. Sichtbar ist direkt die **Navigation V1**, nicht die Platzhalterseite.
+- Die Root-Weiterleitung zur Navigation ist damit **im Browser bestätigt**.
+- Der Rückweg aus KvK Prep über die Schaltfläche 'PHALANX Testnavigation' ist weiterhin separat zu testen.
+- Dies ist keine Freigabe der Navigation V1 als Release-Design; Epic Navigation V2 bleibt verbindlich.
