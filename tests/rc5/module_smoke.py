@@ -33,7 +33,7 @@ def main():
         with sync_playwright() as p:
             browser=p.chromium.launch(headless=True)
             for path in TARGETS:
-                row={"path":path,"exists":(ROOT/path).is_file(),"errors":[],"blocked_external":0,"status":None,"title":None}
+                row={"path":path,"exists":(ROOT/path).is_file(),"errors":[],"expected_offline_errors":[],"blocked_external":0,"status":None,"title":None}
                 if not row["exists"]:results.append(row);continue
                 context=browser.new_context(viewport={"width":390,"height":844},service_workers="block")
                 page=context.new_page()
@@ -59,6 +59,17 @@ def main():
                     row["title"]=page.title()
                     row["horizontal_overflow"]=page.evaluate("document.documentElement.scrollWidth>innerWidth")
                 except Exception as e:row["errors"].append(str(e)[:250])
+                # Outpost Editor uses a top-level await import from esm.sh.
+                # With all external requests deliberately blocked, Chromium
+                # reports an expected dynamic-import failure before editor init.
+                # Keep the error in the report, but distinguish offline-only
+                # dependency failures from unexpected JavaScript exceptions.
+                if path == "preview/outpost-editor-v5.html" and row["blocked_external"]:
+                    expected = [e for e in row["errors"]
+                                if "Failed to fetch dynamically imported module" in e
+                                and "esm.sh/" in e]
+                    row["expected_offline_errors"].extend(expected)
+                    row["errors"] = [e for e in row["errors"] if e not in expected]
                 context.close();results.append(row)
             browser.close()
         server.shutdown()
