@@ -13,7 +13,7 @@ html=html.replace(hook,verifier+hook);
 const rankingMenuScript = [
  '<script>',
  "document.addEventListener('DOMContentLoaded',function(){",
- "const nav=document.querySelector('nav.nav');",
+ "const nav=document.getElementById('mobileDrawer');",
  "if(!nav||nav.querySelector('[data-phalanx-ranking-preview]'))return;",
  "const b=document.createElement('button');b.type='button';",
  "b.setAttribute('data-phalanx-ranking-preview','true');",
@@ -22,7 +22,7 @@ const rankingMenuScript = [
  "nav.appendChild(b);",
  "});",
  '</scr'+'ipt>'
-].join('\\n');
+].join('\n');
 html=html.replace('</body>',rankingMenuScript+'</body>');
 document.open();document.write(html);document.close();
 }catch(e){document.getElementById('status').textContent='Loading failed: '+e.message}})();
