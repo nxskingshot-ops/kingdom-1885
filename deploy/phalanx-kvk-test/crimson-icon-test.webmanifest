@@ -1,8 +1,8 @@
 {
-  "name": "NEXUS PHALANX — Crimson Icon Test",
+  "name": "NEXUS PHALANX — Crimson Navigation Test",
   "short_name": "PHALANX Crimson",
   "id": "/crimson-icon-test/",
-  "start_url": "./crimson-icon-test.html",
+  "start_url": "./epic-navigation-v2-kvk-test.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#030b13",
