@@ -31,7 +31,7 @@ button{font:inherit;color:inherit}
   height:102px;position:sticky;top:0;z-index:50;display:grid;grid-template-columns:168px minmax(280px,1fr) 360px 230px;align-items:center;
   background:
     linear-gradient(90deg,rgba(1,8,14,.86),rgba(1,8,14,.33) 38%,rgba(1,8,14,.3) 67%,rgba(1,8,14,.74)),
-    url('https://raw.githubusercontent.com/nxskingshot-ops/kingdom-1885/60c3910fa62dda1293e508fd32f1a4659b5c807d/assets/nexus-banner-1885.png') center 46%/cover no-repeat;
+    linear-gradient(180deg,#071b2b 0%,#03111d 100%);
   border-bottom:2px solid var(--gold);box-shadow:0 6px 20px #000a
 }
 .crest-zone{height:100%;position:relative;display:grid;place-items:center}
@@ -260,6 +260,8 @@ button{font:inherit;color:inherit}
  .tablebox .rank-table th:nth-child(4),.tablebox .rank-table td:nth-child(4){width:61px}
 }
 
+/* Isolated preview correction: neutral kingdom identifiers, not duplicated NXS insignia. */
+.kingdom-mark{display:grid;place-items:center;margin:0 auto 7px;width:64px;height:64px;border:1px solid #c49a48;border-radius:50%;background:#071b2b;color:#f3d27b;font:700 18px Georgia,serif;letter-spacing:.02em}
 </style>
 </head>
 <body>
@@ -335,9 +337,9 @@ button{font:inherit;color:inherit}
   <section class="panel h2h" id="opponentIntelligenceView">
     <div class="h2h-head">Kingdom Head-to-Head</div>
     <div class="h2h-grid">
-      <div class="kbox blue"><img src="https://raw.githubusercontent.com/nxskingshot-ops/kingdom-1885/60c3910fa62dda1293e508fd32f1a4659b5c807d/icon-192.png" alt=""><div><b>Kingdom #1885</b><small class="alliance">NEXUS</small><strong id="homeTotal">38.13B</strong><small>(4 main alliances)</small></div></div>
+      <div class="kbox blue"><span class="kingdom-mark" aria-label="Kingdom 1885">1885</span><div><b>Kingdom #1885</b><small class="alliance">NEXUS</small><strong id="homeTotal">38.13B</strong><small>(4 main alliances)</small></div></div>
       <div class="vs">VS</div>
-      <div class="kbox red"><img src="https://raw.githubusercontent.com/nxskingshot-ops/kingdom-1885/60c3910fa62dda1293e508fd32f1a4659b5c807d/icon-192.png" alt=""><div><b>Kingdom #1913</b><small class="alliance">Current opponent</small><strong id="enemyTotal">41.75B</strong><small>(Top 5 alliances)</small></div></div>
+      <div class="kbox red"><span class="kingdom-mark" aria-label="Kingdom 1913">1913</span><div><b>Kingdom #1913</b><small class="alliance">Current opponent</small><strong id="enemyTotal">41.75B</strong><small>(Top 5 alliances)</small></div></div>
       <div class="status"><div>Data Status &nbsp; <span class="ok">● Core snapshot verified</span></div><div>Last Update &nbsp; <b>04.10.26</b></div><div>Source &nbsp; <b>In-game + MightPulse snapshots</b></div><div class="details">View Details &nbsp;›</div></div>
     </div>
 
