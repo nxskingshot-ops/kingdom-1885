@@ -9,7 +9,7 @@ const BOARDS=['personal_power','troop_power','building_power','research_power','
 const labels={personal_power:'Spielerstärke',troop_power:'Truppenstärke',building_power:'Gebäudestärke',research_power:'Forschung',gov_gear:'Gouverneursausrüstung',gov_charm:'Gouverneurstalismane',hero_total:'Helden gesamt',hero_no_equip:'Helden ohne Ausrüstung',hero_equip:'Heldenausrüstung',pet_power:'Haustiere',mystic_trial:'Mystic Trial',master_power:'Meister',town_center:'Schloss',kills:'Kills',alliance_power:'Allianzstärke',alliance_kills:'Allianz-Kills'};
 const $=id=>document.getElementById(id), state=$('state'),load=$('load');
 for(const b of BOARDS){const o=document.createElement('option');o.value=b;o.textContent=labels[b];$('board').append(o)}
-const fmt=v=>v===null||v===undefined?'—':String(v);
+const fmt=v=>v===null||v===undefined?'—':String(v);const metric=v=>{if(typeof v==='number'&&Number.isSafeInteger(v))return v.toLocaleString('de-DE');if(typeof v==='string'&&/^\\d+$/.test(v))return v.replace(/\\B(?=(\\d{3})+(?!\\d))/g,'.');return fmt(v)};
 const setState=(v,err=false)=>{state.textContent=v;state.className=err?'error':''};
 const cell=(row,value,tag='td')=>{const c=document.createElement(tag);c.textContent=fmt(value);row.append(c)};
 let client;
@@ -34,9 +34,9 @@ load.addEventListener('click',async()=>{
   if(!response.ok)throw Error('Rankingzugriff: '+(result.error||response.status));
   if(result.board!==board||!['alliance','player'].includes(result.kind)||!Array.isArray(result.entries))throw Error('Unerwartetes Rankingformat');
   if(seq!==generation)return;
-  const alliance=result.kind==='alliance',columns=alliance?['Rang','Allianz','Kürzel','Anführer','Mitglieder','Punkte']:['Rang','Spieler','Allianz','Punkte'];
+  const alliance=result.kind==='alliance',strengthBoard=board!=='kills'&&board!=='alliance_kills',metricLabel=strengthBoard?'Stärke':'Kills',columns=alliance?['Rang','Allianz','Kürzel','Anführer','Mitglieder',metricLabel]:['Rang','Spieler','Allianz',metricLabel];
   const tr=document.createElement('tr');for(const h of columns)cell(tr,h,'th');$('head').append(tr);
-  for(const e of result.entries){const row=document.createElement('tr');const values=alliance?[e.rank,e.name,e.abbr,e.leader_name,e.member_count,e.score]:[e.rank,e.nick_name,e.alliance_abbr,e.score];for(const v of values)cell(row,v);$('body').append(row)}
+  for(const e of result.entries){const row=document.createElement('tr');const values=alliance?[e.rank,e.name,e.abbr,e.leader_name,e.member_count,e.score]:[e.rank,e.nick_name,e.alliance_abbr,e.score];for(let i=0;i<values.length;i++)cell(row,i===values.length-1?metric(values[i]):values[i]);$('body').append(row)}
   const stamp=v=>v?new Date(v).toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'}):'unbekannt';
   $('freshness').textContent='Datenquelle: '+stamp(result.sourceCapturedAt)+' · In PHALANX gespeichert: '+stamp(result.snapshotSavedAt);
   setState(labels[board]+': '+result.entries.length+' Einträge geladen');
