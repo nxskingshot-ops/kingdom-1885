@@ -7,6 +7,8 @@ on:
     paths:
       - '.github/workflows/phalanx-battle-readiness-preview.yml'
       - 'deploy/phalanx-kvk-test/battle-readiness-isolated.html'
+      - 'deploy/phalanx-kvk-test/epic-navigation-v2-kvk-test.html'
+      - 'deploy/phalanx-kvk-test/phalanx-ranking-integration-rc-20261015.html'
       - 'deploy/phalanx-kvk-test/crimson-icon-test.html'
       - 'deploy/phalanx-kvk-test/crimson-install-test-sw.js'
       - 'deploy/phalanx-kvk-test/crimson-icon-test.webmanifest'
