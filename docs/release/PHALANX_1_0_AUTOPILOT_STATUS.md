@@ -71,3 +71,10 @@ Stand: 2026-10-15
 - Der Rücksprung landet sichtbar in der freigegebenen V2 statt in V1; mobile Navigation und Darstellung des nicht-authentifizierten Formulars erfolgreich.
 - Test lief über isolierte Cloudflare-Branch-Bereitstellung; V1, Original-FREEZE und Produktion unverändert.
 - **Nicht getestet/freigegeben:** Anmeldung, RLS-Berechtigungen, produktiver Datenzugriff, Gesamt-App, Release 1.0.
+
+## Canonical HOME FREEZE – byte-identische GitHub-Sicherung nachgewiesen (2026-10-15)
+- Original aus der ChatGPT Library: `NEXUS_PHALANX_HOME_FROZEN_2026-10-11.html`, exakt **435650 Bytes**.
+- SHA-256 Original: `f8e8a4c4a61cdaf89b9b6de8a8c8c906c0cace084e9b54ae6ac5ed4b90fa8031` – identisch zur dokumentierten kanonischen Prüfsumme.
+- Lokal aus den Originalbytes berechnete Git-Blob-SHA-1: `e07740b64bf9dacb4df00ad9cdd374c21bd2f244`; GitHub `main/backups/NEXUS_PHALANX_HOME_FROZEN_2026-10-11.html` meldet **denselben Blob-SHA**. Damit ist die GitHub-Backup-Datei **byte-identisch** zum freigegebenen Library-Original.
+- **Einschränkung:** Das eingefrorene HOME-HTML lädt dynamisch Inhalte aus `raw.githubusercontent.com/.../main/preview/`; Byte-Identität des Wrappers garantiert noch keine deterministische Darstellung bei künftigen Änderungen der externen Abhängigkeit. Für isolierten Release-Test Dependency pinnen, ohne FREEZE-Original oder `main` zu verändern.
+- Keine produktive Datei verändert, keine HOME-Freigabe zur Veröffentlichung abgeleitet.
