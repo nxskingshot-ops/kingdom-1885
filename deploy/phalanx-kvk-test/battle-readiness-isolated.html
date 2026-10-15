@@ -262,6 +262,8 @@ button{font:inherit;color:inherit}
 
 /* Isolated preview correction: neutral kingdom identifiers, not duplicated NXS insignia. */
 .kingdom-mark{display:grid;place-items:center;margin:0 auto 7px;width:64px;height:64px;border:1px solid #c49a48;border-radius:50%;background:#071b2b;color:#f3d27b;font:700 18px Georgia,serif;letter-spacing:.02em}
+/* Isolated integration: return to frozen Epic Navigation V2, no duplicate hamburger. */
+.phalanx-back{display:grid;place-items:center;text-decoration:none;font-size:29px;font-weight:700;line-height:1}
 </style>
 </head>
 <body>
@@ -271,7 +273,7 @@ button{font:inherit;color:inherit}
   <div class="crest-zone"><img class="crest" src="https://raw.githubusercontent.com/nxskingshot-ops/kingdom-1885/60c3910fa62dda1293e508fd32f1a4659b5c807d/icon-192.png" alt="NXS"></div>
   <div class="brand"><h1>NEXUS PHALANX</h1><p>many paths, many strengths, one force.</p></div>
   <div class="realm"><span class="sword">⚔</span><div class="crownbox"><strong>1885</strong></div><span class="sword">⚔</span></div>
-  <div class="actions"><div class="lang"><button>DE</button><button class="active">EN</button><button>FR</button></div><button class="menu-btn" id="menuBtn">☰</button></div>
+  <div class="actions"><div class="lang"><button>DE</button><button class="active">EN</button><button>FR</button></div><a class="menu-btn phalanx-back" href="./epic-navigation-v2-kvk-test.html" aria-label="Zurück zur Epic Navigation V2">←</a></div>
 </header>
 <div class="body">
 <aside class="sidebar">
@@ -464,7 +466,7 @@ function openPlayer(name){
   $('#pmPrivacy').textContent=p.governor_gear_privacy?'Governor Gear privacy active — equipment is not inferred.':'Verified profile snapshot · 04.10.2026';$('#playerModal').classList.add('open');
 }
 $('#pmClose').onclick=()=>$('#playerModal').classList.remove('open');$('#playerModal').onclick=e=>{if(e.target.id==='playerModal')$('#playerModal').classList.remove('open')};
-$('#menuBtn').onclick=()=>$('#mobileDrawer').classList.add('open');$('#drawerClose').onclick=()=>$('#mobileDrawer').classList.remove('open');
+const drawerClose=$('#drawerClose');if(drawerClose)drawerClose.onclick=()=>$('#mobileDrawer').classList.remove('open');
 
 fetch('./kvk-opponent-intelligence-current.json?build=master-design-final-v1',{cache:'no-store'}).then(r=>r.json()).then(d=>{
   const ht=d.home_summary.main_alliance_totals;$('#homeTotal').textContent=(ht.total_power_m/1000).toFixed(2)+'B';$('#enemyTotal').textContent=(d.opponent_summary.top5_alliance_power_m/1000).toFixed(2)+'B';
