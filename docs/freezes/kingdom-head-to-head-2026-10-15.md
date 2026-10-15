@@ -1,8 +1,8 @@
 # NEXUS PHALANX — Kingdom Head-to-Head visual FREEZE (2026-10-15)
 
-Status: **VISUAL REFERENCE APPROVED / NOT YET IMPLEMENTED**
+Status: **FINAL VISUAL FREEZE APPROVED / NOT YET IMPLEMENTED**
 
-Approved reference: image generated and approved in ChatGPT conversation on 2026-10-15. The original generated artwork must be supplied as a real deployable image asset before marking the visual implementation complete. Do not substitute a generic helmet, circle, or newly invented insignia.
+FINAL approved reference: the second, corrected wide cinematic Kingdom Head-to-Head image generated in the ChatGPT conversation on 2026-10-15 (generation ID `c409f098-9f94-4b30-8dc6-06e8208d9663`, file `wide_cinematic_fantasy_ui_game_dashboard_interfa.png`). The earlier mockup is superseded. Preserve this exact final composition and its symmetric crossed swords. The artwork must be supplied as real deployable assets before marking the implementation complete. Do not substitute a generic helmet, circle, or newly invented insignia.
 
 ## Approved composition
 - Two matching PHALANX helmets, each backed by **two crossed swords**.
@@ -19,7 +19,7 @@ Approved reference: image generated and approved in ChatGPT conversation on 2026
 - Sword tips and pommels must align on their respective straight diagonals; no bent, disconnected, or offset blades.
 - Left and right emblems must have **identical crossing angles, sword lengths, centers, vertical alignment and overall scale**. Only their approved blue/gold versus red/silver material accents differ.
 - On mobile, both crossed-sword emblems must share the same horizontal baseline; no independent stretching or cropping that alters alignment.
-- Validate against an overlay/guide before visual acceptance; the prior generated image is a mood/composition reference but its sword geometry is **not** approved as-is.
+- Validate against an overlay/guide before visual acceptance; the first generated image had incorrect sword geometry and is superseded by the second, corrected FINAL FREEZE reference.
 
 ## Asset contract (not yet satisfied)
 Expected files, once approved artwork has been exported and made available:
