@@ -78,3 +78,9 @@ Stand: 2026-10-15
 - Lokal aus den Originalbytes berechnete Git-Blob-SHA-1: `e07740b64bf9dacb4df00ad9cdd374c21bd2f244`; GitHub `main/backups/NEXUS_PHALANX_HOME_FROZEN_2026-10-11.html` meldet **denselben Blob-SHA**. Damit ist die GitHub-Backup-Datei **byte-identisch** zum freigegebenen Library-Original.
 - **Einschränkung:** Das eingefrorene HOME-HTML lädt dynamisch Inhalte aus `raw.githubusercontent.com/.../main/preview/`; Byte-Identität des Wrappers garantiert noch keine deterministische Darstellung bei künftigen Änderungen der externen Abhängigkeit. Für isolierten Release-Test Dependency pinnen, ohne FREEZE-Original oder `main` zu verändern.
 - Keine produktive Datei verändert, keine HOME-Freigabe zur Veröffentlichung abgeleitet.
+
+## HOME FREEZE – isolierte Dependency-Pin-Testkopie (2026-10-15)
+- Neu auf ausschließlich `phalanx-cloudflare-test-deploy`: `deploy/phalanx-kvk-test/home-freeze-pinned-preview.html` (Git blob `bd50e5ef8fe07c8609f1f57eb382e0b6299886e0`).
+- Aus GitHub-Backup des kanonischen HOME abgeleitet; einzige beabsichtigte Änderung: externe Command-Center-Abhängigkeit von `raw.githubusercontent.com/.../main/preview/nexus-app-2-command-center-portrait-final-polish-test.html` auf **Commit `8cd9fdd87dc46ff4f54775e992250e2b0ec6fd40`** fixiert.
+- Nachlesen der Testdatei bestätigt: gepinnter URL enthalten, bisheriger `main`-Pfad fehlt. Der Commit ist unveränderlich, aber ein Browser-/Funktions-/Sicherheitscheck der geladenen Abhängigkeit steht aus.
+- **Noch nicht deployed oder mobil getestet**; ursprüngliche HOME FREEZE, GitHub-Backup, `main`, V2, V1 und produktive Infrastruktur unverändert.
