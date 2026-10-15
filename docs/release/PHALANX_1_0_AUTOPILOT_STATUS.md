@@ -55,3 +55,8 @@ Stand: 2026-10-15
 - Isolierte V2-Testdatei `deploy/phalanx-kvk-test/epic-navigation-v2-kvk-test.html` in GitHub angelegt und erneut gelesen.
 - KvK Prep ist mit `./kvk-prep-v13.html` verlinkt; 37 `data-unlinked`-Einträge verbleiben.
 - Die bestehende Root-/V1-Navigation ist unverändert; die neue V2-Datei wurde noch **nicht** erneut nach Cloudflare deployed oder im Browser geprüft.
+
+## Testlauf #7 – 2026-10-15, 19:16
+- GitHub Actions Run #7, Commit `d9089f2`, Branch `phalanx-cloudflare-test-deploy`: **Success**, 34 Sekunden (Screenshot des Projektinhabers).
+- Der Deployment-Job lief nach Integration der separaten Datei `epic-navigation-v2-kvk-test.html` erfolgreich. Die tatsächliche V2-Anzeige und der Link auf KvK Prep müssen noch im Browser geprüft werden.
+- Die vorhandene Root-V1-Seite bleibt bestehen; keine Design-Freigabe allein durch Deployment.
