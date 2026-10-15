@@ -72,6 +72,21 @@ if not errors:
     if "hcjrdofkdkasznywvcxo.supabase.co" in kvk:
         print("WARNING: KvK test page references the existing Supabase project; auth isolation is NOT verified.")
 
+# Isolated Crimson icon test: prevent placeholder text from masquerading as PNGs.
+crimson_page = base / "crimson-icon-test.html"
+crimson_manifest = base / "crimson-icon-test.webmanifest"
+if crimson_page.is_file() or crimson_manifest.is_file():
+    if not crimson_page.is_file() or not crimson_manifest.is_file():
+        errors.append("Crimson PWA test page or manifest missing")
+    for icon_name in ("crimson-icon-192.png", "crimson-icon-512.png", "crimson-icon-512-transparent.png"):
+        icon_path = base / "assets" / icon_name
+        if not icon_path.is_file():
+            errors.append(f"Crimson PNG missing: {icon_name}")
+            continue
+        icon_bytes = icon_path.read_bytes()
+        if len(icon_bytes) < 100 or not icon_bytes.startswith(b"\\x89PNG\\r\\n\\x1a\\n"):
+            errors.append(f"Crimson PNG invalid or placeholder: {icon_name} ({len(icon_bytes)} bytes)")
+
 if errors:
     for error in errors:
         print("FAIL:", error, file=sys.stderr)
