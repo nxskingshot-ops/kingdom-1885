@@ -31,6 +31,15 @@ Stand: 2026-10-15. Geltungsbereich: Entwicklung, Integration, Tests und Releasev
 - Keine unnötigen Rückfragen oder künstlichen Handlungsaufforderungen. Eigenständig weiterarbeiten, solange kein tatsächlicher Eingriff erforderlich ist.
 - Wenn grüne Schrift technisch nicht möglich ist, die notwendige Nutzeraktion unmissverständlich textlich kennzeichnen.
 
+## Transparenz und Schutz des Projekts
+- **Leitlinie: „Beweise das Ergebnis. Schütze die Entwicklung.“** NEXUS PHALANX soll transparent, nachvollziehbar und logisch sein, ohne unnötig zur Kopie einzuladen.
+- Nutzer erhalten alle **wesentlichen** Eingabedaten, Quellen/Zeitstände, Annahmen, Einflussfaktoren, Rechenwege bzw. prüfbaren Zwischenergebnisse, Vergleichswerte, Unsicherheiten und Grenzen, die sie zur sachlichen Bewertung eines Ergebnisses brauchen. Keine irreführende Blackbox.
+- Keine unnötige Veröffentlichung vollständiger Quellcodes, interner Optimierer, Entwicklungsdokumentation, unveröffentlichter Funktionen, vertraulicher Daten, Secrets, Zugangswege oder interner Sicherheitsarchitektur.
+- Öffentliche Beschreibungen und Dateinamen sachlich und nutzerorientiert gestalten; keine absichtlichen Verschleierungen, die die Ergebnisprüfung beeinträchtigen.
+- Clientseitig ausgelieferter Code ist grundsätzlich untersuchbar. Wertvolle vertrauliche Logik nur nach Sicherheits- und Kostenabwägung serverseitig schützen. Öffentliches Repository/Pages und historische Veröffentlichungen separat prüfen.
+- Schutzmaßnahmen dürfen Transparenz, Datenschutz, faire Aussagen oder die Verlässlichkeit von Berechnungen nicht beeinträchtigen.
+- **Keine** eigenständige Änderung von Repository-Sichtbarkeit, Pages, Deployment, Zugriffsrechten oder produktiven Daten ohne ausdrückliche Freigabe.
+
 ## Schutzreferenzen
 - HOME-Design: `docs/NEXUS-PHALANX-CANONICAL-HOME-FREEZE-2026-10-12.md`; Original `NEXUS_PHALANX_HOME_ORIGINAL_2026-10-11.html` in der Projektbibliothek.
 - Alpha35-Funktions-FREEZE: `docs/freezes/NEXUS-PHALANX-ALPHA35-FUNCTION-FREEZE-2026-10-13.md`; Original `NEXUS_PHALANX_ALPHA35_FUNCTION_FROZEN.html` in der Projektbibliothek.
