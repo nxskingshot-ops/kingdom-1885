@@ -11,6 +11,13 @@ iframe{border:0;width:100%;height:100%;display:block}
 <iframe id="kingdom" src="../index.html?kingdom-preview=an-viewer-v1&single-header=3" title="Kingdom #1885 Outpost Map" allow="fullscreen"></iframe>
 <script>
 const frame=document.getElementById('kingdom'),status=document.getElementById('loading');
+// Pass the optional read-only selection into the embedded map, without changing its layout.
+const requestedOutpost=new URLSearchParams(location.search).get('outpost_id');
+if(requestedOutpost!==null){
+ const nested=new URL(frame.getAttribute('src'),location.href);
+ nested.searchParams.set('outpost_id',requestedOutpost);
+ frame.src=nested.href;
+}
 frame.addEventListener('load',()=>{try{
 const doc=frame.contentDocument;if(!doc||!doc.body)throw Error('map unavailable');
 const script=doc.createElement('script');
