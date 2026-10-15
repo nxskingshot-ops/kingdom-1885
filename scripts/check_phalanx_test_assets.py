@@ -22,7 +22,7 @@ if not errors:
         errors.append("KvK V2 test copy lacks return links to Epic V2")
     if "Epic Navigation V2" not in epic_v2:
         errors.append("Epic V2 test file lacks the expected V2 title")
-    if not re.search(r'<a\s+href=["\']\./kvk-prep-v13\.html["\']>KvK Prep', epic_v2):
+    if not re.search(r'<a\s+href=["\']\./kvk-prep-v13-epic-v2-test\.html["\']>KvK Prep', epic_v2):
         errors.append("Epic V2 KvK Prep link missing or disabled")
     if epic_v2.count('data-unlinked="1"') != 37:
         errors.append("Epic V2 placeholder count changed; check design freeze")
