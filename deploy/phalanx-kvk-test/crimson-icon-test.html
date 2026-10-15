@@ -32,4 +32,11 @@ if ('serviceWorker' in navigator && window.isSecureContext) {
   });
 }
 </script>
+<script>
+// Keep the installed Crimson PWA entrypoint stable while launching the frozen navigation.
+// Browser visits retain the icon-test page for independent installation checks.
+if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true) {
+  window.location.replace('./epic-navigation-v2-kvk-test.html');
+}
+</script>
 </body></html>
