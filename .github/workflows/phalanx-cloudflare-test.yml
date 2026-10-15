@@ -1,0 +1,36 @@
+name: PHALANX isolated Cloudflare test deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - test/cloudflare-pages-auto-deploy-20261015
+    paths:
+      - 'cloudflare-test/**'
+      - '.github/workflows/phalanx-cloudflare-test.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phalanx-cloudflare-test
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: phalanx-test
+    steps:
+      - name: Checkout isolated test branch
+        uses: actions/checkout@v4
+      - name: Validate test assets
+        run: |
+          test -f cloudflare-test/index.html
+          test -n "${{ secrets.CLOUDFLARE_API_TOKEN }}"
+          test -n "${{ secrets.CLOUDFLARE_ACCOUNT_ID }}"
+      - name: Deploy isolated Pages project
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy cloudflare-test --project-name=nexus-phalanx-kvk-test --branch=test-cloudflare-pages-auto-deploy-20261015
