@@ -65,3 +65,9 @@ Stand: 2026-10-15
 - Der Projektinhaber hat die isolierte **Branch-URL** `https://phalanx-cloudflare-test-depl.nexus-phalanx-kvk-test.pages.dev/epic-navigation-v2-kvk-test.html` auf Android geöffnet; Screenshot zeigt eindeutig `EPIC NAVIGATION V2 · DESIGN FREEZE · ISOLATED PREVIEW` und sieben sichtbare Fantasy-Navigationsbereiche.
 - Die vorher verwendete allgemeine Projekt-URL `https://nexus-phalanx-kvk-test.pages.dev/` zeigte weiterhin Navigation V1; Branch-URL löst diese Verwechslung.
 - **Noch nicht getestet:** Aufklappen und KvK-Prep-Klick innerhalb der V2, Rücknavigation, Auth/RLS. Keine Anmeldung in der Testumgebung vor Security-Freigabe.
+
+## Epic Navigation V2 – Android-Rundlauf erfolgreich (2026-10-15 19:45)
+- Nutzer-Screenshots belegen **Epic Navigation V2 → KvK Operations → KvK Prep V13 (V2-Testkopie) → PHALANX Testnavigation → Epic Navigation V2**.
+- Der Rücksprung landet sichtbar in der freigegebenen V2 statt in V1; mobile Navigation und Darstellung des nicht-authentifizierten Formulars erfolgreich.
+- Test lief über isolierte Cloudflare-Branch-Bereitstellung; V1, Original-FREEZE und Produktion unverändert.
+- **Nicht getestet/freigegeben:** Anmeldung, RLS-Berechtigungen, produktiver Datenzugriff, Gesamt-App, Release 1.0.
