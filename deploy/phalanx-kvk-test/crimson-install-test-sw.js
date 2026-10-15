@@ -1,9 +1,10 @@
 // PHALANX Crimson: isolated, scope-limited installation test only.
 // No production pages or shared data are cached.
-const CACHE = 'phalanx-crimson-install-test-v2';
+const CACHE = 'phalanx-crimson-install-test-v3';
 const SCOPE = new URL('./', self.registration.scope);
 const ALLOWED = [
   new URL('crimson-icon-test.html', SCOPE).href,
+  new URL('epic-navigation-v2-kvk-test.html', SCOPE).href,
   new URL('crimson-icon-test.webmanifest', SCOPE).href,
   new URL('assets/crimson-freeform-192.png', SCOPE).href,
   new URL('assets/crimson-freeform-512.png', SCOPE).href,
