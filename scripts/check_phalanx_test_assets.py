@@ -80,9 +80,11 @@ if not errors:
     for name, data in (("index.html", root), ("index-kvk.html", nav), ("kvk-prep-v13.html", kvk), ("epic-navigation-v2-kvk-test.html", epic_v2), ("kvk-prep-v13-epic-v2-test.html", kvk_v2), ("home-freeze-pinned-preview.html", home)):
         if re.search(r"service[_-]?role|sb_secret_", data, re.I):
             errors.append(f"Potential privileged key marker in {name}; manual security review required")
-    # Release blocker: root currently routes to legacy Navigation V1, not the frozen Epic V2.
-    if 'url=./index-kvk.html' in root:
-        print("RELEASE BLOCKER: Cloudflare test root redirects to legacy Navigation V1; Epic V2 remains accessible only by direct URL. Do not silently change the frozen entry point.")
+    # The isolated Cloudflare root must open the frozen Epic V2, not legacy V1.
+    if 'url=./epic-navigation-v2-kvk-test.html' not in root:
+        errors.append("Cloudflare test root must redirect to frozen Epic Navigation V2")
+    if 'href="./epic-navigation-v2-kvk-test.html"' not in root:
+        errors.append("Cloudflare test root fallback link must target Epic Navigation V2")
     if "Deployment-Test erfolgreich" in root:
         print("WARNING: Root index.html is still a placeholder; root routing must be verified before release.")
     if "hcjrdofkdkasznywvcxo.supabase.co" in kvk:
