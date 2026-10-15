@@ -20,4 +20,16 @@
 <p>In Chrome das Menü <strong>⋮</strong> öffnen und <strong>App installieren</strong> oder <strong>Zum Startbildschirm hinzufügen</strong> auswählen, sofern Chrome diese Option anbietet.</p>
 <small>TEST ONLY · Nicht Produktion · Eigenständiges Manifest</small>
 <a href="./epic-navigation-v2-kvk-test.html">Zur PHALANX-Testnavigation →</a>
-</main></body></html>
+</main><script>
+if ('serviceWorker' in navigator && window.isSecureContext) {
+  window.addEventListener('load', async () => {
+    try {
+      const registration = await navigator.serviceWorker.register('./crimson-install-test-sw.js', {scope:'./'});
+      console.info('Crimson isolated install test worker ready:', registration.scope);
+    } catch (error) {
+      console.warn('Crimson isolated install test worker unavailable:', error);
+    }
+  });
+}
+</script>
+</body></html>
