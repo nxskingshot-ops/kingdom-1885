@@ -25,6 +25,20 @@ jobs:
           cp preview/outpost-viewer-an-v1.js rc5-preview/preview/
           cp reports/alliance-chat-report.js rc5-preview/reports/
           find rc5-preview -type f -print
+      - name: Check preview package dependencies
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          root = Path('rc5-preview')
+          required = ['index.html', 'preview/rc5-outpost-details-readonly.html', 'preview/outpost-report-v11.html', 'preview/outpost-viewer-an-v1.js', 'reports/alliance-chat-report.js']
+          missing = [name for name in required if not (root / name).is_file()]
+          if missing:
+              raise SystemExit('Missing preview dependencies: ' + ', '.join(missing))
+          page = (root / 'preview/rc5-outpost-details-readonly.html').read_text()
+          assert 'outpost-report-v11.html' in page
+          assert 'outpost-editor-v5' not in page
+          print('RC5 preview dependency gate: PASS')
+          PY
       - uses: actions/upload-artifact@v4
         with:
           name: rc5-outpost-details-preview
