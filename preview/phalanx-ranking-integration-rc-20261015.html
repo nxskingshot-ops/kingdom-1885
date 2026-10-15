@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>PHALANX · Ranking Integration Preview</title><style>
+:root{color-scheme:dark}body{margin:0;background:#101722;color:#f0e5ca;font:15px system-ui,sans-serif}main{max-width:900px;margin:auto;padding:18px}h1{font-size:22px;color:#e5bd70}p{line-height:1.5}.muted{color:#aeb5bc}.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:20px 0}select,button,a.nav{background:#243042;color:#f6e5c5;border:1px solid #a18a5b;border-radius:8px;padding:10px;font:inherit}button{cursor:pointer}a{color:#e5bd70}table{border-collapse:collapse;width:100%;font-size:13px}th,td{border-bottom:1px solid #384251;padding:9px;text-align:left;overflow-wrap:anywhere}th{color:#e5bd70}.scroll{overflow-x:auto}.error{color:#ffaaa5}
+</style></head><body><main><a href="./phalanx-home-auth-rc9-20261014.html" class="nav">← PHALANX HOME (Auth-Vorschau)</a><h1>⚔ NEXUS PHALANX · Rankings</h1><p class="muted">Isolierte Integrationsvorschau. Keine zweite Anmeldung, keine Änderungen am freigegebenen HOME. Die Rankingdaten werden nur mit gültiger PHALANX-Sitzung und Mitgliedschaft ausgeliefert.</p><p id="state" role="status">Prüfe PHALANX-Sitzung …</p><div class="bar"><label for="board">Ranking</label><select id="board"></select><label for="limit">Plätze</label><select id="limit"><option>40</option><option>100</option><option>20</option></select><button id="load" type="button" disabled>Ranking laden</button></div><p id="freshness" class="muted"></p><div class="scroll"><table><thead id="head"></thead><tbody id="body"></tbody></table></div></main>
+<script type="module">
+const PROJECT='https://hcjrdofkdkasznywvcxo.supabase.co';
+const ANON='sb_publishable_hkqBaMme70g2f3wcxvaTKg_FczqkpCh';
+const BOARDS=['personal_power','troop_power','building_power','research_power','gov_gear','gov_charm','hero_total','hero_no_equip','hero_equip','pet_power','mystic_trial','master_power','town_center','kills','alliance_power','alliance_kills'];
+const labels={personal_power:'Spielerstärke',troop_power:'Truppenstärke',building_power:'Gebäudestärke',research_power:'Forschung',gov_gear:'Gouverneursausrüstung',gov_charm:'Gouverneurstalismane',hero_total:'Helden gesamt',hero_no_equip:'Helden ohne Ausrüstung',hero_equip:'Heldenausrüstung',pet_power:'Haustiere',mystic_trial:'Mystic Trial',master_power:'Meister',town_center:'Schloss',kills:'Kills',alliance_power:'Allianzstärke',alliance_kills:'Allianz-Kills'};
+const $=id=>document.getElementById(id), state=$('state'),load=$('load');
+for(const b of BOARDS){const o=document.createElement('option');o.value=b;o.textContent=labels[b];$('board').append(o)}
+const fmt=v=>v===null||v===undefined?'—':String(v);
+const setState=(v,err=false)=>{state.textContent=v;state.className=err?'error':''};
+const cell=(row,value,tag='td')=>{const c=document.createElement(tag);c.textContent=fmt(value);row.append(c)};
+let client;
+try{
+ const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2');
+ // The RC9 HOME preview uses this same Supabase project and default auth storage key.
+ client=createClient(PROJECT,ANON);
+ const {data,error}=await client.auth.getSession();
+ if(error)throw error;
+ if(!data.session){setState('Keine vorhandene PHALANX-Sitzung. Bitte zuerst über HOME anmelden.',true)}
+ else{setState('PHALANX-Sitzung gefunden. Rankingabruf prüft zusätzlich die Mitgliedschaft.');load.disabled=false}
+}catch(e){setState('Sitzungsprüfung fehlgeschlagen: '+String(e.message||e),true)}
+let generation=0;
+load.addEventListener('click',async()=>{
+ if(!client)return;
+ const seq=++generation;load.disabled=true;setState('Ranking wird geladen …');$('head').replaceChildren();$('body').replaceChildren();$('freshness').textContent='';
+ try{
+  const {data,error}=await client.auth.getSession();if(error||!data.session)throw Error('Keine gültige PHALANX-Sitzung');
+  const board=$('board').value,limit=Number($('limit').value);
+  const response=await fetch(PROJECT+'/functions/v1/phalanx-native-ranking-rc-test?board='+encodeURIComponent(board)+'&limit='+limit,{headers:{apikey:ANON,authorization:'Bearer '+data.session.access_token},cache:'no-store'});
+  const result=await response.json();
+  if(!response.ok)throw Error('Rankingzugriff: '+(result.error||response.status));
+  if(result.board!==board||!['alliance','player'].includes(result.kind)||!Array.isArray(result.entries))throw Error('Unerwartetes Rankingformat');
+  if(seq!==generation)return;
+  const alliance=result.kind==='alliance',columns=alliance?['Rang','Allianz','Kürzel','Anführer','Mitglieder','Punkte']:['Rang','Spieler','Allianz','Punkte'];
+  const tr=document.createElement('tr');for(const h of columns)cell(tr,h,'th');$('head').append(tr);
+  for(const e of result.entries){const row=document.createElement('tr');const values=alliance?[e.rank,e.name,e.abbr,e.leader_name,e.member_count,e.score]:[e.rank,e.nick_name,e.alliance_abbr,e.score];for(const v of values)cell(row,v);$('body').append(row)}
+  const stamp=v=>v?new Date(v).toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'}):'unbekannt';
+  $('freshness').textContent='Datenquelle: '+stamp(result.sourceCapturedAt)+' · In PHALANX gespeichert: '+stamp(result.snapshotSavedAt);
+  setState(labels[board]+': '+result.entries.length+' Einträge geladen');
+ }catch(e){if(seq===generation)setState(String(e.message||e),true)}
+ finally{if(seq===generation)load.disabled=false}
+});
+</script></body></html>
