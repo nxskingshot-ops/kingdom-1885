@@ -23,11 +23,13 @@ Stand: 2026-10-15. Geltungsbereich: Entwicklung, Integration, Tests und Releasev
 10. Keine Zugangsdaten, API-Keys, Tokens oder privaten Accountdaten ins Repository committen.
 
 
-## Grüne-Schrift-Regel (verbindlich)
-- **Grüne Schrift** kennzeichnet ausschließlich nachweislich **erledigte**, **erfolgreich geprüfte** oder vom Projektinhaber **freigegebene** Punkte.
-- Geplant, in Arbeit, ungetestet, blockiert oder nur vermutet wird **nicht grün** dargestellt.
-- Eine technische Implementierung allein ist keine erfolgreiche Android-Bestätigung; die jeweilige Prüf- bzw. Freigabestufe muss eindeutig benannt werden.
-- Wenn die Oberfläche keine grüne Schrift unterstützt, den Status ausdrücklich als Text benennen, statt einen grünen Erfolg vorzutäuschen.
+## Grüne-Schrift-Regel (verbindlich, ursprüngliche Nutzervereinbarung)
+- **Grüne Schrift ausschließlich dann verwenden, wenn der Projektinhaber tatsächlich handeln muss**: etwas gezielt lesen, prüfen, entscheiden, bestätigen, freigeben, auf dem Gerät testen oder selbst durchführen.
+- Jede grüne Aufforderung muss klar benennen: **Was ist zu tun? Warum ist es erforderlich? Welche konkrete Handlung wird erwartet?**
+- **Normale Schrift** für sämtliche Fortschritte, Ergebnisse, Fehler, technische Prüfungen, abgeschlossene Arbeiten, Dokumentation und allgemeine Statusberichte.
+- **Grün ist keine Erfolgs-, Fertig- oder Statusfarbe.** Erledigte oder erfolgreich geprüfte Punkte werden allein deshalb niemals grün markiert.
+- Keine unnötigen Rückfragen oder künstlichen Handlungsaufforderungen. Eigenständig weiterarbeiten, solange kein tatsächlicher Eingriff erforderlich ist.
+- Wenn grüne Schrift technisch nicht möglich ist, die notwendige Nutzeraktion unmissverständlich textlich kennzeichnen.
 
 ## Schutzreferenzen
 - HOME-Design: `docs/NEXUS-PHALANX-CANONICAL-HOME-FREEZE-2026-10-12.md`; Original `NEXUS_PHALANX_HOME_ORIGINAL_2026-10-11.html` in der Projektbibliothek.
