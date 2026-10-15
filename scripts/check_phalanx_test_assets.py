@@ -90,6 +90,16 @@ if not errors:
     if "hcjrdofkdkasznywvcxo.supabase.co" in kvk:
         print("WARNING: KvK test page references the existing Supabase project; auth isolation is NOT verified.")
 
+# PWA entry contract: installed app and browser root must open the same frozen Epic V2.
+manifest_file = base / "crimson-icon-test.webmanifest"
+if manifest_file.is_file():
+    import json
+    manifest = json.loads(manifest_file.read_text(encoding="utf-8"))
+    if manifest.get("start_url") != "./epic-navigation-v2-kvk-test.html":
+        errors.append("Crimson PWA installed start_url must target frozen Epic V2")
+    if manifest.get("scope") != "./":
+        errors.append("Crimson PWA scope unexpectedly changed")
+
 # Isolated Crimson icon test: prevent placeholder text from masquerading as PNGs.
 crimson_page = base / "crimson-icon-test.html"
 crimson_manifest = base / "crimson-icon-test.webmanifest"
