@@ -22,7 +22,7 @@ jobs:
         run: |
           python -m pip install playwright
           python -m playwright install --with-deps chromium
-      - name: Run 12-module offline smoke
+      - name: Run RC5 offline module smoke
         run: |
           mkdir -p test-results
           python tests/rc5/module_smoke.py > test-results/rc5-module-smoke.json
