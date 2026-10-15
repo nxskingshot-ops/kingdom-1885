@@ -50,3 +50,8 @@ Stand: 2026-10-15
 - Der Hin- und Rückweg der isolierten Testnavigation ist damit im Browser erfolgreich geprüft.
 - Keine Anmeldung und keine Prüfung geschützter Daten vorgenommen.
 - Der Navigationspfad ist funktional; Epic Navigation V2 und Auth-/RLS-Sicherheit bleiben weiterhin offene Release-Gates.
+
+## V2-Integration 2026-10-15
+- Isolierte V2-Testdatei `deploy/phalanx-kvk-test/epic-navigation-v2-kvk-test.html` in GitHub angelegt und erneut gelesen.
+- KvK Prep ist mit `./kvk-prep-v13.html` verlinkt; 37 `data-unlinked`-Einträge verbleiben.
+- Die bestehende Root-/V1-Navigation ist unverändert; die neue V2-Datei wurde noch **nicht** erneut nach Cloudflare deployed oder im Browser geprüft.
