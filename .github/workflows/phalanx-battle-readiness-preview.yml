@@ -7,6 +7,9 @@ on:
     paths:
       - '.github/workflows/phalanx-battle-readiness-preview.yml'
       - 'deploy/phalanx-kvk-test/battle-readiness-isolated.html'
+      - 'deploy/phalanx-kvk-test/crimson-icon-test.html'
+      - 'deploy/phalanx-kvk-test/crimson-icon-test.webmanifest'
+      - 'deploy/phalanx-kvk-test/assets/crimson-icon-*.png'
   workflow_dispatch:
 
 permissions:
