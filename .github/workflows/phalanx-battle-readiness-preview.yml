@@ -14,6 +14,7 @@ on:
       - 'deploy/phalanx-kvk-test/outpost-audit-isolated.html'
       - 'deploy/phalanx-kvk-test/alliance-trends-isolated.html'
       - 'deploy/phalanx-kvk-test/hero-investment-alpha23-isolated.html'
+      - 'deploy/phalanx-kvk-test/team-optimizer-alpha11-isolated.html'
       - 'deploy/phalanx-kvk-test/data/alliance-trends-2026-10-02.json'
       - 'deploy/phalanx-kvk-test/crimson-icon-test.html'
       - 'deploy/phalanx-kvk-test/crimson-install-test-sw.js'
