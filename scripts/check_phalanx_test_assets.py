@@ -121,6 +121,21 @@ for module_name, filename in (("KvK Prep", "kvk-prep-v13-epic-v2-test.html"), ("
     elif 'href="./epic-navigation-v2-kvk-test.html"' not in target.read_text(encoding='utf-8'):
         errors.append(f"Epic V2 {module_name} target lacks return link: {filename}")
 
+# Prevent an archival opponent snapshot from being published as current/live.
+import json
+snapshot_file = base / "kvk-opponent-intelligence-current.json"
+if not snapshot_file.is_file():
+    errors.append("Opponent snapshot JSON missing")
+else:
+    try:
+        snapshot = json.loads(snapshot_file.read_text(encoding="utf-8"))
+        if snapshot.get("status") != "historical_test_snapshot_not_live":
+            errors.append("Opponent snapshot must explicitly be historical/not live")
+        if not str(snapshot.get("updated_at", "")).startswith("2026-10-04"):
+            errors.append("Opponent snapshot date unexpectedly changed; review before updating")
+    except (ValueError, OSError) as exc:
+        errors.append(f"Opponent snapshot JSON invalid: {exc}")
+
 if errors:
     for error in errors:
         print("FAIL:", error, file=sys.stderr)
