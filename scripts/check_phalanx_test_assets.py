@@ -136,6 +136,43 @@ else:
     except (ValueError, OSError) as exc:
         errors.append(f"Opponent snapshot JSON invalid: {exc}")
 
+
+# Release routing audit: inspect all local HTML links in the six connected modules.
+# Anchors, mailto, external HTTPS links and JS-driven actions are out of scope.
+from html.parser import HTMLParser
+class LocalLinks(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.links = []
+    def handle_starttag(self, tag, attrs):
+        if tag.lower() == "a":
+            for key, value in attrs:
+                if key == "href" and value:
+                    self.links.append(value)
+
+for module_file in (
+    "epic-navigation-v2-kvk-test.html",
+    "kvk-prep-v13-epic-v2-test.html",
+    "battle-readiness-isolated.html",
+    "phalanx-ranking-integration-rc-20261015.html",
+    "hero-intelligence-v15-isolated.html",
+    "player-intelligence-isolated.html",
+    "alliance-trends-isolated.html",
+):
+    target = base / module_file
+    if not target.is_file():
+        errors.append(f"Release route missing: {module_file}")
+        continue
+    parser = LocalLinks()
+    parser.feed(target.read_text(encoding="utf-8"))
+    for href in parser.links:
+        clean = href.split("#", 1)[0].split("?", 1)[0]
+        if not clean or clean.startswith(("https://", "http://", "mailto:", "tel:", "javascript:", "/", "#")):
+            continue
+        resolved = (target.parent / clean).resolve()
+        if not resolved.is_relative_to(base.resolve()) or not resolved.is_file():
+            errors.append(f"Broken local HTML link: {module_file} -> {href}")
+
 if errors:
     for error in errors:
         print("FAIL:", error, file=sys.stderr)
