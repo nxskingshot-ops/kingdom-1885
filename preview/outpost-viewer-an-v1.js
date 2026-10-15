@@ -137,7 +137,6 @@
       hasLiveSnapshot = true;
       if (typeof reportButton !== 'undefined') reportButton.disabled = !reportAPI;
       redraw();
-      applyPublishedDeepLink();
 
       const times = valid.map(row => Date.parse(row.updated_at)).filter(Number.isFinite);
       const newest = times.length ? new Date(Math.max(...times)) : null;
@@ -145,6 +144,7 @@
         ? 'Supabase live data · ' + live.length + ' published outposts · latest record change ' + newest.toLocaleString()
         : 'Supabase live data · ' + live.length + ' published outposts';
       status('● Live DB · ' + live.length, detail);
+      applyPublishedDeepLink();
       if ($('sourceNote')) $('sourceNote').textContent = 'Map markers come only from published Supabase records. ' + detail + '.';
     } catch (error) {
       if (!hasLiveSnapshot) {
