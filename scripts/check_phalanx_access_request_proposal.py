@@ -19,6 +19,7 @@ def main():
     match = re.search(r"\.from\(['\"]nexus_access_requests['\"]\)\.insert\(\{([^}]*)\}\)", html)
     assert match, "Direct public request INSERT not found"
     fields = set(re.findall(r"([A-Za-z_][A-Za-z_0-9]*)\s*:", match.group(1)))
+    fields.update(re.findall(r"(?:^|,)\s*([A-Za-z_][A-Za-z_0-9]*)\s*(?=,|$)", match.group(1)))
     assert fields == {"gamer_tag", "player_id", "alliance", "status"}, f"Unexpected insert fields: {fields}"
     for forbidden in ("granted_role", "granted_user_id", "reviewed_by", "reviewed_at"):
         assert forbidden not in fields
