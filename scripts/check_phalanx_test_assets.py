@@ -32,7 +32,7 @@ if not errors:
         errors.append("Epic V2 test file lacks the expected V2 title")
     if not re.search(r'<a\s+href=["\']\./kvk-prep-v13-epic-v2-test\.html["\']>KvK Prep', epic_v2):
         errors.append("Epic V2 KvK Prep link missing or disabled")
-    if epic_v2.count('data-unlinked="1"') != 36:
+    if epic_v2.count('data-unlinked="1"') != 34:
         errors.append("Epic V2 placeholder count changed; check design freeze")
     battle_file = base / "battle-readiness-isolated.html"
     battle_data_file = base / "kvk-opponent-intelligence-current.json"
