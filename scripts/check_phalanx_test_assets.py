@@ -84,7 +84,7 @@ if crimson_page.is_file() or crimson_manifest.is_file():
             errors.append(f"Crimson PNG missing: {icon_name}")
             continue
         icon_bytes = icon_path.read_bytes()
-        if len(icon_bytes) < 100 or not icon_bytes.startswith(b"\\x89PNG\\r\\n\\x1a\\n"):
+        if len(icon_bytes) < 100 or not icon_bytes.startswith(bytes((137, 80, 78, 71, 13, 10, 26, 10))):
             errors.append(f"Crimson PNG invalid or placeholder: {icon_name} ({len(icon_bytes)} bytes)")
 
 if errors:
