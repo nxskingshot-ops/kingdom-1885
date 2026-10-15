@@ -1,7 +1,6 @@
-# REVIEW TEMPLATE ONLY — do not place under .github/workflows until approved.
-# Requires a PRIVATE repository or encrypted object store; NEVER commits source to this public repository.
-# Secrets: SUPABASE_ACCESS_TOKEN, B2_KEY_ID, B2_APP_KEY, B2_BUCKET.
-name: PHALANX private Edge source backup (PROPOSAL)
+# PROPOSAL ONLY: not under .github/workflows, intentionally gated against execution.
+# Requires owner approval, review, private B2 destination and Supabase permission validation.
+name: PHALANX Edge encrypted private backup — REVIEW ONLY
 on:
   workflow_dispatch:
 permissions:
@@ -14,22 +13,24 @@ jobs:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
       PROJECT_REF: hcjrdofkdkasznywvcxo
       AWS_ACCESS_KEY_ID: ${{ secrets.B2_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.B2_APP_KEY }}
-      B2_BUCKET: ${{ secrets.B2_BUCKET }}
-      AWS_DEFAULT_REGION: eu-central-003
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.B2_APPLICATION_KEY }}
+      BACKUP_PASSPHRASE: ${{ secrets.PHALANX_BACKUP_ENCRYPTION_KEY }}
+      B2_ENDPOINT: https://s3.eu-central-003.backblazeb2.com
+      B2_BUCKET: nexus-phalanx-backup
     steps:
-      - name: Validate configured destination (no secret output)
+      - name: Preflight without exposing secrets
         shell: bash
         run: |
           set -euo pipefail
-          for key in SUPABASE_ACCESS_TOKEN AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY B2_BUCKET; do
-            if [ -z "${!key:-}" ]; then echo "::error::Missing required configuration: $key"; exit 1; fi
+          for name in SUPABASE_ACCESS_TOKEN AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY BACKUP_PASSPHRASE; do
+            if [ -z "${!name:-}" ]; then echo "::error::Missing $name"; exit 1; fi
           done
-      - name: Install tooling
+      - name: Install CLI dependencies
         run: |
           npm install --global supabase
-          python -m pip install --quiet awscli
-      - name: Retrieve function sources to ephemeral runner only
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq awscli openssl
+      - name: Download function sources into ephemeral runner
         shell: bash
         run: |
           set -euo pipefail
@@ -41,13 +42,9 @@ jobs:
           supabase functions download
           test -d supabase/functions
           test "$(find supabase/functions -mindepth 1 -maxdepth 1 -type d | wc -l)" -gt 0
-      - name: Encrypt and upload privately
+      - name: Security gate — encryption and restore test not yet approved
         shell: bash
         run: |
-          set -euo pipefail
-          umask 077
-          cd "$RUNNER_TEMP/phalanx-edge"
-          # BLOCKED BY DESIGN: implement independently reviewed authenticated encryption
-          # and checksum/retention strategy before enabling any upload.
-          echo "::error::Template intentionally cannot upload without reviewed encryption."
+          echo "::error::Review required: implement authenticated encryption, upload, checksum and non-production restore validation."
           exit 1
+# No git add/commit/push; no Actions artifact upload; never echo source or tokens.
