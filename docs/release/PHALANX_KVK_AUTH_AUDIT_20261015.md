@@ -27,3 +27,11 @@ Stand: 2026-10-15. Keine produktiven Änderungen.
 
 ## Sicherheitsregel
 Keine echten Zugangsdaten im Test eingeben, bis Authentifizierung und Zugriff serverseitig verifiziert sind. Kein Merge nach main, kein produktiver Deploy, keine Secrets-, RLS- oder Datenänderung ohne ausdrückliche Freigabe.
+
+## Ergänzende statische Prüfung – V2-Testkopie (2026-10-15)
+- Geprüft: `deploy/phalanx-kvk-test/kvk-prep-v13-epic-v2-test.html` (ohne Anmeldung, ohne Datenbankmutation).
+- `membership()` prüft im Browser `active===true`, Rollen `member/r4/r5/admin` und `expires_at` gegen die aktuelle Zeit; der API-Aufruf verwendet den Session-Bearer-Token. Das ist **nur clientseitige UI-Zugangskontrolle**, kein Nachweis serverseitiger Autorisierung.
+- `load()` fragt die bestehenden Tabellen `kvk_snapshots`, `kvk_player_changes` und `kvk_roster_history` direkt über Supabase ab. RLS-Policies auf **jeder** dieser Tabellen müssen die beabsichtigten Rollen und Datensätze serverseitig begrenzen; andernfalls kann ein Client die UI-Prüfung umgehen und die API direkt ansprechen.
+- Supabase Auth verwendet `persistSession:true` und `autoRefreshToken:true`: Sessions können im Browser gespeichert bleiben. Der isolierte Frontend-Branch verwendet weiterhin das bestehende Backend; daher **keine echten Logins im öffentlichen Test** bis zur gesonderten Freigabe.
+- Statischer Code-Review ersetzt keinen RLS-Test mit getrennten anonymen, nicht autorisierten und autorisierten Testidentitäten. Keine solche Prüfung behauptet oder durchgeführt.
+- Empfohlene sichere nächste Stufe: ausschließlich Metadaten-/Policy-Review mit explizit erlaubten Read-only-Werkzeugen, anschließend getrennte Testidentitäten und Backend-Isolation vor Freigabe. Keine Änderungen an RLS, Secrets oder Produktion ohne Freigabe.
