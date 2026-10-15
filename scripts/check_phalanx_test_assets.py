@@ -32,8 +32,22 @@ if not errors:
         errors.append("Epic V2 test file lacks the expected V2 title")
     if not re.search(r'<a\s+href=["\']\./kvk-prep-v13-epic-v2-test\.html["\']>KvK Prep', epic_v2):
         errors.append("Epic V2 KvK Prep link missing or disabled")
-    if epic_v2.count('data-unlinked="1"') != 37:
+    if epic_v2.count('data-unlinked="1"') != 36:
         errors.append("Epic V2 placeholder count changed; check design freeze")
+    battle_file = base / "battle-readiness-isolated.html"
+    battle_data_file = base / "kvk-opponent-intelligence-current.json"
+    if not battle_file.is_file() or not battle_file.stat().st_size:
+        errors.append("Battle Readiness isolated view missing")
+    else:
+        battle_html = battle_file.read_text(encoding="utf-8")
+        if 'createClient(' in battle_html or '<script type="module">' in battle_html:
+            errors.append("Battle Readiness isolated view contains an active Supabase client/module")
+        if "./kvk-opponent-intelligence-current.json" not in battle_html:
+            errors.append("Battle Readiness snapshot path is not local to the deployment")
+    if not battle_data_file.is_file() or not battle_data_file.stat().st_size:
+        errors.append("Battle Readiness local opponent snapshot missing")
+    if epic_v2.count('href="./battle-readiness-isolated.html"') != 1:
+        errors.append("Epic V2 must link to Battle Readiness isolated view exactly once")
     if "./kvk-prep-v13.html" not in nav:
         errors.append("Navigation does not link to the expected KvK module")
     if not re.search(r"<title[^>]*>.*?</title>", nav, re.I | re.S):
