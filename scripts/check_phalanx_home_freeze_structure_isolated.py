@@ -13,5 +13,5 @@ assert "b.disabled=true" in html and "if(card.section)" in html, "Unintegrated t
 assert "navigate({mode:'detail'" in html, "Existing detail navigation missing"
 assert "embeddedModules" in html and "battle-readiness-isolated.html" in html, "Existing Battle Readiness integration missing"
 assert "mountPhalanxHeaderV2" in html, "Approved header integration missing"
-assert "pixelgenaue HOME-Komposition" in html, "Visual acceptance gate must remain explicit"
+assert "Pixelgenauer HOME-Abgleich weiterhin offen" in html, "Visual acceptance gate must remain explicit"
 print("PASS: isolated HOME information architecture, safe disabled targets, existing navigation; visual FREEZE NOT yet certified")
