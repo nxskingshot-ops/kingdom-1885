@@ -26,6 +26,11 @@ Required procedure:
 Conflict records: `branding/FREEZE_CONFLICT_REGISTER.json`.
 Status vocabulary: `OPEN_USER_DECISION_REQUIRED`, `RESOLVED_BY_USER`, `IMPLEMENTED_AND_VERIFIED`. Only the user can move a conflict from OPEN to RESOLVED by an explicit choice.
 
+## Mandatory visual decision evidence
+Before asking the user to resolve a design conflict or approve a visual change, provide either (a) a directly viewable side-by-side image of the **actual** alternatives or (b) working, separately accessible app previews with clear labels. Generic image searches, mockups presented as originals, unverified links and technical file names alone are not acceptable evidence. Explain the differences and provide a recommendation, but **do not record a choice until the user explicitly makes it**.
+
+If actual images/previews cannot be verified, prepare the evidence first and continue unrelated tasks; do not request a blind approval. The user may ask for both a screenshot and a live preview. A source-code-only audit is not visual acceptance testing.
+
 ## Design tokens — initial canonical names
 The following names are mandatory. Values are provisional until reconciled against the frozen HOME and Epic Navigation V2; do NOT infer exact colors from posters or silently overwrite frozen CSS.
 
