@@ -49,3 +49,13 @@ Keine echten Zugangsdaten im Test eingeben, bis Authentifizierung und Zugriff se
 - GitHub-Defaultbranch-Suche nach `phalanx_can_read_alliances` fand nur die vorhandene Release-Audit-Notiz, **keine überprüfbare SQL-Funktionsdefinition**.
 - Laut offizieller Supabase-Dokumentation führt `SECURITY DEFINER` Code mit Owner-Rechten aus; `EXECUTE` für `anon` kann eine privilegierte RPC-Oberfläche eröffnen. Die konkrete Gefährdung ist ohne Funktionsdefinition und Berechtigungskontext **nicht nachgewiesen**. Dokumentation: https://supabase.com/docs/guides/observability/advisors?queryGroups=lint&lint=0028_anon_security_definer_function_executable
 - **Keine automatische Änderung** von EXECUTE-GRANTs, SECURITY DEFINER/INVOKER oder RLS, weil diese möglicherweise bewusst für existierende Workflows benötigt werden. Release-Gate bleibt offen bis autorisierte Code-/Policy-Inspektion möglich ist.
+
+## Release-Testfreigabe – überprüfbare Abnahmekriterien (2026-10-16)
+- [ ] Für `nxs_memberships`, `kvk_snapshots`, `kvk_player_changes` und `kvk_roster_history` sind die **tatsächlichen** RLS-Policies und Berechtigungen durch autorisierte Read-only-Inspektion dokumentiert.
+- [ ] `public.phalanx_can_read_alliances()` wurde einschließlich Funktionsdefinition, `search_path`, Owner und `EXECUTE`-Rechten geprüft; die Warnungen sind bewertet, nicht pauschal als Schwachstelle bestätigt.
+- [ ] Backend-Isolation oder explizite Sicherheitsfreigabe für die öffentliche Testdomain liegt vor; bis dahin keine echten Zugangsdaten in der Test-App.
+- [ ] Drei getrennte Identitäten (anonym, nicht berechtigt, berechtigt) wurden in einer sicheren Testumgebung gegen die **API**, nicht nur gegen die Oberfläche, geprüft; erlaubte und verweigerte Tabellen-/RPC-Zugriffe sind protokolliert.
+- [ ] Die tatsächlich veröffentlichte Cloudflare-Version (Commit/Branch/URL) wurde gegen die geprüften Dateien abgeglichen; mobile Navigation und Rückwege wurden im Browser bestätigt.
+- [ ] Datenbankbackup und isolierter Wiederherstellungstest sind gemäß `PHALANX_BACKUP_RELEASE_GATE_20261016.md` abgeschlossen.
+
+**Entscheidungsregel:** Alle Punkte müssen mit Nachweisen erfüllt sein, bevor echte Login-Tests oder ein Produktionsrelease freigegeben werden. GitHub-Preflight-PASS allein genügt nicht. Keine produktiven Änderungen durch diese Checkliste.
