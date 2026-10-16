@@ -41,7 +41,7 @@ function render(){
  if(selected==='NXS'&&nxsChange){$('growth').textContent=(nxsChange.net_power_change_m>0?'+':'')+nxsChange.net_power_change_m.toLocaleString('en-US',{maximumFractionDigits:1})+'M';}
  if((selected==='ALL'||selected==='NXS')&&nxsChange){$('risk').textContent='NXS: '+nxsChange.risk_score.toLocaleString('en-US',{maximumFractionDigits:2})+' · '+nxsChange.risk_label;}
  $('risk').nextElementSibling.textContent=(selected==='ALL'||selected==='NXS')?'NXS internal risk indicator · 29 Sep · others not assessed':'No comparable internal risk assessment available';
- $('growthPeriod').textContent=selected==='NXS'?'Net change 28–29 Sep · retained members +71.3M':'Awaiting a second dated snapshot ('+formatPeriod()+')';
+ $('growthPeriod').textContent=selected==='NXS'?'Net change 29 Sep–2 Oct · separate from 28–29 Sep retained-member growth':'Awaiting a second dated snapshot ('+formatPeriod()+')';
  $('lastUpdate').textContent='Baseline: '+snapshots.snapshot_date+' · '+rows.length+'/4 alliance rosters';
  $('power').nextElementSibling.textContent=has?(powerCoverage===4?'4 alliance power totals · mixed source precision':'Power coverage: '+powerCoverage+'/4 alliances'):'Recorded alliance power';
  $('castles').nextElementSibling.textContent=has?'Partial total · castle coverage '+castleCoverage+'/4 alliances':'Count from available roster';
