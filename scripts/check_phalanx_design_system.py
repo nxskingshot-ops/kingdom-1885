@@ -14,7 +14,7 @@ checks = {
     "result announcement": 'id="identity-result"' in html and 'aria-live="polite"' in html,
     "button event handler": "getElementById('identity-test').addEventListener('click'" in html,
     "handlers separated": "Button reagiert.'});document.getElementById" in html,
-    "no backend access": not re.search(r"supabase|XMLHttpRequest|fetch\\s*\\(|WebSocket|signInWithPassword", html, re.I),
+    "no backend access": not re.search(r"supabase|XMLHttpRequest|fetch\s*\(|WebSocket|signInWithPassword", html, re.I),
     "touch targets": "min-height:44px" in css,
     "focus styles": ":focus-visible" in css,
     "status variants": all(f'data-status="{name}"' in html for name in ("ready", "warning", "blocked")),
