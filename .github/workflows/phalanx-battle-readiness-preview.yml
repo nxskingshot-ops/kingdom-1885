@@ -32,6 +32,8 @@ on:
       - 'deploy/phalanx-kvk-test/crimson-icon-test.webmanifest'
       - 'deploy/phalanx-kvk-test/assets/crimson-*.png'
       - 'scripts/check_phalanx_test_assets.py'
+      - 'scripts/check_phalanx_home_freeze_structure_isolated.py'
+      - 'scripts/audit_phalanx_global_freeze_isolated.py'
   workflow_dispatch:
 
 permissions:
@@ -49,6 +51,10 @@ jobs:
         uses: actions/checkout@v4
       - name: Validate test assets before preview
         run: python3 scripts/check_phalanx_test_assets.py
+      - name: Validate frozen HOME structure and global design audit
+        run: |
+          python3 scripts/check_phalanx_home_freeze_structure_isolated.py
+          python3 scripts/audit_phalanx_global_freeze_isolated.py
       - name: Stage original HOME assets for isolated preview
         run: |
           cp icon-192.png deploy/phalanx-kvk-test/icon-192.png
