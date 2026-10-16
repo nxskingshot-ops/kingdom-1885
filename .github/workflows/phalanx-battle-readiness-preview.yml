@@ -36,6 +36,7 @@ on:
       - 'scripts/check_phalanx_test_assets.py'
       - 'scripts/check_phalanx_home_freeze_structure_isolated.py'
       - 'scripts/check_phalanx_freeze_card_assets_isolated.py'
+      - 'scripts/stage_phalanx_freeze_cards_isolated.py'
       - 'scripts/audit_phalanx_global_freeze_isolated.py'
   workflow_dispatch:
 
