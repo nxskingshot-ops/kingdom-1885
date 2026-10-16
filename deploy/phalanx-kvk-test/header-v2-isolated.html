@@ -35,6 +35,7 @@ const artwork={
   detail:'../../assets/header-v2/header-detail.png'
 };
 let renderSequence=0;
+let activeDestination='home';
 function render(mode){
   const sequence=++renderSequence;
   buttons.forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.mode===mode)));
@@ -42,9 +43,14 @@ function render(mode){
   try{
     mountPhalanxHeaderV2(host,{
       mode,
+      activeDestination,
       title:mode==='module'?'WAR ROOM':'HELDENRECHNER',
       artwork,
-      onNavigate:(destination)=>{result.textContent='HOME Navigation: '+destination+' (Demo, kein echter Routenwechsel)';},
+      onNavigate:(destination)=>{
+        activeDestination=destination;
+        render('home');
+        result.textContent='HOME Navigation: '+destination+' ausgewählt (Demo, kein echter Routenwechsel)';
+      },
       onBack:()=>render('home'),
       onMenu:()=>{result.textContent='Menü-Callback aktiviert (Demo, kein echtes Menü)';}
     });
