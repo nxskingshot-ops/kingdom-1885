@@ -456,7 +456,7 @@ function troopText(){
   if(!p||d.schema!==2)return 'Keine gültigen lokalen Accountdaten';
   const vals=['infantry','cavalry','archers'].map(k=>p[k]);
   if(vals.every(v=>v===''||v==null))return 'Truppen noch nicht erfasst';
-  if(!vals.every(v=>v===''||v==null||(typeof v==='string'&&/^\\d+$/.test(v)&&Number.isSafeInteger(Number(v)))))return 'Truppenwerte nicht lesbar';
+  if(!vals.every(v=>v===''||v==null||(typeof v==='string'&&/^\d+$/.test(v)&&Number.isSafeInteger(Number(v)))))return 'Truppenwerte nicht lesbar';
   const total=vals.reduce((n,v)=>n+Number(v||0),0);
   return Number.isSafeInteger(total)?'Erfasst: '+total.toLocaleString('de-DE')+' Truppen (lokal)':'Truppensumme nicht sicher darstellbar';
  }catch(e){return 'Accountdaten nicht lesbar'}
