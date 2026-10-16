@@ -120,6 +120,8 @@ else:
         errors.append("Offline KvK preview must replace perpetual loading states with explicit offline placeholders")
     if "No command brief available in offline mode." not in offline_html or "Offline preview — no source data" not in offline_html:
         errors.append("Offline KvK KPIs and command brief must explicitly show missing source data")
+    if "Offline preview — no records loaded" not in offline_html or "Offline preview — no trend data" not in offline_html:
+        errors.append("Offline KvK tables and trends must explicitly show that no data is loaded")
     if offline_html.count("<script") != offline_html.count("</script>"):
         errors.append("Offline KvK UI smoke test has unbalanced script elements")
     if re.search(r"""<form[^>]+id=["']loginForm["']|<input[^>]+type=["']password["']""", offline_html, re.I):
