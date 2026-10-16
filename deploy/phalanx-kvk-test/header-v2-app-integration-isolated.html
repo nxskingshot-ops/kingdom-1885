@@ -55,6 +55,15 @@ button{font:inherit}#menu{border:1px solid #cba15b;border-radius:10px;padding:12
  .phalanx-freeze-tiles--three .phalanx-freeze-tile small{font-size:11px}
 }
 @media(max-width:330px){.phalanx-identity__right{flex-direction:column;align-items:flex-end}.phalanx-freeze-tiles{gap:7px}}
+/* Shared visual tokens for HOME, module and detail: GLOBAL PHALANX FREEZE. */
+:root{--phx-gold:#dfb86e;--phx-gold-deep:#8d642d;--phx-ink:#03101a;--phx-border:2px ridge var(--phx-gold-deep)}
+.phalanx-module-tiles .tile{position:relative;min-height:120px;padding:18px 20px;border:var(--phx-border);border-radius:7px;background:radial-gradient(ellipse at top right,#9b784528,transparent 70%),linear-gradient(145deg,#21313a,#071622);box-shadow:inset 0 0 0 3px #1b1a18,inset 0 0 0 4px #b9975a8a,0 4px 13px #0007;font:500 clamp(16px,3.5vw,21px) Georgia,serif;text-align:left;color:#f5dca8}
+.phalanx-module-tiles .tile::after{content:'❯';position:absolute;right:16px;bottom:13px;color:#dbb777}
+.phalanx-module-tiles .tile:focus-visible{outline:3px solid #ffdda0;outline-offset:3px}
+.phalanx-module-tiles .tile:not(:disabled):active{filter:brightness(1.25)}
+.phalanx-detail-link{display:block;border:var(--phx-border);padding:16px 20px;background:linear-gradient(130deg,#1e3440,#06121d);border-radius:8px;color:#f5dca8;font:500 18px Georgia,serif}
+.phalanx-detail-link:focus-visible{outline:3px solid #ffdda0}
+.phalanx-embedded-frame{display:block;width:100%;height:70vh;border:2px ridge #a57b42;border-radius:8px;background:#071725;box-shadow:0 5px 24px #0008}
 </style></head>
 <body><div id="app"><div id="identity" class="phalanx-identity" aria-label="Account-Vorschau">
 <div class="phalanx-identity__profile"><span class="phalanx-identity__avatar" aria-hidden="true">♜</span><span><span class="phalanx-identity__name">FaQu</span><span class="phalanx-identity__demo"> · DEMO</span><span class="phalanx-identity__level" style="display:block">Level 27 · Vorschau, nicht angemeldet</span></span></div>
@@ -128,7 +137,7 @@ function render(){
  }else if(state.mode==='module'){
    const d=destinations[state.section];view.append(el('h2',d.title));
    if(!d.items.length)view.append(el('p','Für diesen Bereich ist noch keine geprüfte Zielseite zugeordnet.','notice'));
-   const tiles=el('div',null,'tiles');
+   const tiles=el('div',null,'tiles phalanx-module-tiles');
    for(const [name,url] of d.items){
      const b=el('button',name,'tile');b.type='button';b.addEventListener('click',()=>navigate({mode:'detail',section:state.section,detail:{title:name,url}}));tiles.append(b);
    }
@@ -139,7 +148,7 @@ function render(){
    if(!embeddedModules.has(state.detail.url))view.append(el('h2',state.detail.title));
    if(embeddedModules.has(state.detail.url)){
      const frame=document.createElement('iframe');frame.src=state.detail.url;frame.title=state.detail.title;
-     frame.loading='eager';frame.scrolling='no';frame.style.cssText='display:block;width:100%;height:70vh;border:1px solid #b58b46;border-radius:12px;background:#071725';
+     frame.loading='eager';frame.scrolling='no';frame.className='phalanx-embedded-frame';
      frame.setAttribute('referrerpolicy','same-origin');
      frame.addEventListener('load',()=>{
        try{
@@ -171,7 +180,7 @@ function render(){
      });
      view.append(frame);
    }else{
-     const a=el('a','Bestehendes isoliertes Modul öffnen →','tile');a.href=state.detail.url;view.append(a);
+     const a=el('a','Bestehendes isoliertes Modul öffnen →','phalanx-detail-link');a.href=state.detail.url;view.append(a);
    }
    view.append(el('p','Bestehendes Testmodul unverändert eingebunden. Bei Problemen über das Menü separat öffnen.','notice'));
    const link=el('a','Modul öffnen');link.href=state.detail.url;menu.append(link);
