@@ -12,6 +12,13 @@ h2{font:700 24px Georgia,serif;margin:8px 0 14px}
 button{font:inherit}#menu{border:1px solid #cba15b;border-radius:10px;padding:12px;margin-bottom:14px;background:#081b29}
 #menu[hidden]{display:none}#menu a{display:block;color:#f3d9a2;padding:12px;border-bottom:1px solid #765e3b}
 #menu a:last-child{border-bottom:0}.notice{color:#c3d3dc;font-size:13px;line-height:1.5}
+.phalanx-section-heading{font:500 clamp(18px,4vw,25px) Georgia,serif;text-align:center;letter-spacing:.07em;color:#f5d5a0;margin:26px 0 12px}
+.phalanx-freeze-tiles{margin-bottom:20px}
+.phalanx-freeze-tile{align-items:flex-start;text-align:left;gap:5px;min-height:100px;background:linear-gradient(125deg,#122b39,#030d17 75%);border:1px solid #c89c53;box-shadow:inset 0 0 18px #c89c531c;color:#f6dda8}
+.phalanx-freeze-tile strong{font:500 clamp(13px,2.8vw,18px) Georgia,serif}
+.phalanx-freeze-tile small{font:400 12px system-ui,sans-serif;color:#c2b8a4}
+.phalanx-freeze-tile:disabled{opacity:.56;cursor:not-allowed}
+.phalanx-freeze-tile:focus-visible{outline:3px solid #ffe0a1;outline-offset:3px}
 </style></head>
 <body><div id="app"><div id="header"></div><main id="content"><div id="menu" hidden aria-label="Modulmenü"></div><section id="view"></section></main></div>
 <script type="module">
@@ -38,12 +45,46 @@ function render(){
  onNavigate:section=>section==='home'?navigate({mode:'home',section:'home',detail:null}):navigate({mode:'module',section,detail:null}),
  onBack:back,onMenu:()=>{menu.hidden=!menu.hidden;}});
  if(state.mode==='home'){
-   view.append(el('h2','COMMAND CENTER'));
-   const tiles=el('div',null,'tiles');
-   for(const [id,d] of Object.entries(destinations)){
-     const b=el('button',d.title,'tile');b.type='button';b.addEventListener('click',()=>navigate({mode:'module',section:id,detail:null}));tiles.append(b);
+   // Approved GLOBAL FREEZE: HOME is grouped into cinematic command, tools and intelligence sections.
+   // Illustrated artwork remains a separate visual acceptance gate; never mark this scaffold pixel-perfect.
+   const groups=[
+     {heading:'COMMAND CENTER',cards:[
+       {label:'KvK VORBEREITUNG',sub:'Übersicht · Analyse · Warnlisten',section:'war',item:'KvK Vorbereitung'},
+       {label:'AUSSENPOSTEN',sub:'Karte · Berichte · Editor',section:null},
+       {label:'TRANSFER SCOUTING',sub:'Kandidaten · Analyse · Einladungen',section:null},
+       {label:'ALLIANZ VERGLEICH',sub:'NXS · FRA · OoO · MYM',section:'alliance'}]},
+     {heading:'WERKZEUGE & RECHNER',cards:[
+       {label:'HELDENRECHNER',sub:'Vergleich · Builds · Empfehlungen',section:'tools',item:'Heldenanalyse'},
+       {label:'TRUPPENRATIO',sub:'Bär · Wikinger · KvK',section:null},
+       {label:'MARSCH OPTIMIERUNG',sub:'Das habe ich · Das will ich',section:'tools',item:'Team Optimizer'}]},
+     {heading:'INTELLIGENZ & BERICHTE',cards:[
+       {label:'GEGNER ANALYSE',sub:'Top-Spieler · Aktivität · Risiko',section:null},
+       {label:'KÖNIGREICH SCOUT',sub:'Rankings · Berichte · Trends',section:'statistics'},
+       {label:'DATENBERICHTE',sub:'Live-Daten · Auto-Import',section:null}]}
+   ];
+   for(const group of groups){
+     const heading=el('h2',group.heading,'phalanx-section-heading');
+     const tiles=el('div',null,'tiles phalanx-freeze-tiles');
+     for(const card of group.cards){
+       const b=el('button',null,'tile phalanx-freeze-tile');b.type='button';
+       b.append(el('strong',card.label),el('small',card.sub));
+       if(card.section){
+         b.addEventListener('click',()=>{
+           const d=destinations[card.section];
+           const match=card.item&&d.items.find(([name])=>name===card.item);
+           if(match)navigate({mode:'detail',section:card.section,detail:{title:match[0],url:match[1]}});
+           else navigate({mode:'module',section:card.section,detail:null});
+         });
+       }else{
+         b.disabled=true;
+         b.setAttribute('aria-label',card.label+' – noch nicht integriert');
+         b.title='Noch keine geprüfte Zielseite integriert';
+       }
+       tiles.append(b);
+     }
+     view.append(heading,tiles);
    }
-   view.append(tiles,el('p','Isolierte App-Integration. Bestehende FREEZE-Ansichten und Produktionsrouten bleiben unverändert.','notice'));
+   view.append(el('p','Isolierte technische Struktur. Die finalen illustrierten Karten und die pixelgenaue HOME-Komposition werden separat gegen den GLOBALEN DESIGN-FREEZE geprüft. Nicht verbundene Ziele sind bewusst deaktiviert.','notice'));
  }else if(state.mode==='module'){
    const d=destinations[state.section];view.append(el('h2',d.title));
    if(!d.items.length)view.append(el('p','Für diesen Bereich ist noch keine geprüfte Zielseite zugeordnet.','notice'));
