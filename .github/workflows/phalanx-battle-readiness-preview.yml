@@ -44,6 +44,11 @@ jobs:
         uses: actions/checkout@v4
       - name: Validate test assets before preview
         run: python3 scripts/check_phalanx_test_assets.py
+      - name: Stage original HOME assets for isolated preview
+        run: |
+          cp icon-192.png deploy/phalanx-kvk-test/icon-192.png
+          cp assets/nexus-banner-1885.png deploy/phalanx-kvk-test/assets/nexus-banner-1885.png
+          cp data/kvk-opponent-intelligence-current.json deploy/phalanx-kvk-test/data/kvk-opponent-intelligence-current.json
       - name: Deploy Cloudflare branch preview (not production alias)
         uses: cloudflare/wrangler-action@v3
         with:
