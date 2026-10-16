@@ -46,6 +46,12 @@ with sync_playwright() as p:
     page.evaluate("localStorage.setItem('phalanx.home.custom.001.v1', JSON.stringify(Array(50).fill('account')))")
     page.reload()
     assert page.locator("#tiles .tile").count() == 3
+    page.evaluate("localStorage.setItem('phalanx.commander.local.v1', JSON.stringify({schema:2,profile:{infantry:'abc',cavalry:'200',archers:'300'}}))")
+    page.reload()
+    assert "Truppenwerte nicht lesbar" in page.locator("#tiles").inner_text()
+    page.evaluate("localStorage.setItem('phalanx.commander.local.v1', JSON.stringify({schema:999,profile:{infantry:'100',cavalry:'200',archers:'300'}}))")
+    page.reload()
+    assert "Keine gültigen lokalen Accountdaten" in page.locator("#tiles").inner_text()
     assert not errors, errors
     browser.close()
 server.shutdown()
