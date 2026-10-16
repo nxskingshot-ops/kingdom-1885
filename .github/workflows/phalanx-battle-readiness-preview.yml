@@ -11,6 +11,8 @@ on:
       - 'deploy/phalanx-kvk-test/phalanx-ranking-integration-rc-20261015.html'
       - 'deploy/phalanx-kvk-test/hero-intelligence-v15-isolated.html'
       - 'deploy/phalanx-kvk-test/player-intelligence-isolated.html'
+      - 'deploy/phalanx-kvk-test/design-system-components-isolated.html'
+      - 'deploy/phalanx-kvk-test/phalanx-components-isolated.css'
       - 'deploy/phalanx-kvk-test/outpost-audit-isolated.html'
       - 'deploy/phalanx-kvk-test/alliance-trends-isolated.html'
       - 'deploy/phalanx-kvk-test/hero-investment-alpha23-isolated.html'
