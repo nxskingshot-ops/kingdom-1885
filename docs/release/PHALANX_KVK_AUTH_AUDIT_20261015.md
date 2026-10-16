@@ -59,3 +59,9 @@ Keine echten Zugangsdaten im Test eingeben, bis Authentifizierung und Zugriff se
 - [ ] Datenbankbackup und isolierter Wiederherstellungstest sind gemäß `PHALANX_BACKUP_RELEASE_GATE_20261016.md` abgeschlossen.
 
 **Entscheidungsregel:** Alle Punkte müssen mit Nachweisen erfüllt sein, bevor echte Login-Tests oder ein Produktionsrelease freigegeben werden. GitHub-Preflight-PASS allein genügt nicht. Keine produktiven Änderungen durch diese Checkliste.
+
+## Root-Datei-Abgleich auf isoliertem Entwicklungszweig (2026-10-16)
+- Read-only-Dateiprüfung: `deploy/phalanx-kvk-test/index.html` ist **auf `fix/battle-readiness-navigation-isolated-20261015` kein bloßer Platzhalter mehr**, sondern enthält eine sofortige Meta-Weiterleitung auf `./epic-navigation-v2-kvk-test.html` sowie einen anklickbaren Fallback-Link. Damit ist die frühere Root-Datei-Aussage oben nur als historischer Befund für den damals untersuchten Branch zu verstehen.
+- `deploy/phalanx-kvk-test/index-kvk.html` existiert weiterhin als getrennte **Navigation V1**; sie ist nicht identisch mit dem Root-Einstieg.
+- `deploy/phalanx-kvk-test/kvk-prep-v13-offline-ui-smoke.html` existiert als gesonderte Offline-Vorschau.
+- **Nicht nachgewiesen:** dass Cloudflare aktuell genau diesen Branch/Commit veröffentlicht oder die Weiterleitung im mobilen Browser wie erwartet funktioniert. Deployment-Parität bleibt ein offenes Release-Gate.
