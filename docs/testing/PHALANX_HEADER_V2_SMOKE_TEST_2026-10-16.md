@@ -19,3 +19,10 @@
 
 ## Gate
 The isolated HTML is a **component smoke test**, not an app integration. A successful asset workflow alone does not satisfy UI, navigation, accessibility or production release checks. Only user-approved visual parity and real app integration tests permit further promotion. Do not merge to main without explicit authorization.
+
+## Automation coverage (2026-10-16)
+- CI validates approved PNG hashes and dimensions.
+- CI checks static component/demo wiring, including non-inert callbacks and loaded-image dimension guard.
+- CI checks the workflow is scoped to the isolated branch and contains no deployment/merge commands.
+- **Not automated:** screenshot comparison, touch behavior in an actual browser, accessibility audit, real app routing/permissions and deployment parity.
+- An Actions checkmark is not a visual or release approval. Preserve all FREEZEs until explicit user approval.
