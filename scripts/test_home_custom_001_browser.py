@@ -57,6 +57,9 @@ with sync_playwright() as p:
     page.evaluate("localStorage.removeItem('phalanx.home.custom.001.v1')")
     page.evaluate("localStorage.removeItem('phalanx.commander.local.v1')")
     page.reload()
+    assert page.locator("main.px-home-native").count() == 1
+    assert page.locator("main.px-home-native").evaluate("(e) => getComputedStyle(e).getPropertyValue('--px-border-panel').trim()") == "#235f8b"
+    assert page.locator("body").evaluate("(e) => getComputedStyle(e).color") == "rgb(242, 245, 248)"
     page.screenshot(path=str(screenshots / "mobile-default.png"), full_page=True)
     page.locator("#edit").click()
     page.screenshot(path=str(screenshots / "mobile-edit.png"), full_page=True)
