@@ -32,8 +32,10 @@ if not errors:
         errors.append("Epic V2 test file lacks the expected V2 title")
     if not re.search(r'<a\s+href=["\']\./kvk-prep-v13-epic-v2-test\.html["\']>KvK Prep', epic_v2):
         errors.append("Epic V2 KvK Prep link missing or disabled")
-    if epic_v2.count('data-unlinked="1"') != 33:
-        errors.append("Epic V2 placeholder count changed; check design freeze")
+    if epic_v2.count('data-unlinked="1"') != 31:
+        errors.append("Epic V2 placeholder count changed; check isolated navigation links")
+    if epic_v2.count('href="./outpost-audit-isolated.html"') != 1 or epic_v2.count('href="./team-optimizer-alpha11-isolated.html"') != 1:
+        errors.append("Isolated Outpost Audit or Team Optimizer navigation link missing")
     alliance_page = base / "alliance-trends-isolated.html"
     alliance_data = base / "data" / "alliance-trends-2026-10-02.json"
     if epic_v2.count('href="./kvk-prep-v13-offline-ui-smoke.html"') != 1:
