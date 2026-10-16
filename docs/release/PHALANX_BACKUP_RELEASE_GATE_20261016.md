@@ -4,6 +4,7 @@ Status: **BLOCKED for production release** until an independently stored, restor
 
 ## Verified
 - Code snapshot: `backup/phalanx-isolated-20261016-2bf23e44` points to commit `2bf23e44ef22c848d98193da8057a644098db275` (same repository, not an independent offsite copy).
+- Additional verified code checkpoint: `backup/phalanx-isolated-ci106-20261016` points to `795a1272fa31d892edcf8108cf49e6c3ea4f60e2`, with isolated preflight CI #106 passing. This is still a branch in the same GitHub repository, **not** an offsite database or repository backup.
 - Supabase project: `kingdom-1885-app`, ref `hcjrdofkdkasznywvcxo`, eu-central-1, ACTIVE_HEALTHY when inspected.
 - Database inventory: 23 public base tables, RLS enabled on all 23; 23 policies total, with several tables having no individual policies. This is inventory, not an RLS security certification.
 - Supabase dashboard Free plan explicitly reports no scheduled project backups.
