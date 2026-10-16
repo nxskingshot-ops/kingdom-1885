@@ -31,3 +31,12 @@ Status: **BLOCKED for production release** until an independently stored, restor
 - No schema changes, SQL writes, secret changes, production deployment, or GitHub main merge authorized by this document.
 - Do not export user records through chat or public GitHub as a workaround for a database dump.
 - Zero-cost preference: no Supabase paid upgrade without explicit user approval.
+
+## Release gate order (2026-10-16)
+1. **Code integrity — verified for CI #108:** isolated static preflight passed for commit `3ac11a230e4011a87a111552d1de298cbd1947ca`. This does not verify production deployment, browser behavior, or data access.
+2. **Cloudflare artifact parity — OPEN:** establish deployed URL, commit and file content match the reviewed isolated test build; check mobile navigation and module return routes without real login.
+3. **Server authorization — BLOCKED:** complete the policy/function review and safe three-identity API tests in `PHALANX_KVK_AUTH_AUDIT_20261015.md`; do not use production credentials on public test pages.
+4. **Recoverability — BLOCKED:** encrypted offsite DB export, checksum and isolated restore proof, plus separate repository export. Laptop session deferred; do not mark complete prematurely.
+5. **Release decision — BLOCKED:** only after 2–4 are evidenced, request explicit approval before any merge, deployment, or production change.
+
+**Next safe autonomous work:** verify GitHub-only test assets and CI, review static routes, and document concrete gaps. Do not create repetitive placeholder edits solely to trigger a green build.
