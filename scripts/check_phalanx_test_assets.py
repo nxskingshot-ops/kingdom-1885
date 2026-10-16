@@ -131,6 +131,8 @@ else:
 # Its UI bootstrapping is deliberately static; verify required guards are present.
 if offline_file.is_file():
     offline_html = offline_file.read_text(encoding="utf-8")
+    if "const now=Date.now()" in offline_html or "const mm0=t(" in offline_html:
+        errors.append("Offline KvK preview still includes obsolete dynamic cycle calculation")
     if offline_html.count("ARCHIVED CYCLE · OCT 2026 · OFFLINE PREVIEW") != 1:
         errors.append("Offline KvK cycle archival marker missing or duplicated")
     if "document.querySelectorAll('.kvk-cycle-step.active')" not in offline_html:
