@@ -1,0 +1,121 @@
+{
+  "schema_version": "1.0",
+  "date": "2026-10-16",
+  "governing_decision": "FREEZE-001 B",
+  "status": "DOCUMENTED_NO_UI_MIGRATION",
+  "principle": "Shared semantic roles; approved surface-specific CSS remains frozen until explicit separate approval.",
+  "semantic_roles": [
+    {
+      "role": "canvas",
+      "epic": "#020b15",
+      "home": "#03111e",
+      "policy": "Shared deep navy identity; preserve each original gradient and canvas"
+    },
+    {
+      "role": "panel",
+      "epic": "#041320",
+      "home": "#061827",
+      "policy": "HOME value is observed source occurrence, not proven equivalent panel computed style"
+    },
+    {
+      "role": "display_gold",
+      "epic": "#ffe0a0",
+      "home": "#f4d178",
+      "policy": "Keep both as frozen-surface variants until real visual comparison"
+    },
+    {
+      "role": "border_gold",
+      "epic": "#bd9142",
+      "home": "#a98a44",
+      "policy": "HOME role not proven; source-level candidate only"
+    },
+    {
+      "role": "secondary_text",
+      "epic": "#a9b6c3",
+      "home": "#9cb2c5",
+      "policy": "Role mapping provisional; no auto-replace"
+    }
+  ],
+  "component_contracts": [
+    {
+      "name": "AppHeader",
+      "identity": "Exactly one app-level header; source per approved surface",
+      "nonnegotiables": [
+        "No duplicate header",
+        "Preserve DE/EN/FR controls where frozen",
+        "No new brand name variant"
+      ]
+    },
+    {
+      "name": "PrimaryNavigation",
+      "identity": "Epic Navigation V2 governs future PHALANX direction; HOME original preserved",
+      "nonnegotiables": [
+        "No second top-level navigation",
+        "No unrelated hamburger/side rail",
+        "Mobile portrait usable"
+      ]
+    },
+    {
+      "name": "CommanderIdentity",
+      "identity": "Player identity card; red helmet asset is scoped to account identity",
+      "nonnegotiables": [
+        "Display player name once in primary visual hierarchy",
+        "Distinguish logged-in identity from demo/historical data",
+        "Never substitute alliance crest for player helmet"
+      ]
+    },
+    {
+      "name": "AllianceEmblem",
+      "identity": "Use provenance-verified crest per alliance",
+      "nonnegotiables": [
+        "NXS green historical crest remains authentic in its own legacy context",
+        "Do not invent FRA/OoO/MYM emblems"
+      ]
+    },
+    {
+      "name": "IntelligencePanel",
+      "identity": "Shared future frame/title/status patterns",
+      "nonnegotiables": [
+        "Preserve frozen panel geometry",
+        "Data timestamps visible",
+        "Unknown data not silently displayed as live"
+      ]
+    },
+    {
+      "name": "ActionTile",
+      "identity": "Shared active/focus/disabled behavior",
+      "nonnegotiables": [
+        "Clickable tile must navigate",
+        "No duplicate action controls",
+        "Touch-friendly Android"
+      ]
+    },
+    {
+      "name": "ReportActions",
+      "identity": "Copy/export with clear result and error states",
+      "nonnegotiables": [
+        "Never imply copy succeeded before action completes",
+        "Preserve platform limits"
+      ]
+    }
+  ],
+  "qa_gates": [
+    "Source provenance verified",
+    "FREEZE impact classification",
+    "Semantic token role mapped",
+    "Mobile screenshot or actual preview",
+    "Functional click/navigation test",
+    "No production/main change without explicit authorization"
+  ],
+  "unresolved": [
+    "Rendered HOME vs Epic Navigation pixel comparison",
+    "Exact approved PHALANX wordmark typeface",
+    "Global component implementation and responsive snapshots"
+  ],
+  "references": [
+    "branding/PHALANX_DESIGN_TOKENS_CANDIDATE.json",
+    "branding/HOME_FREEZE_VERIFIED_AUDIT_2026-10-16.md",
+    "branding/UNIFIED_DESIGN_SYSTEM_CONTRACT.md",
+    "branding/FREEZE_CONFLICT_REGISTER.json"
+  ]
+}
