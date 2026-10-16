@@ -24,7 +24,7 @@ def inspect(root):
             errors.append(f"MISSING {relative}")
             continue
         data = path.read_bytes()
-        if len(data) < 24 or data[:8] != b"\\x89PNG\\r\\n\\x1a\\n" or data[12:16] != b"IHDR":
+        if len(data) < 24 or data[:8] != bytes.fromhex("89504e470d0a1a0a") or data[12:16] != b"IHDR":
             errors.append(f"INVALID PNG {relative}")
             continue
         actual = struct.unpack(">II", data[16:24])
