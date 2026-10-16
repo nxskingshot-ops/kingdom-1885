@@ -114,6 +114,8 @@ else:
     # This preview must remain completely network-free, including external script/style assets.
     if re.search(r"""(?:src|href)\s*=\s*["']https?://|\bfetch\s*\(|XMLHttpRequest|WebSocket|EventSource|\bimport\s*\(""", offline_html, re.I):
         errors.append("Offline KvK UI smoke test contains an external resource or network API")
+    if "ARCHIVED CYCLE · OCT 2026 · OFFLINE PREVIEW" not in offline_html or "No live cycle timing" not in offline_html:
+        errors.append("Offline KvK preview must not present an archived cycle as live")
     if offline_html.count("<script") != offline_html.count("</script>"):
         errors.append("Offline KvK UI smoke test has unbalanced script elements")
     if re.search(r"""<form[^>]+id=["']loginForm["']|<input[^>]+type=["']password["']""", offline_html, re.I):
