@@ -27,6 +27,7 @@ const destinations={
 };
 const header=document.getElementById('header'),view=document.getElementById('view'),menu=document.getElementById('menu');
 let state={mode:'home',section:'home',detail:null},history=[];
+const embeddedModules=new Set(['./battle-readiness-isolated.html']);
 function navigate(next){history.push({...state});state=next;render();}
 function back(){state=history.pop()||{mode:'home',section:'home',detail:null};render();}
 function el(tag,text,cls){const n=document.createElement(tag);if(text!=null)n.textContent=text;if(cls)n.className=cls;return n;}
@@ -55,8 +56,14 @@ function render(){
    for(const [name,url] of d.items){const a=el('a',name);a.href=url;menu.append(a);}
  }else{
    view.append(el('h2',state.detail.title));
-   const a=el('a','Bestehendes isoliertes Modul öffnen →','tile');a.href=state.detail.url;view.append(a);
-   view.append(el('p','Der Link führt zur bestehenden Testseite. Keine Änderung an deren Navigation oder Berechtigungen.','notice'));
+   if(embeddedModules.has(state.detail.url)){
+     const frame=document.createElement('iframe');frame.src=state.detail.url;frame.title=state.detail.title;
+     frame.loading='eager';frame.style.cssText='width:100%;min-height:70vh;border:1px solid #b58b46;border-radius:12px;background:#071725';
+     frame.setAttribute('referrerpolicy','same-origin');view.append(frame);
+   }else{
+     const a=el('a','Bestehendes isoliertes Modul öffnen →','tile');a.href=state.detail.url;view.append(a);
+   }
+   view.append(el('p','Bestehendes Testmodul unverändert eingebunden. Bei Problemen über das Menü separat öffnen.','notice'));
    const link=el('a','Modul öffnen');link.href=state.detail.url;menu.append(link);
  }
 }
