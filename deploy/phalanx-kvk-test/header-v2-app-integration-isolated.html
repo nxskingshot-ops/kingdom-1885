@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow"><title>PHALANX – Header V2 App Integration (isoliert)</title>
-<link rel="stylesheet" href="../../src/phalanx-unified-header-v2-isolated.css">
+<link rel="stylesheet" href="./src/phalanx-unified-header-v2-isolated.css">
 <style>
 *{box-sizing:border-box}body{margin:0;background:#020b15;color:#f3d9a2;font:15px system-ui,sans-serif}
 #app{max-width:760px;margin:auto}#content{padding:16px 14px 40px}
@@ -15,8 +15,8 @@ button{font:inherit}#menu{border:1px solid #cba15b;border-radius:10px;padding:12
 </style></head>
 <body><div id="app"><div id="header"></div><main id="content"><div id="menu" hidden aria-label="Modulmenü"></div><section id="view"></section></main></div>
 <script type="module">
-import {mountPhalanxHeaderV2} from '../../src/phalanx-unified-header-v2-isolated.js';
-const artwork={home:'../../assets/header-v2/header-home.png',module:'../../assets/header-v2/header-module.png',detail:'../../assets/header-v2/header-detail.png'};
+import {mountPhalanxHeaderV2} from './src/phalanx-unified-header-v2-isolated.js';
+const artwork={home:'./assets/header-v2/header-home.png',module:'./assets/header-v2/header-module.png',detail:'./assets/header-v2/header-detail.png'};
 const destinations={
  war:{title:'KRIEG',items:[['KvK Vorbereitung','./kvk-prep-v13-epic-v2-test.html'],['Battle Readiness','./battle-readiness-isolated.html']]},
  alliance:{title:'ALLIANZ',items:[['Allianz-Trends','./alliance-trends-isolated.html']]},
