@@ -251,6 +251,11 @@ header>div{min-width:0}
  if(cycleStatus)cycleStatus.textContent='ARCHIVED CYCLE · OCT 2026 · OFFLINE PREVIEW';
  if(cycleNext)cycleNext.textContent='Historical reference only';
  if(cycleTime)cycleTime.textContent='No live cycle timing';
+ // Never leave fake loading indicators running in a deliberately disconnected preview.
+ for(const id of ['riskDevelopmentChart','dailyRiskStatus','dailyRiskChart','watchPlayers','warningOverview','castleWatch','identityReviews','rosterCount']){
+   const el=$(id);if(el)el.textContent='Offline preview — data unavailable';
+ }
+ const rosterRows=$('rosterRows');if(rosterRows)rosterRows.innerHTML='<tr><td colspan="6">Offline preview — no roster loaded</td></tr>';
  document.querySelectorAll('.kvk-cycle-step.active').forEach(el=>el.classList.remove('active'));
  const time=$('timeLabel');if(time)time.textContent='LOCAL UI PREVIEW · NO DATABASE · NO LOGIN';
  for(const id of ['refresh','copyBrief','copyShortBrief','filter','severity','sortOrder','rosterFilter','rosterStatus','rosterSort']){
