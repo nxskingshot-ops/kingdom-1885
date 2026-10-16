@@ -5,10 +5,10 @@
 export function mountPhalanxHeaderV2(host, options = {}) {
   if (!(host instanceof HTMLElement)) throw new TypeError('Host element required');
   const { mode='home', title='', artwork={}, onBack, onMenu } = options;
+  if (!['home','module','detail'].includes(mode)) throw new TypeError('Invalid header mode');
   if (mode !== 'home' && (typeof onBack !== 'function' || typeof onMenu !== 'function')) {
     throw new TypeError('Non-home header requires working onBack and onMenu callbacks');
   }
-  if (!['home','module','detail'].includes(mode)) throw new TypeError('Invalid header mode');
   const url = artwork[mode];
   if (typeof url !== 'string' || !url.trim()) throw new Error('Approved artwork URL required for '+mode);
   const root = document.createElement('header');
