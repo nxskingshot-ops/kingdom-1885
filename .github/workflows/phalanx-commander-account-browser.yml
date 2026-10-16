@@ -5,6 +5,7 @@ on:
       - fix/battle-readiness-navigation-isolated-20261015
     paths:
       - 'deploy/phalanx-kvk-test/commander-account-local-isolated.html'
+      - 'deploy/phalanx-kvk-test/team-optimizer-alpha11-isolated.html'
       - 'scripts/test_commander_account_browser.py'
       - '.github/workflows/phalanx-commander-account-browser.yml'
   workflow_dispatch:
