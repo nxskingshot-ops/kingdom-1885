@@ -17,6 +17,7 @@ checks = {
     "no backend access": not re.search(r"supabase|XMLHttpRequest|fetch\s*\(|WebSocket|signInWithPassword", html, re.I),
     "touch targets": "min-height:44px" in css,
     "focus styles": ":focus-visible" in css,
+    "no external assets": not any(token in html.lower() for token in ("<iframe", "<img", "https://", "http://")),
     "status variants": all(f'data-status="{name}"' in html for name in ("ready", "warning", "blocked")),
 }
 for name, passed in checks.items():
