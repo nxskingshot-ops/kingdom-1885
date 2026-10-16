@@ -74,6 +74,14 @@ button{font:inherit}#menu{border:1px solid #cba15b;border-radius:10px;padding:12
  .phalanx-freeze-tiles--three .phalanx-freeze-tile:not([data-artwork-status="loaded"]) small{font-size:9px}
 }
 .phalanx-freeze-tile[data-artwork-status="loaded"]:disabled::after{display:none}
+/* FREEZE visual parity: unavailable routes must not dim approved artwork. */
+.phalanx-freeze-tile:disabled{opacity:1;filter:none;cursor:not-allowed}
+.phalanx-freeze-tile[data-artwork-status="loaded"]:disabled{opacity:1;filter:none}
+/* Gold filigree dividers and compact grouping from approved HOME reference. */
+.phalanx-section-heading{display:flex;align-items:center;justify-content:center;gap:12px;margin:15px 0 8px;letter-spacing:.025em;white-space:nowrap;font:500 clamp(16px,3.5vw,24px) Georgia,serif}
+.phalanx-section-heading::before,.phalanx-section-heading::after{content:'◇';color:#b88a42;flex:1;min-width:10px;max-width:180px;font-size:12px;line-height:1;border-bottom:1px solid #a87c3c66;transform:translateY(-4px)}
+.phalanx-freeze-tiles{margin-bottom:10px;row-gap:8px}
+@media(max-width:520px){#content{padding:9px 9px 24px}.phalanx-section-heading{margin:12px 0 7px;gap:7px;font-size:clamp(14px,3.7vw,19px)}.phalanx-freeze-tiles{gap:6px;margin-bottom:9px}}
 </style></head>
 <body><div id="app"><div id="header"></div><main id="content"><div id="menu" hidden aria-label="Modulmenü"></div><section id="view"></section></main></div>
 <script type="module">
