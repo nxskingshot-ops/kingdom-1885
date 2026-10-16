@@ -110,7 +110,7 @@ else:
     if "OFFLINE UI SMOKE TEST" not in offline_html or 'href="./epic-navigation-v2-kvk-test.html"' not in offline_html:
         errors.append("Offline KvK UI smoke test missing warning or return route")
     # This preview must remain completely network-free, including external script/style assets.
-    if re.search(r'(?:src|href)\\s*=\\s*["\\\']https?://|\\bfetch\\s*\\(|XMLHttpRequest|WebSocket|EventSource|\\bimport\\s*\\(', offline_html, re.I):
+    if re.search(r"""(?:src|href)\s*=\s*["']https?://|\bfetch\s*\(|XMLHttpRequest|WebSocket|EventSource|\bimport\s*\(""", offline_html, re.I):
         errors.append("Offline KvK UI smoke test contains an external resource or network API")
     if offline_html.count("<script") != offline_html.count("</script>"):
         errors.append("Offline KvK UI smoke test has unbalanced script elements")
