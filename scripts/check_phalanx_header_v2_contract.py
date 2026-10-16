@@ -23,6 +23,8 @@ if "if (mode!=='home')" not in component:
 for label in ("Zurück","Menü öffnen"):
     if label not in component:
         errors.append("Missing accessible action label: "+label)
+if "typeof onBack !== 'function'" not in component or "typeof onMenu !== 'function'" not in component:
+    errors.append("Non-home navigation must require real callbacks")
 if "aria-pressed" not in demo:
     errors.append("Mode selection state not exposed")
 if "img.complete" not in demo or "img.naturalWidth" not in demo:
