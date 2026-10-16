@@ -82,6 +82,15 @@ button{font:inherit}#menu{border:1px solid #cba15b;border-radius:10px;padding:12
 .phalanx-section-heading::before,.phalanx-section-heading::after{content:'◇';color:#b88a42;flex:1;min-width:10px;max-width:180px;font-size:12px;line-height:1;border-bottom:1px solid #a87c3c66;transform:translateY(-4px)}
 .phalanx-freeze-tiles{margin-bottom:10px;row-gap:8px}
 @media(max-width:520px){#content{padding:9px 9px 24px}.phalanx-section-heading{margin:12px 0 7px;gap:7px;font-size:clamp(14px,3.7vw,19px)}.phalanx-freeze-tiles{gap:6px;margin-bottom:9px}}
+
+/* Approved HOME header image, when present, replaces only the HOME visual.
+   The transparent navigation buttons preserve real keyboard/click behavior. */
+.phalanx-freeze-original{position:relative;width:100%;aspect-ratio:1024 / 695;overflow:hidden;background:#020b15}
+.phalanx-freeze-original>img{display:block;width:100%;height:100%;object-fit:fill}
+.phalanx-freeze-original__nav{position:absolute;left:0;right:0;top:81.2%;height:16.8%;display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
+.phalanx-freeze-original__nav button{appearance:none;background:transparent;border:0;cursor:pointer;min-width:0;color:transparent}
+.phalanx-freeze-original__nav button:focus-visible{outline:3px solid #ffe4a6;outline-offset:-5px;background:#ffd26b25}
+.phalanx-freeze-original__nav button[aria-current="page"]{background:transparent}
 </style></head>
 <body><div id="app"><div id="header"></div><main id="content"><div id="menu" hidden aria-label="Modulmenü"></div><section id="view"></section></main></div>
 <script type="module">
@@ -120,6 +129,26 @@ function render(){
  onNavigate:section=>section==='home'?navigate({mode:'home',section:'home',detail:null}):navigate({mode:'module',section,detail:null}),
  onBack:back,onMenu:()=>{menu.hidden=!menu.hidden;}});
  if(state.mode==='home'){
+   // Pixel-accurate approved image is optional until the exact uploaded asset is present.
+   // Never replace the existing functional header on a missing or failed image.
+   const originalUrl='./assets/design-freeze/home-header.webp';
+   const original=new Image();original.decoding='async';original.alt='PHALANX HOME: freigegebener Helm, Fahnen, Profil und Goldnavigation';
+   original.onload=()=>{
+     if(state.mode!=='home')return;
+     const freeze=document.createElement('div');freeze.className='phalanx-freeze-original';
+     const nav=document.createElement('nav');nav.className='phalanx-freeze-original__nav';
+     nav.setAttribute('aria-label','PHALANX Hauptnavigation');
+     for(const [label,section] of [['HOME','home'],['KRIEG','war'],['ALLIANZ','alliance'],['WERKZEUGE','tools'],['GUIDES','guides'],['STATISTIKEN','statistics'],['INFO','info']]){
+       const button=document.createElement('button');button.type='button';button.textContent=label;button.setAttribute('aria-label',label);
+       if(section==='home')button.setAttribute('aria-current','page');
+       button.addEventListener('click',()=>section==='home'?navigate({mode:'home',section:'home',detail:null}):navigate({mode:'module',section,detail:null}));
+       nav.append(button);
+     }
+     freeze.append(original,nav);
+     header.replaceChildren(freeze);
+   };
+   original.onerror=()=>{ /* Existing approved header remains the fallback. */ };
+   original.src=originalUrl;
    // Approved GLOBAL FREEZE: HOME is grouped into cinematic command, tools and intelligence sections.
    // Illustrated artwork remains a separate visual acceptance gate; never mark this scaffold pixel-perfect.
    const groups=[
