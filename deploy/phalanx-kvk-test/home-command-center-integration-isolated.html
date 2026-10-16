@@ -286,10 +286,9 @@ button{font:inherit;color:inherit}
   </nav>
 </aside>
 <main class="content">
-<section class="panel" id="phalanx-personal-area" aria-label="Mein persönlicher Bereich" style="margin-bottom:10px">
- <div class="panel-title">⚔ Mein persönlicher Bereich <a href="./home-custom-001-isolated.html" style="margin-left:auto;color:#f6d36b;font-size:13px;text-decoration:underline">Kacheln anpassen ↗</a></div>
- <div id="phalanx-personal-tiles" style="padding:12px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px" aria-live="polite"></div>
- <p style="margin:0 12px 12px;color:#9cb2c5;font-size:11px">Persönliches Layout wird lokal in diesem Browser gespeichert. Keine Änderungen an Original-Header oder Accountdaten.</p>
+<section class="panel" id="phalanx-personal-area" aria-label="Mein persönlicher Bereich" style="margin-bottom:9px">
+ <div class="panel-title">⚔ Mein persönlicher Bereich <a href="./home-custom-001-isolated.html" aria-label="Persönliche Kacheln anpassen" title="Kacheln anpassen" style="margin-left:auto;color:#f6d36b;font-size:13px;text-decoration:none;border:1px solid #80662e;border-radius:6px;padding:4px 8px;white-space:nowrap">⚙ Anpassen</a></div>
+ <div id="phalanx-personal-tiles" style="padding:8px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px" aria-live="polite"></div>
 </section>
   <section class="switches">
     <button class="switch active"><b>⚔ Opponent Intelligence</b><small>Know your enemy.</small></button>
@@ -453,7 +452,7 @@ const entries={
 function troopText(){
  try{
   const d=JSON.parse(localStorage.getItem('phalanx.commander.local.v1')),p=d&&d.profile;
-  if(!p||d.schema!==2)return 'Keine gültigen lokalen Accountdaten';
+  if(!p||d.schema!==2)return 'Account einrichten →';
   const vals=['infantry','cavalry','archers'].map(k=>p[k]);
   if(vals.every(v=>v===''||v==null))return 'Truppen noch nicht erfasst';
   if(!vals.every(v=>v===''||v==null||(typeof v==='string'&&/^\d+$/.test(v)&&Number.isSafeInteger(Number(v)))))return 'Truppenwerte nicht lesbar';
@@ -469,8 +468,8 @@ function renderPersonal(){
  for(const id of selected){
   const item=entries[id],a=document.createElement('a'),small=document.createElement('small');
   a.href=item.url;a.dataset.tileId=id;a.textContent=item.name;
-  a.style.cssText='color:#f6d36b;border:1px solid #235f8b;border-radius:8px;background:linear-gradient(#082339,#051827);padding:12px;text-decoration:none;font-weight:700;min-width:0;overflow-wrap:anywhere';
-  small.style.cssText='display:block;color:#9cb2c5;font-weight:400;margin-top:5px';
+  a.style.cssText='color:#f6d36b;border:1px solid #235f8b;border-radius:8px;background:linear-gradient(#082339,#051827);padding:9px 10px;text-decoration:none;font-weight:700;min-width:0;overflow-wrap:anywhere;line-height:1.2';
+  small.style.cssText='display:block;color:#9cb2c5;font-weight:400;margin-top:3px;font-size:12px;line-height:1.25';
   small.textContent=id==='troops'?troopText():item.detail;a.append(small);target.append(a);
  }
  if(!selected.length){const p=document.createElement('p');p.textContent='Keine Kacheln ausgewählt. Über „Kacheln anpassen“ hinzufügen.';p.style.color='#9cb2c5';target.append(p)}
