@@ -241,6 +241,15 @@ for module_file in (
         clean = href.split("#", 1)[0].split("?", 1)[0]
         if not clean or clean.startswith(("https://", "http://", "mailto:", "tel:", "javascript:", "/", "#")):
             continue
+        # Reject protocol-relative, traversal and encoded URL tricks in local navigation.
+        from urllib.parse import unquote, urlsplit
+        decoded = unquote(clean)
+        if decoded != clean and (decoded.startswith(("/", "\\\\")) or ".." in Path(decoded).parts):
+            errors.append(f"Unsafe encoded local HTML link: {module_file} -> {href}")
+            continue
+        if urlsplit(clean).scheme or clean.startswith("\\\\"):
+            errors.append(f"Unexpected link scheme: {module_file} -> {href}")
+            continue
         resolved = (target.parent / clean).resolve()
         if not resolved.is_relative_to(base.resolve()) or not resolved.is_file():
             errors.append(f"Broken local HTML link: {module_file} -> {href}")
