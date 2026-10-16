@@ -27,6 +27,10 @@ if "typeof onBack !== 'function'" not in component or "typeof onMenu !== 'functi
     errors.append("Non-home navigation must require real callbacks")
 if "expectedImageSize={width:506,height:217}" not in demo:
     errors.append("Browser demo must validate loaded image dimensions")
+if "typeof onNavigate !== 'function'" not in component or "onNavigate:(destination)" not in demo:
+    errors.append("HOME navigation requires a real callback")
+if "repeat(7,minmax(0,1fr))" not in css:
+    errors.append("Seven-column HOME navigation grid missing")
 if "aria-pressed" not in demo:
     errors.append("Mode selection state not exposed")
 if "img.complete" not in demo or "img.naturalWidth" not in demo:
