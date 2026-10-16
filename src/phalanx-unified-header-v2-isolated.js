@@ -29,6 +29,24 @@ export function mountPhalanxHeaderV2(host, options = {}) {
   art.className='phalanx-header-v2__art'; art.src=url; art.alt='PHALANX helmet with lion banners';
   root.append(art);
   if (mode==='home') {
+    // The approved reference places identity and locale WITHIN the helmet artwork,
+    // never in a separate bar. Preview values are static, not an auth assertion.
+    const identity=document.createElement('div');
+    identity.className='phalanx-header-v2__identity';
+    identity.setAttribute('aria-label','Profilvorschau FaQu, Level 27');
+    const portrait=document.createElement('span');
+    portrait.className='phalanx-header-v2__portrait';
+    portrait.setAttribute('aria-hidden','true');portrait.textContent='♜';
+    const profile=document.createElement('span');profile.className='phalanx-header-v2__profile';
+    const username=document.createElement('strong');username.textContent='FaQu';
+    const level=document.createElement('small');level.textContent='Lvl 27';
+    profile.append(username,level);identity.append(portrait,profile);
+    const locale=document.createElement('div');locale.className='phalanx-header-v2__locale';
+    locale.setAttribute('aria-label','Vorschau: Sprache Deutsch, Königreich 1885');
+    const language=document.createElement('span');language.textContent='◎ DE';
+    const kingdom=document.createElement('span');kingdom.textContent='♛ Kingdom #1885';
+    locale.append(language,kingdom);
+    root.append(identity,locale);
     const nav=document.createElement('nav');nav.className='phalanx-header-v2__home-nav';nav.setAttribute('aria-label','Hauptnavigation');
     for (const [id,symbol,label] of homeItems) {
       const button=document.createElement('button');button.type='button';button.className='phalanx-header-v2__home-action';
