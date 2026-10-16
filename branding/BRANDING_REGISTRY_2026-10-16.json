@@ -1,0 +1,92 @@
+{
+  "schema_version": "1.0",
+  "name": "NEXUS PHALANX — Binding Branding Registry",
+  "created_utc": "2026-10-16",
+  "scope": "Reference governance; no change to frozen UI or production",
+  "policy": {
+    "priority": [
+      "User-approved exact visual FREEZE for affected surface",
+      "Verified original image or file with traceable source",
+      "Approved brand poster as visual direction",
+      "Unverified reference (research only)"
+    ],
+    "rules": [
+      "Do not treat similar artwork as interchangeable official asset.",
+      "Do not replace a FREEZE without explicit user approval.",
+      "Never claim a font is an exact logo font without proof.",
+      "If exact original is absent from repo, record its library/source locator and status; do not invent path.",
+      "New designs must document parent reference, scope and approval status.",
+      "Keep visual references distinct from Kingshot gameplay/account data."
+    ]
+  },
+  "assets": [
+    {
+      "id": "phalanx-master-poster",
+      "name": "NEXUS PHALANX cinematic master poster / PHALANX wordmark",
+      "source": "ChatGPT Library",
+      "source_file": "Goldener Phalanx über der Festung.png",
+      "source_file_id": "file_000000004c8482108ecdd6d04d60f45b",
+      "type": "visual typography reference",
+      "status": "LOCATED_VISUALLY_INSPECTED",
+      "features": [
+        "wide-set sharp Roman monumental capitals",
+        "beveled metallic gold and bright highlights",
+        "dark black-gold cinematic background",
+        "golden helmet and NXS flags"
+      ],
+      "note": "Exact font family not verified; use as visual reference, not as a claim of matching typeface."
+    },
+    {
+      "id": "phalanx-war-banner-variant",
+      "name": "Gothischer Phalanx-Kriegsbanner",
+      "source": "ChatGPT Library",
+      "source_file": "Gothischer Phalanx-Kriegsbanner.png",
+      "source_file_id": "file_000000000e0c82108032c51a4edaa7d6",
+      "status": "LOCATED_VISUALLY_INSPECTED",
+      "type": "related poster reference; distinct image, not automatic master"
+    },
+    {
+      "id": "player-crest-red-helmet",
+      "name": "Silver helmet, glowing red eyes, golden laurel and crossed swords",
+      "source": "User-supplied original in current conversation, uploaded to isolated branch",
+      "repository_path": "deploy/phalanx-kvk-test/assets/phalanx-red-helmet.png",
+      "github_blob_sha": "8553bab2e08c471ef7d9a34599876118b26b4d67",
+      "status": "VERIFIED_FILE_AND_USER_REFERENCE",
+      "scope": "isolated Player Intelligence commander tile",
+      "note": "Do not substitute for NXS green crest."
+    },
+    {
+      "id": "nxs-crest-original",
+      "source": "preview/kingdom-hub-branded-v2.html",
+      "repository_path": "preview/kingdom-hub-branded-v2.html",
+      "status": "VERIFIED_EMBEDDED_HISTORICAL_HEADER_REFERENCE",
+      "note": "Embedded WebP; separate from red helmet. See docs/assets/ALLIANCE_EMBLEMS_REFERENCE.md."
+    },
+    {
+      "id": "home-freeze",
+      "source": "ChatGPT Library",
+      "source_file": "NEXUS_PHALANX_HOME_FROZEN_2026-10-11.html",
+      "sha256": "f8e8a4c4a61cdaf89b9b6de8a8c8c906c0cace084e9b54ae6ac5ed4b90fa8031",
+      "status": "FROZEN",
+      "scope": "HOME / Command Center"
+    },
+    {
+      "id": "kvk-intelligence-freeze",
+      "source": "docs/KVK_INTELLIGENCE_LAYOUT_FREEZE_2026-10-03.md",
+      "status": "FROZEN",
+      "scope": "KvK Intelligence"
+    },
+    {
+      "id": "alliance-emblems",
+      "source": "docs/assets/ALLIANCE_EMBLEMS_REFERENCE.md",
+      "status": "PARTIAL_VERIFICATION",
+      "scope": "NXS/FRA/OoO/MYM",
+      "note": "Do not promote unverified FRA/OoO/MYM icons to official originals."
+    }
+  ],
+  "pending": [
+    "Find and verify exact original font/letterform construction if a pixel-faithful FaQu wordmark is required.",
+    "Audit additional Library image assets individually and add them only with provenance and scope.",
+    "Validate new commander tile on Android; no freeze or approval yet."
+  ]
+}
