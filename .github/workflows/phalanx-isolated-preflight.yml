@@ -1,0 +1,19 @@
+name: PHALANX isolated asset preflight
+
+on:
+  push:
+    branches:
+      - fix/battle-readiness-navigation-isolated-20261015
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  asset-preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout isolated branch
+        uses: actions/checkout@v4
+      - name: Verify isolated test assets (no credentials, no deployment)
+        run: python3 scripts/check_phalanx_test_assets.py
