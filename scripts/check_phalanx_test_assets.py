@@ -36,6 +36,8 @@ if not errors:
         errors.append("Epic V2 placeholder count changed; check design freeze")
     alliance_page = base / "alliance-trends-isolated.html"
     alliance_data = base / "data" / "alliance-trends-2026-10-02.json"
+    if epic_v2.count('href="./kvk-prep-v13-offline-ui-smoke.html"') != 1:
+        errors.append("Epic V2 must link exactly once to the offline KvK UI smoke test")
     if epic_v2.count('href="./alliance-trends-isolated.html"') != 1:
         errors.append("Epic V2 must link exactly once to Alliance Trends")
     if not alliance_page.is_file() or not alliance_data.is_file():
