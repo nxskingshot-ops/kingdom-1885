@@ -56,7 +56,9 @@ with sync_playwright() as p:
     assert calculator["troops"] == {"infantry": 50000, "cavalry": 20000, "archers": 80000}
     assert calculator["heroes"][0]["name"] == "Marlin"
     optimizer_url = url.replace("commander-account-local-isolated.html", "team-optimizer-alpha11-isolated.html")
-    page.goto(optimizer_url)
+    assert page.locator(".account-optimizer-link").get_attribute("href") == "./team-optimizer-alpha11-isolated.html"
+    page.locator(".account-optimizer-link").click()
+    assert page.url == optimizer_url
     page.locator("#loadCommander").click()
     assert not errors, errors
     assert "1 Helden übernommen" in page.locator("#commanderImportStatus").inner_text(), page.locator("#commanderImportStatus").inner_text()
