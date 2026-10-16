@@ -39,6 +39,10 @@ with sync_playwright() as p:
     assert "Marlin" in page.locator("#heroList").inner_text()
     page.locator("#heroList button").first.click()
     assert page.locator("#addHero").inner_text() == "Änderung übernehmen"
+    page.locator("#cancelHero").click()
+    assert page.locator("#addHero").inner_text() == "Held hinzufügen"
+    assert "Skill 5" in page.locator("#heroList").inner_text()
+    page.locator("#heroList button").first.click()
     page.locator("#heroSkill").fill("4")
     page.locator("#addHero").click()
     assert "Skill 4" in page.locator("#heroList").inner_text()
