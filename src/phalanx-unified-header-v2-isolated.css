@@ -15,3 +15,16 @@
 .phalanx-header-v2__home-action:focus-visible{outline:2px solid #f4c773;outline-offset:-3px}
 .phalanx-header-v2__home-glyph{font-size:21px;line-height:1}
 .phalanx-header-v2__home-label{font:600 clamp(7px,1.7vw,12px)/1.15 system-ui,sans-serif;white-space:nowrap;letter-spacing:-.02em}
+
+/* HOME FREEZE overlay: profile and kingdom share the helmet canvas, not a top strip.
+   Static preview identity is deliberately noninteractive until real account wiring. */
+.phalanx-header-v2--home{position:relative}
+.phalanx-header-v2__identity,.phalanx-header-v2__locale{position:absolute;z-index:2;top:3.8%;color:#ffe3a3;text-shadow:0 2px 6px #000,0 0 8px #000}
+.phalanx-header-v2__identity{left:2%;display:flex;align-items:center;gap:7px;max-width:42%;padding:3px 9px 3px 3px;background:linear-gradient(90deg,#03101de8,#03101d78);border-top:1px solid #c69a55aa;border-bottom:1px solid #c69a55aa}
+.phalanx-header-v2__portrait{display:grid;place-items:center;flex:none;width:clamp(27px,6.5vw,55px);aspect-ratio:1;border:2px ridge #f3bd67;border-radius:50%;background:#111a21;color:#e6bd6b;font:clamp(20px,4vw,34px) Georgia,serif}
+.phalanx-header-v2__profile{display:flex;flex-direction:column;min-width:0;line-height:1.12}
+.phalanx-header-v2__profile strong{font:clamp(13px,2.8vw,25px) Georgia,serif}
+.phalanx-header-v2__profile small{font:clamp(10px,1.7vw,16px) Georgia,serif}
+.phalanx-header-v2__locale{right:2%;display:flex;gap:5px;align-items:center;font:clamp(9px,1.7vw,15px) Georgia,serif}
+.phalanx-header-v2__locale span{border:1px solid #e5ba6d;border-radius:99px;background:#04111be0;padding:clamp(3px,.8vw,8px) clamp(5px,1vw,11px);white-space:nowrap}
+@media(max-width:420px){.phalanx-header-v2__identity{top:2%;left:1%;gap:4px;padding:2px 5px 2px 2px}.phalanx-header-v2__locale{top:2%;right:1%;gap:3px}.phalanx-header-v2__locale span{padding:3px 4px}.phalanx-header-v2__profile strong{font-size:13px}.phalanx-header-v2__profile small{font-size:10px}}
