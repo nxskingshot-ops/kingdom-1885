@@ -5,6 +5,7 @@ on:
       - fix/battle-readiness-navigation-isolated-20261015
     paths:
       - 'deploy/phalanx-kvk-test/home-custom-001-isolated.html'
+      - 'deploy/phalanx-kvk-test/home-command-center-integration-isolated.html'
       - 'scripts/test_home_custom_001_browser.py'
       - '.github/workflows/phalanx-home-custom-browser.yml'
   workflow_dispatch:
