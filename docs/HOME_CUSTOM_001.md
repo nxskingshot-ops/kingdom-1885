@@ -34,3 +34,11 @@ Der PHALANX-Homescreen erhält einen persönlich konfigurierbaren Bereich. Der b
 ## Release-Abhängigkeiten
 
 Zunächst P1 Commander Account und sichere Rechneranbindung stabilisieren. Danach isolierter HOME-CUSTOM-001-Prototyp mit visuellem Review; kein stiller Design-FREEZE-Wechsel.
+
+## Implementierungsstand (2026-10-16)
+- Isolierter Funktionsprototyp: `deploy/phalanx-kvk-test/home-custom-001-isolated.html`.
+- Automatischer Chromium-Test: `scripts/test_home_custom_001_browser.py`.
+- Mobile Screenshots: `test-artifacts/home-custom-001/mobile-default.png` und `mobile-edit.png` als CI-Artefakt, nicht als freigegebene FREEZE-Bilder.
+- Referenz für spätere visuelle Prüfung: `NEXUS_PHALANX_HOME_FROZEN_2026-10-11.html` aus der ChatGPT Library, im Branding-Register als `home-freeze` verzeichnet. Diese Referenz ist nicht als identische Datei im Testprototyp hinterlegt.
+- Aktuelle Darstellung ist ein **isolierter funktionaler Prototyp**; kein Nachweis pixelgenauer Übereinstimmung mit HOME-FREEZE und keine Freigabe für Produktion.
+- Vor visueller Freigabe: tatsächliche CI-Screenshots sichten, eingefrorene HOME-Referenz daneben prüfen, Abweichungen dokumentieren und nur nicht eingefrorene Oberflächen ändern.
