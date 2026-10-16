@@ -127,6 +127,19 @@ else:
     if re.search(r"""<form[^>]+id=["']loginForm["']|<input[^>]+type=["']password["']""", offline_html, re.I):
         errors.append("Offline KvK UI smoke test must not expose a sign-in form")
 
+# Offline smoke copy must be self-contained and must not show a stale cycle as live.
+# Its UI bootstrapping is deliberately static; verify required guards are present.
+if offline_file.is_file():
+    offline_html = offline_file.read_text(encoding="utf-8")
+    if offline_html.count("ARCHIVED CYCLE · OCT 2026 · OFFLINE PREVIEW") != 1:
+        errors.append("Offline KvK cycle archival marker missing or duplicated")
+    if "document.querySelectorAll('.kvk-cycle-step.active')" not in offline_html:
+        errors.append("Offline KvK cycle active step reset missing")
+    if "el.disabled=true" not in offline_html:
+        errors.append("Offline KvK data-dependent controls not disabled")
+    if re.search(r"""<script[^>]+src\s*=|<iframe\b|<link[^>]+href\s*=\s*['"]https?://""", offline_html, re.I):
+        errors.append("Offline KvK preview contains remote scripts, frames or stylesheets")
+
 # PWA entry contract: installed app and browser root must open the same frozen Epic V2.
 manifest_file = base / "crimson-icon-test.webmanifest"
 if not manifest_file.is_file():
