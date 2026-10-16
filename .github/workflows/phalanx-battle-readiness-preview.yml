@@ -15,6 +15,7 @@ on:
       - 'deploy/phalanx-kvk-test/commander-branding-comparison-isolated.html'
       - 'deploy/phalanx-kvk-test/commander-account-local-isolated.html'
       - 'deploy/phalanx-kvk-test/home-custom-001-isolated.html'
+      - 'deploy/phalanx-kvk-test/home-command-center-integration-isolated.html'
       - 'deploy/phalanx-kvk-test/phalanx-components-isolated.css'
       - 'deploy/phalanx-kvk-test/outpost-audit-isolated.html'
       - 'deploy/phalanx-kvk-test/alliance-trends-isolated.html'
