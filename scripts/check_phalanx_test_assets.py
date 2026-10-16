@@ -116,6 +116,8 @@ else:
         errors.append("Offline KvK UI smoke test contains an external resource or network API")
     if "ARCHIVED CYCLE · OCT 2026 · OFFLINE PREVIEW" not in offline_html or "No live cycle timing" not in offline_html:
         errors.append("Offline KvK preview must not present an archived cycle as live")
+    if "Offline preview — data unavailable" not in offline_html or "Offline preview — no roster loaded" not in offline_html:
+        errors.append("Offline KvK preview must replace perpetual loading states with explicit offline placeholders")
     if offline_html.count("<script") != offline_html.count("</script>"):
         errors.append("Offline KvK UI smoke test has unbalanced script elements")
     if re.search(r"""<form[^>]+id=["']loginForm["']|<input[^>]+type=["']password["']""", offline_html, re.I):
