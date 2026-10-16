@@ -7,6 +7,10 @@ on:
     paths:
       - 'assets/header-v2/**'
       - 'scripts/verify_phalanx_header_v2_assets.py'
+      - 'scripts/check_phalanx_header_v2_contract.py'
+      - 'src/phalanx-unified-header-v2-isolated.js'
+      - 'src/phalanx-unified-header-v2-isolated.css'
+      - 'deploy/phalanx-kvk-test/header-v2-isolated.html'
       - '.github/workflows/phalanx-header-v2-assets-isolated.yml'
 jobs:
   asset-integrity:
@@ -17,3 +21,5 @@ jobs:
       - uses: actions/checkout@v4
       - name: Verify approved original and crops
         run: python3 scripts/verify_phalanx_header_v2_assets.py
+      - name: Verify isolated component contract
+        run: python3 scripts/check_phalanx_header_v2_contract.py
