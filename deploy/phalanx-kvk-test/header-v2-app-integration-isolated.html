@@ -55,10 +55,10 @@ function render(){
    const menuTitle=el('strong','Bereichsmenü');menu.append(menuTitle);
    for(const [name,url] of d.items){const a=el('a',name);a.href=url;menu.append(a);}
  }else{
-   view.append(el('h2',state.detail.title));
+   if(!embeddedModules.has(state.detail.url))view.append(el('h2',state.detail.title));
    if(embeddedModules.has(state.detail.url)){
      const frame=document.createElement('iframe');frame.src=state.detail.url;frame.title=state.detail.title;
-     frame.loading='eager';frame.style.cssText='width:100%;min-height:70vh;border:1px solid #b58b46;border-radius:12px;background:#071725';
+     frame.loading='eager';frame.scrolling='no';frame.style.cssText='display:block;width:100%;height:70vh;border:1px solid #b58b46;border-radius:12px;background:#071725';
      frame.setAttribute('referrerpolicy','same-origin');
      frame.addEventListener('load',()=>{
        try{
@@ -71,6 +71,19 @@ function render(){
          style.textContent='.topbar{display:none!important}';
          doc.head.append(style);
          frame.dataset.embedHeaderHidden='true';
+         const resize=()=>{
+           if(!frame.isConnected)return;
+           const height=Math.max(doc.documentElement.scrollHeight,doc.body?.scrollHeight||0);
+           if(Number.isFinite(height)&&height>0)frame.style.height=Math.min(Math.max(height+4,400),30000)+'px';
+         };
+         resize();
+         if(typeof ResizeObserver!=='undefined'){
+           const observer=new ResizeObserver(resize);
+           observer.observe(doc.documentElement);
+           if(doc.body)observer.observe(doc.body);
+           const cleanup=new MutationObserver(()=>{if(!frame.isConnected){observer.disconnect();cleanup.disconnect();}});
+           cleanup.observe(view,{childList:true});
+         }
        }catch(error){
          console.warn('Embedded module header remains visible:',error);
        }
