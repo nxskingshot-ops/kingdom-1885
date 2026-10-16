@@ -6,6 +6,7 @@ import re
 root = Path(__file__).resolve().parents[1] / "deploy" / "phalanx-kvk-test"
 html = (root / "design-system-components-isolated.html").read_text(encoding="utf-8")
 css = (root / "phalanx-components-isolated.css").read_text(encoding="utf-8")
+comparison = (root / "commander-branding-comparison-isolated.html").read_text(encoding="utf-8")
 checks = {
     "scoped stylesheet": 'class="px-test-scope"' in html and ".px-test-scope .px-action" in css,
     "v0.2 marker": "Designsystem v0.2" in html,
@@ -18,6 +19,7 @@ checks = {
     "touch targets": "min-height:44px" in css,
     "focus styles": ":focus-visible" in css,
     "no external assets": not any(token in html.lower() for token in ("<iframe", "<img", "https://", "http://")),
+    "commander comparison labeled as unapproved": all(term in comparison for term in ("KEIN FREEZE", "kein originalgetreuer", "A ·", "B ·")),
     "status variants": all(f'data-status="{name}"' in html for name in ("ready", "warning", "blocked")),
 }
 for name, passed in checks.items():
