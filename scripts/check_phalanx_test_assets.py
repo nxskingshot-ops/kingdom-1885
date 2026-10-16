@@ -122,6 +122,9 @@ else:
         errors.append("Offline KvK KPIs and command brief must explicitly show missing source data")
     if "Offline preview — no records loaded" not in offline_html or "Offline preview — no trend data" not in offline_html:
         errors.append("Offline KvK tables and trends must explicitly show that no data is loaded")
+    # Disconnected means no browser-originated telemetry or background requests either.
+    if re.search(r"navigator\\.sendBeacon\\s*\\(|navigator\\.serviceWorker\\.register\\s*\\(|new\\s+Image\\s*\\(|url\\s*\\(\\s*['\\\"]?https?://|<meta[^>]+http-equiv\\s*=\\s*['\\\"]refresh", offline_html, re.I):
+        errors.append("Offline KvK preview contains a background request, remote CSS URL, or redirect")
     if offline_html.count("<script") != offline_html.count("</script>"):
         errors.append("Offline KvK UI smoke test has unbalanced script elements")
     if re.search(r"""<form[^>]+id=["']loginForm["']|<input[^>]+type=["']password["']""", offline_html, re.I):
