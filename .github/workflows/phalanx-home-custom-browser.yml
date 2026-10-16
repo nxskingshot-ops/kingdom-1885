@@ -25,3 +25,11 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Test customizable home in Chromium
         run: python scripts/test_home_custom_001_browser.py
+      - name: Upload mobile visual evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phalanx-home-custom-001-mobile
+          path: test-artifacts/home-custom-001/*.png
+          if-no-files-found: warn
+          retention-days: 14
