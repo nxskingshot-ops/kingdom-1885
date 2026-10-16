@@ -4,10 +4,13 @@
  */
 export function mountPhalanxHeaderV2(host, options = {}) {
   if (!(host instanceof HTMLElement)) throw new TypeError('Host element required');
-  const { mode='home', title='', artwork={}, onBack=()=>{}, onMenu=()=>{} } = options;
+  const { mode='home', title='', artwork={}, onBack, onMenu } = options;
+  if (mode !== 'home' && (typeof onBack !== 'function' || typeof onMenu !== 'function')) {
+    throw new TypeError('Non-home header requires working onBack and onMenu callbacks');
+  }
   if (!['home','module','detail'].includes(mode)) throw new TypeError('Invalid header mode');
   const url = artwork[mode];
-  if (!url) throw new Error('Approved artwork URL required for '+mode);
+  if (typeof url !== 'string' || !url.trim()) throw new Error('Approved artwork URL required for '+mode);
   const root = document.createElement('header');
   root.className = 'phalanx-header-v2 phalanx-header-v2--'+mode;
   root.setAttribute('data-freeze','UNIFIED_HEADER_V2_FINAL_2026-10-16');
