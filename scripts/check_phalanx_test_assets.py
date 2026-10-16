@@ -89,6 +89,14 @@ if not errors:
         print("WARNING: Root index.html is still a placeholder; root routing must be verified before release.")
     if "hcjrdofkdkasznywvcxo.supabase.co" in kvk:
         print("WARNING: KvK test page references the existing Supabase project; auth isolation is NOT verified.")
+    if "hcjrdofkdkasznywvcxo.supabase.co" in kvk_v2:
+        print("WARNING: Epic V2 KvK test page also uses the existing Supabase backend; do not use real credentials before Auth/RLS approval.")
+    for isolated_name in ("battle-readiness-isolated.html", "alliance-trends-isolated.html"):
+        isolated_path = base / isolated_name
+        if isolated_path.is_file():
+            isolated_html = isolated_path.read_text(encoding="utf-8")
+            if re.search(r"supabase\.co|createClient\s*\(|signInWithPassword", isolated_html, re.I):
+                errors.append(f"Isolated local module unexpectedly contains Supabase auth/backend code: {isolated_name}")
 
 # PWA entry contract: installed app and browser root must open the same frozen Epic V2.
 manifest_file = base / "crimson-icon-test.webmanifest"
