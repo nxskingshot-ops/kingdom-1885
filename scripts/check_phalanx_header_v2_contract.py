@@ -31,6 +31,8 @@ if "typeof onNavigate !== 'function'" not in component or "onNavigate:(destinati
     errors.append("HOME navigation requires a real callback")
 if "repeat(7,minmax(0,1fr))" not in css:
     errors.append("Seven-column HOME navigation grid missing")
+if "id===activeDestination" not in component or "activeDestination=destination" not in demo:
+    errors.append("HOME selection state is not synchronized")
 if "aria-pressed" not in demo:
     errors.append("Mode selection state not exposed")
 if "img.complete" not in demo or "img.naturalWidth" not in demo:
