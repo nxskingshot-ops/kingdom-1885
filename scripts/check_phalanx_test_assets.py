@@ -98,6 +98,18 @@ if not errors:
             if re.search(r"supabase\.co|createClient\s*\(|signInWithPassword", isolated_html, re.I):
                 errors.append(f"Isolated local module unexpectedly contains Supabase auth/backend code: {isolated_name}")
 
+# Offline KvK UI smoke copy must never contain a live backend or credential flow.
+offline_file = base / "kvk-prep-v13-offline-ui-smoke.html"
+if not offline_file.is_file():
+    errors.append("Offline KvK UI smoke test missing")
+else:
+    offline_html = offline_file.read_text(encoding="utf-8")
+    for forbidden in ("supabase.co", "createClient(", "signInWithPassword", '<script type="module">'):
+        if forbidden in offline_html:
+            errors.append(f"Offline KvK UI smoke test contains forbidden backend code: {forbidden}")
+    if "OFFLINE UI SMOKE TEST" not in offline_html or 'href="./epic-navigation-v2-kvk-test.html"' not in offline_html:
+        errors.append("Offline KvK UI smoke test missing warning or return route")
+
 # PWA entry contract: installed app and browser root must open the same frozen Epic V2.
 manifest_file = base / "crimson-icon-test.webmanifest"
 if not manifest_file.is_file():
