@@ -70,6 +70,15 @@ button{font:inherit}#menu{border:1px solid #cba15b;border-radius:10px;padding:12
 .phalanx-freeze-tile:has(.phalanx-freeze-tile__art)::before{background:linear-gradient(90deg,#020911db 0%,#020911b0 55%,#0209114a 100%)}
 .phalanx-freeze-tile__copy{display:flex;flex-direction:column;gap:5px;max-width:100%;min-width:0}
 .phalanx-freeze-tile__copy strong,.phalanx-freeze-tile__copy small{display:block;position:relative}
+/* Exact cropped FREEZE cards already contain typography, icons and ornamentation.
+   Do not draw duplicate titles, gradient masks or chevrons over approved imagery. */
+.phalanx-freeze-tile[data-artwork-status="loaded"]{padding:0;min-height:0;aspect-ratio:475 / 146;background:none;border:0;box-shadow:none;border-radius:0}
+.phalanx-freeze-tiles--three .phalanx-freeze-tile[data-artwork-status="loaded"]{aspect-ratio:313 / 156;min-height:0;padding:0}
+.phalanx-freeze-tile[data-artwork-status="loaded"] .phalanx-freeze-tile__art{z-index:0;object-fit:fill}
+.phalanx-freeze-tile[data-artwork-status="loaded"]::before,.phalanx-freeze-tile[data-artwork-status="loaded"]::after{display:none}
+.phalanx-freeze-tile[data-artwork-status="loaded"] .phalanx-freeze-tile__copy{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.phalanx-freeze-tile[data-artwork-status="loaded"]:disabled{filter:none}
+.phalanx-freeze-tile[data-artwork-status="loaded"]:focus-visible{outline:3px solid #ffe0a1;outline-offset:3px}
 </style></head>
 <body><div id="app"><div id="identity" class="phalanx-identity" aria-label="Account-Vorschau">
 <div class="phalanx-identity__profile"><span class="phalanx-identity__avatar" aria-hidden="true">♜</span><span><span class="phalanx-identity__name">FaQu</span><span class="phalanx-identity__demo"> · DEMO</span><span class="phalanx-identity__level" style="display:block">Level 27 · Vorschau, nicht angemeldet</span></span></div>
@@ -139,7 +148,8 @@ function render(){
        const copy=el('span',null,'phalanx-freeze-tile__copy');
        copy.append(el('strong',card.label),el('small',card.sub));
        b.append(copy);
-       b.dataset.freezeCard=card.label.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+       b.dataset.freezeCard=card.label.toLowerCase().replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+       b.setAttribute('aria-label',card.label+' – '+card.sub);
        card.artwork=approvedCardArtwork[b.dataset.freezeCard];
        if(card.artwork){
          if(!/^\.\/assets\/design-freeze\/cards\/[a-z0-9-]+\.(?:png|jpg|webp)$/.test(card.artwork)){
