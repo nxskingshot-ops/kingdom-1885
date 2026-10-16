@@ -59,3 +59,6 @@ For HOME-CUSTOM integration:
 3. Keep editing controls local to the personal-area section, with its own storage key and without modifying the account's local data.
 4. Preserve mobile portrait and original menu behavior; require actual side-by-side screenshots before visual approval.
 5. Until integration is implemented, the standalone `home-custom-001-isolated.html` remains a **functional test harness**, not a visual substitute for the frozen HOME.
+
+## Integration insertion point — source verified
+The upstream HOME `preview/nexus-app-2-command-center-portrait-final-polish-test.html` has exactly one `<main class="content">`, followed by `<section class="switches">` and the existing intelligence panels. The HOME-CUSTOM personal section belongs **inside this existing main**, as a new independent section, not in the global header, sidebar, mobile drawer or as a replacement for `.switches`. The HOME source is an approved frozen surface: implement a new isolated derivative for integration testing, not an in-place edit to `main`.
