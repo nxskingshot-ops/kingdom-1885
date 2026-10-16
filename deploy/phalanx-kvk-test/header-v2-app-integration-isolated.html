@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow"><title>PHALANX – Header V2 App Integration (isoliert)</title>
+<link rel="stylesheet" href="../../src/phalanx-unified-header-v2-isolated.css">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#020b15;color:#f3d9a2;font:15px system-ui,sans-serif}
+#app{max-width:760px;margin:auto}#content{padding:16px 14px 40px}
+h2{font:700 24px Georgia,serif;margin:8px 0 14px}
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.tile{display:flex;flex-direction:column;justify-content:center;min-height:100px;padding:12px;background:#0b2030;border:1px solid #b58b46;border-radius:12px;color:#f3d9a2;text-decoration:none;font-weight:700}
+.tile small{font-weight:400;color:#b8c9d2;margin-top:6px}
+button{font:inherit}#menu{border:1px solid #cba15b;border-radius:10px;padding:12px;margin-bottom:14px;background:#081b29}
+#menu[hidden]{display:none}#menu a{display:block;color:#f3d9a2;padding:12px;border-bottom:1px solid #765e3b}
+#menu a:last-child{border-bottom:0}.notice{color:#c3d3dc;font-size:13px;line-height:1.5}
+</style></head>
+<body><div id="app"><div id="header"></div><main id="content"><div id="menu" hidden aria-label="Modulmenü"></div><section id="view"></section></main></div>
+<script type="module">
+import {mountPhalanxHeaderV2} from '../../src/phalanx-unified-header-v2-isolated.js';
+const artwork={home:'../../assets/header-v2/header-home.png',module:'../../assets/header-v2/header-module.png',detail:'../../assets/header-v2/header-detail.png'};
+const destinations={
+ war:{title:'KRIEG',items:[['KvK Vorbereitung','./kvk-prep-v13-epic-v2-test.html'],['Battle Readiness','./battle-readiness-isolated.html']]},
+ alliance:{title:'ALLIANZ',items:[['Allianz-Trends','./alliance-trends-isolated.html']]},
+ tools:{title:'WERKZEUGE',items:[['Heldenanalyse','./hero-intelligence-v15-isolated.html'],['Team Optimizer','./team-optimizer-alpha11-isolated.html']]},
+ guides:{title:'GUIDES',items:[]},
+ statistics:{title:'STATISTIKEN',items:[['PHALANX Ranking','./phalanx-ranking-integration-rc-20261015.html']]},
+ info:{title:'INFO',items:[]}
+};
+const header=document.getElementById('header'),view=document.getElementById('view'),menu=document.getElementById('menu');
+let state={mode:'home',section:'home',detail:null},history=[];
+function navigate(next){history.push({...state});state=next;render();}
+function back(){state=history.pop()||{mode:'home',section:'home',detail:null};render();}
+function el(tag,text,cls){const n=document.createElement(tag);if(text!=null)n.textContent=text;if(cls)n.className=cls;return n;}
+function render(){
+ menu.hidden=true;menu.replaceChildren();view.replaceChildren();
+ const title=state.mode==='home'?'':state.mode==='module'?destinations[state.section]?.title||'PHALANX':state.detail?.title||'DETAIL';
+ mountPhalanxHeaderV2(header,{mode:state.mode,title,artwork,activeDestination:state.section,
+ onNavigate:section=>section==='home'?navigate({mode:'home',section:'home',detail:null}):navigate({mode:'module',section,detail:null}),
+ onBack:back,onMenu:()=>{menu.hidden=!menu.hidden;}});
+ if(state.mode==='home'){
+   view.append(el('h2','COMMAND CENTER'));
+   const tiles=el('div',null,'tiles');
+   for(const [id,d] of Object.entries(destinations)){
+     const b=el('button',d.title,'tile');b.type='button';b.addEventListener('click',()=>navigate({mode:'module',section:id,detail:null}));tiles.append(b);
+   }
+   view.append(tiles,el('p','Isolierte App-Integration. Bestehende FREEZE-Ansichten und Produktionsrouten bleiben unverändert.','notice'));
+ }else if(state.mode==='module'){
+   const d=destinations[state.section];view.append(el('h2',d.title));
+   if(!d.items.length)view.append(el('p','Für diesen Bereich ist noch keine geprüfte Zielseite zugeordnet.','notice'));
+   const tiles=el('div',null,'tiles');
+   for(const [name,url] of d.items){
+     const b=el('button',name,'tile');b.type='button';b.addEventListener('click',()=>navigate({mode:'detail',section:state.section,detail:{title:name,url}}));tiles.append(b);
+   }
+   view.append(tiles);
+   const menuTitle=el('strong','Bereichsmenü');menu.append(menuTitle);
+   for(const [name,url] of d.items){const a=el('a',name);a.href=url;menu.append(a);}
+ }else{
+   view.append(el('h2',state.detail.title));
+   const a=el('a','Bestehendes isoliertes Modul öffnen →','tile');a.href=state.detail.url;view.append(a);
+   view.append(el('p','Der Link führt zur bestehenden Testseite. Keine Änderung an deren Navigation oder Berechtigungen.','notice'));
+   const link=el('a','Modul öffnen');link.href=state.detail.url;menu.append(link);
+ }
+}
+render();
+</script></body></html>
