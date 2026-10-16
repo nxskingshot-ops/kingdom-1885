@@ -78,6 +78,18 @@ button{font:inherit}#menu{border:1px solid #cba15b;border-radius:10px;padding:12
 <script type="module">
 import {mountPhalanxHeaderV2} from './src/phalanx-unified-header-v2-isolated.js';
 const artwork={home:'./assets/header-v2/header-home.png',module:'./assets/header-v2/header-module.png',detail:'./assets/header-v2/header-detail.png'};
+const approvedCardArtwork={
+  "kvk-vorbereitung": "./assets/design-freeze/cards/kvk-vorbereitung.webp",
+  "aussenposten": "./assets/design-freeze/cards/aussenposten.webp",
+  "transfer-scouting": "./assets/design-freeze/cards/transfer-scouting.webp",
+  "allianz-vergleich": "./assets/design-freeze/cards/allianz-vergleich.webp",
+  "heldenrechner": "./assets/design-freeze/cards/heldenrechner.webp",
+  "truppenratio": "./assets/design-freeze/cards/truppenratio.webp",
+  "marsch-optimierung": "./assets/design-freeze/cards/marsch-optimierung.webp",
+  "gegner-analyse": "./assets/design-freeze/cards/gegner-analyse.webp",
+  "koenigreich-scout": "./assets/design-freeze/cards/koenigreich-scout.webp",
+  "datenberichte": "./assets/design-freeze/cards/datenberichte.webp"
+};
 const destinations={
  war:{title:'KRIEG',items:[['KvK Vorbereitung','./kvk-prep-v13-epic-v2-test.html'],['Battle Readiness','./battle-readiness-isolated.html']]},
  alliance:{title:'ALLIANZ',items:[['Allianz-Trends','./alliance-trends-isolated.html']]},
@@ -128,6 +140,7 @@ function render(){
        copy.append(el('strong',card.label),el('small',card.sub));
        b.append(copy);
        b.dataset.freezeCard=card.label.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+       card.artwork=approvedCardArtwork[b.dataset.freezeCard];
        if(card.artwork){
          if(!/^\.\/assets\/design-freeze\/cards\/[a-z0-9-]+\.(?:png|jpg|webp)$/.test(card.artwork)){
            throw new Error('Only verified isolated FREEZE card assets are permitted');
@@ -158,7 +171,7 @@ function render(){
      }
      view.append(heading,tiles);
    }
-   view.append(el('p','Isolierte technische Struktur. Die finalen illustrierten Karten und die pixelgenaue HOME-Komposition werden separat gegen den GLOBALEN DESIGN-FREEZE geprüft. Nicht verbundene Ziele sind bewusst deaktiviert.','notice'));
+   view.append(el('p','Isolierte technische Struktur. Freigegebene Kartenillustrationen werden nur angezeigt, wenn die Originaldateien im Test-Deployment vorliegen. Pixelgenauer HOME-Abgleich weiterhin offen.','notice'));
  }else if(state.mode==='module'){
    const d=destinations[state.section];view.append(el('h2',d.title));
    if(!d.items.length)view.append(el('p','Für diesen Bereich ist noch keine geprüfte Zielseite zugeordnet.','notice'));
