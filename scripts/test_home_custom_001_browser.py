@@ -21,13 +21,13 @@ with sync_playwright() as p:
     assert page.locator("#catalog").is_visible()
     page.get_by_role("button", name="+ Outpost Intelligence").click()
     assert page.locator("#tiles .tile").count() == 4
-    page.get_by_role("button", name="Kachel COMMANDER PROFILE nach unten").click()
-    assert page.locator("#tiles .tile").first.locator("a").inner_text().startswith("Team Optimizer")
+    page.get_by_role("button", name="Kachel ACCOUNT nach unten").click()
+    assert page.locator("#tiles .tile").first.locator("a").inner_text().startswith("FORMATIONEN")
     page.reload()
     assert page.locator("#tiles .tile").count() == 4
-    assert page.locator("#tiles .tile").first.locator("a").inner_text().startswith("Team Optimizer")
+    assert page.locator("#tiles .tile").first.locator("a").inner_text().startswith("FORMATIONEN")
     page.locator("#edit").click()
-    page.get_by_role("button", name="Kachel COMMANDER PROFILE ausblenden").click()
+    page.get_by_role("button", name="Kachel ACCOUNT ausblenden").click()
     assert page.locator("#tiles .tile").count() == 3
     page.reload()
     assert page.locator("#tiles .tile").count() == 3
@@ -37,12 +37,12 @@ with sync_playwright() as p:
     page.on("dialog", lambda d: d.accept())
     page.locator("#reset").click()
     assert page.locator("#tiles .tile").count() == 3
-    assert page.locator("#tiles .tile").first.locator("a").inner_text().startswith("COMMANDER PROFILE")
+    assert page.locator("#tiles .tile").first.locator("a").inner_text().startswith("ACCOUNT")
     assert page.evaluate("localStorage.getItem('phalanx.commander.local.v1')") is not None
     page.evaluate("localStorage.setItem('phalanx.home.custom.001.v1', JSON.stringify(['unknown','account','account']))")
     page.reload()
     assert page.locator("#tiles .tile").count() == 1
-    assert page.locator("#tiles .tile").first.locator("a").inner_text().startswith("COMMANDER PROFILE")
+    assert page.locator("#tiles .tile").first.locator("a").inner_text().startswith("ACCOUNT")
     page.evaluate("localStorage.setItem('phalanx.home.custom.001.v1', JSON.stringify(Array(50).fill('account')))")
     page.reload()
     assert page.locator("#tiles .tile").count() == 3
