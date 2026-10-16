@@ -6,7 +6,7 @@
   "conflicts": [
     {
       "id": "FREEZE-001",
-      "status": "OPEN_USER_DECISION_REQUIRED",
+      "status": "RESOLVED_BY_USER",
       "element": "Global visual shell: header, palette, crest, motto, navigation",
       "reference_a": {
         "source": "DESIGN_STANDARD.md + preview/kingdom-hub-branded-v2.html",
@@ -23,11 +23,16 @@
         "B: use October PHALANX dark-fantasy shell for future unified app",
         "C: keep original Kingdom #1885 legacy shell and PHALANX app as separate explicitly scoped visual systems"
       ],
-      "user_decision": null,
-      "decision_date": null,
+      "user_decision": "B: use October NEXUS PHALANX dark-fantasy shell for future unified PHALANX design",
+      "decision_date": "2026-10-16",
       "implementation_status": "NOT_STARTED",
       "impact": "Blocks choice of global tokens, shared header, shared nav, global crest and motto for new unified components; existing approved surfaces unchanged.",
-      "evidence_level": "Documented specification conflict; exact pixel comparison still pending."
+      "evidence_level": "Documented specification conflict; exact pixel comparison still pending.",
+      "decision_source": "Explicit user confirmation in ChatGPT conversation",
+      "scope_of_decision": "Governing visual direction for future shared PHALANX design tokens, new components and unapproved modules.",
+      "existing_freeze_policy": "All previously approved FREEZEs remain unchanged and binding in their existing scopes until separately and explicitly approved for modification.",
+      "legacy_policy": "The September legacy Kingdom #1885 shell is not automatically deleted, restyled, or migrated by this decision.",
+      "next_steps": "Extract shared tokens from verified October PHALANX references, inventory deviations, and present any additional FREEZE conflicts to user before affected changes."
     }
   ],
   "record_template": {
