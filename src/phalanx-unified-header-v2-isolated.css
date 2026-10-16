@@ -7,3 +7,11 @@
 .phalanx-header-v2__nav button{min-height:44px;min-width:44px;border:0;background:transparent;color:#f4c773;font-size:32px;cursor:pointer}
 .phalanx-header-v2__nav button:focus-visible{outline:2px solid #f4c773;outline-offset:-4px}
 @media (max-width:370px){.phalanx-header-v2__nav{grid-template-columns:44px minmax(0,1fr) 44px}.phalanx-header-v2__nav h1{font-size:20px}}
+
+/* Isolated HOME navigation: real DOM controls, no screenshot hotspots. */
+.phalanx-header-v2__home-nav{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border:2px solid #daa343;border-radius:16px 16px 0 0;background:#03111b;min-height:72px}
+.phalanx-header-v2__home-action{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;min-width:0;min-height:68px;padding:4px 1px;border:0;border-bottom:3px solid transparent;background:transparent;color:#f4c773;cursor:pointer}
+.phalanx-header-v2__home-action[aria-current="page"]{border-bottom-color:#f4c773;background:#251b10}
+.phalanx-header-v2__home-action:focus-visible{outline:2px solid #f4c773;outline-offset:-3px}
+.phalanx-header-v2__home-glyph{font-size:21px;line-height:1}
+.phalanx-header-v2__home-label{font:600 clamp(7px,1.7vw,12px)/1.15 system-ui,sans-serif;white-space:nowrap;letter-spacing:-.02em}
