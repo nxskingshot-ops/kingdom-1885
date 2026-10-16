@@ -238,6 +238,8 @@ for module_file in (
     parser = LocalLinks()
     parser.feed(target.read_text(encoding="utf-8"))
     for href in parser.links:
+        # Resolve URI components before treating an href as a local filesystem path.
+        # Keep fragments and queries out of the file-existence check.
         clean = href.split("#", 1)[0].split("?", 1)[0]
         if not clean or clean.startswith(("https://", "http://", "mailto:", "tel:", "javascript:", "/", "#")):
             continue
