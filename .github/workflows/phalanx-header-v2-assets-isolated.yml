@@ -1,0 +1,19 @@
+name: PHALANX Header V2 Asset Gate (isolated)
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - fix/battle-readiness-navigation-isolated-20261015
+    paths:
+      - 'assets/header-v2/**'
+      - 'scripts/verify_phalanx_header_v2_assets.py'
+      - '.github/workflows/phalanx-header-v2-assets-isolated.yml'
+jobs:
+  asset-integrity:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify approved original and crops
+        run: python3 scripts/verify_phalanx_header_v2_assets.py
