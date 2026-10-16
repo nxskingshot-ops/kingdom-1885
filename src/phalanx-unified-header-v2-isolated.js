@@ -4,10 +4,18 @@
  */
 export function mountPhalanxHeaderV2(host, options = {}) {
   if (!(host instanceof HTMLElement)) throw new TypeError('Host element required');
-  const { mode='home', title='', artwork={}, onBack, onMenu } = options;
+  const { mode='home', title='', artwork={}, onBack, onMenu, onNavigate } = options;
+  const homeItems = [
+    ['home','⌂','HOME'],['war','⚔','KRIEG'],['alliance','♟','ALLIANZ'],
+    ['tools','⚙','WERKZEUGE'],['guides','▤','GUIDES'],
+    ['statistics','▥','STATISTIKEN'],['info','ⓘ','INFO']
+  ];
   if (!['home','module','detail'].includes(mode)) throw new TypeError('Invalid header mode');
   if (mode !== 'home' && (typeof onBack !== 'function' || typeof onMenu !== 'function')) {
     throw new TypeError('Non-home header requires working onBack and onMenu callbacks');
+  }
+  if (mode === 'home' && typeof onNavigate !== 'function') {
+    throw new TypeError('HOME header requires a working onNavigate callback');
   }
   const url = artwork[mode];
   if (typeof url !== 'string' || !url.trim()) throw new Error('Approved artwork URL required for '+mode);
@@ -17,6 +25,18 @@ export function mountPhalanxHeaderV2(host, options = {}) {
   const art = document.createElement('img');
   art.className='phalanx-header-v2__art'; art.src=url; art.alt='PHALANX helmet with lion banners';
   root.append(art);
+  if (mode==='home') {
+    const nav=document.createElement('nav');nav.className='phalanx-header-v2__home-nav';nav.setAttribute('aria-label','Hauptnavigation');
+    for (const [id,symbol,label] of homeItems) {
+      const button=document.createElement('button');button.type='button';button.className='phalanx-header-v2__home-action';
+      button.setAttribute('aria-label',label);button.dataset.destination=id;
+      if(id==='home')button.setAttribute('aria-current','page');
+      const glyph=document.createElement('span');glyph.className='phalanx-header-v2__home-glyph';glyph.setAttribute('aria-hidden','true');glyph.textContent=symbol;
+      const caption=document.createElement('span');caption.className='phalanx-header-v2__home-label';caption.textContent=label;
+      button.append(glyph,caption);button.addEventListener('click',()=>onNavigate(id));nav.append(button);
+    }
+    root.append(nav);
+  }
   if (mode!=='home') {
     const bar=document.createElement('nav');bar.className='phalanx-header-v2__nav';bar.setAttribute('aria-label','Modulnavigation');
     const back=document.createElement('button');back.type='button';back.textContent='‹';back.setAttribute('aria-label','Zurück');back.addEventListener('click',onBack);
