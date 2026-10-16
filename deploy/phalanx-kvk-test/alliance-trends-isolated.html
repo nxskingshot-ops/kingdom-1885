@@ -28,6 +28,8 @@ function sortMetric(entries){return [...entries].sort((a,b)=>{const av=a.value,b
 const formatPeriod=()=>($('period').value==='all'?'all recorded dates':$('period').value+' days');
 function getVisible(){const ids=selected==='ALL'?names:[selected];const rows=ids.filter(n=>snapshots.alliances[n]).map(n=>({...snapshots.alliances[n],name:n}));return {ids,rows};}
 function render(){
+ document.querySelectorAll('.alliance').forEach(b=>{b.setAttribute('aria-pressed',String(b.dataset.a===selected));});
+ for(const id of ['kvk','competitive'])$(id).setAttribute('aria-selected',String(id===perspective));
  const {ids,rows}=getVisible(),missing=ids.filter(n=>!snapshots.alliances[n]),has=rows.length>0;
  const totalPower=rows.reduce((a,b)=>a+(Number.isFinite(b.power_m)?b.power_m:0),0),totalCastles=rows.reduce((a,b)=>a+(Number.isFinite(b.castle_25_plus_count)?b.castle_25_plus_count:0),0);
  const powerCoverage=rows.filter(r=>Number.isFinite(r.power_m)).length,castleCoverage=rows.filter(r=>Number.isFinite(r.castle_25_plus_count)).length;
