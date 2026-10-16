@@ -16,7 +16,8 @@
       "Never claim a font is an exact logo font without proof.",
       "If exact original is absent from repo, record its library/source locator and status; do not invent path.",
       "New designs must document parent reference, scope and approval status.",
-      "Keep visual references distinct from Kingshot gameplay/account data."
+      "Keep visual references distinct from Kingshot gameplay/account data.",
+      "Every discovered candidate must be reviewed visually against the exact approved reference before it can be promoted."
     ]
   },
   "assets": [
@@ -82,11 +83,84 @@
       "status": "PARTIAL_VERIFICATION",
       "scope": "NXS/FRA/OoO/MYM",
       "note": "Do not promote unverified FRA/OoO/MYM icons to official originals."
+    },
+    {
+      "id": "queen-art-candidate-084c8d",
+      "name": "Nexus Phalanx: Königin im goldenen Reich.png",
+      "source": "ChatGPT Library",
+      "source_file": "Nexus Phalanx: Königin im goldenen Reich.png",
+      "source_file_id": "file_00000000263c8210b7d6cf9ecb084c8d",
+      "type": "discovered visual candidate",
+      "status": "DISCOVERED_NOT_VISUALLY_APPROVED",
+      "scope": "REFERENCE_REVIEW_ONLY",
+      "note": "Discovery does not establish design approval, canonicality or replacement rights."
+    },
+    {
+      "id": "cinematic-candidate-6d0466",
+      "name": "Goldene Ankunft des Phalanx-Königreichs.png",
+      "source": "ChatGPT Library",
+      "source_file": "Goldene Ankunft des Phalanx-Königreichs.png",
+      "source_file_id": "file_0000000081cc824382ae7985166d0466",
+      "type": "discovered visual candidate",
+      "status": "DISCOVERED_NOT_VISUALLY_APPROVED",
+      "scope": "REFERENCE_REVIEW_ONLY",
+      "note": "Discovery does not establish design approval, canonicality or replacement rights."
+    },
+    {
+      "id": "banner-candidate-70baed",
+      "name": "Nexus Phalanx: Königreich der Banner.png",
+      "source": "ChatGPT Library",
+      "source_file": "Nexus Phalanx: Königreich der Banner.png",
+      "source_file_id": "file_000000006ccc81f483aad9f77770baed",
+      "type": "discovered visual candidate",
+      "status": "DISCOVERED_NOT_VISUALLY_APPROVED",
+      "scope": "REFERENCE_REVIEW_ONLY",
+      "note": "Discovery does not establish design approval, canonicality or replacement rights."
+    },
+    {
+      "id": "cinematic-candidate-3a3030",
+      "name": "Dunkle Phalanx vor der Sternenzitadelle.png",
+      "source": "ChatGPT Library",
+      "source_file": "Dunkle Phalanx vor der Sternenzitadelle.png",
+      "source_file_id": "file_00000000810881f4aa53235d4c3a3030",
+      "type": "discovered visual candidate",
+      "status": "DISCOVERED_NOT_VISUALLY_APPROVED",
+      "scope": "REFERENCE_REVIEW_ONLY",
+      "note": "Discovery does not establish design approval, canonicality or replacement rights."
+    },
+    {
+      "id": "cinematic-candidate-1d9337",
+      "name": "Nexus Phalanx: Festung unter Sternen.png",
+      "source": "ChatGPT Library",
+      "source_file": "Nexus Phalanx: Festung unter Sternen.png",
+      "source_file_id": "file_00000000697082439211a8ba051d9337",
+      "type": "discovered visual candidate",
+      "status": "DISCOVERED_NOT_VISUALLY_APPROVED",
+      "scope": "REFERENCE_REVIEW_ONLY",
+      "note": "Discovery does not establish design approval, canonicality or replacement rights."
+    },
+    {
+      "id": "cinematic-candidate-fc81df",
+      "name": "Nexus Phalanx: Königreich im Sonnenlicht.png",
+      "source": "ChatGPT Library",
+      "source_file": "Nexus Phalanx: Königreich im Sonnenlicht.png",
+      "source_file_id": "file_000000002f1481f49a62b53ba6fc81df",
+      "type": "discovered visual candidate",
+      "status": "DISCOVERED_NOT_VISUALLY_APPROVED",
+      "scope": "REFERENCE_REVIEW_ONLY",
+      "note": "Discovery does not establish design approval, canonicality or replacement rights."
     }
   ],
   "pending": [
     "Find and verify exact original font/letterform construction if a pixel-faithful FaQu wordmark is required.",
     "Audit additional Library image assets individually and add them only with provenance and scope.",
     "Validate new commander tile on Android; no freeze or approval yet."
-  ]
+  ],
+  "audit": {
+    "updated_utc": "2026-10-16",
+    "candidate_images_added": 6,
+    "verified_master_images": 2,
+    "source_inventory_status": "PARTIAL",
+    "note": "Library semantic search is not an exhaustive inventory. These images were surfaced by an earlier targeted search; unreviewed images must not be used as frozen assets."
+  }
 }
