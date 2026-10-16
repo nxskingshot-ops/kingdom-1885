@@ -288,11 +288,8 @@ button{font:inherit;color:inherit}
 <main class="content">
 <section class="panel" id="phalanx-personal-area" aria-label="Mein persönlicher Bereich" style="margin-bottom:10px">
  <div class="panel-title">⚔ Mein persönlicher Bereich <a href="./home-custom-001-isolated.html" style="margin-left:auto;color:#f6d36b;font-size:13px;text-decoration:underline">Kacheln anpassen ↗</a></div>
- <div style="padding:12px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px">
-  <a href="./commander-account-local-isolated.html" style="color:#f6d36b;border:1px solid #235f8b;border-radius:8px;background:linear-gradient(#082339,#051827);padding:12px;text-decoration:none;font-weight:700">Mein Account <small style="display:block;color:#9cb2c5;font-weight:400">Helden und Truppen</small></a>
-  <a href="./team-optimizer-alpha11-isolated.html" style="color:#f6d36b;border:1px solid #235f8b;border-radius:8px;background:linear-gradient(#082339,#051827);padding:12px;text-decoration:none;font-weight:700">Team Optimizer <small style="display:block;color:#9cb2c5;font-weight:400">Aufstellungen planen</small></a>
- </div>
- <p style="margin:0 12px 12px;color:#9cb2c5;font-size:11px">Isolierte Integrationsvorschau. Das Layout wird auf der verlinkten Testseite angepasst; hier noch nicht synchronisiert.</p>
+ <div id="phalanx-personal-tiles" style="padding:12px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px" aria-live="polite"></div>
+ <p style="margin:0 12px 12px;color:#9cb2c5;font-size:11px">Persönliches Layout wird lokal in diesem Browser gespeichert. Keine Änderungen an Original-Header oder Accountdaten.</p>
 </section>
   <section class="switches">
     <button class="switch active"><b>⚔ Opponent Intelligence</b><small>Know your enemy.</small></button>
@@ -440,6 +437,48 @@ fetch('./data/kvk-opponent-intelligence-current.json?build=master-design-final-v
   const first5=opp.slice(0,5);if(first5.length===5&&first5.every(p=>p.mystic_total!=null))$('#enemyMysticTop5').textContent=fmt(first5.reduce((s,p)=>s+p.mystic_total,0));
   requestAnimationFrame(fitMasterToLandscape);
 }).catch(()=>{requestAnimationFrame(fitMasterToLandscape);});
+</script>
+
+<script>
+/* Isolated HOME-CUSTOM-001 integration: shared local layout, no mutation of original HOME. */
+(()=>{
+'use strict';
+const key='phalanx.home.custom.001.v1',defaults=['account','optimizer','troops'];
+const entries={
+ account:{name:'Mein Account',detail:'Profil, Helden und Truppen',url:'./commander-account-local-isolated.html'},
+ optimizer:{name:'Team Optimizer',detail:'Helden und Aufstellungen',url:'./team-optimizer-alpha11-isolated.html'},
+ outposts:{name:'Outpost Intelligence',detail:'Über Epic Navigation öffnen',url:'./epic-navigation-v2-kvk-test.html'},
+ troops:{name:'Mein Truppenbestand',detail:'Lokale Accountdaten',url:'./commander-account-local-isolated.html'}
+};
+function troopText(){
+ try{
+  const d=JSON.parse(localStorage.getItem('phalanx.commander.local.v1')),p=d&&d.profile;
+  if(!p||d.schema!==2)return 'Keine gültigen lokalen Accountdaten';
+  const vals=['infantry','cavalry','archers'].map(k=>p[k]);
+  if(vals.every(v=>v===''||v==null))return 'Truppen noch nicht erfasst';
+  if(!vals.every(v=>v===''||v==null||(typeof v==='string'&&/^\\d+$/.test(v)&&Number.isSafeInteger(Number(v)))))return 'Truppenwerte nicht lesbar';
+  const total=vals.reduce((n,v)=>n+Number(v||0),0);
+  return Number.isSafeInteger(total)?'Erfasst: '+total.toLocaleString('de-DE')+' Truppen (lokal)':'Truppensumme nicht sicher darstellbar';
+ }catch(e){return 'Accountdaten nicht lesbar'}
+}
+function renderPersonal(){
+ const target=document.getElementById('phalanx-personal-tiles');if(!target)return;
+ let selected=defaults;
+ try{const v=JSON.parse(localStorage.getItem(key));if(Array.isArray(v)&&v.length<=Object.keys(entries).length&&v.every(x=>typeof x==='string'))selected=[...new Set(v)].filter(x=>Object.hasOwn(entries,x))}catch(e){}
+ target.replaceChildren();
+ for(const id of selected){
+  const item=entries[id],a=document.createElement('a'),small=document.createElement('small');
+  a.href=item.url;a.dataset.tileId=id;a.textContent=item.name;
+  a.style.cssText='color:#f6d36b;border:1px solid #235f8b;border-radius:8px;background:linear-gradient(#082339,#051827);padding:12px;text-decoration:none;font-weight:700;min-width:0;overflow-wrap:anywhere';
+  small.style.cssText='display:block;color:#9cb2c5;font-weight:400;margin-top:5px';
+  small.textContent=id==='troops'?troopText():item.detail;a.append(small);target.append(a);
+ }
+ if(!selected.length){const p=document.createElement('p');p.textContent='Keine Kacheln ausgewählt. Über „Kacheln anpassen“ hinzufügen.';p.style.color='#9cb2c5';target.append(p)}
+}
+renderPersonal();
+window.addEventListener('pageshow',renderPersonal);
+window.addEventListener('storage',e=>{if(e.key===key||e.key==='phalanx.commander.local.v1')renderPersonal()});
+})();
 </script>
 </body>
 </html>
