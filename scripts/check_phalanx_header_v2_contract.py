@@ -25,6 +25,8 @@ for label in ("Zurück","Menü öffnen"):
         errors.append("Missing accessible action label: "+label)
 if "typeof onBack !== 'function'" not in component or "typeof onMenu !== 'function'" not in component:
     errors.append("Non-home navigation must require real callbacks")
+if "expectedImageSize={width:506,height:217}" not in demo:
+    errors.append("Browser demo must validate loaded image dimensions")
 if "aria-pressed" not in demo:
     errors.append("Mode selection state not exposed")
 if "img.complete" not in demo or "img.naturalWidth" not in demo:
