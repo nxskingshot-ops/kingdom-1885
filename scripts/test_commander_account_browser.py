@@ -58,7 +58,7 @@ with sync_playwright() as p:
     optimizer_url = url.replace("commander-account-local-isolated.html", "team-optimizer-alpha11-isolated.html")
     page.goto(optimizer_url)
     page.locator("#loadCommander").click()
-    assert "1 Helden übernommen" in page.locator("#commanderImportStatus").inner_text()
+    assert "1 Helden übernommen" in page.locator("#commanderImportStatus").inner_text(), page.locator("#commanderImportStatus").inner_text()
     assert "Marlin" in page.locator("#roster").inner_text()
     page.locator("#loadCommander").click()
     assert "0 Helden übernommen" in page.locator("#commanderImportStatus").inner_text()
