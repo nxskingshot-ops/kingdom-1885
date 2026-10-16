@@ -480,18 +480,20 @@ fetch('./kvk-opponent-intelligence-current.json?build=master-design-final-v1',{c
 }).catch(()=>{requestAnimationFrame(fitMasterToLandscape);});
 </script>
 
-<!-- Integration test only: adds two destinations to the existing menu; approved master remains unchanged. -->
+<!-- Isolated preview only: missing destinations remain visible but cannot navigate to 404 pages. -->
 <script>
 (()=>{'use strict';
  const nav=document.querySelector('#mobileDrawer .nav');
  if(!nav)return;
  const divider=document.createElement('div');divider.className='divider';nav.append(divider);
- const links=[['⚔','Rally Skills · Alpha32','./phalanx-rally-selection-alpha32-2026-10-12.html'],['▥','Monte Carlo · Alpha31','./phalanx-monte-carlo-lab-alpha31-2026-10-12.html'],['⌖','Outpost Map · Existing App','./kingdom-hub-menu-test.html'],['◉','Existing App · KvK / Scouting via menu','./kingdom-hub-menu-test.html']];
- for(const [symbol,label,url] of links){
-  const btn=document.createElement('button');btn.type='button';
+ const unavailable=[['⚔','Rally Skills · Alpha32'],['▥','Monte Carlo · Alpha31'],['⌖','Outpost Map · Existing App'],['◉','Existing App · KvK / Scouting via menu']];
+ for(const [symbol,label] of unavailable){
+  const btn=document.createElement('button');btn.type='button';btn.disabled=true;
+  btn.setAttribute('aria-label',label+' — not available in isolated test');
+  btn.title='Not available in this isolated test deployment';
   const ico=document.createElement('span');ico.className='ico';ico.textContent=symbol;
-  btn.append(ico,document.createTextNode(label));
-  btn.addEventListener('click',()=>{window.location.assign(url);});nav.append(btn);
+  btn.append(ico,document.createTextNode(label+' · NOT IN TEST'));
+  nav.append(btn);
  }
 })();
 </script>
