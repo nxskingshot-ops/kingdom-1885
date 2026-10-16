@@ -67,6 +67,7 @@ with sync_playwright() as p:
     integrated_url = f"http://127.0.0.1:{server.server_port}/deploy/phalanx-kvk-test/home-command-center-integration-isolated.html"
     page.goto(integrated_url)
     assert page.locator("header.topbar").count() == 1
+    assert page.locator("header.topbar img.crest").evaluate("(img) => img.complete && img.naturalWidth > 0"), "Original NXS crest did not load"
     assert page.locator("#menuBtn").count() == 1
     assert page.locator("#phalanx-personal-area").count() == 1
     assert page.locator("#phalanx-personal-tiles a").count() == 3
