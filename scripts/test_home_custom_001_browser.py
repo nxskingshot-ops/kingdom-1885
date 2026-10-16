@@ -52,6 +52,14 @@ with sync_playwright() as p:
     page.evaluate("localStorage.setItem('phalanx.commander.local.v1', JSON.stringify({schema:999,profile:{infantry:'100',cavalry:'200',archers:'300'}}))")
     page.reload()
     assert "Keine gültigen lokalen Accountdaten" in page.locator("#tiles").inner_text()
+    screenshots = root / "test-artifacts" / "home-custom-001"
+    screenshots.mkdir(parents=True, exist_ok=True)
+    page.evaluate("localStorage.removeItem('phalanx.home.custom.001.v1')")
+    page.evaluate("localStorage.removeItem('phalanx.commander.local.v1')")
+    page.reload()
+    page.screenshot(path=str(screenshots / "mobile-default.png"), full_page=True)
+    page.locator("#edit").click()
+    page.screenshot(path=str(screenshots / "mobile-edit.png"), full_page=True)
     assert not errors, errors
     browser.close()
 server.shutdown()
