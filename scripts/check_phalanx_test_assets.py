@@ -241,6 +241,10 @@ for module_file in (
         # Resolve URI components before treating an href as a local filesystem path.
         # Keep fragments and queries out of the file-existence check.
         clean = href.split("#", 1)[0].split("?", 1)[0]
+        # Network and browser-special links are not filesystem routes; reject unsafe schemes.
+        if re.match(r"(?i)^(?:data|vbscript|file|blob):", clean):
+            errors.append(f"Unsafe URI scheme in navigation: {module_file} -> {href}")
+            continue
         if not clean or clean.startswith(("https://", "http://", "mailto:", "tel:", "javascript:", "/", "#")):
             continue
         # Reject protocol-relative, traversal and encoded URL tricks in local navigation.
