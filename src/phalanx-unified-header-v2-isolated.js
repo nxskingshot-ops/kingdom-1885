@@ -4,7 +4,7 @@
  */
 export function mountPhalanxHeaderV2(host, options = {}) {
   if (!(host instanceof HTMLElement)) throw new TypeError('Host element required');
-  const { mode='home', title='', artwork={}, onBack, onMenu, onNavigate } = options;
+  const { mode='home', title='', artwork={}, onBack, onMenu, onNavigate, activeDestination='home' } = options;
   const homeItems = [
     ['home','⌂','HOME'],['war','⚔','KRIEG'],['alliance','♟','ALLIANZ'],
     ['tools','⚙','WERKZEUGE'],['guides','▤','GUIDES'],
@@ -16,6 +16,9 @@ export function mountPhalanxHeaderV2(host, options = {}) {
   }
   if (mode === 'home' && typeof onNavigate !== 'function') {
     throw new TypeError('HOME header requires a working onNavigate callback');
+  }
+  if (mode === 'home' && !homeItems.some(([id]) => id === activeDestination)) {
+    throw new TypeError('Unknown HOME navigation destination: '+activeDestination);
   }
   const url = artwork[mode];
   if (typeof url !== 'string' || !url.trim()) throw new Error('Approved artwork URL required for '+mode);
@@ -30,7 +33,7 @@ export function mountPhalanxHeaderV2(host, options = {}) {
     for (const [id,symbol,label] of homeItems) {
       const button=document.createElement('button');button.type='button';button.className='phalanx-header-v2__home-action';
       button.setAttribute('aria-label',label);button.dataset.destination=id;
-      if(id==='home')button.setAttribute('aria-current','page');
+      if(id===activeDestination)button.setAttribute('aria-current','page');
       const glyph=document.createElement('span');glyph.className='phalanx-header-v2__home-glyph';glyph.setAttribute('aria-hidden','true');glyph.textContent=symbol;
       const caption=document.createElement('span');caption.className='phalanx-header-v2__home-label';caption.textContent=label;
       button.append(glyph,caption);button.addEventListener('click',()=>onNavigate(id));nav.append(button);
