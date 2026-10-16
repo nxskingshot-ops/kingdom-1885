@@ -246,6 +246,12 @@ header>div{min-width:0}
  if(privatePanel)privatePanel.hidden=false;
  if(signout){signout.hidden=true;signout.disabled=true;}
  if(status)status.textContent='OFFLINE UI TEST ONLY — no live or archived KvK data loaded. Charts and calculations are not verified.';
+ // The hard-coded October 2026 cycle is historical; never present its phase as current.
+ const cycleStatus=$('kvkCycleStatus'),cycleNext=$('kvkCycleNext'),cycleTime=$('kvkCycleNextTime');
+ if(cycleStatus)cycleStatus.textContent='ARCHIVED CYCLE · OCT 2026 · OFFLINE PREVIEW';
+ if(cycleNext)cycleNext.textContent='Historical reference only';
+ if(cycleTime)cycleTime.textContent='No live cycle timing';
+ document.querySelectorAll('.kvk-cycle-step.active').forEach(el=>el.classList.remove('active'));
  const time=$('timeLabel');if(time)time.textContent='LOCAL UI PREVIEW · NO DATABASE · NO LOGIN';
  for(const id of ['refresh','copyBrief','copyShortBrief','filter','severity','sortOrder','rosterFilter','rosterStatus','rosterSort']){
    const el=$(id);if(el){el.disabled=true;el.title='Disabled in offline UI preview';}
