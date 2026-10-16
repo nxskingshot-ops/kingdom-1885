@@ -46,6 +46,11 @@ with sync_playwright() as p:
         page.locator("#export").click()
     exported = json.loads(Path(download.value.path()).read_text())
     assert json.loads(exported["profile"]["heroRoster"])[0]["skill"] == "4"
+    with page.expect_download() as calculator_download:
+        page.locator("#optimizerExport").click()
+    calculator = json.loads(Path(calculator_download.value.path()).read_text())
+    assert calculator["troops"] == {"infantry": 50000, "cavalry": 20000, "archers": 80000}
+    assert calculator["heroes"][0]["name"] == "Marlin"
     page.on("dialog", lambda d: d.accept())
     page.locator("#heroList button").last.click()
     assert "Noch keine Helden" in page.locator("#heroList").inner_text()
