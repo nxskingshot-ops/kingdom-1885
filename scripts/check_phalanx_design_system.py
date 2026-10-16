@@ -19,7 +19,7 @@ checks = {
     "touch targets": "min-height:44px" in css,
     "focus styles": ":focus-visible" in css,
     "no external assets": not any(token in html.lower() for token in ("<iframe", "<img", "https://", "http://")),
-    "commander comparison labeled as unapproved": all(term in comparison for term in ("KEIN FREEZE", "kein ORIGINAL-FONT-NACHWEIS", "A ·", "B ·")),
+    "commander comparison labeled as unapproved": all(term in comparison for term in ("KEIN FREEZE", "KEIN ORIGINAL-FONT-NACHWEIS", "A ·", "B ·")),
     "status variants": all(f'data-status="{name}"' in html for name in ("ready", "warning", "blocked")),
 }
 for name, passed in checks.items():
