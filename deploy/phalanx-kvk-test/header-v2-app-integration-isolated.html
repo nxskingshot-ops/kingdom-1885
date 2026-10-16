@@ -29,8 +29,24 @@ button{font:inherit}#menu{border:1px solid #cba15b;border-radius:10px;padding:12
 .phalanx-freeze-tile small{font:400 12px system-ui,sans-serif;color:#c2b8a4}
 .phalanx-freeze-tile:disabled{opacity:.56;cursor:not-allowed}
 .phalanx-freeze-tile:focus-visible{outline:3px solid #ffe0a1;outline-offset:3px}
+/* GLOBAL FREEZE: consistent identity bar and legible decorative cards. Demo identity is explicitly labelled. */
+.phalanx-identity{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 12px;background:linear-gradient(110deg,#071320,#14212b 50%,#080f17);border-bottom:1px solid #9b713b;color:#f5d7a0}
+.phalanx-identity__profile{display:flex;align-items:center;gap:9px;min-width:0}
+.phalanx-identity__avatar{display:grid;place-items:center;flex:0 0 40px;width:40px;height:40px;border:2px double #e1b765;border-radius:50%;background:radial-gradient(circle,#574323,#0a1722);font-size:23px}
+.phalanx-identity__name{font:700 19px Georgia,serif;letter-spacing:.025em}
+.phalanx-identity__level{font:11px system-ui,sans-serif;color:#d8c5a1}
+.phalanx-identity__right{display:flex;align-items:center;gap:8px;font:12px system-ui,sans-serif}
+.phalanx-identity__chip{border:1px solid #ac8546;padding:7px 8px;border-radius:6px;white-space:nowrap;background:#0a1823}
+.phalanx-identity__demo{font:10px system-ui,sans-serif;color:#d5b77c;letter-spacing:.06em}
+.phalanx-freeze-tile:disabled{opacity:1;cursor:not-allowed;border-color:#8c7149}
+.phalanx-freeze-tile:disabled strong,.phalanx-freeze-tile:disabled small{color:#f0d6a2}
+.phalanx-freeze-tile:disabled::after{content:'⌛';font-size:13px}
+@media(max-width:390px){.phalanx-identity{padding:8px}.phalanx-identity__right{gap:4px}.phalanx-identity__chip{font-size:10px;padding:5px}.phalanx-identity__name{font-size:16px}.phalanx-identity__avatar{width:34px;height:34px;flex-basis:34px}}
 </style></head>
-<body><div id="app"><div id="header"></div><main id="content"><div id="menu" hidden aria-label="Modulmenü"></div><section id="view"></section></main></div>
+<body><div id="app"><div id="identity" class="phalanx-identity" aria-label="Account-Vorschau">
+<div class="phalanx-identity__profile"><span class="phalanx-identity__avatar" aria-hidden="true">♜</span><span><span class="phalanx-identity__name">FaQu</span><span class="phalanx-identity__demo"> · DEMO</span><span class="phalanx-identity__level" style="display:block">Level 27 · Vorschau, nicht angemeldet</span></span></div>
+<div class="phalanx-identity__right"><span class="phalanx-identity__chip">◎ DE</span><span class="phalanx-identity__chip">♛ Kingdom #1885</span></div>
+</div><div id="header"></div><main id="content"><div id="menu" hidden aria-label="Modulmenü"></div><section id="view"></section></main></div>
 <script type="module">
 import {mountPhalanxHeaderV2} from './src/phalanx-unified-header-v2-isolated.js';
 const artwork={home:'./assets/header-v2/header-home.png',module:'./assets/header-v2/header-module.png',detail:'./assets/header-v2/header-detail.png'};
