@@ -11,6 +11,7 @@ on:
       - 'src/phalanx-unified-header-v2-isolated.css'
       - 'assets/header-v2/header-*.png'
       - 'assets/design-freeze/cards/*.webp'
+      - 'deploy/phalanx-kvk-test/assets/design-freeze/home-header.webp'
       - 'assets/design-freeze/PHALANX_10_FREEZE_Originalkacheln.zip'
       - 'deploy/phalanx-kvk-test/battle-readiness-isolated.html'
       - 'deploy/phalanx-kvk-test/epic-navigation-v2-kvk-test.html'
@@ -74,6 +75,7 @@ jobs:
           test -s deploy/phalanx-kvk-test/header-v2-app-integration-isolated.html
           test -s deploy/phalanx-kvk-test/src/phalanx-unified-header-v2-isolated.js
           test -s deploy/phalanx-kvk-test/assets/header-v2/header-home.png
+          test -s deploy/phalanx-kvk-test/assets/design-freeze/home-header.webp
       - name: Stage and verify approved FREEZE card artwork
         run: |
           python3 scripts/stage_phalanx_freeze_cards_isolated.py
