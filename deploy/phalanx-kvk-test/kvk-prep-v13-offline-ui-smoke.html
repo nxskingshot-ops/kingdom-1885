@@ -264,6 +264,13 @@ header>div{min-width:0}
    const el=$(id);if(el)el.textContent='Offline preview — no source data';
  }
  const brief=$('briefBody');if(brief)brief.textContent='No command brief available in offline mode.';
+ // Empty table/chart containers must not imply a successful live data load.
+ for(const id of ['players','radarRows','history']){
+   const el=$(id);if(el)el.innerHTML='<tr><td colspan="7">Offline preview — no records loaded</td></tr>';
+ }
+ for(const id of ['riskTrend','trendChart']){
+   const el=$(id);if(el)el.textContent='Offline preview — no trend data';
+ }
  document.querySelectorAll('.kvk-cycle-step.active').forEach(el=>el.classList.remove('active'));
  const time=$('timeLabel');if(time)time.textContent='LOCAL UI PREVIEW · NO DATABASE · NO LOGIN';
  for(const id of ['refresh','copyBrief','copyShortBrief','filter','severity','sortOrder','rosterFilter','rosterStatus','rosterSort']){
