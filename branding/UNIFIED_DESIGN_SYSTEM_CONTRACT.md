@@ -12,6 +12,20 @@ One coherent application, not 20 loosely similar themes. Every new feature must 
 4. A proposal or test is never automatically an approved replacement.
 5. If two approved references conflict, log the conflict and request a single explicit decision before changing either.
 
+## Mandatory FREEZE conflict arbitration — USER DECIDES
+When two existing approved FREEZEs disagree about any shared design element, **the user is the sole decision-maker about which design governs future work**. No assistant, developer or automatic rule may silently choose the newer, prettier, more complete, or apparently more canonical version.
+
+Required procedure:
+1. Open a conflict record with ID, affected surfaces/components, both exact source references, screenshots or file links where available, and the precise differences.
+2. Present **Option A: keep reference A**, **Option B: keep reference B**, and **Option C: preserve both in explicitly separate scopes** when technically coherent. State the consequences for existing pages and new modules without advocating an unapproved change.
+3. Ask the user which direction to follow. Record the user's explicit decision, timestamp, scope, and what remains frozen.
+4. Only then update the governing token/component mapping and implement the selected direction in an isolated test. Any change to an already frozen screen still requires explicit approval.
+5. While unresolved, freeze only the conflicting visual element and its dependent changes. Continue unrelated engineering and non-conflicting design work.
+6. Do not interpret silence, a generic 'Go', or prior preference as selecting a particular side of an undisclosed conflict.
+
+Conflict records: `branding/FREEZE_CONFLICT_REGISTER.json`.
+Status vocabulary: `OPEN_USER_DECISION_REQUIRED`, `RESOLVED_BY_USER`, `IMPLEMENTED_AND_VERIFIED`. Only the user can move a conflict from OPEN to RESOLVED by an explicit choice.
+
 ## Design tokens — initial canonical names
 The following names are mandatory. Values are provisional until reconciled against the frozen HOME and Epic Navigation V2; do NOT infer exact colors from posters or silently overwrite frozen CSS.
 
