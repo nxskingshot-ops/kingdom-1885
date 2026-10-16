@@ -247,7 +247,7 @@ header>div{min-width:0}
  if(signout){signout.hidden=true;signout.disabled=true;}
  if(status)status.textContent='OFFLINE UI TEST ONLY — no live or archived KvK data loaded. Charts and calculations are not verified.';
  const time=$('timeLabel');if(time)time.textContent='LOCAL UI PREVIEW · NO DATABASE · NO LOGIN';
- for(const id of ['refresh','copyBrief','copyShortBrief']){
+ for(const id of ['refresh','copyBrief','copyShortBrief','filter','severity','sortOrder','rosterFilter','rosterStatus','rosterSort']){
    const el=$(id);if(el){el.disabled=true;el.title='Disabled in offline UI preview';}
  }
  const banner=document.createElement('div');
