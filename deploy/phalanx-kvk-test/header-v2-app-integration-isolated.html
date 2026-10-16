@@ -59,7 +59,23 @@ function render(){
    if(embeddedModules.has(state.detail.url)){
      const frame=document.createElement('iframe');frame.src=state.detail.url;frame.title=state.detail.title;
      frame.loading='eager';frame.style.cssText='width:100%;min-height:70vh;border:1px solid #b58b46;border-radius:12px;background:#071725';
-     frame.setAttribute('referrerpolicy','same-origin');view.append(frame);
+     frame.setAttribute('referrerpolicy','same-origin');
+     frame.addEventListener('load',()=>{
+       try{
+         const doc=frame.contentDocument;
+         if(!doc || new URL(frame.src).origin!==location.origin) return;
+         const topbar=doc.querySelector('.topbar');
+         if(!topbar) return;
+         const style=doc.createElement('style');
+         style.setAttribute('data-phalanx-embed','header-v2-isolated');
+         style.textContent='.topbar{display:none!important}';
+         doc.head.append(style);
+         frame.dataset.embedHeaderHidden='true';
+       }catch(error){
+         console.warn('Embedded module header remains visible:',error);
+       }
+     });
+     view.append(frame);
    }else{
      const a=el('a','Bestehendes isoliertes Modul öffnen →','tile');a.href=state.detail.url;view.append(a);
    }
