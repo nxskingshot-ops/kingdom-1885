@@ -26,6 +26,7 @@
 <script type="module">
 import {mountPhalanxHeaderV2} from '../../src/phalanx-unified-header-v2-isolated.js';
 const result=document.getElementById('result');
+const expectedImageSize={width:506,height:217};
 const host=document.getElementById('header');
 const buttons=[...document.querySelectorAll('[data-mode]')];
 const artwork={
@@ -50,7 +51,7 @@ function render(mode){
     if(!img)throw new Error('Bild-Element fehlt');
     const loaded=()=>{
       if(sequence!==renderSequence)return;
-      result.textContent=mode.toUpperCase()+' Bild geladen ('+img.naturalWidth+' × '+img.naturalHeight+')';
+      result.textContent=(img.naturalWidth===expectedImageSize.width && img.naturalHeight===expectedImageSize.height ? 'PASS: ' : 'BLOCKIERT: falsche Bildabmessungen – ')+mode.toUpperCase()+' ('+img.naturalWidth+' × '+img.naturalHeight+')';
     };
     const failed=()=>{
       if(sequence!==renderSequence)return;
