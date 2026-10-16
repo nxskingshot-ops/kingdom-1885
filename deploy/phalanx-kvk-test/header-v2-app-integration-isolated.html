@@ -190,7 +190,7 @@ function render(){
      }
      view.append(heading,tiles);
    }
-   // Technical acceptance notes belong in the test report, not in the user-facing HOME view.
+   // Pixelgenauer HOME-Abgleich weiterhin offen. Technical acceptance notes belong in the test report, not in the user-facing HOME view.
  }else if(state.mode==='module'){
    const d=destinations[state.section];view.append(el('h2',d.title));
    if(!d.items.length)view.append(el('p','Für diesen Bereich ist noch keine geprüfte Zielseite zugeordnet.','notice'));
