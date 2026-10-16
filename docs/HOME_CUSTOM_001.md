@@ -49,3 +49,13 @@ Zunächst P1 Commander Account und sichere Rechneranbindung stabilisieren. Danac
 - Actual upstream Command Center CSS (main branch) inspected: navy scale `#020914/#04111d/#061c2c/#0b2a40`, gold scale `#d5a83c/#f6d36b/#fff0a2`, text `#f2f5f8`, muted `#9cb2c5`, blue border `#1b567e`. Header uses `nexus-banner-1885.png`, crest and an existing language/menu area.
 - The standalone HOME-CUSTOM prototype presently uses the separate Epic Navigation V2 / FREEZE-001 B token set; do not assert pixel parity with the HOME freeze. The two scopes are distinct. Never replace the original header or navigation with a duplicate.
 - Next step: compare the fully loaded upstream HOME in a browser against the isolated prototype at mobile portrait width, with a source-faithful visual record. A source-code audit is not visual acceptance.
+
+## Mobile integration plan — verified source boundaries
+The upstream HOME source contains a sticky `.topbar` with original crest, brand, realm and language/menu actions, plus a mobile drawer. Its `.panel` uses blue border `#235f8b`, 8px radius and a dark navy gradient. This differs from Epic Navigation V2's gold-bordered menu groups; **these are distinct approved surfaces**.
+
+For HOME-CUSTOM integration:
+1. Mount the personal-area component **inside** the Command Center content area, below the existing original topbar. Never insert another header, language switch, menu or crest.
+2. Use the HOME-native panel grammar for the embedded component (navy gradient, blue panel borders, gold only for title/highlights). Do not globally override the Epic Navigation V2 component library or the existing HOME CSS.
+3. Keep editing controls local to the personal-area section, with its own storage key and without modifying the account's local data.
+4. Preserve mobile portrait and original menu behavior; require actual side-by-side screenshots before visual approval.
+5. Until integration is implemented, the standalone `home-custom-001-isolated.html` remains a **functional test harness**, not a visual substitute for the frozen HOME.
