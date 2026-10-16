@@ -64,6 +64,12 @@ button{font:inherit}#menu{border:1px solid #cba15b;border-radius:10px;padding:12
 .phalanx-detail-link{display:block;border:var(--phx-border);padding:16px 20px;background:linear-gradient(130deg,#1e3440,#06121d);border-radius:8px;color:#f5dca8;font:500 18px Georgia,serif}
 .phalanx-detail-link:focus-visible{outline:3px solid #ffdda0}
 .phalanx-embedded-frame{display:block;width:100%;height:70vh;border:2px ridge #a57b42;border-radius:8px;background:#071725;box-shadow:0 5px 24px #0008}
+/* Real FREEZE artwork slot: image is decorative; labels/actions remain real DOM. */
+.phalanx-freeze-tile__art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;pointer-events:none}
+.phalanx-freeze-tile:has(.phalanx-freeze-tile__art){background:linear-gradient(145deg,#1a2930,#06121a)}
+.phalanx-freeze-tile:has(.phalanx-freeze-tile__art)::before{background:linear-gradient(90deg,#020911db 0%,#020911b0 55%,#0209114a 100%)}
+.phalanx-freeze-tile__copy{display:flex;flex-direction:column;gap:5px;max-width:100%;min-width:0}
+.phalanx-freeze-tile__copy strong,.phalanx-freeze-tile__copy small{display:block;position:relative}
 </style></head>
 <body><div id="app"><div id="identity" class="phalanx-identity" aria-label="Account-Vorschau">
 <div class="phalanx-identity__profile"><span class="phalanx-identity__avatar" aria-hidden="true">♜</span><span><span class="phalanx-identity__name">FaQu</span><span class="phalanx-identity__demo"> · DEMO</span><span class="phalanx-identity__level" style="display:block">Level 27 · Vorschau, nicht angemeldet</span></span></div>
@@ -116,7 +122,26 @@ function render(){
      if(group.cards.length===3)tiles.classList.add('phalanx-freeze-tiles--three');
      for(const card of group.cards){
        const b=el('button',null,'tile phalanx-freeze-tile');b.type='button';
-       b.append(el('strong',card.label),el('small',card.sub));
+       // Future artwork must be a verified approved local asset, never an invented image URL.
+       // DOM text stays independent of the art so buttons remain accessible and functional.
+       const copy=el('span',null,'phalanx-freeze-tile__copy');
+       copy.append(el('strong',card.label),el('small',card.sub));
+       b.append(copy);
+       b.dataset.freezeCard=card.label.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+       if(card.artwork){
+         if(!/^\.\/assets\/design-freeze\/cards\/[a-z0-9-]+\.(?:png|jpg|webp)$/.test(card.artwork)){
+           throw new Error('Only verified isolated FREEZE card assets are permitted');
+         }
+         const art=document.createElement('img');
+         art.className='phalanx-freeze-tile__art';
+         art.src=card.artwork;art.alt='';art.loading='lazy';art.decoding='async';
+         art.addEventListener('error',()=>{art.remove();b.dataset.artworkStatus='missing';});
+         b.prepend(art);
+         b.dataset.artworkStatus='pending';
+         art.addEventListener('load',()=>{b.dataset.artworkStatus='loaded';});
+       }else{
+         b.dataset.artworkStatus='not-integrated';
+       }
        if(card.section){
          b.addEventListener('click',()=>{
            const d=destinations[card.section];
