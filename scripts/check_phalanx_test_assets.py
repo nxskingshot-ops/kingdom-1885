@@ -123,7 +123,7 @@ else:
     if "Offline preview — no records loaded" not in offline_html or "Offline preview — no trend data" not in offline_html:
         errors.append("Offline KvK tables and trends must explicitly show that no data is loaded")
     # Disconnected means no browser-originated telemetry or background requests either.
-    if re.search(r"navigator\\.sendBeacon\\s*\\(|navigator\\.serviceWorker\\.register\\s*\\(|new\\s+Image\\s*\\(|url\\s*\\(\\s*['\\\"]?https?://|<meta[^>]+http-equiv\\s*=\\s*['\\\"]refresh", offline_html, re.I):
+    if re.search(r"""navigator\.sendBeacon\s*\(|navigator\.serviceWorker\.register\s*\(|new\s+Image\s*\(|url\s*\(\s*['"]?https?://|<meta[^>]+http-equiv\s*=\s*['"]refresh""", offline_html, re.I):
         errors.append("Offline KvK preview contains a background request, remote CSS URL, or redirect")
     if offline_html.count("<script") != offline_html.count("</script>"):
         errors.append("Offline KvK UI smoke test has unbalanced script elements")
