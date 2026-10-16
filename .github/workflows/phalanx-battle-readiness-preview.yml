@@ -34,6 +34,7 @@ on:
       - 'deploy/phalanx-kvk-test/assets/crimson-*.png'
       - 'scripts/check_phalanx_test_assets.py'
       - 'scripts/check_phalanx_home_freeze_structure_isolated.py'
+      - 'scripts/check_phalanx_freeze_card_assets_isolated.py'
       - 'scripts/audit_phalanx_global_freeze_isolated.py'
   workflow_dispatch:
 
@@ -56,6 +57,7 @@ jobs:
         run: |
           python3 scripts/check_phalanx_home_freeze_structure_isolated.py
           python3 scripts/audit_phalanx_global_freeze_isolated.py
+          python3 scripts/check_phalanx_freeze_card_assets_isolated.py
       - name: Stage original HOME assets for isolated preview
         run: |
           cp icon-192.png deploy/phalanx-kvk-test/icon-192.png
