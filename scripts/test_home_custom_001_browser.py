@@ -39,6 +39,13 @@ with sync_playwright() as p:
     assert page.locator("#tiles .tile").count() == 3
     assert page.locator("#tiles .tile").first.locator("a").inner_text().startswith("Mein Account")
     assert page.evaluate("localStorage.getItem('phalanx.commander.local.v1')") is not None
+    page.evaluate("localStorage.setItem('phalanx.home.custom.001.v1', JSON.stringify(['unknown','account','account']))")
+    page.reload()
+    assert page.locator("#tiles .tile").count() == 1
+    assert page.locator("#tiles .tile").first.locator("a").inner_text().startswith("Mein Account")
+    page.evaluate("localStorage.setItem('phalanx.home.custom.001.v1', JSON.stringify(Array(50).fill('account')))")
+    page.reload()
+    assert page.locator("#tiles .tile").count() == 3
     assert not errors, errors
     browser.close()
 server.shutdown()
