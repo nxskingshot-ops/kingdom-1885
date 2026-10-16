@@ -42,3 +42,10 @@ Zunächst P1 Commander Account und sichere Rechneranbindung stabilisieren. Danac
 - Referenz für spätere visuelle Prüfung: `NEXUS_PHALANX_HOME_FROZEN_2026-10-11.html` aus der ChatGPT Library, im Branding-Register als `home-freeze` verzeichnet. Diese Referenz ist nicht als identische Datei im Testprototyp hinterlegt.
 - Aktuelle Darstellung ist ein **isolierter funktionaler Prototyp**; kein Nachweis pixelgenauer Übereinstimmung mit HOME-FREEZE und keine Freigabe für Produktion.
 - Vor visueller Freigabe: tatsächliche CI-Screenshots sichten, eingefrorene HOME-Referenz daneben prüfen, Abweichungen dokumentieren und nur nicht eingefrorene Oberflächen ändern.
+
+## FREEZE source audit — 2026-10-16
+- Library sources inspected: `NEXUS_PHALANX_HOME_ORIGINAL_2026-10-11.html`, `NEXUS_PHALANX_HOME_APPROVED_ALPHA12_2026-10-12.html`, `NEXUS_PHALANX_HOME_FUNCTIONAL_TEST_ALPHA13_2026-10-12.html`.
+- **Important:** These three HTML files are integrated-loader wrappers; their CSS is a temporary loading state. Their script fetches `main/preview/nexus-app-2-command-center-portrait-final-polish-test.html` and injects assets. Do **not** use the wrapper's `#03111e` / `#f0d78c` as authoritative frozen UI palette.
+- Actual upstream Command Center CSS (main branch) inspected: navy scale `#020914/#04111d/#061c2c/#0b2a40`, gold scale `#d5a83c/#f6d36b/#fff0a2`, text `#f2f5f8`, muted `#9cb2c5`, blue border `#1b567e`. Header uses `nexus-banner-1885.png`, crest and an existing language/menu area.
+- The standalone HOME-CUSTOM prototype presently uses the separate Epic Navigation V2 / FREEZE-001 B token set; do not assert pixel parity with the HOME freeze. The two scopes are distinct. Never replace the original header or navigation with a duplicate.
+- Next step: compare the fully loaded upstream HOME in a browser against the isolated prototype at mobile portrait width, with a source-faithful visual record. A source-code audit is not visual acceptance.
