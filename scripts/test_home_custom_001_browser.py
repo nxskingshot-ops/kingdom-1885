@@ -63,6 +63,20 @@ with sync_playwright() as p:
     page.screenshot(path=str(screenshots / "mobile-default.png"), full_page=True)
     page.locator("#edit").click()
     page.screenshot(path=str(screenshots / "mobile-edit.png"), full_page=True)
+    # Integrated HOME keeps its original header and reflects the same saved layout.
+    integrated_url = f"http://127.0.0.1:{server.server_port}/deploy/phalanx-kvk-test/home-command-center-integration-isolated.html"
+    page.goto(integrated_url)
+    assert page.locator("header.topbar").count() == 1
+    assert page.locator("#menuBtn").count() == 1
+    assert page.locator("#phalanx-personal-area").count() == 1
+    assert page.locator("#phalanx-personal-tiles a").count() == 3
+    page.evaluate("localStorage.setItem('phalanx.home.custom.001.v1', JSON.stringify(['outposts','troops']))")
+    page.evaluate("localStorage.setItem('phalanx.commander.local.v1', JSON.stringify({schema:2,profile:{infantry:'100',cavalry:'200',archers:'300'}}))")
+    page.reload()
+    assert page.locator("#phalanx-personal-tiles a").count() == 2
+    assert page.locator("#phalanx-personal-tiles a").first.inner_text().startswith("Outpost Intelligence")
+    assert "600 Truppen" in page.locator("#phalanx-personal-tiles").inner_text()
+    page.screenshot(path=str(screenshots / "mobile-integrated.png"), full_page=True)
     assert not errors, errors
     browser.close()
 server.shutdown()
