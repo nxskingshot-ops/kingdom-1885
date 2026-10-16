@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "date": "2026-10-16",
+  "decision": "FREEZE-001 Option B",
+  "status": "REFERENCE_EXTRACTED_NOT_YET_APPLIED",
+  "reference": {
+    "path": "deploy/phalanx-kvk-test/epic-navigation-v2-kvk-test.html",
+    "scope": "Epic Navigation V2 isolated reference",
+    "verification": "Extracted from source CSS; not pixel-verified against frozen HOME"
+  },
+  "tokens": {
+    "--px-bg-canvas": {
+      "value": "#020b15",
+      "source": "html background and body gradient final stop"
+    },
+    "--px-bg-surface": {
+      "value": "#041320",
+      "source": ".menu-group background"
+    },
+    "--px-bg-gradient-start": {
+      "value": "#173047",
+      "source": "body radial gradient first stop"
+    },
+    "--px-bg-gradient-middle": {
+      "value": "#03111e",
+      "source": "body radial gradient second stop"
+    },
+    "--px-gold-primary": {
+      "value": "#ffe0a0",
+      "source": "h1 color"
+    },
+    "--px-gold-muted": {
+      "value": "#bd9142",
+      "source": ".menu-group border"
+    },
+    "--px-text-primary": {
+      "value": "#f4dfa6",
+      "source": "body color"
+    },
+    "--px-text-secondary": {
+      "value": "#a9b6c3",
+      "source": ".meta color"
+    },
+    "--px-font-display": {
+      "value": "Georgia, serif",
+      "source": "body font-family (epic navigation)",
+      "caveat": "Not proof of poster lettering font"
+    },
+    "--px-font-ui": {
+      "value": "system-ui, sans-serif",
+      "source": ".meta font shorthand"
+    },
+    "--px-radius-panel": {
+      "value": "12px",
+      "source": ".menu-group border-radius"
+    }
+  },
+  "not_yet_established": [
+    "Exact frozen HOME palette and hierarchy",
+    "Original poster typography metrics",
+    "All app component spacing",
+    "Cross-screen navigation integration",
+    "Verified Android visual acceptance"
+  ],
+  "guardrails": [
+    "No edits to frozen files",
+    "No auto-apply tokens",
+    "No approval requested without real images or live preview",
+    "Preserve original alliance crest and red player helmet in their own scopes"
+  ]
+}
