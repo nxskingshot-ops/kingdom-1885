@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "name": "NEXUS PHALANX — FREEZE conflict decision log",
+  "updated_utc": "2026-10-16",
+  "rule": "No conflicting FREEZE is superseded without explicit user selection. Only affected work is blocked.",
+  "conflicts": [],
+  "record_template": {
+    "id": "FREEZE-001",
+    "status": "OPEN_USER_DECISION_REQUIRED",
+    "element": "",
+    "reference_a": {
+      "source": "",
+      "scope": "",
+      "difference": ""
+    },
+    "reference_b": {
+      "source": "",
+      "scope": "",
+      "difference": ""
+    },
+    "options": [
+      "A: adopt reference A for affected future work",
+      "B: adopt reference B for affected future work",
+      "C: preserve distinct scope-specific versions"
+    ],
+    "user_decision": null,
+    "decision_date": null,
+    "implementation_status": "NOT_STARTED"
+  }
+}
