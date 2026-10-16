@@ -22,10 +22,10 @@ with sync_playwright() as p:
     page.get_by_role("button", name="+ Outpost Intelligence").click()
     assert page.locator("#tiles .tile").count() == 4
     page.get_by_role("button", name="Kachel ACCOUNT nach unten").click()
-    assert page.locator("#tiles .tile").first.locator("a").inner_text().startswith("FORMATIONEN")
+    assert page.locator("#tiles .tile").first.locator("a").inner_text().startswith("SCHWADRON")
     page.reload()
     assert page.locator("#tiles .tile").count() == 4
-    assert page.locator("#tiles .tile").first.locator("a").inner_text().startswith("FORMATIONEN")
+    assert page.locator("#tiles .tile").first.locator("a").inner_text().startswith("SCHWADRON")
     page.locator("#edit").click()
     page.get_by_role("button", name="Kachel ACCOUNT ausblenden").click()
     assert page.locator("#tiles .tile").count() == 3
