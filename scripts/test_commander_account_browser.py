@@ -55,6 +55,15 @@ with sync_playwright() as p:
     calculator = json.loads(Path(calculator_download.value.path()).read_text())
     assert calculator["troops"] == {"infantry": 50000, "cavalry": 20000, "archers": 80000}
     assert calculator["heroes"][0]["name"] == "Marlin"
+    optimizer_url = url.replace("commander-account-local-isolated.html", "team-optimizer-alpha11-isolated.html")
+    page.goto(optimizer_url)
+    page.locator("#loadCommander").click()
+    assert "1 Helden übernommen" in page.locator("#commanderImportStatus").inner_text()
+    assert "Marlin" in page.locator("#roster").inner_text()
+    page.locator("#loadCommander").click()
+    assert "0 Helden übernommen" in page.locator("#commanderImportStatus").inner_text()
+    assert page.locator("#roster .heroitem").count() == 1
+    page.goto(url)
     page.on("dialog", lambda d: d.accept())
     page.locator("#heroList button").last.click()
     assert "Noch keine Helden" in page.locator("#heroList").inner_text()
