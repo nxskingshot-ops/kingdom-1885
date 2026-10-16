@@ -114,6 +114,8 @@ else:
         errors.append("Offline KvK UI smoke test contains an external resource or network API")
     if offline_html.count("<script") != offline_html.count("</script>"):
         errors.append("Offline KvK UI smoke test has unbalanced script elements")
+    if re.search(r"""<form[^>]+id=["']loginForm["']|<input[^>]+type=["']password["']""", offline_html, re.I):
+        errors.append("Offline KvK UI smoke test must not expose a sign-in form")
 
 # PWA entry contract: installed app and browser root must open the same frozen Epic V2.
 manifest_file = base / "crimson-icon-test.webmanifest"
