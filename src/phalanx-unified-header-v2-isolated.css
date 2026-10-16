@@ -1,0 +1,9 @@
+/* Only activates when explicitly mounted; no global selectors. */
+.phalanx-header-v2{box-sizing:border-box;width:100%;background:#03111b;color:#f4c773;overflow:hidden}
+.phalanx-header-v2 *{box-sizing:border-box}
+.phalanx-header-v2__art{display:block;width:100%;height:auto;aspect-ratio:506/218;object-fit:fill}
+.phalanx-header-v2__nav{display:grid;grid-template-columns:52px minmax(0,1fr) 52px;align-items:center;min-height:64px;border:2px solid #daa343;border-radius:16px 16px 0 0;background:#03111b}
+.phalanx-header-v2__nav h1{font-family:Georgia,serif;font-size:clamp(19px,5vw,30px);color:#f4c773;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0}
+.phalanx-header-v2__nav button{min-height:44px;min-width:44px;border:0;background:transparent;color:#f4c773;font-size:32px;cursor:pointer}
+.phalanx-header-v2__nav button:focus-visible{outline:2px solid #f4c773;outline-offset:-4px}
+@media (max-width:370px){.phalanx-header-v2__nav{grid-template-columns:44px minmax(0,1fr) 44px}.phalanx-header-v2__nav h1{font-size:20px}}
