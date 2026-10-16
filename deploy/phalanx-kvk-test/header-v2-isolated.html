@@ -44,6 +44,7 @@ function render(mode){
       mode,
       title:mode==='module'?'WAR ROOM':'HELDENRECHNER',
       artwork,
+      onNavigate:(destination)=>{result.textContent='HOME Navigation: '+destination+' (Demo, kein echter Routenwechsel)';},
       onBack:()=>render('home'),
       onMenu:()=>{result.textContent='Menü-Callback aktiviert (Demo, kein echtes Menü)';}
     });
