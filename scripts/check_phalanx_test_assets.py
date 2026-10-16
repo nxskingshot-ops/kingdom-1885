@@ -249,6 +249,9 @@ for module_file in (
         if decoded != clean and (decoded.startswith(("/", "\\\\")) or ".." in Path(decoded).parts):
             errors.append(f"Unsafe encoded local HTML link: {module_file} -> {href}")
             continue
+        if re.search(r"%(?:2f|5c|00)", clean, re.I) or "\\x00" in decoded:
+            errors.append(f"Unsafe encoded separator or NUL in local link: {module_file} -> {href}")
+            continue
         if urlsplit(clean).scheme or clean.startswith("\\\\"):
             errors.append(f"Unexpected link scheme: {module_file} -> {href}")
             continue
