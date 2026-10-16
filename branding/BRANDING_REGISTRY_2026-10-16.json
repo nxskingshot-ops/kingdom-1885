@@ -91,9 +91,10 @@
       "source_file": "Nexus Phalanx: Königin im goldenen Reich.png",
       "source_file_id": "file_00000000263c8210b7d6cf9ecb084c8d",
       "type": "discovered visual candidate",
-      "status": "DISCOVERED_NOT_VISUALLY_APPROVED",
+      "status": "VISUALLY_INSPECTED_APPROVAL_UNCONFIRMED",
       "scope": "REFERENCE_REVIEW_ONLY",
-      "note": "Discovery does not establish design approval, canonicality or replacement rights."
+      "note": "Visual inspection completed 2026-10-16; approval, master designation and permission to replace any frozen art remain unverified.",
+      "visual_notes": "Red-haired crowned warrior at left, silver/gold helmet with laurel at center, metallic NEXUS PHALANX text, sunset castle. Do not equate depicted character with approved Queen An poster."
     },
     {
       "id": "cinematic-candidate-6d0466",
@@ -102,9 +103,10 @@
       "source_file": "Goldene Ankunft des Phalanx-Königreichs.png",
       "source_file_id": "file_0000000081cc824382ae7985166d0466",
       "type": "discovered visual candidate",
-      "status": "DISCOVERED_NOT_VISUALLY_APPROVED",
+      "status": "VISUALLY_INSPECTED_APPROVAL_UNCONFIRMED",
       "scope": "REFERENCE_REVIEW_ONLY",
-      "note": "Discovery does not establish design approval, canonicality or replacement rights."
+      "note": "Visual inspection completed 2026-10-16; approval, master designation and permission to replace any frozen art remain unverified.",
+      "visual_notes": "Black-gold helmet, starry world, gold PHALANX wordmark and NXS flags; close visual sibling of master poster."
     },
     {
       "id": "banner-candidate-70baed",
@@ -113,9 +115,10 @@
       "source_file": "Nexus Phalanx: Königreich der Banner.png",
       "source_file_id": "file_000000006ccc81f483aad9f77770baed",
       "type": "discovered visual candidate",
-      "status": "DISCOVERED_NOT_VISUALLY_APPROVED",
+      "status": "VISUALLY_INSPECTED_APPROVAL_UNCONFIRMED",
       "scope": "REFERENCE_REVIEW_ONLY",
-      "note": "Discovery does not establish design approval, canonicality or replacement rights."
+      "note": "Visual inspection completed 2026-10-16; approval, master designation and permission to replace any frozen art remain unverified.",
+      "visual_notes": "Blonde crowned woman at left, gold-and-silver NXS helm with crossed swords, large gold NEXUS PHALANX serif title; sunset kingdom."
     },
     {
       "id": "cinematic-candidate-3a3030",
@@ -124,9 +127,10 @@
       "source_file": "Dunkle Phalanx vor der Sternenzitadelle.png",
       "source_file_id": "file_00000000810881f4aa53235d4c3a3030",
       "type": "discovered visual candidate",
-      "status": "DISCOVERED_NOT_VISUALLY_APPROVED",
+      "status": "VISUALLY_INSPECTED_APPROVAL_UNCONFIRMED",
       "scope": "REFERENCE_REVIEW_ONLY",
-      "note": "Discovery does not establish design approval, canonicality or replacement rights."
+      "note": "Visual inspection completed 2026-10-16; approval, master designation and permission to replace any frozen art remain unverified.",
+      "visual_notes": "Dark gold helmet, cosmic sky, NXS banners and PHALANX wordmark; similar poster series."
     },
     {
       "id": "cinematic-candidate-1d9337",
@@ -135,9 +139,10 @@
       "source_file": "Nexus Phalanx: Festung unter Sternen.png",
       "source_file_id": "file_00000000697082439211a8ba051d9337",
       "type": "discovered visual candidate",
-      "status": "DISCOVERED_NOT_VISUALLY_APPROVED",
+      "status": "VISUALLY_INSPECTED_APPROVAL_UNCONFIRMED",
       "scope": "REFERENCE_REVIEW_ONLY",
-      "note": "Discovery does not establish design approval, canonicality or replacement rights."
+      "note": "Visual inspection completed 2026-10-16; approval, master designation and permission to replace any frozen art remain unverified.",
+      "visual_notes": "Gold helmet, starry castles and NXS flags; similar poster series."
     },
     {
       "id": "cinematic-candidate-fc81df",
@@ -146,21 +151,26 @@
       "source_file": "Nexus Phalanx: Königreich im Sonnenlicht.png",
       "source_file_id": "file_000000002f1481f49a62b53ba6fc81df",
       "type": "discovered visual candidate",
-      "status": "DISCOVERED_NOT_VISUALLY_APPROVED",
+      "status": "VISUALLY_INSPECTED_APPROVAL_UNCONFIRMED",
       "scope": "REFERENCE_REVIEW_ONLY",
-      "note": "Discovery does not establish design approval, canonicality or replacement rights."
+      "note": "Visual inspection completed 2026-10-16; approval, master designation and permission to replace any frozen art remain unverified.",
+      "visual_notes": "Dark-haired crowned woman at left, NXS gold/white helm and gold NEXUS PHALANX title; bright sunset."
     }
   ],
   "pending": [
     "Find and verify exact original font/letterform construction if a pixel-faithful FaQu wordmark is required.",
-    "Audit additional Library image assets individually and add them only with provenance and scope.",
-    "Validate new commander tile on Android; no freeze or approval yet."
+    "Validate new commander tile on Android; no freeze or approval yet.",
+    "Continue non-exhaustive Library image inventory; inspect and hash assets before declaring duplicates."
   ],
   "audit": {
     "updated_utc": "2026-10-16",
     "candidate_images_added": 6,
     "verified_master_images": 2,
     "source_inventory_status": "PARTIAL",
-    "note": "Library semantic search is not an exhaustive inventory. These images were surfaced by an earlier targeted search; unreviewed images must not be used as frozen assets."
+    "note": "Library semantic search is not an exhaustive inventory. These images were surfaced by an earlier targeted search; unreviewed images must not be used as frozen assets.",
+    "visual_candidates_inspected": 6,
+    "visual_review_date": "2026-10-16",
+    "duplicate_review": "Six related posters share themes but have visibly different compositions; do not mark as binary duplicates without hashes.",
+    "approval_note": "Visual inspection is not user approval."
   }
 }
