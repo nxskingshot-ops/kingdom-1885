@@ -16,7 +16,7 @@ with sync_playwright() as p:
     page.on("pageerror", lambda e: errors.append(str(e)))
     page.goto(url)
     assert page.locator("#tiles .tile").count() == 3
-    assert "Truppen noch nicht erfasst" in page.locator("#tiles").inner_text() or "Noch keine lokalen Accountdaten" in page.locator("#tiles").inner_text()
+    assert "Truppen noch nicht erfasst" in page.locator("#tiles").inner_text() or "Noch keine lokalen Accountdaten" in page.locator("#tiles").inner_text() or "Keine gültigen lokalen Accountdaten" in page.locator("#tiles").inner_text()
     page.locator("#edit").click()
     assert page.locator("#catalog").is_visible()
     page.get_by_role("button", name="+ Outpost Intelligence").click()
