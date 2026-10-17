@@ -9,10 +9,11 @@ const targets={
 'Battle Readiness':'nexus-phalanx-battle-readiness-verified-status-test-2026-10-12.html',
 'Reports & History':'outpost-report-v11.html',
 'Candidate Board':'kingdom-hub-trends-v8.html',
-'Hero Intelligence':'hero-intelligence-evidence-advisor-v15-2026-10-12.html'
+'Hero Intelligence':'hero-intelligence-evidence-advisor-v15-2026-10-12.html',
+'Rankings':'phalanx-ranking-integration-rc-20261015.html'
 };
 const entries=[...document.querySelectorAll('a[data-pending]')];
-function label(a){return a.childNodes[0]?.textContent?.trim()||'';}
+function label(a){return [...a.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent).join(' ').trim();}
 let linked=0,disabled=0,unexpected=0;
 for(const a of entries){
  const name=label(a),file=targets[name];
@@ -33,7 +34,7 @@ for(const a of entries){
  }else if(a.getAttribute('href')==='#'){disabled++;a.setAttribute('aria-disabled','true');}
  else unexpected++;
 }
-const result={total:entries.length,linked,disabled,unexpected,ready:entries.length===39&&linked===6&&disabled===33&&unexpected===0};
+const result={total:entries.length,linked,disabled,unexpected,ready:entries.length===39&&linked===7&&disabled===32&&unexpected===0};
 document.documentElement.dataset.rc5RouteGate=result.ready?'pass':'fail';
 console.info('[PHALANX RC5 isolated route adapter]',result);
 })();
