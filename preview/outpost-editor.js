@@ -64,7 +64,7 @@ $('resetRequest').onclick=async()=>{
  try{
   // Redirect destinations must be allowlisted in Supabase Auth settings.
   const {error}=await db.auth.resetPasswordForEmail(email,{
-   redirectTo:window.location.origin+'/preview/outpost-editor.html'
+   redirectTo:'https://phalanx-cloudflare-test-depl.nexus-phalanx-kvk-test.pages.dev/preview/outpost-editor.html'
   });
   if(error)throw error;
   $('loginMessage').textContent='Falls ein Konto existiert, erhältst du eine E-Mail zum Zurücksetzen. Prüfe auch den Spam-Ordner.';
