@@ -52,6 +52,52 @@ $('togglePassword').onclick=()=>{
  button.textContent=showing?'Hide password':'Show password';
  button.setAttribute('aria-pressed',String(showing));
 };
+// Supabase sends the reset email; the app never stores the password.
+$('resetRequest').onclick=async()=>{
+ const email=$('email').value.trim();
+ if(!email||!$('email').checkValidity()){
+  $('loginMessage').textContent='Bitte zuerst eine gültige E-Mail-Adresse eingeben.';
+  $('email').focus();return;
+ }
+ const button=$('resetRequest');button.disabled=true;
+ $('loginMessage').textContent='Wiederherstellungs-E-Mail wird angefordert…';
+ try{
+  // Redirect destinations must be allowlisted in Supabase Auth settings.
+  const {error}=await db.auth.resetPasswordForEmail(email,{
+   redirectTo:window.location.origin+'/preview/outpost-editor.html'
+  });
+  if(error)throw error;
+  $('loginMessage').textContent='Falls ein Konto existiert, erhältst du eine E-Mail zum Zurücksetzen. Prüfe auch den Spam-Ordner.';
+ }catch(error){
+  $('loginMessage').textContent='Passwortwiederherstellung fehlgeschlagen: '+error.message;
+ }finally{button.disabled=false;}
+};
+db.auth.onAuthStateChange((event)=>{
+ if(event==='PASSWORD_RECOVERY'){
+  $('login').hidden=false;$('board').hidden=true;
+  $('recoveryPanel').hidden=false;
+  $('loginMessage').textContent='Bitte jetzt ein neues Passwort festlegen.';
+ }
+});
+$('recoveryForm').onsubmit=async e=>{
+ e.preventDefault();
+ const password=$('newPassword').value;
+ if(password.length<12)return;
+ const button=e.currentTarget.querySelector('button[type="submit"]');
+ button.disabled=true;$('recoveryMessage').textContent='Neues Passwort wird gespeichert…';
+ try{
+  const {error}=await db.auth.updateUser({password});
+  if(error)throw error;
+  $('newPassword').value='';
+  $('recoveryPanel').hidden=true;
+  $('recoveryMessage').textContent='';
+  $('loginMessage').textContent='Passwort geändert. Bitte erneut anmelden.';
+  await db.auth.signOut();
+  locked('Passwort geändert. Bitte erneut anmelden.');
+ }catch(error){
+  $('recoveryMessage').textContent='Änderung fehlgeschlagen: '+error.message;
+ }finally{button.disabled=false;}
+};
 $('authForm').onsubmit=async e=>{
  e.preventDefault();$('loginMessage').textContent='Signing in…';
  const {error}=await db.auth.signInWithPassword({email:$('email').value,password:$('password').value});
