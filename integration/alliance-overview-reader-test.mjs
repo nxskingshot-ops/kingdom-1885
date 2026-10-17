@@ -1,6 +1,7 @@
 // Isolated PHALANX test adapter. Not loaded by the production app.
 // Uses the existing signed-in Supabase client; never a service-role key.
 export async function loadAllianceOverview(client) {
+  if (!client?.auth?.getUser || !client?.from) throw new Error('Signed-in client required');
   const auth = await client.auth.getUser();
   if (auth.error || !auth.data?.user) throw new Error('Sign-in required');
   const response = await client.from('phalanx_alliance_latest')
