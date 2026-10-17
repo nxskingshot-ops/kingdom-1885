@@ -11,6 +11,7 @@ export function mountPylonAllianceHost({ client = null, getClient = null, target
   if (getClient !== null && typeof getClient !== 'function') {
     throw new TypeError('getClient must be a function');
   }
+  // The existing PHALANX view retains ownership of authentication and access policy.
   let pending = false;
   let disposed = false;
   let generation = 0;
