@@ -6,16 +6,20 @@ export function mountPylonAllianceHost({ client = null, target, button, info } =
   if (!target || !button || !info) throw new TypeError('Missing PYLON host elements');
   let pending = false;
   let disposed = false;
+  let generation = 0;
   async function refresh() {
     if (pending || disposed) return;
     pending = true;
+    const requestGeneration = ++generation;
     button.disabled = true;
     info.textContent = 'Datenstatus wird geprüft …';
     try {
-      const result = await renderAlliancePreview(client, target, {
+      const detachedTarget = target.ownerDocument.createElement('div');
+      const result = await renderAlliancePreview(client, detachedTarget, {
         asOf: new Date().toISOString()
       });
-      if (disposed) return;
+      if (disposed || requestGeneration !== generation) return;
+      target.replaceChildren(...Array.from(detachedTarget.childNodes));
       info.textContent = result.status === 'verified'
         ? 'Technisch geprüfter Snapshot · Live-Berechtigungen separat prüfen.'
         : result.status === 'stale'
@@ -34,6 +38,7 @@ export function mountPylonAllianceHost({ client = null, target, button, info } =
   void refresh();
   return () => {
     disposed = true;
+    generation++;
     button.removeEventListener('click', refresh);
     button.disabled = true;
   };
