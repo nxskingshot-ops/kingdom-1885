@@ -3,7 +3,11 @@ import { renderAlliancePreview } from './pylon-alliance-ui-adapter.mjs';
 // Explicit mount for a host-owned, already authenticated PHALANX client.
 // No credential discovery, local storage, global client or automatic connection.
 export function mountPylonAllianceHost({ client = null, target, button, info } = {}) {
-  if (!target || !button || !info) throw new TypeError('Missing PYLON host elements');
+  if (!target?.ownerDocument || typeof target.replaceChildren !== 'function' ||
+      typeof button?.addEventListener !== 'function' ||
+      typeof button?.removeEventListener !== 'function' || !info) {
+    throw new TypeError('Missing PYLON host elements');
+  }
   let pending = false;
   let disposed = false;
   let generation = 0;
@@ -26,7 +30,7 @@ export function mountPylonAllianceHost({ client = null, target, button, info } =
           ? 'Daten veraltet · keine Kennzahlen verfügbar.'
           : 'Nicht verbunden · keine Allianzkennzahlen verfügbar.';
     } catch {
-      if (disposed) return;
+      if (disposed || requestGeneration !== generation) return;
       target.textContent = 'PYLON IX · Keine geprüften Daten verfügbar.';
       info.textContent = 'Datenstatus konnte nicht geladen werden.';
     } finally {
