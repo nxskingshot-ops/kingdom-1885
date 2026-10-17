@@ -5,9 +5,11 @@ const db=createClient(API,KEY,{auth:{persistSession:true,autoRefreshToken:true}}
 const $=id=>document.getElementById(id);
 const escapeText=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let records=[],selected=null,authorized=false;
+let pylonCleanup=null;
 const visible=()=>{const q=$('search').value.trim().toLowerCase();return records.filter(r=>[r.alliance,r.structure_type,r.source_key,r.coord_x,r.coord_y].some(v=>String(v??'').toLowerCase().includes(q)))};
 function locked(message=''){
  authorized=false;$('board').hidden=true;$('login').hidden=false;
+ if(pylonCleanup){pylonCleanup();pylonCleanup=null;}
  const pylon=$('pylon-ix-panel');if(pylon)pylon.hidden=true;$('loginMessage').textContent=message;
 }
 function resetSelection(){const p=records.find(r=>r.id===selected);$('save').disabled=!p||!authorized;
@@ -70,7 +72,7 @@ verify();
 const pylonTarget=$('pylon-alliance-output');
 if(pylonTarget){
   import('../integration/pylon-alliance-host.mjs').then(({mountPylonAllianceHost})=>{
-    mountPylonAllianceHost({
+    pylonCleanup=mountPylonAllianceHost({
       getClient:()=>authorized?db:null,
       allowLiveRead:false,
       target:pylonTarget,
