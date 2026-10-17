@@ -4,6 +4,31 @@ const form=document.getElementById('reset');
 const status=document.getElementById('status');
 form.hidden=true;
 let verified=false;
+const password=document.getElementById('password');
+const confirmation=document.getElementById('confirmPassword');
+const submit=document.getElementById('submitPassword');
+const matchMessage=document.getElementById('matchMessage');
+const toggle=document.getElementById('togglePassword');
+let saving=false;
+function validatePasswords(){
+ const enough=password.value.length>=12;
+ const same=password.value===confirmation.value;
+ submit.disabled=!(verified&&!saving&&enough&&same);
+ matchMessage.classList.toggle('error',confirmation.value.length>0&&!same);
+ matchMessage.textContent=!password.value&&!confirmation.value?'Bitte beide Felder ausfüllen.'
+  :!enough?'Mindestens 12 Zeichen erforderlich.'
+  :!confirmation.value?'Bitte Passwort bestätigen.'
+  :!same?'Die Passwörter stimmen nicht überein.':'Die Passwörter stimmen überein.';
+ return !submit.disabled;
+}
+password.addEventListener('input',validatePasswords);
+confirmation.addEventListener('input',validatePasswords);
+toggle.addEventListener('click',()=>{
+ const show=password.type==='password';
+ password.type=confirmation.type=show?'text':'password';
+ toggle.textContent=show?'Verbergen':'Anzeigen';
+ toggle.setAttribute('aria-pressed',String(show));
+});
 const query=new URLSearchParams(location.search);
 const hash=new URLSearchParams(location.hash.slice(1));
 const hasRecoveryLink=query.get('type')==='recovery'||hash.get('type')==='recovery'||query.has('code')||hash.has('access_token')||hash.has('error_code');
@@ -22,20 +47,23 @@ client.auth.onAuthStateChange((event)=>{
   verified=true;
   form.hidden=false;
   status.textContent='Wiederherstellungslink bestätigt. Bitte neues Passwort festlegen.';
+  validatePasswords();
  }
 });
 form.addEventListener('submit',async(event)=>{
  event.preventDefault();
- if(!verified)return;
- const button=form.querySelector('button');
- button.disabled=true;
- const {error}=await client.auth.updateUser({password:document.getElementById('password').value});
+ if(!validatePasswords())return;
+ saving=true;
+ submit.disabled=true;
+ const {error}=await client.auth.updateUser({password:password.value});
  if(error){
   status.textContent='Änderung fehlgeschlagen: '+error.message;
-  button.disabled=false;
+  saving=false;
+  validatePasswords();
   return;
  }
- document.getElementById('password').value='';
+ password.value='';
+ confirmation.value='';
  form.hidden=true;
  status.textContent='Passwort geändert. Bitte erneut anmelden.';
  await client.auth.signOut();
