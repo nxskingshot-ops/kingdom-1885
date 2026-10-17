@@ -33,4 +33,12 @@ assert.equal(missing.data_status, 'not-connected');
 const noTime = mock();
 assert.equal((await loadPylonAllianceContext(noTime.client)).data_status, 'not-connected');
 assert.equal(noTime.calls.length, 0);
+// A new alliance is blocked by default and only admitted by explicit reviewed scope.
+const extraRows = [{ ...rows[0], alliance: 'ABC' }];
+const extraDefault = await loadPylonAllianceContext(mock({ data: extraRows }).client, { asOf });
+assert.equal(extraDefault.data_status, 'not-connected');
+assert.deepEqual(extraDefault.facts, []);
+const extraApproved = await loadPylonAllianceContext(mock({ data: extraRows }).client, { asOf, approvedAlliances: ['NXS', 'ABC'] });
+assert.equal(extraApproved.data_status, 'verified');
+assert.ok(extraApproved.facts.every(f => f.label.startsWith('ABC')));
 console.log('PYLON isolated read-only bridge mock tests passed (no real RLS validation).');
