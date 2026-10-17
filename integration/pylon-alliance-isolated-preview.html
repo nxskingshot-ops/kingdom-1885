@@ -25,33 +25,16 @@ small{color:#bdb4a6}
 <section><h2>Alliance Comparison · Modul</h2><p>Diese Vorschau kann einen vorhandenen, angemeldeten PHALANX-Client nur durch explizite Übergabe nutzen. Ohne Anmeldung bleiben Kennzahlen ausgeblendet.</p><button type="button" id="refresh-alliance">Datenstatus aktualisieren</button><p id="refresh-info" class="hint" role="status">Kein Datenclient verbunden.</p></section><p><small>Technische Datenvalidierung ersetzt keine Berechtigungsprüfung. Kein Produktiv-Release.</small></p>
 </main>
 <script type="module">
-import { renderAlliancePreview } from './pylon-alliance-ui-adapter.mjs';
-const target = document.getElementById('pylon-alliance-output');
-const info = document.getElementById('refresh-info');
-const button = document.getElementById('refresh-alliance');
-// Only a separately approved, authenticated PHALANX host may supply a client.
-// This isolated page deliberately supplies none and never stores credentials.
-let pending = false;
-async function refresh() {
-  if (pending) return;
-  pending = true;
-  button.disabled = true;
-  info.textContent = 'Datenstatus wird geprüft …';
-  try {
-    const result = await renderAlliancePreview(null, target, { asOf: new Date().toISOString() });
-    info.textContent = result.status === 'verified'
-      ? 'Geprüfter Modulkontext geladen.'
-      : 'Nicht verbunden · keine Allianzkennzahlen verfügbar.';
-  } catch {
-    target.textContent = 'PYLON IX · Keine geprüften Daten verfügbar.';
-    info.textContent = 'Datenstatus konnte nicht geladen werden.';
-  } finally {
-    pending = false;
-    button.disabled = false;
-  }
-}
-button.addEventListener('click', refresh);
-refresh();
+import { mountPylonAllianceHost } from './pylon-alliance-host.mjs';
+// This standalone page has no authenticated client.
+// An approved PHALANX test host may import mountPylonAllianceHost and
+// explicitly pass its existing signed-in client without embedding secrets.
+mountPylonAllianceHost({
+  client: null,
+  target: document.getElementById('pylon-alliance-output'),
+  button: document.getElementById('refresh-alliance'),
+  info: document.getElementById('refresh-info')
+});
 </script>
 </body>
 </html>
