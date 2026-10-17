@@ -26,6 +26,10 @@ jobs:
           test -s deploy/phalanx-kvk-test/index.html || { echo "Missing reviewed test index.html; refusing deploy"; exit 1; }
           test -s deploy/phalanx-kvk-test/index-kvk.html || { echo "Missing reviewed test index-kvk.html; refusing deploy"; exit 1; }
           test -s deploy/phalanx-kvk-test/kvk-prep-v13.html || { echo "Missing reviewed test kvk-prep-v13.html; refusing deploy"; exit 1; }
+      - name: Verify PYLON standalone test asset
+        run: |
+          test -s deploy/phalanx-kvk-test/pylon-ix-standalone-offline.html || { echo "Missing PYLON standalone file"; exit 1; }
+          grep -q 'id="ask-form"' deploy/phalanx-kvk-test/pylon-ix-standalone-offline.html || { echo "Missing PYLON question form"; exit 1; }
       - name: Run isolated test asset preflight
         run: python3 scripts/check_phalanx_test_assets.py
       - name: Deploy isolated test directory only
