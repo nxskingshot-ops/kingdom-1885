@@ -4,6 +4,19 @@ const form=document.getElementById('reset');
 const status=document.getElementById('status');
 form.hidden=true;
 let verified=false;
+const query=new URLSearchParams(location.search);
+const hash=new URLSearchParams(location.hash.slice(1));
+const hasRecoveryLink=query.get('type')==='recovery'||hash.get('type')==='recovery'||query.has('code')||hash.has('access_token')||hash.has('error_code');
+status.textContent=hasRecoveryLink
+ ? 'Wiederherstellungslink wird geprüft …'
+ : 'Bitte fordere über die Anmeldung einen neuen Wiederherstellungslink an.';
+if(hasRecoveryLink){
+ client.auth.initialize().then(({error})=>{
+  if(!verified)status.textContent=error
+   ? 'Wiederherstellungslink konnte nicht geprüft werden: '+error.message
+   : 'Wiederherstellung nicht bestätigt. Bitte einen neuen Link anfordern.';
+ }).catch(()=>{if(!verified)status.textContent='Wiederherstellung fehlgeschlagen. Bitte einen neuen Link anfordern.';});
+}
 client.auth.onAuthStateChange((event)=>{
  if(event==='PASSWORD_RECOVERY'){
   verified=true;
