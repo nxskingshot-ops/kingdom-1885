@@ -7,7 +7,9 @@ const escapeText=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;'
 let records=[],selected=null,authorized=false;
 let pylonCleanup=null;
 let recoveryMode=false;
-const recoveryLanding=()=>new URLSearchParams(location.search).get('type')==='recovery'||new URLSearchParams(location.hash.slice(1)).get('type')==='recovery';
+const recoveryLanding=()=>{const query=new URLSearchParams(location.search),hash=new URLSearchParams(location.hash.slice(1));return query.get('type')==='recovery'||hash.get('type')==='recovery'||query.has('code')||hash.has('access_token')||hash.has('error_code');};
+// Supabase may remove recovery tokens from the URL before the first editor check.
+const recoveryOnArrival=recoveryLanding();
 function showRecovery(){recoveryMode=true;authorized=false;$('board').hidden=true;$('login').hidden=false;$('authForm').hidden=true;$('recoveryPanel').hidden=false;const pylon=$('pylon-ix-panel');if(pylon)pylon.hidden=true;if(pylonCleanup){pylonCleanup();pylonCleanup=null;} $('loginMessage').textContent='Bitte ein neues Passwort festlegen.';}
 
 const visible=()=>{const q=$('search').value.trim().toLowerCase();return records.filter(r=>[r.alliance,r.structure_type,r.source_key,r.coord_x,r.coord_y].some(v=>String(v??'').toLowerCase().includes(q)))};
@@ -39,12 +41,13 @@ async function refresh(){
  render();$('status').textContent=records.length+' records loaded. Select a row to edit.';
 }
 async function verify(){
- if(recoveryMode||recoveryLanding()){showRecovery();return;}
+ if(recoveryMode||recoveryOnArrival||recoveryLanding()){showRecovery();return;}
  try{
  const {data:{user},error}=await db.auth.getUser();
  if(error||!user){locked();return;}
  const {data:member,error:membershipError}=await db.from('nxs_memberships').select('role,active,expires_at').eq('user_id',user.id).maybeSingle();
  if(membershipError||!member?.active||!['r4','admin'].includes(member.role)||(member.expires_at&&Date.parse(member.expires_at)<=Date.now())){locked('An active R4/admin account is required.');return;}
+ if(recoveryMode||recoveryOnArrival||recoveryLanding()){showRecovery();return;}
  authorized=true;$('login').hidden=true;$('board').hidden=false;await refresh();
  const pylon=$('pylon-ix-panel');if(pylon)pylon.hidden=false;
  void mountPylon();
@@ -124,7 +127,7 @@ $('editForm').onsubmit=async e=>{
  }catch(error){$('status').textContent='Save failed: '+error.message;$('save').disabled=false;}
 };
 $('search').oninput=render;$('resetSelectionBtn').onclick=resetSelection;$('refresh').onclick=verify;$('reload').onclick=refresh;
-if(recoveryLanding())showRecovery();
+if(recoveryOnArrival)showRecovery();
 else verify();
 
 // PYLON IX loads only after PHALANX editor authorization succeeds.
