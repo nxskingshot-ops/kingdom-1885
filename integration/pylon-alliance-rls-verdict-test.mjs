@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import { evaluatePylonRlsRoles as judge } from './pylon-alliance-rls-verdict.mjs';
+const views = ['phalanx_alliance_latest', 'phalanx_alliance_top40'];
+const probe = visibility => ({ status: 'probed', views: views.map(view => ({ view, request: 'ok', visibility })) });
+const allowed = probe('rows-visible'), denied = probe('zero-visible');
+assert.equal(judge(allowed, denied).verdict, 'inconclusive');
+assert.equal(judge(allowed, denied, { seededRowsConfirmed: true }).verdict, 'role-check-passed');
+assert.equal(judge(allowed, denied, { seededRowsConfirmed: true }).liveDataApproved, false);
+assert.equal(judge(allowed, allowed, { seededRowsConfirmed: true }).verdict, 'failed');
+assert.equal(judge(denied, denied, { seededRowsConfirmed: true }).verdict, 'inconclusive');
+assert.equal(judge(null, denied, { seededRowsConfirmed: true }).verdict, 'inconclusive');
+const error = probe('zero-visible'); error.views[0].request = 'error';
+assert.equal(judge(allowed, error, { seededRowsConfirmed: true }).verdict, 'inconclusive');
+const duplicated = probe('zero-visible'); duplicated.views[1].view = duplicated.views[0].view;
+assert.equal(judge(allowed, duplicated, { seededRowsConfirmed: true }).verdict, 'inconclusive');
+console.log('PYLON RLS role verdict mock tests passed; production approval remains false.');
