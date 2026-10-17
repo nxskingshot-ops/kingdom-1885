@@ -1,0 +1,15 @@
+import assert from "node:assert/strict";
+import {validateContext,summarizeContext,MODULES,SCHEMA} from "./pylon-ix-context-validator.mjs";
+const base={schema_version:SCHEMA,module:"kvk-prep",source:"existing-phalanx-module",observed_at:null,verified_at:null,data_status:"not-connected",scope:"none",facts:[],warnings:["Keine Daten"],provenance:[]};
+assert.equal(MODULES.length,4);
+assert.equal(validateContext(base).ok,true);
+assert.equal(summarizeContext(base).status,"unavailable");
+assert.equal(validateContext({...base,module:"unknown"}).ok,false);
+assert.equal(validateContext({...base,facts:[{label:"Power",value:123}]}).ok,false);
+assert.equal(validateContext({...base,data_status:"verified",facts:[]}).ok,false);
+const verified={...base,data_status:"verified",scope:"authorized-test",verified_at:"2026-10-17T00:00:00Z",facts:[{label:"Testwert",value:42}]};
+assert.equal(validateContext(verified).ok,true);
+assert.equal(summarizeContext(verified).text,"Testwert: 42");
+assert.equal(validateContext({...verified,facts:[{label:"NaN",value:NaN}]}).ok,false);
+assert.equal(validateContext({...verified,facts:[{label:"Injected",value:{secret:"x"}}]}).ok,false);
+console.log("PYLON context validator: 9 assertions passed");
