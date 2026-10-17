@@ -19,3 +19,10 @@ Erkennungsmerkmale: massiver gold-/bronzefarbener, genieteter Rundschild; zentra
 ## Implementierungsstatus
 
 FREEZE-Regel im isolierten Branch dokumentiert. **Original-Bilddatei noch nicht im GitHub-Repository archiviert oder in die App eingebunden.** Kein Produktionsdeploy, kein Merge auf main.
+
+## Original-Asset: Integritätsnachweis
+
+- Originaldatei aus Nutzer-Upload: `PYLON_IX_ICON_FREEZE_ORIGINAL.png` (PNG, 573 KiB)
+- SHA-256: `49557ff9e76677c77d7f545856acc4134d394d0643ccbbd5febdef31a4319a9d`
+- Vorgesehener Repository-Pfad: `deploy/phalanx-kvk-test/assets/pylon-ix-icon-original.png`
+- Wichtig: Der SHA-256-Wert bezieht sich auf die unveränderten Bildbytes; bei Übernahme muss der Wert übereinstimmen. Das Bild ist zum Zeitpunkt dieser Dokumentation **noch nicht im Repository**.
