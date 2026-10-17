@@ -1,6 +1,6 @@
 <!doctype html>
-<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="robots" content="noindex,nofollow"><title>PHALANX – Header V2 App Integration (isoliert)</title>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow"><title>PHALANX – HOME Preview (isolated)</title>
 <link rel="stylesheet" href="./src/phalanx-unified-header-v2-isolated.css">
 <style>
 *{box-sizing:border-box}body{margin:0;background:#020b15;color:#f3d9a2;font:15px system-ui,sans-serif}
@@ -92,7 +92,7 @@ button{font:inherit}#menu{border:1px solid #cba15b;border-radius:10px;padding:12
 .phalanx-freeze-original__nav button:focus-visible{outline:3px solid #ffe4a6;outline-offset:-5px;background:#ffd26b25}
 .phalanx-freeze-original__nav button[aria-current="page"]{background:transparent}
 </style></head>
-<body><div id="app"><div id="header"></div><main id="content"><div id="menu" hidden aria-label="Modulmenü"></div><section id="view"></section></main></div>
+<body><div id="app"><div id="header"></div><main id="content"><div id="menu" hidden aria-label="Module menu"></div><section id="view"></section></main></div>
 <script type="module">
 import {mountPhalanxHeaderV2} from './src/phalanx-unified-header-v2-isolated.js';
 const artwork={home:'./assets/header-v2/header-home.png',module:'./assets/header-v2/header-module.png',detail:'./assets/header-v2/header-detail.png'};
@@ -109,11 +109,11 @@ const approvedCardArtwork={
   "datenberichte": "./assets/design-freeze/cards/datenberichte.webp"
 };
 const destinations={
- war:{title:'KRIEG',items:[['KvK Vorbereitung','./kvk-prep-v13-epic-v2-test.html'],['Battle Readiness','./battle-readiness-isolated.html']]},
- alliance:{title:'ALLIANZ',items:[['Allianz-Trends','./alliance-trends-isolated.html']]},
- tools:{title:'WERKZEUGE',items:[['Heldenanalyse','./hero-intelligence-v15-isolated.html'],['Team Optimizer','./team-optimizer-alpha11-isolated.html']]},
+ war:{title:'WAR',items:[['KvK Preparation','./kvk-prep-v13-epic-v2-test.html'],['Battle Readiness','./battle-readiness-isolated.html']]},
+ alliance:{title:'ALLIANCE',items:[['Alliance Trends','./alliance-trends-isolated.html']]},
+ tools:{title:'TOOLS',items:[['Hero Analysis','./hero-intelligence-v15-isolated.html'],['Team Optimizer','./team-optimizer-alpha11-isolated.html']]},
  guides:{title:'GUIDES',items:[]},
- statistics:{title:'STATISTIKEN',items:[['PHALANX Ranking','./phalanx-ranking-integration-rc-20261015.html']]},
+ statistics:{title:'STATISTICS',items:[['PHALANX Ranking','./phalanx-ranking-integration-rc-20261015.html']]},
  info:{title:'INFO',items:[]}
 };
 const header=document.getElementById('header'),view=document.getElementById('view'),menu=document.getElementById('menu');
@@ -132,13 +132,13 @@ function render(){
    // Pixel-accurate approved image is optional until the exact uploaded asset is present.
    // Never replace the existing functional header on a missing or failed image.
    const originalUrl='./assets/design-freeze/home-header.webp';
-   const original=new Image();original.decoding='async';original.alt='PHALANX HOME: freigegebener Helm, Fahnen, Profil und Goldnavigation';
+   const original=new Image();original.decoding='async';original.alt='PHALANX HOME: approved helmet, flags, profile and golden navigation';
    original.onload=()=>{
      if(state.mode!=='home')return;
      const freeze=document.createElement('div');freeze.className='phalanx-freeze-original';
      const nav=document.createElement('nav');nav.className='phalanx-freeze-original__nav';
-     nav.setAttribute('aria-label','PHALANX Hauptnavigation');
-     for(const [label,section] of [['HOME','home'],['KRIEG','war'],['ALLIANZ','alliance'],['WERKZEUGE','tools'],['GUIDES','guides'],['STATISTIKEN','statistics'],['INFO','info']]){
+     nav.setAttribute('aria-label','PHALANX main navigation');
+     for(const [label,section] of [['HOME','home'],['WAR','war'],['ALLIANCE','alliance'],['TOOLS','tools'],['GUIDES','guides'],['STATISTICS','statistics'],['INFO','info']]){
        const button=document.createElement('button');button.type='button';button.textContent=label;button.setAttribute('aria-label',label);
        if(section==='home')button.setAttribute('aria-current','page');
        button.addEventListener('click',()=>section==='home'?navigate({mode:'home',section:'home',detail:null}):navigate({mode:'module',section,detail:null}));
@@ -153,18 +153,18 @@ function render(){
    // Illustrated artwork remains a separate visual acceptance gate; never mark this scaffold pixel-perfect.
    const groups=[
      {heading:'COMMAND CENTER',cards:[
-       {label:'KvK VORBEREITUNG',sub:'Übersicht · Analyse · Warnlisten',section:'war',item:'KvK Vorbereitung'},
-       {label:'AUSSENPOSTEN',sub:'Karte · Berichte · Editor',section:null},
-       {label:'TRANSFER SCOUTING',sub:'Kandidaten · Analyse · Einladungen',section:null},
-       {label:'ALLIANZ VERGLEICH',sub:'NXS · FRA · OoO · MYM',section:'alliance'}]},
-     {heading:'WERKZEUGE & RECHNER',cards:[
-       {label:'HELDENRECHNER',sub:'Vergleich · Builds · Empfehlungen',section:'tools',item:'Heldenanalyse'},
-       {label:'TRUPPENRATIO',sub:'Bär · Wikinger · KvK',section:null},
-       {label:'MARSCH OPTIMIERUNG',sub:'Das habe ich · Das will ich',section:'tools',item:'Team Optimizer'}]},
-     {heading:'INTELLIGENZ & BERICHTE',cards:[
-       {label:'GEGNER ANALYSE',sub:'Top-Spieler · Aktivität · Risiko',section:null},
-       {label:'KÖNIGREICH SCOUT',sub:'Rankings · Berichte · Trends',section:'statistics'},
-       {label:'DATENBERICHTE',sub:'Live-Daten · Auto-Import',section:null}]}
+       {slug:'kvk-vorbereitung',label:'KvK PREPARATION',sub:'Overview · Analysis · Watchlists',section:'war',item:'KvK Vorbereitung'},
+       {slug:'aussenposten',label:'OUTPOSTS',sub:'Map · Reports · Editor',section:null},
+       {slug:'transfer-scouting',label:'TRANSFER SCOUTING',sub:'Candidates · Analysis · Invites',section:null},
+       {slug:'allianz-vergleich',label:'ALLIANCE COMPARISON',sub:'NXS · FRA · OoO · MYM',section:'alliance'}]},
+     {heading:'TOOLS & CALCULATORS',cards:[
+       {slug:'heldenrechner',label:'HERO CALCULATOR',sub:'Comparison · Builds · Advice',section:'tools',item:'Heldenanalyse'},
+       {slug:'truppenratio',label:'TROOP RATIO',sub:'Bear · Viking · KvK',section:null},
+       {slug:'marsch-optimierung',label:'MARCH OPTIMIZATION',sub:'Current · Target',section:'tools',item:'Team Optimizer'}]},
+     {heading:'INTELLIGENCE & REPORTS',cards:[
+       {slug:'gegner-analyse',label:'OPPONENT ANALYSIS',sub:'Top Players · Activity · Risk',section:null},
+       {slug:'koenigreich-scout',label:'KINGDOM SCOUT',sub:'Rankings · Reports · Trends',section:'statistics'},
+       {slug:'datenberichte',label:'DATA REPORTS',sub:'Live Data · Auto Import',section:null}]}
    ];
    for(const group of groups){
      const heading=el('h2',group.heading,'phalanx-section-heading');
@@ -177,7 +177,7 @@ function render(){
        const copy=el('span',null,'phalanx-freeze-tile__copy');
        copy.append(el('strong',card.label),el('small',card.sub));
        b.append(copy);
-       b.dataset.freezeCard=card.label.toLowerCase().replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+       b.dataset.freezeCard=card.slug;
        b.setAttribute('aria-label',card.label+' – '+card.sub);
        card.artwork=approvedCardArtwork[b.dataset.freezeCard];
        if(card.artwork){
@@ -203,8 +203,8 @@ function render(){
          });
        }else{
          b.disabled=true;
-         b.setAttribute('aria-label',card.label+' – noch nicht integriert');
-         b.title='Noch keine geprüfte Zielseite integriert';
+         b.setAttribute('aria-label',card.label+' – not yet available');
+         b.title='No verified destination available yet';
        }
        tiles.append(b);
      }
@@ -213,13 +213,13 @@ function render(){
    // Pixelgenauer HOME-Abgleich weiterhin offen. Technical acceptance notes belong in the test report, not in the user-facing HOME view.
  }else if(state.mode==='module'){
    const d=destinations[state.section];view.append(el('h2',d.title));
-   if(!d.items.length)view.append(el('p','Für diesen Bereich ist noch keine geprüfte Zielseite zugeordnet.','notice'));
+   if(!d.items.length)view.append(el('p','No verified destination has been assigned to this section yet.','notice'));
    const tiles=el('div',null,'tiles phalanx-module-tiles');
    for(const [name,url] of d.items){
      const b=el('button',name,'tile');b.type='button';b.addEventListener('click',()=>navigate({mode:'detail',section:state.section,detail:{title:name,url}}));tiles.append(b);
    }
    view.append(tiles);
-   const menuTitle=el('strong','Bereichsmenü');menu.append(menuTitle);
+   const menuTitle=el('strong','Section menu');menu.append(menuTitle);
    for(const [name,url] of d.items){const a=el('a',name);a.href=url;menu.append(a);}
  }else{
    if(!embeddedModules.has(state.detail.url))view.append(el('h2',state.detail.title));
@@ -257,10 +257,10 @@ function render(){
      });
      view.append(frame);
    }else{
-     const a=el('a','Bestehendes isoliertes Modul öffnen →','phalanx-detail-link');a.href=state.detail.url;view.append(a);
+     const a=el('a','Open existing isolated module →','phalanx-detail-link');a.href=state.detail.url;view.append(a);
    }
-   view.append(el('p','Bestehendes Testmodul unverändert eingebunden. Bei Problemen über das Menü separat öffnen.','notice'));
-   const link=el('a','Modul öffnen');link.href=state.detail.url;menu.append(link);
+   view.append(el('p','Existing test module is embedded without changes. If needed, open it separately from the menu.','notice'));
+   const link=el('a','Open module');link.href=state.detail.url;menu.append(link);
  }
 }
 render();
