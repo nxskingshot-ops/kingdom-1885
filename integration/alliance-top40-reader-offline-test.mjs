@@ -10,6 +10,10 @@ assert.deepEqual(await loadAllianceTop40(client, 'NXS'), []);
 for (const approvedAlliances of [[], ['ABC', 'ABC'], ['*'], ['ABC', 'bad tag']]) {
   await assert.rejects(() => loadAllianceTop40(client, 'ABC', '2026-10-13', { approvedAlliances }), /not approved/);
 }
+for (const badDate of ['2026-02-30', '2026-10-13x', 'not-a-date']) {
+  await assert.rejects(() => loadAllianceTop40(client, 'NXS', badDate), /Invalid snapshot date/);
+}
+await assert.rejects(() => loadAllianceTop40(null, 'NXS'), /Signed-in client required/);
 const anonymous = { ...client, auth: { async getUser() { return { data: { user: null }, error: null }; } } };
 await assert.rejects(() => loadAllianceTop40(anonymous, 'NXS'), /Sign-in required/);
 console.log('Top40 allowlist mock tests passed; no live authorization tested.');
