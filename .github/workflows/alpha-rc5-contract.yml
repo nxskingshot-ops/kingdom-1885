@@ -1,0 +1,21 @@
+name: PHALANX isolated alpha RC5 contract
+on:
+  push:
+    branches:
+      - alpha/android-integrated-freeze-20261017
+    paths:
+      - 'preview/PHALANX_RC5_ALPHA_DERIVED_20261017.html'
+      - 'tests/alpha/test_rc5_derived.py'
+      - '.github/workflows/alpha-rc5-contract.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify-rc5:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Confirm alpha derivative exists
+        run: test -f preview/PHALANX_RC5_ALPHA_DERIVED_20261017.html
+      - name: Verify exact bytes and all 39 menu routes
+        run: python3 tests/alpha/test_rc5_derived.py preview/PHALANX_RC5_ALPHA_DERIVED_20261017.html
