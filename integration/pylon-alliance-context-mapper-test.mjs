@@ -14,6 +14,7 @@ for (const [rows, opts, status] of [
   [[], { asOf }, 'not-connected'],
   [[row], {}, 'not-connected'],
   [[{ ...row, kingdom: 1913 }], { asOf }, 'not-connected'],
+  [[{ ...row, kingdom: 1913 }], { asOf, kingdom: 1913 }, 'not-connected'],
   [[{ ...row, alliance: 'UNKNOWN' }], { asOf }, 'not-connected'],
   [[{ ...row, total_power: '100000' }], { asOf }, 'not-connected'],
   [[{ ...row, members: -1 }], { asOf }, 'not-connected'],
