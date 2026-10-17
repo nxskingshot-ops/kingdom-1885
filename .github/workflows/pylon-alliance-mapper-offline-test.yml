@@ -1,0 +1,25 @@
+name: PYLON IX isolated alliance mapper tests
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/pylon-ix-design-spec-20261017
+    paths:
+      - integration/pylon-alliance-context-mapper.mjs
+      - integration/pylon-alliance-context-mapper-test.mjs
+      - .github/workflows/pylon-alliance-mapper-offline-test.yml
+permissions:
+  contents: read
+jobs:
+  offline-mapper-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout isolated branch
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run mock-only PYLON mapper tests
+        run: node integration/pylon-alliance-context-mapper-test.mjs
