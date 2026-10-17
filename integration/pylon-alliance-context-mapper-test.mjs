@@ -27,4 +27,11 @@ for (const [rows, opts, status] of [
   assert.deepEqual(result.facts, []);
   assert.deepEqual(result.provenance, []);
 }
+// Additional alliances require an explicit, reviewed scope; no wildcard is allowed.
+const extra = { ...row, alliance: 'ABC' };
+assert.equal(map([extra], { asOf }).data_status, 'not-connected');
+assert.equal(map([extra], { asOf, approvedAlliances: ['NXS', 'ABC'] }).data_status, 'verified');
+assert.equal(map([extra], { asOf, approvedAlliances: ['NXS', 'ABC', 'ABC'] }).data_status, 'not-connected');
+assert.equal(map([extra], { asOf, approvedAlliances: ['*'] }).data_status, 'not-connected');
+assert.equal(map([extra], { asOf, approvedAlliances: [] }).data_status, 'not-connected');
 console.log('PYLON alliance mapper offline tests passed (mock-only; no live auth/RLS validation).');
