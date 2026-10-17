@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>PHALANX · Passwort wiederherstellen · isolierte Vorschau</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,sans-serif}body{margin:0;background:#101216;color:#f1e8d8;min-height:100vh;display:grid;place-items:center;padding:20px;box-sizing:border-box}main{width:min(100%,440px);border:1px solid #8b6c3a;border-radius:16px;padding:24px;background:#1b1d22}h1{color:#e6bc6b;font-size:1.5rem}label{display:block;margin:16px 0 6px}input{width:100%;box-sizing:border-box;padding:12px;background:#101216;color:white;border:1px solid #9a917e;border-radius:8px;font:inherit}button{font:inherit;padding:11px 14px;border:1px solid #b18d4c;border-radius:8px;background:#392d1e;color:#f7e7c6;cursor:pointer}button:disabled{opacity:.5;cursor:default}.field{display:flex;gap:8px}.field input{flex:1;min-width:0}.field button{white-space:nowrap}#status{min-height:2.8em}button:focus-visible,input:focus-visible{outline:3px solid #e6bc6b;outline-offset:2px}[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main>
+<h1>Passwort wiederherstellen</h1>
+<p>Isolierte UI-Vorschau. Keine echte Anmeldung und keine Verbindung zu Supabase.</p>
+<p id="status" role="status" aria-live="polite"></p>
+<form id="recovery" hidden>
+<label for="password">Neues Passwort</label>
+<div class="field"><input id="password" type="password" minlength="12" autocomplete="new-password" required><button type="button" data-toggle="password" aria-label="Passwort anzeigen">Anzeigen</button></div>
+<label for="confirmation">Passwort wiederholen</label>
+<div class="field"><input id="confirmation" type="password" minlength="12" autocomplete="new-password" required><button type="button" data-toggle="confirmation" aria-label="Bestätigung anzeigen">Anzeigen</button></div>
+<p><button id="submit" type="submit">Passwort ändern (Demo)</button></p>
+</form>
+<button id="simulate" type="button">Recovery-Ereignis simulieren</button>
+<button id="signout" type="button" hidden>Abmelden (Demo)</button>
+</main>
+<script type="module">
+import { createRecoveryController } from "./recovery-controller.js";
+const status=document.querySelector("#status"), form=document.querySelector("#recovery");
+const submit=document.querySelector("#submit"), simulate=document.querySelector("#simulate"), signout=document.querySelector("#signout");
+let callback=()=>{};
+const auth={
+ onAuthStateChange(fn){callback=fn;return {data:{subscription:{unsubscribe(){callback=()=>{};}}}};},
+ async updateUser(){return {error:null};},
+ async signOut(){return {error:null};}
+};
+const controller=createRecoveryController({auth,view:{render({state,message}){
+ status.textContent=message||({ready:"Wiederherstellungslink bestätigt. Bitte neues Passwort festlegen.",saving:"Passwort wird geändert…",complete:"Passwort geändert (nur Demo).",verifying:"Link wird geprüft…",invalid:"Kein Wiederherstellungslink.", "signed-out":"Abgemeldet (nur Demo)."}[state]||"");
+ form.hidden=state!=="ready";submit.disabled=state==="saving";
+ signout.hidden=state!=="complete";simulate.hidden=state==="complete"||state==="signed-out";
+}}});
+await controller.initialize({hasRecoveryLink:true});
+simulate.addEventListener("click",()=>callback("PASSWORD_RECOVERY"));
+form.addEventListener("submit",async e=>{e.preventDefault();await controller.submit(document.querySelector("#password").value,document.querySelector("#confirmation").value);});
+signout.addEventListener("click",()=>controller.signOut());
+document.querySelectorAll("[data-toggle]").forEach(button=>button.addEventListener("click",()=>{
+ const input=document.getElementById(button.dataset.toggle);
+ const visible=input.type==="text";input.type=visible?"password":"text";
+ button.textContent=visible?"Anzeigen":"Verbergen";
+ button.setAttribute("aria-label",visible?"Passwort anzeigen":"Passwort verbergen");
+}));
+</script>
+</body>
+</html>
