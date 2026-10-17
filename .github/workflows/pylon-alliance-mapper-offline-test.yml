@@ -6,6 +6,8 @@ on:
       - feature/pylon-ix-design-spec-20261017
     paths:
       - integration/pylon-alliance-preview.mjs
+      - integration/pylon-alliance-ui-adapter.mjs
+      - integration/pylon-alliance-isolated-preview.html
       - integration/pylon-alliance-preview-test.mjs
       - integration/pylon-context-presenter.mjs
       - integration/pylon-alliance-context-mapper.mjs
@@ -39,6 +41,10 @@ jobs:
           for file in integration/pylon-alliance-*.mjs integration/alliance-*-reader*.mjs; do
             node --check "$file"
           done
+      - name: Check isolated PYLON UI entrypoint and adapter
+        run: |
+          node --check integration/pylon-alliance-ui-adapter.mjs
+          node --input-type=module -e "import { readFileSync, existsSync } from 'node:fs'; const html=readFileSync('integration/pylon-alliance-isolated-preview.html','utf8'); if (!html.includes(\"import { renderAlliancePreview } from './pylon-alliance-ui-adapter.mjs'\") || !existsSync('integration/pylon-alliance-ui-adapter.mjs')) process.exit(1);"
       - name: Run mock-only PYLON mapper tests
         run: |
           node integration/pylon-alliance-preview-test.mjs
