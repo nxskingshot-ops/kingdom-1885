@@ -7,6 +7,7 @@ on:
       - 'preview/PHALANX_RC5_ALPHA_DERIVED_20261017.html'
       - 'tests/alpha/test_rc5_derived.py'
       - '.github/workflows/alpha-rc5-contract.yml'
+      - 'preview/phalanx-alpha-android-integration-20261017.html'
   workflow_dispatch:
 permissions:
   contents: read
@@ -19,3 +20,32 @@ jobs:
         run: test -f preview/PHALANX_RC5_ALPHA_DERIVED_20261017.html
       - name: Verify exact bytes and all 39 menu routes
         run: python3 tests/alpha/test_rc5_derived.py preview/PHALANX_RC5_ALPHA_DERIVED_20261017.html
+      - name: Verify all seven target modules and test harness
+        shell: bash
+        run: |
+          test -f preview/phalanx-alpha-android-integration-20261017.html
+          for file in \
+            nexus-phalanx-command-center-alpha28-local-pair-test-2026-10-13.html \
+            kvk-prep-five-contrast-v13.html \
+            nexus-phalanx-battle-readiness-verified-status-test-2026-10-12.html \
+            phalanx-ranking-integration-rc-20261015.html \
+            outpost-report-v11.html \
+            kingdom-hub-trends-v8.html \
+            hero-intelligence-evidence-advisor-v15-2026-10-12.html; do
+            test -s "preview/$file" || exit 1
+          done
+      - name: Package isolated alpha for download (not production)
+        uses: actions/upload-artifact@v4
+        with:
+          name: phalanx-rc5-isolated-alpha
+          path: |
+            preview/PHALANX_RC5_ALPHA_DERIVED_20261017.html
+            preview/phalanx-alpha-android-integration-20261017.html
+            preview/nexus-phalanx-command-center-alpha28-local-pair-test-2026-10-13.html
+            preview/kvk-prep-five-contrast-v13.html
+            preview/nexus-phalanx-battle-readiness-verified-status-test-2026-10-12.html
+            preview/phalanx-ranking-integration-rc-20261015.html
+            preview/outpost-report-v11.html
+            preview/kingdom-hub-trends-v8.html
+            preview/hero-intelligence-evidence-advisor-v15-2026-10-12.html
+          retention-days: 7
