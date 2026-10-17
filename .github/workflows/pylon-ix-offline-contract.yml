@@ -1,0 +1,23 @@
+name: PYLON IX isolated offline contract
+on:
+  push:
+    branches:
+      - test/pylon-ix-offline-contract-20261017
+  pull_request:
+    paths:
+      - 'experiments/pylon-ix/**'
+      - '.github/workflows/pylon-ix-offline-contract.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run PYLON IX offline contract tests
+        run: node --experimental-default-type=module --test experiments/pylon-ix/pylon-core.test.mjs
