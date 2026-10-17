@@ -36,7 +36,9 @@ jobs:
         run: |
           set -eu
           mkdir -p deploy/phalanx-kvk-test/preview deploy/phalanx-kvk-test/integration
-          cp preview/outpost-editor.html preview/outpost-editor.js deploy/phalanx-kvk-test/preview/
+          cp preview/outpost-editor.html preview/outpost-editor.js preview/password-recovery.html preview/password-recovery.js deploy/phalanx-kvk-test/preview/
+          test -s deploy/phalanx-kvk-test/preview/password-recovery.html
+          test -s deploy/phalanx-kvk-test/preview/password-recovery.js
           cp integration/pylon-alliance-*.mjs integration/pylon-context-presenter.mjs integration/alliance-overview-reader-test.mjs deploy/phalanx-kvk-test/integration/
           test -s deploy/phalanx-kvk-test/preview/outpost-editor.html
           test -s deploy/phalanx-kvk-test/integration/pylon-alliance-host.mjs
