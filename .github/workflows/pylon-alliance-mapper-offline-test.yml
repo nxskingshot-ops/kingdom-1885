@@ -11,6 +11,8 @@ on:
       - integration/pylon-alliance-readonly-bridge-test.mjs
       - integration/pylon-alliance-rls-role-check.mjs
       - integration/pylon-alliance-rls-role-check-test.mjs
+      - integration/pylon-alliance-rls-verdict.mjs
+      - integration/pylon-alliance-rls-verdict-test.mjs
       - integration/alliance-overview-reader-test.mjs
       - .github/workflows/pylon-alliance-mapper-offline-test.yml
 permissions:
@@ -31,3 +33,4 @@ jobs:
           node integration/pylon-alliance-context-mapper-test.mjs
           node integration/pylon-alliance-readonly-bridge-test.mjs
           node integration/pylon-alliance-rls-role-check-test.mjs
+          node integration/pylon-alliance-rls-verdict-test.mjs
