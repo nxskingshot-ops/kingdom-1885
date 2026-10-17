@@ -126,6 +126,20 @@ $('editForm').onsubmit=async e=>{
  await refresh();$('status').textContent='✓ Saved. Public map will refresh shortly.';
  }catch(error){$('status').textContent='Save failed: '+error.message;$('save').disabled=false;}
 };
+$('signOut').onclick=async()=>{
+ const button=$('signOut');button.disabled=true;
+ try{
+  const {error}=await db.auth.signOut();
+  if(error)throw error;
+  recoveryMode=false;
+  $('recoveryPanel').hidden=true;
+  $('authForm').hidden=false;
+  $('password').value='';
+  locked('Abgemeldet. Du kannst dich jetzt erneut anmelden oder dein Passwort zurücksetzen.');
+ }catch(error){
+  $('status').textContent='Abmelden fehlgeschlagen: '+error.message;
+ }finally{button.disabled=false;}
+};
 $('search').oninput=render;$('resetSelectionBtn').onclick=resetSelection;$('refresh').onclick=verify;$('reload').onclick=refresh;
 if(recoveryOnArrival)showRecovery();
 else verify();
