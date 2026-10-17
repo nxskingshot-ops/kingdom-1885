@@ -22,6 +22,13 @@ Date: 2026-10-17. Scope: read-only schema/aggregate inspection; no member/player
 - Top40 offline mock test file and CI job entry added; CI success is NOT yet independently verified.
 - RLS real two-role signed-in test remains BLOCKED until dedicated sessions and known positive fixtures exist.
 
+## Authorization boundary: explicit allowlist is NOT an access grant
+- The approvedAlliances parameter in isolated readers/mappers is a caller-supplied validation scope, not an authenticated or trusted authorization source.
+- Never derive live authorization from client-side input, query parameters, PYLON IX instructions, or a user-editable configuration.
+- Supabase RLS and server-side verified membership/role policy must independently enforce every requested row and field.
+- Treat the four-alliance default as backward compatibility, not a security control.
+- The read-only SQL editor and aggregate inventories cannot prove actual signed-in RLS behavior.
+
 ## Release gates
 1. Define trusted kingdom-wide alliance data ingestion and snapshot freshness/coverage semantics; do not invent missing alliances or statistics.
 2. Approve exact player-level Top40 fields separately from aggregate access.
