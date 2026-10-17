@@ -41,3 +41,11 @@ test("sign-out only after completed password update",async()=>{
   assert.equal(await t.controller.signOut(),true);
   assert.deepEqual(t.counts(),{updates:1,signs:1});
 });
+
+test("recovery event without recovery URL never unlocks the form",async()=>{
+  const t=setup();await t.controller.initialize({hasRecoveryLink:false});
+  t.emit("PASSWORD_RECOVERY");
+  assert.equal(await t.controller.submit("very-long-password","very-long-password"),false);
+  assert.equal(t.states.at(-1).state,"invalid");
+  assert.equal(t.counts().updates,0);
+});
