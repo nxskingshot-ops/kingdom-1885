@@ -42,6 +42,7 @@ async function verify(){
  if(membershipError||!member?.active||!['r4','admin'].includes(member.role)||(member.expires_at&&Date.parse(member.expires_at)<=Date.now())){locked('An active R4/admin account is required.');return;}
  authorized=true;$('login').hidden=true;$('board').hidden=false;await refresh();
  const pylon=$('pylon-ix-panel');if(pylon)pylon.hidden=false;
+ void mountPylon();
  }catch(error){locked('Unable to confirm editor access: '+error.message)}
 }
 $('authForm').onsubmit=async e=>{
@@ -67,18 +68,20 @@ $('editForm').onsubmit=async e=>{
 $('search').oninput=render;$('resetSelectionBtn').onclick=resetSelection;$('refresh').onclick=verify;$('reload').onclick=refresh;
 verify();
 
-// PYLON IX integration in the existing authenticated development view.
-// Live alliance reads stay disabled until separate RLS and field approval.
-const pylonTarget=$('pylon-alliance-output');
-if(pylonTarget){
-  import('../integration/pylon-alliance-host.mjs').then(({mountPylonAllianceHost})=>{
-    if(!authorized)return;
-    pylonCleanup=mountPylonAllianceHost({
-      getClient:()=>authorized?db:null,
-      allowLiveRead:false,
-      target:pylonTarget,
-      button:$('pylon-alliance-refresh'),
-      info:$('pylon-alliance-info')
-    });
-  }).catch(()=>{$('pylon-alliance-info').textContent='PYLON-Modul nicht verfügbar.';});
+// PYLON IX loads only after PHALANX editor authorization succeeds.
+async function mountPylon(){
+ if(!authorized||pylonCleanup)return;
+ try{
+  const {mountPylonAllianceHost}=await import('../integration/pylon-alliance-host.mjs');
+  if(!authorized||pylonCleanup)return;
+  pylonCleanup=mountPylonAllianceHost({
+   getClient:()=>authorized?db:null,
+   allowLiveRead:false,
+   target:$('pylon-alliance-output'),
+   button:$('pylon-alliance-refresh'),
+   info:$('pylon-alliance-info')
+  });
+ }catch{
+  if(authorized)$('pylon-alliance-info').textContent='PYLON-Modul nicht verfügbar.';
+ }
 }
