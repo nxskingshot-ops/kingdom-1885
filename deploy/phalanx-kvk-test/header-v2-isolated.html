@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PHALANX V2 – Isolierter Header-Test</title>
+<link rel="stylesheet" href="../../src/phalanx-unified-header-v2-isolated.css">
+<style>
+  body{margin:0;background:#03111b;color:#e8c477;font:16px system-ui}
+  .controls{padding:14px;display:flex;gap:8px;flex-wrap:wrap}
+  .controls button{min-height:44px;padding:12px;color:#f4c773;background:#142635;border:1px solid #b68b42;border-radius:8px;cursor:pointer}
+  .controls button[aria-pressed="true"]{outline:2px solid #f4c773;outline-offset:2px}
+  #result{display:block;padding:12px;white-space:pre-wrap}
+  .notes{padding:0 14px 14px;font-size:12px;color:#cfbb91}
+</style>
+</head>
+<body>
+<div class="controls" role="group" aria-label="Header-Modus">
+  <button type="button" data-mode="home" aria-pressed="true">HOME</button>
+  <button type="button" data-mode="module" aria-pressed="false">MODUL</button>
+  <button type="button" data-mode="detail" aria-pressed="false">DETAIL</button>
+</div>
+<main id="header"></main>
+<output id="result" role="status" aria-live="polite"></output>
+<p class="notes">Isolierter Komponententest – keine echte App-Navigation, keine Produktionsfreigabe. Bild-Crops können grafisch eingebettete Bedienelemente enthalten.</p>
+<script type="module">
+import {mountPhalanxHeaderV2} from '../../src/phalanx-unified-header-v2-isolated.js';
+const result=document.getElementById('result');
+const expectedImageSize={width:506,height:217};
+const host=document.getElementById('header');
+const buttons=[...document.querySelectorAll('[data-mode]')];
+const artwork={
+  home:'../../assets/header-v2/header-home.png',
+  module:'../../assets/header-v2/header-module.png',
+  detail:'../../assets/header-v2/header-detail.png'
+};
+let renderSequence=0;
+let activeDestination='home';
+function render(mode){
+  const sequence=++renderSequence;
+  buttons.forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.mode===mode)));
+  result.textContent='Lade '+mode.toUpperCase()+' …';
+  try{
+    mountPhalanxHeaderV2(host,{
+      mode,
+      activeDestination,
+      title:mode==='module'?'WAR ROOM':'HELDENRECHNER',
+      artwork,
+      onNavigate:(destination)=>{
+        activeDestination=destination;
+        render('home');
+        result.textContent='HOME Navigation: '+destination+' ausgewählt (Demo, kein echter Routenwechsel)';
+      },
+      onBack:()=>render('home'),
+      onMenu:()=>{result.textContent='Menü-Callback aktiviert (Demo, kein echtes Menü)';}
+    });
+    const img=host.querySelector('img');
+    if(!img)throw new Error('Bild-Element fehlt');
+    const loaded=()=>{
+      if(sequence!==renderSequence)return;
+      result.textContent=(img.naturalWidth===expectedImageSize.width && img.naturalHeight===expectedImageSize.height ? 'PASS: ' : 'BLOCKIERT: falsche Bildabmessungen – ')+mode.toUpperCase()+' ('+img.naturalWidth+' × '+img.naturalHeight+')';
+    };
+    const failed=()=>{
+      if(sequence!==renderSequence)return;
+      result.textContent='BLOCKIERT: genehmigtes Bildasset fehlt oder ist ungültig: '+img.src;
+    };
+    img.addEventListener('load',loaded,{once:true});
+    img.addEventListener('error',failed,{once:true});
+    // Handle cached images that completed before listeners were attached.
+    if(img.complete){if(img.naturalWidth>0)loaded();else failed();}
+  }catch(error){result.textContent='Fehler: '+error.message;}
+}
+buttons.forEach(button=>button.addEventListener('click',()=>render(button.dataset.mode)));
+render('home');
+</script>
+</body>
+</html>

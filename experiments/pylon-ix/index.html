@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0d1119"><title>PYLON IX · Isolated Preview</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,sans-serif;background:#0d1119;color:#eee2cb}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% 0,#3d3025 0,#141b27 36%,#0d1119 75%);min-height:100vh}.shell{max-width:470px;margin:auto;padding:24px 18px 48px}.eyebrow{font-size:11px;letter-spacing:.22em;color:#bca175;text-align:center}.heading{text-align:center;font-family:Georgia,serif;color:#f3d59d;letter-spacing:.12em;font-size:32px;margin:10px 0}.sub{text-align:center;color:#aab2c1;font-size:12px}.rule{border:0;border-top:1px solid #75603f;margin:24px 0}.panel{background:linear-gradient(145deg,#27303d,#141a24);border:1px solid #77603c;border-radius:16px;padding:20px;margin:14px 0;box-shadow:0 10px 25px #0006}.tile{width:100%;cursor:pointer;text-align:left;color:#f3d59d;font:700 23px Georgia,serif}.desc{color:#c3c6cb;font:13px system-ui;margin-top:7px}.tag{color:#d9b879;font-size:11px;letter-spacing:.15em}.actions{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px}button{background:#252f3d;border:1px solid #8c744c;color:#e8d5b3;padding:13px 10px;border-radius:9px;cursor:pointer}button:focus-visible{outline:3px solid #d7b16d}button:hover{background:#384354}.output{white-space:pre-wrap;min-height:100px;color:#e6e1d8;line-height:1.5}label{display:block;font-size:12px;color:#c4c8d0;margin:12px 0 5px}input,select{width:100%;background:#111824;color:#eee2cb;border:1px solid #786543;border-radius:9px;padding:12px;font:inherit}.notice{font-size:12px;color:#b8c0cc;line-height:1.5}.hidden{display:none}
+</style></head><body><main class="shell">
+<p class="eyebrow">NEXUS PHALANX · ISOLATED EXPERIMENT</p><h1 class="heading">PYLON IX</h1><p class="sub">THE INTELLIGENCE OF NEXUS PHALANX</p>
+<section class="panel"><span class="tag">HOME · CONCEPT TILE</span><button class="tile" id="open">⚔ PYLON IX <span aria-hidden="true">›</span></button><div class="desc">Deine strategische Intelligenz – überall in PHALANX.</div></section>
+<section class="panel hidden" id="command"><span class="tag">PYLON IX · CORE</span><label for="language">Language / Sprache / Langue</label><select id="language"><option value="en">English</option><option value="de" selected>Deutsch</option><option value="fr">Français</option></select>
+<div class="actions"><button data-query="hero skills">Helden</button><button data-query="kvk opponent">KvK</button><button data-query="account progress">WAR ROOM</button><button data-query="alliance comparison">Allianz</button></div>
+<label for="question">PYLON IX</label><input id="question" placeholder="Helden, KvK, Account, Allianz…" maxlength="300"><button id="submit" style="width:100%;margin-top:10px">PYLON IX ▶</button>
+<hr class="rule"><div class="output" id="output" aria-live="polite"></div><p class="notice">Offline-Regelprototyp · keine generative KI · keine Übertragung oder Speicherung persönlicher Daten · keine Live-Spielwerte.</p></section>
+<p class="notice">Design-Experiment: keine Übernahme in den eingefrorenen HOME-Screen. Keine Produktionsänderung.</p>
+</main><script type="module">
+import {askPylon} from "./pylon-core.js";
+const command=document.querySelector("#command"), output=document.querySelector("#output"), question=document.querySelector("#question"), language=document.querySelector("#language");
+function answer(value){const result=askPylon(value,{language:language.value});output.textContent=result.text+(result.module?"\n\nModul: "+result.module:"");}
+document.querySelector("#open").addEventListener("click",()=>{command.classList.toggle("hidden");if(!command.classList.contains("hidden"))answer("");});
+document.querySelector("#submit").addEventListener("click",()=>answer(question.value));
+question.addEventListener("keydown",e=>{if(e.key==="Enter")answer(question.value);});
+document.querySelectorAll("[data-query]").forEach(button=>button.addEventListener("click",()=>{question.value=button.dataset.query;answer(question.value);}));
+language.addEventListener("change",()=>answer(question.value));
+</script></body></html>

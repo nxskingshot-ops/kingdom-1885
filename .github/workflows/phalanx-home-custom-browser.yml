@@ -1,0 +1,41 @@
+name: PHALANX HOME-CUSTOM-001 browser test
+on:
+  push:
+    branches:
+      - fix/battle-readiness-navigation-isolated-20261015
+    paths:
+      - 'deploy/phalanx-kvk-test/home-custom-001-isolated.html'
+      - 'deploy/phalanx-kvk-test/home-command-center-integration-isolated.html'
+      - 'scripts/test_home_custom_001_browser.py'
+      - '.github/workflows/phalanx-home-custom-browser.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Chromium
+        run: |
+          python -m pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: Stage original HOME assets for browser integration
+        run: |
+          cp icon-192.png deploy/phalanx-kvk-test/icon-192.png
+          cp assets/nexus-banner-1885.png deploy/phalanx-kvk-test/assets/nexus-banner-1885.png
+          cp data/kvk-opponent-intelligence-current.json deploy/phalanx-kvk-test/data/kvk-opponent-intelligence-current.json
+      - name: Test customizable home in Chromium
+        run: python scripts/test_home_custom_001_browser.py
+      - name: Upload mobile visual evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phalanx-home-custom-001-mobile
+          path: test-artifacts/home-custom-001/*.png
+          if-no-files-found: warn
+          retention-days: 14

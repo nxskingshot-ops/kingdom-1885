@@ -1,0 +1,176 @@
+{
+  "schema_version": "1.0",
+  "name": "NEXUS PHALANX — Binding Branding Registry",
+  "created_utc": "2026-10-16",
+  "scope": "Reference governance; no change to frozen UI or production",
+  "policy": {
+    "priority": [
+      "User-approved exact visual FREEZE for affected surface",
+      "Verified original image or file with traceable source",
+      "Approved brand poster as visual direction",
+      "Unverified reference (research only)"
+    ],
+    "rules": [
+      "Do not treat similar artwork as interchangeable official asset.",
+      "Do not replace a FREEZE without explicit user approval.",
+      "Never claim a font is an exact logo font without proof.",
+      "If exact original is absent from repo, record its library/source locator and status; do not invent path.",
+      "New designs must document parent reference, scope and approval status.",
+      "Keep visual references distinct from Kingshot gameplay/account data.",
+      "Every discovered candidate must be reviewed visually against the exact approved reference before it can be promoted."
+    ]
+  },
+  "assets": [
+    {
+      "id": "phalanx-master-poster",
+      "name": "NEXUS PHALANX cinematic master poster / PHALANX wordmark",
+      "source": "ChatGPT Library",
+      "source_file": "Goldener Phalanx über der Festung.png",
+      "source_file_id": "file_000000004c8482108ecdd6d04d60f45b",
+      "type": "visual typography reference",
+      "status": "LOCATED_VISUALLY_INSPECTED",
+      "features": [
+        "wide-set sharp Roman monumental capitals",
+        "beveled metallic gold and bright highlights",
+        "dark black-gold cinematic background",
+        "golden helmet and NXS flags"
+      ],
+      "note": "Exact font family not verified; use as visual reference, not as a claim of matching typeface."
+    },
+    {
+      "id": "phalanx-war-banner-variant",
+      "name": "Gothischer Phalanx-Kriegsbanner",
+      "source": "ChatGPT Library",
+      "source_file": "Gothischer Phalanx-Kriegsbanner.png",
+      "source_file_id": "file_000000000e0c82108032c51a4edaa7d6",
+      "status": "LOCATED_VISUALLY_INSPECTED",
+      "type": "related poster reference; distinct image, not automatic master"
+    },
+    {
+      "id": "player-crest-red-helmet",
+      "name": "Silver helmet, glowing red eyes, golden laurel and crossed swords",
+      "source": "User-supplied original in current conversation, uploaded to isolated branch",
+      "repository_path": "deploy/phalanx-kvk-test/assets/phalanx-red-helmet.png",
+      "github_blob_sha": "8553bab2e08c471ef7d9a34599876118b26b4d67",
+      "status": "VERIFIED_FILE_AND_USER_REFERENCE",
+      "scope": "isolated Player Intelligence commander tile",
+      "note": "Do not substitute for NXS green crest."
+    },
+    {
+      "id": "nxs-crest-original",
+      "source": "preview/kingdom-hub-branded-v2.html",
+      "repository_path": "preview/kingdom-hub-branded-v2.html",
+      "status": "VERIFIED_EMBEDDED_HISTORICAL_HEADER_REFERENCE",
+      "note": "Embedded WebP; separate from red helmet. See docs/assets/ALLIANCE_EMBLEMS_REFERENCE.md."
+    },
+    {
+      "id": "home-freeze",
+      "source": "ChatGPT Library",
+      "source_file": "NEXUS_PHALANX_HOME_FROZEN_2026-10-11.html",
+      "sha256": "f8e8a4c4a61cdaf89b9b6de8a8c8c906c0cace084e9b54ae6ac5ed4b90fa8031",
+      "status": "FROZEN",
+      "scope": "HOME / Command Center"
+    },
+    {
+      "id": "kvk-intelligence-freeze",
+      "source": "docs/KVK_INTELLIGENCE_LAYOUT_FREEZE_2026-10-03.md",
+      "status": "FROZEN",
+      "scope": "KvK Intelligence"
+    },
+    {
+      "id": "alliance-emblems",
+      "source": "docs/assets/ALLIANCE_EMBLEMS_REFERENCE.md",
+      "status": "PARTIAL_VERIFICATION",
+      "scope": "NXS/FRA/OoO/MYM",
+      "note": "Do not promote unverified FRA/OoO/MYM icons to official originals."
+    },
+    {
+      "id": "queen-art-candidate-084c8d",
+      "name": "Nexus Phalanx: Königin im goldenen Reich.png",
+      "source": "ChatGPT Library",
+      "source_file": "Nexus Phalanx: Königin im goldenen Reich.png",
+      "source_file_id": "file_00000000263c8210b7d6cf9ecb084c8d",
+      "type": "discovered visual candidate",
+      "status": "VISUALLY_INSPECTED_APPROVAL_UNCONFIRMED",
+      "scope": "REFERENCE_REVIEW_ONLY",
+      "note": "Visual inspection completed 2026-10-16; approval, master designation and permission to replace any frozen art remain unverified.",
+      "visual_notes": "Red-haired crowned warrior at left, silver/gold helmet with laurel at center, metallic NEXUS PHALANX text, sunset castle. Do not equate depicted character with approved Queen An poster."
+    },
+    {
+      "id": "cinematic-candidate-6d0466",
+      "name": "Goldene Ankunft des Phalanx-Königreichs.png",
+      "source": "ChatGPT Library",
+      "source_file": "Goldene Ankunft des Phalanx-Königreichs.png",
+      "source_file_id": "file_0000000081cc824382ae7985166d0466",
+      "type": "discovered visual candidate",
+      "status": "VISUALLY_INSPECTED_APPROVAL_UNCONFIRMED",
+      "scope": "REFERENCE_REVIEW_ONLY",
+      "note": "Visual inspection completed 2026-10-16; approval, master designation and permission to replace any frozen art remain unverified.",
+      "visual_notes": "Black-gold helmet, starry world, gold PHALANX wordmark and NXS flags; close visual sibling of master poster."
+    },
+    {
+      "id": "banner-candidate-70baed",
+      "name": "Nexus Phalanx: Königreich der Banner.png",
+      "source": "ChatGPT Library",
+      "source_file": "Nexus Phalanx: Königreich der Banner.png",
+      "source_file_id": "file_000000006ccc81f483aad9f77770baed",
+      "type": "discovered visual candidate",
+      "status": "VISUALLY_INSPECTED_APPROVAL_UNCONFIRMED",
+      "scope": "REFERENCE_REVIEW_ONLY",
+      "note": "Visual inspection completed 2026-10-16; approval, master designation and permission to replace any frozen art remain unverified.",
+      "visual_notes": "Blonde crowned woman at left, gold-and-silver NXS helm with crossed swords, large gold NEXUS PHALANX serif title; sunset kingdom."
+    },
+    {
+      "id": "cinematic-candidate-3a3030",
+      "name": "Dunkle Phalanx vor der Sternenzitadelle.png",
+      "source": "ChatGPT Library",
+      "source_file": "Dunkle Phalanx vor der Sternenzitadelle.png",
+      "source_file_id": "file_00000000810881f4aa53235d4c3a3030",
+      "type": "discovered visual candidate",
+      "status": "VISUALLY_INSPECTED_APPROVAL_UNCONFIRMED",
+      "scope": "REFERENCE_REVIEW_ONLY",
+      "note": "Visual inspection completed 2026-10-16; approval, master designation and permission to replace any frozen art remain unverified.",
+      "visual_notes": "Dark gold helmet, cosmic sky, NXS banners and PHALANX wordmark; similar poster series."
+    },
+    {
+      "id": "cinematic-candidate-1d9337",
+      "name": "Nexus Phalanx: Festung unter Sternen.png",
+      "source": "ChatGPT Library",
+      "source_file": "Nexus Phalanx: Festung unter Sternen.png",
+      "source_file_id": "file_00000000697082439211a8ba051d9337",
+      "type": "discovered visual candidate",
+      "status": "VISUALLY_INSPECTED_APPROVAL_UNCONFIRMED",
+      "scope": "REFERENCE_REVIEW_ONLY",
+      "note": "Visual inspection completed 2026-10-16; approval, master designation and permission to replace any frozen art remain unverified.",
+      "visual_notes": "Gold helmet, starry castles and NXS flags; similar poster series."
+    },
+    {
+      "id": "cinematic-candidate-fc81df",
+      "name": "Nexus Phalanx: Königreich im Sonnenlicht.png",
+      "source": "ChatGPT Library",
+      "source_file": "Nexus Phalanx: Königreich im Sonnenlicht.png",
+      "source_file_id": "file_000000002f1481f49a62b53ba6fc81df",
+      "type": "discovered visual candidate",
+      "status": "VISUALLY_INSPECTED_APPROVAL_UNCONFIRMED",
+      "scope": "REFERENCE_REVIEW_ONLY",
+      "note": "Visual inspection completed 2026-10-16; approval, master designation and permission to replace any frozen art remain unverified.",
+      "visual_notes": "Dark-haired crowned woman at left, NXS gold/white helm and gold NEXUS PHALANX title; bright sunset."
+    }
+  ],
+  "pending": [
+    "Find and verify exact original font/letterform construction if a pixel-faithful FaQu wordmark is required.",
+    "Validate new commander tile on Android; no freeze or approval yet.",
+    "Continue non-exhaustive Library image inventory; inspect and hash assets before declaring duplicates."
+  ],
+  "audit": {
+    "updated_utc": "2026-10-16",
+    "candidate_images_added": 6,
+    "verified_master_images": 2,
+    "source_inventory_status": "PARTIAL",
+    "note": "Library semantic search is not an exhaustive inventory. These images were surfaced by an earlier targeted search; unreviewed images must not be used as frozen assets.",
+    "visual_candidates_inspected": 6,
+    "visual_review_date": "2026-10-16",
+    "duplicate_review": "Six related posters share themes but have visibly different compositions; do not mark as binary duplicates without hashes.",
+    "approval_note": "Visual inspection is not user approval."
+  }
+}

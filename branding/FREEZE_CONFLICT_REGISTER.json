@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0",
+  "name": "NEXUS PHALANX — FREEZE conflict decision log",
+  "updated_utc": "2026-10-16",
+  "rule": "No conflicting FREEZE is superseded without explicit user selection. Only affected work is blocked.",
+  "conflicts": [
+    {
+      "id": "FREEZE-001",
+      "status": "RESOLVED_BY_USER",
+      "element": "Global visual shell: header, palette, crest, motto, navigation",
+      "reference_a": {
+        "source": "DESIGN_STANDARD.md + preview/kingdom-hub-branded-v2.html",
+        "scope": "Kingdom #1885 original unified PWA",
+        "difference": "Dark-brown header, parchment/beige-and-gold body, genuine green-and-gold NXS crest, old long motto, CURRENT SECTION header and common tab shell; approved 2026-09-28."
+      },
+      "reference_b": {
+        "source": "docs/nexus-app-2-design-freeze.md + docs/NEXUS-PHALANX-CANONICAL-HOME-FREEZE-2026-10-12.md",
+        "scope": "Nexus App 2.0 / PHALANX HOME and KvK",
+        "difference": "Dark navy/black background, gold framing, cinematic helmet / 1885 centerpiece, short motto, newer navigation grammar; freezes dated October 2026."
+      },
+      "options": [
+        "A: use September original Kingdom #1885 shell for future unified app",
+        "B: use October PHALANX dark-fantasy shell for future unified app",
+        "C: keep original Kingdom #1885 legacy shell and PHALANX app as separate explicitly scoped visual systems"
+      ],
+      "user_decision": "B: use October NEXUS PHALANX dark-fantasy shell for future unified PHALANX design",
+      "decision_date": "2026-10-16",
+      "implementation_status": "NOT_STARTED",
+      "impact": "Blocks choice of global tokens, shared header, shared nav, global crest and motto for new unified components; existing approved surfaces unchanged.",
+      "evidence_level": "Documented specification conflict; exact pixel comparison still pending.",
+      "decision_source": "Explicit user confirmation in ChatGPT conversation",
+      "scope_of_decision": "Governing visual direction for future shared PHALANX design tokens, new components and unapproved modules.",
+      "existing_freeze_policy": "All previously approved FREEZEs remain unchanged and binding in their existing scopes until separately and explicitly approved for modification.",
+      "legacy_policy": "The September legacy Kingdom #1885 shell is not automatically deleted, restyled, or migrated by this decision.",
+      "next_steps": "Extract shared tokens from verified October PHALANX references, inventory deviations, and present any additional FREEZE conflicts to user before affected changes."
+    }
+  ],
+  "record_template": {
+    "id": "FREEZE-001",
+    "status": "OPEN_USER_DECISION_REQUIRED",
+    "element": "",
+    "reference_a": {
+      "source": "",
+      "scope": "",
+      "difference": ""
+    },
+    "reference_b": {
+      "source": "",
+      "scope": "",
+      "difference": ""
+    },
+    "options": [
+      "A: adopt reference A for affected future work",
+      "B: adopt reference B for affected future work",
+      "C: preserve distinct scope-specific versions"
+    ],
+    "user_decision": null,
+    "decision_date": null,
+    "implementation_status": "NOT_STARTED"
+  }
+}

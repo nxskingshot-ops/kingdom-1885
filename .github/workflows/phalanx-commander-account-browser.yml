@@ -1,0 +1,28 @@
+name: PHALANX Commander Account browser test
+on:
+  push:
+    branches:
+      - fix/battle-readiness-navigation-isolated-20261015
+    paths:
+      - 'deploy/phalanx-kvk-test/commander-account-local-isolated.html'
+      - 'deploy/phalanx-kvk-test/team-optimizer-alpha11-isolated.html'
+      - 'scripts/test_commander_account_browser.py'
+      - '.github/workflows/phalanx-commander-account-browser.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Chromium test dependencies
+        run: |
+          python -m pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: Test isolated account in real Chromium
+        run: python scripts/test_commander_account_browser.py

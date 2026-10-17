@@ -32,8 +32,49 @@ if not errors:
         errors.append("Epic V2 test file lacks the expected V2 title")
     if not re.search(r'<a\s+href=["\']\./kvk-prep-v13-epic-v2-test\.html["\']>KvK Prep', epic_v2):
         errors.append("Epic V2 KvK Prep link missing or disabled")
-    if epic_v2.count('data-unlinked="1"') != 37:
-        errors.append("Epic V2 placeholder count changed; check design freeze")
+    if epic_v2.count('data-unlinked="1"') != 31:
+        errors.append("Epic V2 placeholder count changed; check isolated navigation links")
+    if epic_v2.count('href="./outpost-audit-isolated.html"') != 1 or epic_v2.count('href="./team-optimizer-alpha11-isolated.html"') != 1:
+        errors.append("Isolated Outpost Audit or Team Optimizer navigation link missing")
+    alliance_page = base / "alliance-trends-isolated.html"
+    alliance_data = base / "data" / "alliance-trends-2026-10-02.json"
+    if epic_v2.count('href="./kvk-prep-v13-offline-ui-smoke.html"') != 1:
+        errors.append("Epic V2 must link exactly once to the offline KvK UI smoke test")
+    if epic_v2.count('href="./alliance-trends-isolated.html"') != 1:
+        errors.append("Epic V2 must link exactly once to Alliance Trends")
+    if not alliance_page.is_file() or not alliance_data.is_file():
+        errors.append("Alliance Trends historical preview or snapshot missing")
+    else:
+        import json
+        snapshot = json.loads(alliance_data.read_text(encoding="utf-8"))
+        if snapshot.get("status") != "provisional_manual_transcription" or snapshot.get("snapshot_date") != "2026-10-02":
+            errors.append("Alliance Trends snapshot provenance changed")
+        if "NOT LIVE" not in alliance_page.read_text(encoding="utf-8"):
+            errors.append("Alliance Trends preview missing historical-data warning")
+    battle_file = base / "battle-readiness-isolated.html"
+    battle_data_file = base / "kvk-opponent-intelligence-current.json"
+    if not battle_file.is_file() or not battle_file.stat().st_size:
+        errors.append("Battle Readiness isolated view missing")
+    else:
+        battle_html = battle_file.read_text(encoding="utf-8")
+        if 'createClient(' in battle_html or '<script type="module">' in battle_html:
+            errors.append("Battle Readiness isolated view contains an active Supabase client/module")
+        if "./kvk-opponent-intelligence-current.json" not in battle_html:
+            errors.append("Battle Readiness snapshot path is not local to the deployment")
+    if battle_file.is_file():
+        battle_html = battle_file.read_text(encoding="utf-8")
+        if 'id="menuBtn"' in battle_html:
+            errors.append("Battle Readiness must not show a second hamburger menu")
+        if 'class="menu-btn phalanx-back"' not in battle_html or 'href="./epic-navigation-v2-kvk-test.html"' not in battle_html:
+            errors.append("Battle Readiness must provide an Epic V2 return link")
+        if "ARCHIVE / TEST DATA" not in battle_html:
+            errors.append("Historical Battle Readiness snapshot must be clearly marked as archive/test data")
+        if "../icon-192.png" in battle_html or "../assets/" in battle_html:
+            errors.append("Battle Readiness contains unresolved relative image assets")
+    if not battle_data_file.is_file() or not battle_data_file.stat().st_size:
+        errors.append("Battle Readiness local opponent snapshot missing")
+    if epic_v2.count('href="./battle-readiness-isolated.html"') != 1:
+        errors.append("Epic V2 must link to Battle Readiness isolated view exactly once")
     if "./kvk-prep-v13.html" not in nav:
         errors.append("Navigation does not link to the expected KvK module")
     if not re.search(r"<title[^>]*>.*?</title>", nav, re.I | re.S):
@@ -43,10 +84,186 @@ if not errors:
     for name, data in (("index.html", root), ("index-kvk.html", nav), ("kvk-prep-v13.html", kvk), ("epic-navigation-v2-kvk-test.html", epic_v2), ("kvk-prep-v13-epic-v2-test.html", kvk_v2), ("home-freeze-pinned-preview.html", home)):
         if re.search(r"service[_-]?role|sb_secret_", data, re.I):
             errors.append(f"Potential privileged key marker in {name}; manual security review required")
+    # The isolated Cloudflare root must open the frozen Epic V2, not legacy V1.
+    if 'url=./epic-navigation-v2-kvk-test.html' not in root:
+        errors.append("Cloudflare test root must redirect to frozen Epic Navigation V2")
+    if 'href="./epic-navigation-v2-kvk-test.html"' not in root:
+        errors.append("Cloudflare test root fallback link must target Epic Navigation V2")
     if "Deployment-Test erfolgreich" in root:
         print("WARNING: Root index.html is still a placeholder; root routing must be verified before release.")
     if "hcjrdofkdkasznywvcxo.supabase.co" in kvk:
         print("WARNING: KvK test page references the existing Supabase project; auth isolation is NOT verified.")
+    if "hcjrdofkdkasznywvcxo.supabase.co" in kvk_v2:
+        print("WARNING: Epic V2 KvK test page also uses the existing Supabase backend; do not use real credentials before Auth/RLS approval.")
+    for isolated_name in ("battle-readiness-isolated.html", "alliance-trends-isolated.html"):
+        isolated_path = base / isolated_name
+        if isolated_path.is_file():
+            isolated_html = isolated_path.read_text(encoding="utf-8")
+            if re.search(r"supabase\.co|createClient\s*\(|signInWithPassword", isolated_html, re.I):
+                errors.append(f"Isolated local module unexpectedly contains Supabase auth/backend code: {isolated_name}")
+
+# Offline KvK UI smoke copy must never contain a live backend or credential flow.
+offline_file = base / "kvk-prep-v13-offline-ui-smoke.html"
+if not offline_file.is_file():
+    errors.append("Offline KvK UI smoke test missing")
+else:
+    offline_html = offline_file.read_text(encoding="utf-8")
+    for forbidden in ("supabase.co", "createClient(", "signInWithPassword", '<script type="module">'):
+        if forbidden in offline_html:
+            errors.append(f"Offline KvK UI smoke test contains forbidden backend code: {forbidden}")
+    if "OFFLINE UI SMOKE TEST" not in offline_html or 'href="./epic-navigation-v2-kvk-test.html"' not in offline_html:
+        errors.append("Offline KvK UI smoke test missing warning or return route")
+    # This preview must remain completely network-free, including external script/style assets.
+    if re.search(r"""(?:src|href)\s*=\s*["']https?://|\bfetch\s*\(|XMLHttpRequest|WebSocket|EventSource|\bimport\s*\(""", offline_html, re.I):
+        errors.append("Offline KvK UI smoke test contains an external resource or network API")
+    if "ARCHIVED CYCLE · OCT 2026 · OFFLINE PREVIEW" not in offline_html or "No live cycle timing" not in offline_html:
+        errors.append("Offline KvK preview must not present an archived cycle as live")
+    if "Offline preview — data unavailable" not in offline_html or "Offline preview — no roster loaded" not in offline_html:
+        errors.append("Offline KvK preview must replace perpetual loading states with explicit offline placeholders")
+    if "No command brief available in offline mode." not in offline_html or "Offline preview — no source data" not in offline_html:
+        errors.append("Offline KvK KPIs and command brief must explicitly show missing source data")
+    if "Offline preview — no records loaded" not in offline_html or "Offline preview — no trend data" not in offline_html:
+        errors.append("Offline KvK tables and trends must explicitly show that no data is loaded")
+    # Disconnected means no browser-originated telemetry or background requests either.
+    if re.search(r"""navigator\.sendBeacon\s*\(|navigator\.serviceWorker\.register\s*\(|new\s+Image\s*\(|url\s*\(\s*['"]?https?://|<meta[^>]+http-equiv\s*=\s*['"]refresh""", offline_html, re.I):
+        errors.append("Offline KvK preview contains a background request, remote CSS URL, or redirect")
+    if offline_html.count("<script") != offline_html.count("</script>"):
+        errors.append("Offline KvK UI smoke test has unbalanced script elements")
+    if re.search(r"""<form[^>]+id=["']loginForm["']|<input[^>]+type=["']password["']""", offline_html, re.I):
+        errors.append("Offline KvK UI smoke test must not expose a sign-in form")
+
+# Offline smoke copy must be self-contained and must not show a stale cycle as live.
+# Its UI bootstrapping is deliberately static; verify required guards are present.
+if offline_file.is_file():
+    offline_html = offline_file.read_text(encoding="utf-8")
+    if "const now=Date.now()" in offline_html or "const mm0=t(" in offline_html:
+        errors.append("Offline KvK preview still includes obsolete dynamic cycle calculation")
+    if offline_html.count("ARCHIVED CYCLE · OCT 2026 · OFFLINE PREVIEW") != 1:
+        errors.append("Offline KvK cycle archival marker missing or duplicated")
+    if "document.querySelectorAll('.kvk-cycle-step.active')" not in offline_html:
+        errors.append("Offline KvK cycle active step reset missing")
+    if "el.disabled=true" not in offline_html:
+        errors.append("Offline KvK data-dependent controls not disabled")
+    if re.search(r"""<script[^>]+src\s*=|<iframe\b|<link[^>]+href\s*=\s*['"]https?://""", offline_html, re.I):
+        errors.append("Offline KvK preview contains remote scripts, frames or stylesheets")
+
+# PWA entry contract: installed app and browser root must open the same frozen Epic V2.
+manifest_file = base / "crimson-icon-test.webmanifest"
+if not manifest_file.is_file():
+    errors.append("Crimson PWA manifest missing")
+else:
+    import json
+    manifest = json.loads(manifest_file.read_text(encoding="utf-8"))
+    if manifest.get("start_url") != "./epic-navigation-v2-kvk-test.html":
+        errors.append("Crimson PWA installed start_url must target frozen Epic V2")
+    if manifest.get("scope") != "./":
+        errors.append("Crimson PWA scope unexpectedly changed")
+
+# Isolated Crimson icon test: prevent placeholder text from masquerading as PNGs.
+crimson_page = base / "crimson-icon-test.html"
+crimson_manifest = base / "crimson-icon-test.webmanifest"
+if crimson_page.is_file() or crimson_manifest.is_file():
+    if not crimson_page.is_file() or not crimson_manifest.is_file():
+        errors.append("Crimson PWA test page or manifest missing")
+    for icon_name in ("crimson-icon-192.png", "crimson-icon-512.png", "crimson-icon-512-transparent.png"):
+        icon_path = base / "assets" / icon_name
+        if not icon_path.is_file():
+            errors.append(f"Crimson PNG missing: {icon_name}")
+            continue
+        icon_bytes = icon_path.read_bytes()
+        if len(icon_bytes) < 100 or not icon_bytes.startswith(bytes((137, 80, 78, 71, 13, 10, 26, 10))):
+            errors.append(f"Crimson PNG invalid or placeholder: {icon_name} ({len(icon_bytes)} bytes)")
+            continue
+        # PNG IHDR stores dimensions as two unsigned big-endian 32-bit integers.
+        if len(icon_bytes) < 33 or icon_bytes[12:16] != b"IHDR":
+            errors.append(f"Crimson PNG has no valid IHDR: {icon_name}")
+            continue
+        width = int.from_bytes(icon_bytes[16:20], "big")
+        height = int.from_bytes(icon_bytes[20:24], "big")
+        expected = 192 if icon_name == "crimson-icon-192.png" else 512
+        if (width, height) != (expected, expected):
+            errors.append(f"Crimson PNG dimensions wrong: {icon_name} ({width}x{height}, expected {expected}x{expected})")
+
+# Epic V2 module routes: fail fast if a navigation target is absent or loses its return path.
+for module_name, filename in (("KvK Prep", "kvk-prep-v13-epic-v2-test.html"), ("Battle Readiness", "battle-readiness-isolated.html"), ("Rankings", "phalanx-ranking-integration-rc-20261015.html"), ("Hero Intelligence", "hero-intelligence-v15-isolated.html"), ("Player Intelligence", "player-intelligence-isolated.html")):
+    route = './' + filename
+    if epic_v2.count('href="' + route + '"') != 1:
+        errors.append(f"Epic V2 {module_name} must link exactly once to {route}")
+    target = base / filename
+    if not target.is_file():
+        errors.append(f"Epic V2 {module_name} target missing: {filename}")
+    elif 'href="./epic-navigation-v2-kvk-test.html"' not in target.read_text(encoding='utf-8'):
+        errors.append(f"Epic V2 {module_name} target lacks return link: {filename}")
+
+# Prevent an archival opponent snapshot from being published as current/live.
+import json
+snapshot_file = base / "kvk-opponent-intelligence-current.json"
+if not snapshot_file.is_file():
+    errors.append("Opponent snapshot JSON missing")
+else:
+    try:
+        snapshot = json.loads(snapshot_file.read_text(encoding="utf-8"))
+        if snapshot.get("status") != "historical_test_snapshot_not_live":
+            errors.append("Opponent snapshot must explicitly be historical/not live")
+        if not str(snapshot.get("updated_at", "")).startswith("2026-10-04"):
+            errors.append("Opponent snapshot date unexpectedly changed; review before updating")
+    except (ValueError, OSError) as exc:
+        errors.append(f"Opponent snapshot JSON invalid: {exc}")
+
+
+# Release routing audit: inspect all local HTML links in the six connected modules.
+# Anchors, mailto, external HTTPS links and JS-driven actions are out of scope.
+from html.parser import HTMLParser
+class LocalLinks(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.links = []
+    def handle_starttag(self, tag, attrs):
+        if tag.lower() == "a":
+            for key, value in attrs:
+                if key == "href" and value:
+                    self.links.append(value)
+
+for module_file in (
+    "epic-navigation-v2-kvk-test.html",
+    "kvk-prep-v13-epic-v2-test.html",
+    "battle-readiness-isolated.html",
+    "phalanx-ranking-integration-rc-20261015.html",
+    "hero-intelligence-v15-isolated.html",
+    "player-intelligence-isolated.html",
+    "alliance-trends-isolated.html",
+):
+    target = base / module_file
+    if not target.is_file():
+        errors.append(f"Release route missing: {module_file}")
+        continue
+    parser = LocalLinks()
+    parser.feed(target.read_text(encoding="utf-8"))
+    for href in parser.links:
+        # Resolve URI components before treating an href as a local filesystem path.
+        # Keep fragments and queries out of the file-existence check.
+        clean = href.split("#", 1)[0].split("?", 1)[0]
+        # Network and browser-special links are not filesystem routes; reject unsafe schemes.
+        if re.match(r"(?i)^(?:data|vbscript|file|blob):", clean):
+            errors.append(f"Unsafe URI scheme in navigation: {module_file} -> {href}")
+            continue
+        if not clean or clean.startswith(("https://", "http://", "mailto:", "tel:", "javascript:", "/", "#")):
+            continue
+        # Reject protocol-relative, traversal and encoded URL tricks in local navigation.
+        from urllib.parse import unquote, urlsplit
+        decoded = unquote(clean)
+        if decoded != clean and (decoded.startswith(("/", "\\\\")) or ".." in Path(decoded).parts):
+            errors.append(f"Unsafe encoded local HTML link: {module_file} -> {href}")
+            continue
+        if re.search(r"%(?:2f|5c|00)", clean, re.I) or chr(0) in decoded:
+            errors.append(f"Unsafe encoded separator or NUL in local link: {module_file} -> {href}")
+            continue
+        if urlsplit(clean).scheme or clean.startswith("\\\\"):
+            errors.append(f"Unexpected link scheme: {module_file} -> {href}")
+            continue
+        resolved = (target.parent / clean).resolve()
+        if not resolved.is_relative_to(base.resolve()) or not resolved.is_file():
+            errors.append(f"Broken local HTML link: {module_file} -> {href}")
 
 if errors:
     for error in errors:

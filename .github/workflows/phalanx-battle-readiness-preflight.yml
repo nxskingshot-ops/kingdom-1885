@@ -1,0 +1,39 @@
+name: PHALANX Battle Readiness isolated preflight
+
+on:
+  pull_request:
+    branches:
+      - phalanx-cloudflare-test-deploy
+    paths:
+      - 'deploy/phalanx-kvk-test/**'
+      - 'scripts/check_phalanx_test_assets.py'
+      - 'scripts/check_phalanx_access_request_proposal.py'
+      - 'docs/PHALANX-ACCESS-REQUEST-HARDENING-PROPOSAL-20261015.md'
+      - 'preview/kingdom-hub-menu-test.html'
+      - '.github/workflows/phalanx-battle-readiness-preflight.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-test-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR test files
+        uses: actions/checkout@v4
+      - name: Validate isolated test assets
+        run: python3 scripts/check_phalanx_test_assets.py
+      - name: Validate access request proposal against actual frontend
+        run: python3 scripts/check_phalanx_access_request_proposal.py
+      - name: Verify Battle Readiness remains local-only
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('deploy/phalanx-kvk-test/battle-readiness-isolated.html')
+          s = p.read_text(encoding='utf-8')
+          assert 'createClient(' not in s
+          assert '<script type="module">' not in s
+          assert "fetch('./kvk-opponent-intelligence-current.json" in s
+          print('PASS: Battle Readiness isolated navigation and local snapshot')
+          PY

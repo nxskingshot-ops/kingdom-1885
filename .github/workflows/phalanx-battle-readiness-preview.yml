@@ -1,0 +1,87 @@
+name: PHALANX Battle Readiness isolated Cloudflare preview
+
+on:
+  push:
+    branches:
+      - fix/battle-readiness-navigation-isolated-20261015
+    paths:
+      - '.github/workflows/phalanx-battle-readiness-preview.yml'
+      - 'deploy/phalanx-kvk-test/header-v2-app-integration-isolated.html'
+      - 'src/phalanx-unified-header-v2-isolated.js'
+      - 'src/phalanx-unified-header-v2-isolated.css'
+      - 'assets/header-v2/header-*.png'
+      - 'assets/design-freeze/cards/*.webp'
+      - 'deploy/phalanx-kvk-test/assets/design-freeze/home-header.webp'
+      - 'assets/design-freeze/PHALANX_10_FREEZE_Originalkacheln.zip'
+      - 'deploy/phalanx-kvk-test/battle-readiness-isolated.html'
+      - 'deploy/phalanx-kvk-test/epic-navigation-v2-kvk-test.html'
+      - 'deploy/phalanx-kvk-test/phalanx-ranking-integration-rc-20261015.html'
+      - 'deploy/phalanx-kvk-test/hero-intelligence-v15-isolated.html'
+      - 'deploy/phalanx-kvk-test/player-intelligence-isolated.html'
+      - 'deploy/phalanx-kvk-test/design-system-components-isolated.html'
+      - 'deploy/phalanx-kvk-test/commander-branding-comparison-isolated.html'
+      - 'deploy/phalanx-kvk-test/commander-account-local-isolated.html'
+      - 'deploy/phalanx-kvk-test/home-custom-001-isolated.html'
+      - 'deploy/phalanx-kvk-test/home-command-center-integration-isolated.html'
+      - 'deploy/phalanx-kvk-test/home-header-audit-proposal-isolated.html'
+      - 'deploy/phalanx-kvk-test/phalanx-components-isolated.css'
+      - 'deploy/phalanx-kvk-test/outpost-audit-isolated.html'
+      - 'deploy/phalanx-kvk-test/alliance-trends-isolated.html'
+      - 'deploy/phalanx-kvk-test/hero-investment-alpha23-isolated.html'
+      - 'deploy/phalanx-kvk-test/team-optimizer-alpha11-isolated.html'
+      - 'deploy/phalanx-kvk-test/data/alliance-trends-2026-10-02.json'
+      - 'deploy/phalanx-kvk-test/crimson-icon-test.html'
+      - 'deploy/phalanx-kvk-test/crimson-install-test-sw.js'
+      - 'deploy/phalanx-kvk-test/crimson-icon-test.webmanifest'
+      - 'deploy/phalanx-kvk-test/assets/crimson-*.png'
+      - 'scripts/check_phalanx_test_assets.py'
+      - 'scripts/check_phalanx_home_freeze_structure_isolated.py'
+      - 'scripts/check_phalanx_freeze_card_assets_isolated.py'
+      - 'scripts/stage_phalanx_freeze_cards_isolated.py'
+      - 'scripts/audit_phalanx_global_freeze_isolated.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phalanx-battle-readiness-isolated-preview
+  cancel-in-progress: false
+
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout isolated fix branch
+        uses: actions/checkout@v4
+      - name: Validate test assets before preview
+        run: python3 scripts/check_phalanx_test_assets.py
+      - name: Validate frozen HOME structure and global design audit
+        run: |
+          python3 scripts/check_phalanx_home_freeze_structure_isolated.py
+          python3 scripts/audit_phalanx_global_freeze_isolated.py
+          python3 scripts/check_phalanx_freeze_card_assets_isolated.py
+      - name: Stage original HOME assets for isolated preview
+        run: |
+          cp icon-192.png deploy/phalanx-kvk-test/icon-192.png
+          cp assets/nexus-banner-1885.png deploy/phalanx-kvk-test/assets/nexus-banner-1885.png
+          cp data/kvk-opponent-intelligence-current.json deploy/phalanx-kvk-test/data/kvk-opponent-intelligence-current.json
+      - name: Stage isolated Header V2 dependencies inside deploy directory
+        run: |
+          mkdir -p deploy/phalanx-kvk-test/src deploy/phalanx-kvk-test/assets/header-v2
+          cp src/phalanx-unified-header-v2-isolated.js deploy/phalanx-kvk-test/src/
+          cp src/phalanx-unified-header-v2-isolated.css deploy/phalanx-kvk-test/src/
+          cp assets/header-v2/header-home.png assets/header-v2/header-module.png assets/header-v2/header-detail.png deploy/phalanx-kvk-test/assets/header-v2/
+          test -s deploy/phalanx-kvk-test/header-v2-app-integration-isolated.html
+          test -s deploy/phalanx-kvk-test/src/phalanx-unified-header-v2-isolated.js
+          test -s deploy/phalanx-kvk-test/assets/header-v2/header-home.png
+          test -s deploy/phalanx-kvk-test/assets/design-freeze/home-header.webp
+      - name: Stage and verify approved FREEZE card artwork
+        run: |
+          python3 scripts/stage_phalanx_freeze_cards_isolated.py
+      - name: Deploy Cloudflare branch preview (not production alias)
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy deploy/phalanx-kvk-test --project-name=nexus-phalanx-kvk-test --branch=fix-battle-readiness-isolated-20261015

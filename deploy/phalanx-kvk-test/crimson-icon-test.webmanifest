@@ -1,0 +1,30 @@
+{
+  "name": "NEXUS PHALANX — Crimson Navigation Test",
+  "short_name": "PHALANX Crimson",
+  "id": "/crimson-icon-test/",
+  "start_url": "./epic-navigation-v2-kvk-test.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#030b13",
+  "theme_color": "#081625",
+  "icons": [
+    {
+      "src": "./assets/crimson-freeform-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/crimson-freeform-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/crimson-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
