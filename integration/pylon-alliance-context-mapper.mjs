@@ -17,7 +17,7 @@ export function mapAllianceOverviewToPylon(rows, options = {}) {
   const checked = [];
   for (const row of rows) {
     if (!row || row.kingdom !== kingdom || !ALLOWED.has(row.alliance)) return unavailable('not-connected', 'Ungültiger Geltungsbereich');
-    if (typeof row.snapshot_date !== 'string' || !/^\\d{4}-\\d{2}-\\d{2}$/.test(row.snapshot_date)) return unavailable('not-connected', 'Snapshot-Datum fehlt');
+    if (typeof row.snapshot_date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(row.snapshot_date)) return unavailable('not-connected', 'Snapshot-Datum fehlt');
     const snapshot = Date.parse(row.snapshot_date + 'T00:00:00Z');
     if (!Number.isFinite(snapshot) || new Date(snapshot).toISOString().slice(0, 10) !== row.snapshot_date) return unavailable('not-connected', 'Ungültiges Snapshot-Datum');
     const age = now - snapshot;
