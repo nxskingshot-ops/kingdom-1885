@@ -14,7 +14,7 @@ export function createRecoveryController({ auth, view }) {
     try {
       if (typeof auth.initialize === "function") await auth.initialize();
       if (!verified) render("verifying", "Wiederherstellungslink wird geprüft.");
-    } catch { render("invalid", "Wiederherstellung fehlgeschlagen. Bitte einen neuen Link anfordern."); }
+    } catch { if (!verified && !completed) render("invalid", "Wiederherstellung fehlgeschlagen. Bitte einen neuen Link anfordern."); }
   }
   async function submit(password, confirmation) {
     if (disposed || completed || busy || !verified) return false;
