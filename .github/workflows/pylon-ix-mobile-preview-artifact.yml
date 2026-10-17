@@ -8,6 +8,11 @@ on:
       - deploy/phalanx-kvk-test/pylon-ix-standalone-offline.html
       - deploy/phalanx-kvk-test/PYLON_IX_ICON_FREEZE_ORIGINAL-1.png
       - .github/workflows/pylon-ix-mobile-preview-artifact.yml
+      - preview/outpost-editor.html
+      - preview/outpost-editor.js
+      - integration/pylon-alliance-*.mjs
+      - integration/pylon-context-presenter.mjs
+      - integration/alliance-overview-reader-test.mjs
 permissions:
   contents: read
 jobs:
@@ -30,5 +35,20 @@ jobs:
         with:
           name: pylon-ix-mobile-preview
           path: pylon-mobile-preview/
+          if-no-files-found: error
+          retention-days: 7
+      - name: Package existing PHALANX editor with PYLON module
+        run: |
+          set -eu
+          mkdir -p phalanx-editor-preview/preview phalanx-editor-preview/integration
+          cp preview/outpost-editor.html preview/outpost-editor.js phalanx-editor-preview/preview/
+          cp integration/pylon-alliance-*.mjs integration/pylon-context-presenter.mjs integration/alliance-overview-reader-test.mjs phalanx-editor-preview/integration/
+          test -s phalanx-editor-preview/preview/outpost-editor.html
+          test -s phalanx-editor-preview/integration/pylon-alliance-host.mjs
+      - name: Upload integrated development preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: phalanx-editor-pylon-development
+          path: phalanx-editor-preview/
           if-no-files-found: error
           retention-days: 7
