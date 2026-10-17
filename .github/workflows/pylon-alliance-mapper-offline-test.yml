@@ -14,6 +14,7 @@ on:
       - integration/pylon-alliance-rls-verdict.mjs
       - integration/pylon-alliance-rls-verdict-test.mjs
       - integration/alliance-overview-reader-test.mjs
+      - integration/alliance-top40-reader-test.mjs
       - .github/workflows/pylon-alliance-mapper-offline-test.yml
 permissions:
   contents: read
