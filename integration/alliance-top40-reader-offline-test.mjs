@@ -22,4 +22,8 @@ assert.equal(calls.length, beforeRejected);
 await assert.rejects(() => loadAllianceTop40(null, 'NXS'), /Signed-in client required/);
 const anonymous = { ...client, auth: { async getUser() { return { data: { user: null }, error: null }; } } };
 await assert.rejects(() => loadAllianceTop40(anonymous, 'NXS'), /Sign-in required/);
+const rejectedAuth = { ...client, auth: { async getUser() { return { data: { user: null }, error: { message: 'private auth detail' } }; } } };
+await assert.rejects(() => loadAllianceTop40(rejectedAuth, 'NXS'), /Sign-in required/);
+const dbFailure = { ...client, from() { return { select() { return this; }, eq() { return this; }, async order() { return { data: null, error: new Error('Mock database failure') }; } }; } };
+await assert.rejects(() => loadAllianceTop40(dbFailure, 'NXS'), /Mock database failure/);
 console.log('Top40 allowlist mock tests passed; no live authorization tested.');
