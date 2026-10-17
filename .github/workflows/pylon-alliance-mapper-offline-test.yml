@@ -5,6 +5,9 @@ on:
     branches:
       - feature/pylon-ix-design-spec-20261017
     paths:
+      - integration/pylon-alliance-preview.mjs
+      - integration/pylon-alliance-preview-test.mjs
+      - integration/pylon-context-presenter.mjs
       - integration/pylon-alliance-context-mapper.mjs
       - integration/pylon-alliance-context-mapper-test.mjs
       - integration/pylon-alliance-readonly-bridge.mjs
@@ -38,6 +41,7 @@ jobs:
           done
       - name: Run mock-only PYLON mapper tests
         run: |
+          node integration/pylon-alliance-preview-test.mjs
           node integration/pylon-alliance-context-mapper-test.mjs
           node integration/pylon-alliance-readonly-bridge-test.mjs
           node integration/pylon-alliance-rls-role-check-test.mjs
