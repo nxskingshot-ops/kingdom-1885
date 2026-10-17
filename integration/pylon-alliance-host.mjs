@@ -2,7 +2,7 @@ import { renderAlliancePreview } from './pylon-alliance-ui-adapter.mjs';
 
 // Explicit mount for a host-owned, already authenticated PHALANX client.
 // No credential discovery, local storage, global client or automatic connection.
-export function mountPylonAllianceHost({ client = null, getClient = null, target, button, info } = {}) {
+export function mountPylonAllianceHost({ client = null, getClient = null, target, button, info, allowLiveRead = false } = {}) {
   if (!target?.ownerDocument || typeof target.replaceChildren !== 'function' ||
       typeof button?.addEventListener !== 'function' ||
       typeof button?.removeEventListener !== 'function' || !info) {
@@ -23,14 +23,19 @@ export function mountPylonAllianceHost({ client = null, getClient = null, target
     try {
       const detachedTarget = target.ownerDocument.createElement('div');
       // Resolve the host-owned session at refresh time, never cache tokens here.
-      const activeClient = getClient ? await getClient() : client;
+      // Live reads require an explicit host-level opt-in after access review.
+      const activeClient = allowLiveRead === true
+        ? (getClient ? await getClient() : client)
+        : null;
       if (disposed || requestGeneration !== generation) return;
       const result = await renderAlliancePreview(activeClient, detachedTarget, {
         asOf: new Date().toISOString()
       });
       if (disposed || requestGeneration !== generation) return;
       target.replaceChildren(...Array.from(detachedTarget.childNodes));
-      info.textContent = result.status === 'verified'
+      info.textContent = !allowLiveRead
+        ? 'Live-Abfrage gesperrt · Freigabe der Zugriffsrechte ausstehend.'
+        : result.status === 'verified'
         ? 'Technisch geprüfter Snapshot · Live-Berechtigungen separat prüfen.'
         : result.status === 'stale'
           ? 'Daten veraltet · keine Kennzahlen verfügbar.'
