@@ -72,6 +72,7 @@ verify();
 const pylonTarget=$('pylon-alliance-output');
 if(pylonTarget){
   import('../integration/pylon-alliance-host.mjs').then(({mountPylonAllianceHost})=>{
+    if(!authorized)return;
     pylonCleanup=mountPylonAllianceHost({
       getClient:()=>authorized?db:null,
       allowLiveRead:false,
