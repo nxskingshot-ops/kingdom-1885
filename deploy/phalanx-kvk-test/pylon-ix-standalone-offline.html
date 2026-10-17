@@ -64,10 +64,10 @@ const contexts=Object.fromEntries(Object.entries(moduleKeys).map(([key,module])=
  scope:"none",facts:[],warnings:["Kein freigegebener Datenadapter verbunden"],provenance:[]
 }]));
 const responses={
- kvk:"KvK Prep\n\nWofür PYLON später hilft:\n• Warnsignale bei Matchmaking-Risiken erklären\n• Power-Trends und auffällige Gegner einordnen\n• Beobachtungen für das Command Center zusammenfassen\n\nNächster Schritt: Freigegebene KvK-Datenquelle anbinden. Noch keine aktuellen Warnungen verfügbar.",
- alliance:"Alliance Comparison\n\nWofür PYLON später hilft:\n• Mitgliederzahlen und Gesamtpower gegenüberstellen\n• TG4/TG5-Verteilung erläutern\n• Snapshot-Datum und Datenherkunft nennen\n\nDie sichtbaren Beispielwerte sind künstlich. Für echte Zahlen fehlen weiterhin freigegebene Live-Berechtigungen.",
- outpost:"Outpost Intelligence\n\nWofür PYLON später hilft:\n• Outposts nach Quadranten ordnen\n• Allianz-Zuordnungen aus vorhandenen Reports erklären\n• Auffällige Änderungen für die Führung zusammenfassen\n\nNächster Schritt: Vorhandene Karten- und Reportdaten kontrolliert anbinden.",
- account:"Account Intelligence\n\nWofür PYLON später hilft:\n• Entwicklung des eigenen Accounts erläutern\n• Veränderungen zwischen eigenen Snapshots vergleichen\n• Spieler-Vergleiche nur mit passender Berechtigung ermöglichen\n\nStatus: Konzept. Keine persönlichen Daten verbunden."
+ "kvk": "KvK Prep\n\nWofür PYLON später hilft:\n• Warnsignale bei Matchmaking-Risiken erklären\n• Power-Trends und auffällige Gegner einordnen\n• Beobachtungen für das Command Center zusammenfassen\n\nNächster Schritt: Freigegebene KvK-Datenquelle anbinden. Noch keine aktuellen Warnungen verfügbar.",
+ "alliance": "Alliance Comparison\n\nWofür PYLON später hilft:\n• Mitgliederzahlen und Gesamtpower gegenüberstellen\n• TG4/TG5-Verteilung erläutern\n• Snapshot-Datum und Datenherkunft nennen\n\nDie sichtbaren Beispielwerte sind künstlich. Für echte Zahlen fehlen weiterhin freigegebene Live-Berechtigungen.",
+ "outpost": "Outpost Intelligence\n\nWofür PYLON später hilft:\n• Outposts nach Quadranten ordnen\n• Allianz-Zuordnungen aus vorhandenen Reports erklären\n• Auffällige Änderungen für die Führung zusammenfassen\n\nNächster Schritt: Vorhandene Karten- und Reportdaten kontrolliert anbinden.",
+ "account": "Account Intelligence\n\nWofür PYLON später hilft:\n• Entwicklung des eigenen Accounts erläutern\n• Veränderungen zwischen eigenen Snapshots vergleichen\n• Spieler-Vergleiche nur mit passender Berechtigung ermöglichen\n\nStatus: Konzept. Keine persönlichen Daten verbunden."
 };
 const routes=[{key:"kvk",words:["kvk","prep","matchmaking"]},{key:"alliance",words:["allianz","alliance","vergleich"]},{key:"outpost",words:["outpost","außenposten","karte"]},{key:"account",words:["account","spieler","profil"]}];
 function display(key){
