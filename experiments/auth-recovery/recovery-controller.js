@@ -1,13 +1,14 @@
 // PYLON/PHALANX isolated password-recovery controller. No credentials, routing or network configuration.
 export function createRecoveryController({ auth, view }) {
   if (!auth || !view) throw new TypeError("auth and view are required");
-  let verified = false, busy = false, completed = false, disposed = false;
+  let verified = false, busy = false, completed = false, disposed = false, linkExpected = false;
   const render = (state, message = "") => { if (!disposed) view.render({ state, message }); };
   const { data: listener } = auth.onAuthStateChange((event) => {
-    if (disposed || completed) return;
+    if (disposed || completed || !linkExpected) return;
     if (event === "PASSWORD_RECOVERY") { verified = true; render("ready"); }
   });
   async function initialize({ hasRecoveryLink = false } = {}) {
+    linkExpected = hasRecoveryLink;
     if (!hasRecoveryLink) { render("invalid", "Bitte fordere einen neuen Wiederherstellungslink an."); return; }
     if (!verified) render("verifying", "Wiederherstellungslink wird geprüft.");
     try {
