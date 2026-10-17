@@ -91,10 +91,14 @@ button{font:inherit}#menu{border:1px solid #cba15b;border-radius:10px;padding:12
 .phalanx-freeze-original__nav button{appearance:none;background:transparent;border:0;cursor:pointer;min-width:0;color:transparent}
 .phalanx-freeze-original__nav button:focus-visible{outline:3px solid #ffe4a6;outline-offset:-5px;background:#ffd26b25}
 .phalanx-freeze-original__nav button[aria-current="page"]{background:transparent}
+.phalanx-language-trigger{position:absolute;z-index:5;top:1%;right:17%;width:12%;height:10%;border:0;background:transparent;cursor:pointer}.phalanx-language-trigger:focus-visible{outline:3px solid #ffe0a1}.phalanx-language-panel{position:absolute;z-index:6;top:11%;right:2%;padding:8px;border:1px solid #e6bb6d;border-radius:8px;background:#071622f5;box-shadow:0 6px 25px #000b;display:grid;gap:5px}.phalanx-language-panel[hidden]{display:none}.phalanx-language-panel button{background:#182b35;color:#f7dda9;border:1px solid #a98245;border-radius:5px;padding:9px 12px;cursor:pointer}.phalanx-language-panel button[aria-pressed="true"]{background:#6a4d21}
 </style></head>
 <body><div id="app"><div id="header"></div><main id="content"><div id="menu" hidden aria-label="Module menu"></div><section id="view"></section></main></div>
 <script type="module">
 import {mountPhalanxHeaderV2} from './src/phalanx-unified-header-v2-isolated.js';
+import {resolveLanguage,translate} from './src/phalanx-i18n-isolated.js';
+let language='en';try{language=resolveLanguage(localStorage.getItem('phalanx-language'));}catch(e){}
+const t=key=>translate(language,key);
 const artwork={home:'./assets/header-v2/header-home.png',module:'./assets/header-v2/header-module.png',detail:'./assets/header-v2/header-detail.png'};
 const approvedCardArtwork={
   "kvk-vorbereitung": "./assets/design-freeze/cards/kvk-vorbereitung.webp",
@@ -123,6 +127,7 @@ function navigate(next){history.push({...state});state=next;render();}
 function back(){state=history.pop()||{mode:'home',section:'home',detail:null};render();}
 function el(tag,text,cls){const n=document.createElement(tag);if(text!=null)n.textContent=text;if(cls)n.className=cls;return n;}
 function render(){
+ document.documentElement.lang=language;
  menu.hidden=true;menu.replaceChildren();view.replaceChildren();
  const title=state.mode==='home'?'':state.mode==='module'?destinations[state.section]?.title||'PHALANX':state.detail?.title||'DETAIL';
  mountPhalanxHeaderV2(header,{mode:state.mode,title,artwork,activeDestination:state.section,
@@ -137,14 +142,18 @@ function render(){
      if(state.mode!=='home')return;
      const freeze=document.createElement('div');freeze.className='phalanx-freeze-original';
      const nav=document.createElement('nav');nav.className='phalanx-freeze-original__nav';
-     nav.setAttribute('aria-label','PHALANX main navigation');
+     nav.setAttribute('aria-label','PHALANX navigation');
      for(const [label,section] of [['HOME','home'],['WAR','war'],['ALLIANCE','alliance'],['TOOLS','tools'],['GUIDES','guides'],['STATISTICS','statistics'],['INFO','info']]){
-       const button=document.createElement('button');button.type='button';button.textContent=label;button.setAttribute('aria-label',label);
+       const button=document.createElement('button');button.type='button';button.textContent=label;button.setAttribute('aria-label',t(section));
        if(section==='home')button.setAttribute('aria-current','page');
        button.addEventListener('click',()=>section==='home'?navigate({mode:'home',section:'home',detail:null}):navigate({mode:'module',section,detail:null}));
        nav.append(button);
      }
-     freeze.append(original,nav);
+     const langButton=document.createElement('button');langButton.type='button';langButton.className='phalanx-language-trigger';langButton.setAttribute('aria-label',t('choose'));langButton.setAttribute('aria-expanded','false');
+     const langPanel=document.createElement('div');langPanel.className='phalanx-language-panel';langPanel.hidden=true;langPanel.setAttribute('role','group');langPanel.setAttribute('aria-label',t('language'));
+     for(const [code,name] of [['en','English'],['de','Deutsch'],['fr','Français']]){const choice=document.createElement('button');choice.type='button';choice.textContent=name;choice.setAttribute('aria-pressed',String(language===code));choice.addEventListener('click',()=>{language=code;try{localStorage.setItem('phalanx-language',code);}catch(e){}render();});langPanel.append(choice);}
+     langButton.addEventListener('click',()=>{langPanel.hidden=!langPanel.hidden;langButton.setAttribute('aria-expanded',String(!langPanel.hidden));});
+     freeze.append(original,nav,langButton,langPanel);
      header.replaceChildren(freeze);
    };
    original.onerror=()=>{ /* Existing approved header remains the fallback. */ };
@@ -152,22 +161,22 @@ function render(){
    // Approved GLOBAL FREEZE: HOME is grouped into cinematic command, tools and intelligence sections.
    // Illustrated artwork remains a separate visual acceptance gate; never mark this scaffold pixel-perfect.
    const groups=[
-     {heading:'COMMAND CENTER',cards:[
-       {slug:'kvk-vorbereitung',label:'KvK PREPARATION',sub:'Overview · Analysis · Watchlists',section:'war',item:'KvK Vorbereitung'},
-       {slug:'aussenposten',label:'OUTPOSTS',sub:'Map · Reports · Editor',section:null},
-       {slug:'transfer-scouting',label:'TRANSFER SCOUTING',sub:'Candidates · Analysis · Invites',section:null},
-       {slug:'allianz-vergleich',label:'ALLIANCE COMPARISON',sub:'NXS · FRA · OoO · MYM',section:'alliance'}]},
-     {heading:'TOOLS & CALCULATORS',cards:[
-       {slug:'heldenrechner',label:'HERO CALCULATOR',sub:'Comparison · Builds · Advice',section:'tools',item:'Heldenanalyse'},
-       {slug:'truppenratio',label:'TROOP RATIO',sub:'Bear · Viking · KvK',section:null},
-       {slug:'marsch-optimierung',label:'MARCH OPTIMIZATION',sub:'Current · Target',section:'tools',item:'Team Optimizer'}]},
-     {heading:'INTELLIGENCE & REPORTS',cards:[
-       {slug:'gegner-analyse',label:'OPPONENT ANALYSIS',sub:'Top Players · Activity · Risk',section:null},
-       {slug:'koenigreich-scout',label:'KINGDOM SCOUT',sub:'Rankings · Reports · Trends',section:'statistics'},
-       {slug:'datenberichte',label:'DATA REPORTS',sub:'Live Data · Auto Import',section:null}]}
+     {heading:'command',cards:[
+       {slug:'kvk-vorbereitung',label:'kvk',sub:'overview',section:'war',item:'KvK Vorbereitung'},
+       {slug:'aussenposten',label:'outposts',sub:'map',section:null},
+       {slug:'transfer-scouting',label:'transfer',sub:'candidates',section:null},
+       {slug:'allianz-vergleich',label:'comparison',sub:'alliances',section:'alliance'}]},
+     {heading:'calculators',cards:[
+       {slug:'heldenrechner',label:'heroes',sub:'builds',section:'tools',item:'Heldenanalyse'},
+       {slug:'truppenratio',label:'ratio',sub:'bear',section:null},
+       {slug:'marsch-optimierung',label:'march',sub:'target',section:'tools',item:'Team Optimizer'}]},
+     {heading:'intelligence',cards:[
+       {slug:'gegner-analyse',label:'opponent',sub:'players',section:null},
+       {slug:'koenigreich-scout',label:'scout',sub:'rankings',section:'statistics'},
+       {slug:'datenberichte',label:'reports',sub:'live',section:null}]}
    ];
    for(const group of groups){
-     const heading=el('h2',group.heading,'phalanx-section-heading');
+     const heading=el('h2',t(group.heading),'phalanx-section-heading');
      const tiles=el('div',null,'tiles phalanx-freeze-tiles');
      if(group.cards.length===3)tiles.classList.add('phalanx-freeze-tiles--three');
      for(const card of group.cards){
@@ -175,10 +184,10 @@ function render(){
        // Future artwork must be a verified approved local asset, never an invented image URL.
        // DOM text stays independent of the art so buttons remain accessible and functional.
        const copy=el('span',null,'phalanx-freeze-tile__copy');
-       copy.append(el('strong',card.label),el('small',card.sub));
+       copy.append(el('strong',t(card.label)),el('small',t(card.sub)));
        b.append(copy);
        b.dataset.freezeCard=card.slug;
-       b.setAttribute('aria-label',card.label+' – '+card.sub);
+       b.setAttribute('aria-label',t(card.label)+' – '+t(card.sub));
        card.artwork=approvedCardArtwork[b.dataset.freezeCard];
        if(card.artwork){
          if(!/^\.\/assets\/design-freeze\/cards\/[a-z0-9-]+\.(?:png|jpg|webp)$/.test(card.artwork)){
@@ -203,8 +212,8 @@ function render(){
          });
        }else{
          b.disabled=true;
-         b.setAttribute('aria-label',card.label+' – not yet available');
-         b.title='No verified destination available yet';
+         b.setAttribute('aria-label',t(card.label)+' – '+t('unavailable'));
+         b.title=t('unavailable');
        }
        tiles.append(b);
      }
@@ -212,14 +221,14 @@ function render(){
    }
    // Pixelgenauer HOME-Abgleich weiterhin offen. Technical acceptance notes belong in the test report, not in the user-facing HOME view.
  }else if(state.mode==='module'){
-   const d=destinations[state.section];view.append(el('h2',d.title));
-   if(!d.items.length)view.append(el('p','No verified destination has been assigned to this section yet.','notice'));
+   const d=destinations[state.section];view.append(el('h2',t(state.section)));
+   if(!d.items.length)view.append(el('p',t('unverified'),'notice'));
    const tiles=el('div',null,'tiles phalanx-module-tiles');
    for(const [name,url] of d.items){
      const b=el('button',name,'tile');b.type='button';b.addEventListener('click',()=>navigate({mode:'detail',section:state.section,detail:{title:name,url}}));tiles.append(b);
    }
    view.append(tiles);
-   const menuTitle=el('strong','Section menu');menu.append(menuTitle);
+   const menuTitle=el('strong',t('menu'));menu.append(menuTitle);
    for(const [name,url] of d.items){const a=el('a',name);a.href=url;menu.append(a);}
  }else{
    if(!embeddedModules.has(state.detail.url))view.append(el('h2',state.detail.title));
@@ -257,10 +266,10 @@ function render(){
      });
      view.append(frame);
    }else{
-     const a=el('a','Open existing isolated module →','phalanx-detail-link');a.href=state.detail.url;view.append(a);
+     const a=el('a',t('openExisting'),'phalanx-detail-link');a.href=state.detail.url;view.append(a);
    }
-   view.append(el('p','Existing test module is embedded without changes. If needed, open it separately from the menu.','notice'));
-   const link=el('a','Open module');link.href=state.detail.url;menu.append(link);
+   view.append(el('p',t('embedded'),'notice'));
+   const link=el('a',t('open'));link.href=state.detail.url;menu.append(link);
  }
 }
 render();
