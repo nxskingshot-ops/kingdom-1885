@@ -22,11 +22,14 @@ export async function renderAlliancePreview(client, target, options = {}) {
   const status = doc.createElement('p');
   status.textContent = 'Status: ' + result.status;
   const list = doc.createElement('ul');
+  list.setAttribute('aria-label', 'PYLON IX Allianzvergleich');
   for (const line of result.lines) {
     const item = doc.createElement('li');
     item.textContent = line;
     list.appendChild(item);
   }
-  target.replaceChildren(heading, status, list);
+  const note = doc.createElement('p');
+  note.textContent = 'Nur lesender Modulzugriff. Technisch geprüfte Daten sind keine Freigabe für den Produktivbetrieb.';
+  target.replaceChildren(heading, status, list, note);
   return { status: result.status, facts_visible: result.facts_visible };
 }
