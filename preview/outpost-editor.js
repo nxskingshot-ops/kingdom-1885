@@ -6,6 +6,10 @@ const $=id=>document.getElementById(id);
 const escapeText=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let records=[],selected=null,authorized=false;
 let pylonCleanup=null;
+let recoveryMode=false;
+const recoveryLanding=()=>new URLSearchParams(location.search).get('type')==='recovery'||new URLSearchParams(location.hash.slice(1)).get('type')==='recovery';
+function showRecovery(){recoveryMode=true;authorized=false;$('board').hidden=true;$('login').hidden=false;$('authForm').hidden=true;$('recoveryPanel').hidden=false;const pylon=$('pylon-ix-panel');if(pylon)pylon.hidden=true;if(pylonCleanup){pylonCleanup();pylonCleanup=null;} $('loginMessage').textContent='Bitte ein neues Passwort festlegen.';}
+
 const visible=()=>{const q=$('search').value.trim().toLowerCase();return records.filter(r=>[r.alliance,r.structure_type,r.source_key,r.coord_x,r.coord_y].some(v=>String(v??'').toLowerCase().includes(q)))};
 function locked(message=''){
  authorized=false;$('board').hidden=true;$('login').hidden=false;
@@ -35,6 +39,7 @@ async function refresh(){
  render();$('status').textContent=records.length+' records loaded. Select a row to edit.';
 }
 async function verify(){
+ if(recoveryMode||recoveryLanding()){showRecovery();return;}
  try{
  const {data:{user},error}=await db.auth.getUser();
  if(error||!user){locked();return;}
@@ -73,14 +78,11 @@ $('resetRequest').onclick=async()=>{
  }finally{button.disabled=false;}
 };
 db.auth.onAuthStateChange((event)=>{
- if(event==='PASSWORD_RECOVERY'){
-  $('login').hidden=false;$('board').hidden=true;
-  $('recoveryPanel').hidden=false;
-  $('loginMessage').textContent='Bitte jetzt ein neues Passwort festlegen.';
- }
+ if(event==='PASSWORD_RECOVERY')showRecovery();
 });
 $('recoveryForm').onsubmit=async e=>{
  e.preventDefault();
+ if(!recoveryMode)return;
  const password=$('newPassword').value;
  if(password.length<12)return;
  const button=e.currentTarget.querySelector('button[type="submit"]');
@@ -93,6 +95,9 @@ $('recoveryForm').onsubmit=async e=>{
   $('recoveryMessage').textContent='';
   $('loginMessage').textContent='Passwort geändert. Bitte erneut anmelden.';
   await db.auth.signOut();
+  recoveryMode=false;
+  $('authForm').hidden=false;
+  history.replaceState(null,'',location.pathname);
   locked('Passwort geändert. Bitte erneut anmelden.');
  }catch(error){
   $('recoveryMessage').textContent='Änderung fehlgeschlagen: '+error.message;
@@ -119,7 +124,8 @@ $('editForm').onsubmit=async e=>{
  }catch(error){$('status').textContent='Save failed: '+error.message;$('save').disabled=false;}
 };
 $('search').oninput=render;$('resetSelectionBtn').onclick=resetSelection;$('refresh').onclick=verify;$('reload').onclick=refresh;
-verify();
+if(recoveryLanding())showRecovery();
+else verify();
 
 // PYLON IX loads only after PHALANX editor authorization succeeds.
 async function mountPylon(){
