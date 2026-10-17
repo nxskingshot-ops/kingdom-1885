@@ -21,6 +21,7 @@ export function mapAllianceOverviewToPylon(rows, options = {}) {
   if (!Number.isInteger(maxAgeDays) || maxAgeDays < 0 || maxAgeDays > 30) return unavailable('not-connected', 'Ungültige Frischegrenze');
   const allowed = approvedScope(approvedAlliances);
   if (!allowed) return unavailable('not-connected', 'Ungültige freigegebene Allianz-Auswahl');
+  if (kingdom !== 1885) return unavailable('not-connected', 'Königreich nicht freigegeben');
   const now = Date.parse(asOf);
   const checked = [];
   for (const row of rows) {
