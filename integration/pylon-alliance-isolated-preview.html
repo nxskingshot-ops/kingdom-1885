@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PHALANX · PYLON IX · Alliance Comparison</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,sans-serif}
+body{margin:0;min-height:100vh;background:#10151f;color:#e9d7b3;padding:24px}
+main{max-width:700px;margin:auto}
+h1,h2,h3{color:#edc77f}
+section{border:1px solid #9b7846;border-radius:14px;padding:20px;background:#1b202b}
+li{padding:5px 0;line-height:1.5}
+small{color:#bdb4a6}
+</style>
+</head>
+<body>
+<main>
+<h1>PYLON IX · Alliance Comparison</h1>
+<p>Isolierte PHALANX-Integrationsvorschau. Keine Anmeldung, keine Live-Daten und keine automatische Verbindung.</p>
+<section id="pylon-alliance-output" aria-live="polite">
+<h2>PYLON IX · Datenstatus</h2>
+<p>Initialisierung der schreibgeschützten Vorschau …</p>
+</section>
+<p><small>Technische Datenvalidierung ersetzt keine Berechtigungsprüfung. Kein Produktiv-Release.</small></p>
+</main>
+<script type="module">
+import { renderAlliancePreview } from './pylon-alliance-ui-adapter.mjs';
+const target = document.getElementById('pylon-alliance-output');
+// Deliberately no Supabase client: this isolated host demonstrates the
+// safe not-connected state through the real bridge, presenter and UI adapter.
+renderAlliancePreview(null, target, { asOf: new Date().toISOString() })
+  .catch(() => { target.textContent = 'PYLON IX · Keine geprüften Daten verfügbar.'; });
+</script>
+</body>
+</html>
