@@ -3,7 +3,19 @@ import { getPylonAlliancePreview } from './pylon-alliance-preview.mjs';
 // Isolated opt-in view adapter. No automatic mounting or production wiring.
 export async function renderAlliancePreview(client, target, options = {}) {
   if (!target || !target.ownerDocument || typeof target.replaceChildren !== 'function') throw new TypeError('Missing target');
-  const result = await getPylonAlliancePreview(client, options);
+  let result;
+  try {
+    result = await getPylonAlliancePreview(client, options);
+  } catch {
+    result = { title: 'PYLON IX · Datenstatus', status: 'not-connected',
+      lines: ['Keine geprüften Daten verfügbar.'], facts_visible: false };
+  }
+  if (!result || !['verified', 'stale', 'not-connected'].includes(result.status) ||
+      typeof result.title !== 'string' || !Array.isArray(result.lines) ||
+      result.lines.length > 110 || result.lines.some(line => typeof line !== 'string')) {
+    result = { title: 'PYLON IX · Datenstatus', status: 'not-connected',
+      lines: ['Keine geprüfte Anzeige verfügbar.'], facts_visible: false };
+  }
   const doc = target.ownerDocument;
   const heading = doc.createElement('h3');
   heading.textContent = result.title;
