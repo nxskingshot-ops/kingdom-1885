@@ -2,11 +2,14 @@ import { renderAlliancePreview } from './pylon-alliance-ui-adapter.mjs';
 
 // Explicit mount for a host-owned, already authenticated PHALANX client.
 // No credential discovery, local storage, global client or automatic connection.
-export function mountPylonAllianceHost({ client = null, target, button, info } = {}) {
+export function mountPylonAllianceHost({ client = null, getClient = null, target, button, info } = {}) {
   if (!target?.ownerDocument || typeof target.replaceChildren !== 'function' ||
       typeof button?.addEventListener !== 'function' ||
       typeof button?.removeEventListener !== 'function' || !info) {
     throw new TypeError('Missing PYLON host elements');
+  }
+  if (getClient !== null && typeof getClient !== 'function') {
+    throw new TypeError('getClient must be a function');
   }
   let pending = false;
   let disposed = false;
@@ -19,7 +22,10 @@ export function mountPylonAllianceHost({ client = null, target, button, info } =
     info.textContent = 'Datenstatus wird geprüft …';
     try {
       const detachedTarget = target.ownerDocument.createElement('div');
-      const result = await renderAlliancePreview(client, detachedTarget, {
+      // Resolve the host-owned session at refresh time, never cache tokens here.
+      const activeClient = getClient ? await getClient() : client;
+      if (disposed || requestGeneration !== generation) return;
+      const result = await renderAlliancePreview(activeClient, detachedTarget, {
         asOf: new Date().toISOString()
       });
       if (disposed || requestGeneration !== generation) return;
