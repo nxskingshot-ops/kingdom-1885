@@ -1,0 +1,34 @@
+name: PYLON IX mobile preview artifact
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/pylon-ix-design-spec-20261017
+    paths:
+      - deploy/phalanx-kvk-test/pylon-ix-standalone-offline.html
+      - deploy/phalanx-kvk-test/PYLON_IX_ICON_FREEZE_ORIGINAL-1.png
+      - .github/workflows/pylon-ix-mobile-preview-artifact.yml
+permissions:
+  contents: read
+jobs:
+  preview-package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout isolated development branch
+        uses: actions/checkout@v4
+      - name: Package self-contained static preview
+        run: |
+          set -eu
+          mkdir -p pylon-mobile-preview
+          cp deploy/phalanx-kvk-test/pylon-ix-standalone-offline.html pylon-mobile-preview/index.html
+          cp deploy/phalanx-kvk-test/PYLON_IX_ICON_FREEZE_ORIGINAL-1.png pylon-mobile-preview/
+          test -s pylon-mobile-preview/index.html
+          test -s pylon-mobile-preview/PYLON_IX_ICON_FREEZE_ORIGINAL-1.png
+      - name: Upload isolated mobile preview files
+        uses: actions/upload-artifact@v4
+        with:
+          name: pylon-ix-mobile-preview
+          path: pylon-mobile-preview/
+          if-no-files-found: error
+          retention-days: 7
