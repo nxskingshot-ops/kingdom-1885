@@ -21,3 +21,16 @@ PYLON IX wird als strategische Assistenz innerhalb von NEXUS PHALANX konzipiert,
 3. Isolierten, statischen PYLON-UI-Prototyp ohne externe API oder produktive Daten erstellen.
 4. Auf Mobilgeräten Layout, Navigation, Kontrast und Ladezeiten prüfen.
 5. Erst nach technischem Test und expliziter Freigabe Integration erwägen.
+
+## Verbindliche Informationsarchitektur: About / Info
+Alle Erklärungen zu Namen, Herkunft, Symbolen, Motiven und Entstehungsgeschichte gehören in den bestehenden About-/Info-Bereich, nicht in operative Dashboards. Vorhandenes About NEXUS (Queen-An-Poster, 1885-Banner und sonstige FREEZEs) bleibt unangetastet.
+
+Geplante Sektionen:
+- NEXUS: Namensbedeutung, Allianzkontext, freigegebenes Motto „Nexus — many paths, many strengths, one force.“
+- PHALANX: Wortherkunft, griechische Formation, Markeninterpretation.
+- PYLON IX: gewählter Name, strategische KI-Rolle (geplant, nicht als bereits funktionsfähig darstellen), Designentwicklung und Schildsymbol.
+- Lambda (Λ): historischer Bezug zu Lakedaimoniern; konkrete Schildgestaltung als künstlerische Interpretation kennzeichnen.
+- Lorbeerkranz: klassische Sieg-/Ehrensymbolik; kein Anspruch, dass das Motiv historisch typisch für spartanische Schilde sei.
+- IX: römische Zahl Neun; keine zusätzliche erfundene Namensgeschichte.
+
+Regeln: Trenne belegbare Geschichte von Projekt-Lore und tatsächlichen Nutzerentscheidungen. Interne vertrauliche Quellen nicht offenlegen. Kein neues Hauptmenü, sondern vorhandenes About erweitern; visuelle FREEZEs und vorhandene Inhalte bewahren. Implementierung erst nach Bestandsprüfung und ausschließlich isoliert.
