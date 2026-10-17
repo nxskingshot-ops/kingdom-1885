@@ -7,6 +7,9 @@ on:
     paths:
       - integration/pylon-alliance-context-mapper.mjs
       - integration/pylon-alliance-context-mapper-test.mjs
+      - integration/pylon-alliance-readonly-bridge.mjs
+      - integration/pylon-alliance-readonly-bridge-test.mjs
+      - integration/alliance-overview-reader-test.mjs
       - .github/workflows/pylon-alliance-mapper-offline-test.yml
 permissions:
   contents: read
@@ -22,4 +25,6 @@ jobs:
         with:
           node-version: '22'
       - name: Run mock-only PYLON mapper tests
-        run: node integration/pylon-alliance-context-mapper-test.mjs
+        run: |
+          node integration/pylon-alliance-context-mapper-test.mjs
+          node integration/pylon-alliance-readonly-bridge-test.mjs
