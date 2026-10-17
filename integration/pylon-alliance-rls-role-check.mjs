@@ -9,10 +9,10 @@ export async function probeAllianceReadAccess(client) {
   const views = [];
   for (const view of VIEWS) {
     try {
-      // HEAD-only/count-free request: no private row contents are returned.
-      const result = await client.from(view).select('snapshot_date', { head: true }).limit(1);
-      views.push({ view, request: result.error ? 'error' : 'ok' });
-    } catch { views.push({ view, request: 'error' }); }
+      // HEAD-only exact count: no private row contents are returned.
+      const result = await client.from(view).select('snapshot_date', { head: true, count: 'exact' }).limit(1);
+      views.push({ view, request: result.error ? 'error' : 'ok', visibility: result.error ? 'unknown' : (Number.isSafeInteger(result.count) && result.count >= 0 ? (result.count > 0 ? 'rows-visible' : 'zero-visible') : 'unknown') });
+    } catch { views.push({ view, request: 'error', visibility: 'unknown' }); }
   }
   return { status: 'probed', reason: 'not-a-rls-proof', views };
 }
