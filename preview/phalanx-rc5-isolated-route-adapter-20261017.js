@@ -9,8 +9,7 @@ const targets={
 'Battle Readiness':'nexus-phalanx-battle-readiness-verified-status-test-2026-10-12.html',
 'Reports & History':'outpost-report-v11.html',
 'Candidate Board':'kingdom-hub-trends-v8.html',
-'Hero Intelligence':'hero-intelligence-evidence-advisor-v15-2026-10-12.html',
-'Rankings':'phalanx-ranking-integration-rc-20261015.html'
+'Hero Intelligence':'hero-intelligence-evidence-advisor-v15-2026-10-12.html'
 };
 const entries=[...document.querySelectorAll('a[data-pending]')];
 function label(a){return [...a.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent).join(' ').trim();}
@@ -34,7 +33,8 @@ for(const a of entries){
  }else if(a.getAttribute('href')==='#'){disabled++;a.setAttribute('aria-disabled','true');}
  else unexpected++;
 }
-const result={total:entries.length,linked,disabled,unexpected,ready:entries.length===39&&linked===7&&disabled===32&&unexpected===0};
+const rankings=[...document.querySelectorAll('a:not([data-pending])')].filter(a=>a.textContent.trim().startsWith('Rankings'));const rankingValid=rankings.length===1&&rankings[0].href===PREVIEW_ROOT+'phalanx-ranking-integration-rc-20261015.html';
+const result={total:document.querySelectorAll('a').length,linked,disabled,unexpected,rankingValid,ready:document.querySelectorAll('a').length===39&&entries.length===38&&linked===6&&disabled===32&&unexpected===0&&rankingValid};
 document.documentElement.dataset.rc5RouteGate=result.ready?'pass':'fail';
 console.info('[PHALANX RC5 isolated route adapter]',result);
 })();
