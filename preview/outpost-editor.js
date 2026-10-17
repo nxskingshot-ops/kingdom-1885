@@ -45,6 +45,13 @@ async function verify(){
  void mountPylon();
  }catch(error){locked('Unable to confirm editor access: '+error.message)}
 }
+$('togglePassword').onclick=()=>{
+ const field=$('password'),button=$('togglePassword');
+ const showing=field.type==='password';
+ field.type=showing?'text':'password';
+ button.textContent=showing?'Hide password':'Show password';
+ button.setAttribute('aria-pressed',String(showing));
+};
 $('authForm').onsubmit=async e=>{
  e.preventDefault();$('loginMessage').textContent='Signing in…';
  const {error}=await db.auth.signInWithPassword({email:$('email').value,password:$('password').value});
