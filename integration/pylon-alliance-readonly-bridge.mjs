@@ -10,12 +10,12 @@ function disconnected(reason) {
 }
 
 /** Read-only test integration; never treat a successful query as proof of RLS policy correctness. */
-export async function loadPylonAllianceContext(client, { asOf, maxAgeDays = 7 } = {}) {
+export async function loadPylonAllianceContext(client, { asOf, maxAgeDays = 7, approvedAlliances } = {}) {
   if (!client?.auth?.getUser || !client?.from) return disconnected('Kein angemeldeter PHALANX-Datenclient übergeben');
   if (typeof asOf !== 'string' || !Number.isFinite(Date.parse(asOf))) return disconnected('Prüfzeitpunkt fehlt');
   try {
     const rows = await loadAllianceOverview(client);
-    return mapAllianceOverviewToPylon(rows, { kingdom: 1885, asOf, maxAgeDays });
+    return mapAllianceOverviewToPylon(rows, { kingdom: 1885, asOf, maxAgeDays, approvedAlliances });
   } catch (error) {
     // Do not disclose auth tokens, database error bodies or user details to the UI.
     return disconnected('Datenzugriff fehlgeschlagen oder nicht freigegeben');
