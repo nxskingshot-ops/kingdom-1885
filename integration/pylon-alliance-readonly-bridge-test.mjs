@@ -30,6 +30,8 @@ assert.equal(stale.data_status, 'stale');
 assert.deepEqual(stale.facts, []);
 const missing = await loadPylonAllianceContext(null, { asOf });
 assert.equal(missing.data_status, 'not-connected');
+const missingClientResult = await loadPylonAllianceContext({ auth: {}, from() {} }, { asOf });
+assert.equal(missingClientResult.data_status, 'not-connected');
 const noTime = mock();
 assert.equal((await loadPylonAllianceContext(noTime.client)).data_status, 'not-connected');
 assert.equal(noTime.calls.length, 0);
