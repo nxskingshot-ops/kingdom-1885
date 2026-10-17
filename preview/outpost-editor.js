@@ -7,7 +7,8 @@ const escapeText=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;'
 let records=[],selected=null,authorized=false;
 const visible=()=>{const q=$('search').value.trim().toLowerCase();return records.filter(r=>[r.alliance,r.structure_type,r.source_key,r.coord_x,r.coord_y].some(v=>String(v??'').toLowerCase().includes(q)))};
 function locked(message=''){
- authorized=false;$('board').hidden=true;$('login').hidden=false;$('loginMessage').textContent=message;
+ authorized=false;$('board').hidden=true;$('login').hidden=false;
+ const pylon=$('pylon-ix-panel');if(pylon)pylon.hidden=true;$('loginMessage').textContent=message;
 }
 function resetSelection(){const p=records.find(r=>r.id===selected);$('save').disabled=!p||!authorized;
  $('selectionInfo').textContent=p?'Outpost '+p.source_key+' · database ID '+p.id:'Select an outpost from the list.';
@@ -38,6 +39,7 @@ async function verify(){
  const {data:member,error:membershipError}=await db.from('nxs_memberships').select('role,active,expires_at').eq('user_id',user.id).maybeSingle();
  if(membershipError||!member?.active||!['r4','admin'].includes(member.role)||(member.expires_at&&Date.parse(member.expires_at)<=Date.now())){locked('An active R4/admin account is required.');return;}
  authorized=true;$('login').hidden=true;$('board').hidden=false;await refresh();
+ const pylon=$('pylon-ix-panel');if(pylon)pylon.hidden=false;
  }catch(error){locked('Unable to confirm editor access: '+error.message)}
 }
 $('authForm').onsubmit=async e=>{
@@ -62,3 +64,18 @@ $('editForm').onsubmit=async e=>{
 };
 $('search').oninput=render;$('resetSelectionBtn').onclick=resetSelection;$('refresh').onclick=verify;$('reload').onclick=refresh;
 verify();
+
+// PYLON IX integration in the existing authenticated development view.
+// Live alliance reads stay disabled until separate RLS and field approval.
+const pylonTarget=$('pylon-alliance-output');
+if(pylonTarget){
+  import('../integration/pylon-alliance-host.mjs').then(({mountPylonAllianceHost})=>{
+    mountPylonAllianceHost({
+      getClient:()=>authorized?db:null,
+      allowLiveRead:false,
+      target:pylonTarget,
+      button:$('pylon-alliance-refresh'),
+      info:$('pylon-alliance-info')
+    });
+  }).catch(()=>{$('pylon-alliance-info').textContent='PYLON-Modul nicht verfügbar.';});
+}
