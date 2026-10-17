@@ -1,0 +1,22 @@
+name: PHALANX isolated recovery controller
+on:
+  push:
+    branches:
+      - test/pylon-ix-offline-contract-20261017
+    paths:
+      - 'experiments/auth-recovery/**'
+      - '.github/workflows/phalanx-auth-recovery-isolated.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  recovery-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run isolated recovery tests
+        run: node --experimental-default-type=module --test experiments/auth-recovery/recovery-controller.test.mjs
