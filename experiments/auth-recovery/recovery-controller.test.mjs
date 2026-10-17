@@ -49,3 +49,20 @@ test("recovery event without recovery URL never unlocks the form",async()=>{
   assert.equal(t.states.at(-1).state,"invalid");
   assert.equal(t.counts().updates,0);
 });
+
+test("late initialize error does not overwrite confirmed recovery",async()=>{
+  let callback;
+  const states=[];
+  let rejectInitialization;
+  const auth={
+    onAuthStateChange(fn){callback=fn;return {data:{subscription:{unsubscribe(){}}}};},
+    initialize(){return new Promise((_,reject)=>{rejectInitialization=reject;});},
+    async updateUser(){return {error:null};}
+  };
+  const controller=createRecoveryController({auth,view:{render(value){states.push(value);}}});
+  const pending=controller.initialize({hasRecoveryLink:true});
+  callback("PASSWORD_RECOVERY");
+  rejectInitialization(new Error("late failure"));
+  await pending;
+  assert.equal(states.at(-1).state,"ready");
+});
