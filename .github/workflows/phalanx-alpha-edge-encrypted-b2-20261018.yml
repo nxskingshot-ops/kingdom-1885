@@ -58,7 +58,7 @@ jobs:
           jq -r '.functions[].slug' inventory.json > expected-slugs.txt
           while IFS= read -r slug; do
             [[ "$slug" =~ ^[a-z0-9][a-z0-9-]*$ ]] || exit 1
-            supabase functions download "$slug" --project-ref "$PROJECT_REF" --use-api
+            supabase functions download "$slug" --project-ref "$PROJECT_REF"
             test -d "supabase/functions/$slug" || { echo "::error::Missing source directory: $slug"; exit 1; }
             find "supabase/functions/$slug" -type f -size +0c | grep -q . || { echo "::error::Empty source: $slug"; exit 1; }
             echo "Retrieved: $slug"
