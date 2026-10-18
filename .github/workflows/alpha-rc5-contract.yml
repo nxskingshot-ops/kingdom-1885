@@ -111,6 +111,8 @@ jobs:
           cp preview/phalanx-alpha-android-integration-20261017.html alpha-deploy/
           cp data/phalanx-alpha-version-lock-20261018.json alpha-deploy/
           cp alpha-version-diff.json alpha-deploy/
+          test -s alpha-deploy/alpha-version-diff.json
+          test -s alpha-deploy/phalanx-alpha-version-lock-20261018.json
           cp preview/nexus-phalanx-command-center-alpha28-local-pair-test-2026-10-13.html alpha-deploy/
           cp preview/kvk-prep-five-contrast-v13.html alpha-deploy/
           cp preview/nexus-phalanx-battle-readiness-verified-status-test-2026-10-12.html alpha-deploy/
