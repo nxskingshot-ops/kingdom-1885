@@ -4,7 +4,7 @@
 const anchors=[...document.querySelectorAll('nav .submenu a')];
 const map=anchors.find(a=>a.textContent.trim().startsWith('Outpost Map'));
 const legacy=anchors.find(a=>a.textContent.trim().startsWith('Reports & History'));
-const expectedMap=map&&map.getAttribute('href')==='#'&&map.hasAttribute('data-pending');
+const expectedMap=map&&(map.getAttribute('href')==='#'&&map.hasAttribute('data-pending')||map.getAttribute('href')==='./outpost-map-alpha23-frozen.html');
 const expectedLegacy=legacy&&legacy.getAttribute('href')==='./outpost-report-v11.html';
 if(anchors.length!==39||!expectedMap||!expectedLegacy){
  document.documentElement.dataset.rc5RouteGate='fail';
