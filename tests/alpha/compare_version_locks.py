@@ -6,6 +6,15 @@ from pathlib import Path
 
 COLORS = {"added": "green", "changed": "blue", "removed": "red", "unchanged": "gray", "unverified": "yellow"}
 def compare(old, new):
+    for label, registry in (("baseline", old), ("current", new)):
+        codes = [m["code"] for m in registry["modules"]]
+        if len(codes) != len(set(codes)):
+            raise ValueError(f"BLOCKED: duplicate module codes in {label}")
+        for m in registry["modules"]:
+            if m.get("reference_only") and m.get("installed"):
+                raise ValueError(f"BLOCKED: reference-only module installed: {m['code']}")
+            if m.get("installed") and (not m.get("path") or not m.get("sha256")):
+                raise ValueError(f"BLOCKED: installed module lacks source identity: {m['code']}")
     before = {m["code"]: m for m in old["modules"]}
     after = {m["code"]: m for m in new["modules"]}
     result = []
