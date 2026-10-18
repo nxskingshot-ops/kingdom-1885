@@ -61,3 +61,5 @@ assert "url.hash=active||'rc5'" in source
 assert "if(active!=='rc5')show('rc5',true)" in source
 assert "home:['../backups/" not in source
 assert "navigation:['./nexus-phalanx-navigation-sandbox" not in source
+
+assert 'history.back()' not in source, 'RC5 back must not reopen an older module'
