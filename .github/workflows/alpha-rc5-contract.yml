@@ -83,7 +83,8 @@ jobs:
           grep -q 'src="./index.html?' alpha-deploy/outpost-report-v11.html
           test -s alpha-deploy/transfer-scouting-demo-v5.html
           test -s alpha-deploy/transfer-scouting-demo-v5.js
-          grep -q 'href="./transfer-scouting-demo-v5.html"' alpha-deploy/PHALANX_RC5_ALPHA_DERIVED_20261017.html
+          grep -q "transfers:\['./transfer-scouting-demo-v5.html'" alpha-deploy/phalanx-alpha-android-integration-20261017.html
+          grep -q 'href="./kingdom-hub-trends-v8.html"' alpha-deploy/PHALANX_RC5_ALPHA_DERIVED_20261017.html
           test ! -d alpha-deploy/preview
       - name: Package isolated alpha for download (not production)
         uses: actions/upload-artifact@v4
