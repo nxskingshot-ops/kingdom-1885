@@ -30,5 +30,5 @@ assert "candidate.setAttribute('href','./transfer-scouting-demo-v5.html')" in so
 assert "outposts:['./outpost-map-alpha23-frozen.html'" in source
 assert "'preview/outpost-map-alpha23-frozen.html':'outposts'" in source
 assert "outpost.setAttribute('href','./outpost-map-alpha23-frozen.html')" in source
-assert "outpost-report-v11.html" not in source
+assert "reports:['./outpost-report-v11.html','Reports & History · legacy V11']" in source
 assert (Path("preview") / "outpost-map-alpha23-frozen.html").is_file()
