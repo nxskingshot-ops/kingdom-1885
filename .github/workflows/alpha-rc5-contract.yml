@@ -170,6 +170,18 @@ jobs:
           grep -Fq "reports:['./outpost-report-v11.html'" alpha-deploy/phalanx-alpha-android-integration-20261017.html
           grep -Fq "['Outpost Map','PHX-OUT-024-MAP2-FROZEN-20261018.html']" alpha-deploy/phalanx-rc5-isolated-route-adapter-20261017.js
           python3 tests/alpha/test_outpost_v2_freeze_gate.py
+      - name: Write immutable B003 build provenance
+        run: |
+          python3 - <<'PY'
+          import json, hashlib
+          from pathlib import Path
+          original=Path('alpha-deploy/PHX-OUT-024-MAP2-FROZEN-20261018.html')
+          expected='1a87afde964f8eacc730f8a2cd52d7067ebe06b40cc7fc1388c16ee59e3a043d'
+          assert hashlib.sha256(original.read_bytes()).hexdigest()==expected
+          record={'app':'PHX-A001','build':'B003','source_commit':'${{ github.sha }}','source_branch':'${{ github.ref_name }}','outpost_id':'PHX-OUT-024-MAP2-FROZEN-20261018','outpost_sha256':expected,'artifact_verified':True,'cloudflare_deployed':'NOT_VERIFIED_BY_THIS_MANIFEST'}
+          Path('alpha-deploy/PHX-B003-BUILD-PROVENANCE.json').write_text(json.dumps(record,indent=2)+'\\n')
+          print('PASS: provenance attached to staged B003 artifact')
+          PY
       - name: Deploy verified alpha to isolated Cloudflare Pages
         if: ${{ github.ref == 'refs/heads/alpha/android-integrated-freeze-20261017' }}
         shell: bash
@@ -179,10 +191,10 @@ jobs:
         run: |
           set -euo pipefail
           if [[ -z "$CLOUDFLARE_API_TOKEN" || -z "$CLOUDFLARE_ACCOUNT_ID" ]]; then
-            echo "::notice::Cloudflare credentials not configured; alpha deployment skipped."
+            echo "::warning::B003 NOT DEPLOYED: Cloudflare credentials missing. Green CI means artifact only."
             exit 0
           fi
-          npx --yes wrangler@4 pages deploy alpha-deploy --project-name=nexus-phalanx-rc5-test --branch=phalanx-alpha-rc5 --commit-dirty=true
+          npx --yes wrangler@4 pages deploy alpha-deploy --project-name=nexus-phalanx-rc5-test --branch=phalanx-alpha-rc5 --commit-dirty=true\n          echo "::notice::Cloudflare deployment command completed; verify URL and provenance before Android acceptance."
       - name: Package isolated alpha for download (not production)
         uses: actions/upload-artifact@v4
         with:
