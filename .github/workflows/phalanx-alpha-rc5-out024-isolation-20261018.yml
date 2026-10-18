@@ -1,0 +1,26 @@
+name: PHALANX Alpha RC5 OUT024 Isolation
+on:
+  push:
+    branches:
+      - alpha/android-integrated-freeze-20261017
+  pull_request:
+    paths:
+      - 'preview/PHALANX_RC5_ALPHA_DERIVED_20261017.html'
+      - 'preview/PHALANX_RC5_OUT024_ISOLATED_NAV_TEST_V2_20261018.html'
+      - 'preview/PHX-OUT-024-MAP2-FROZEN-20261018.html'
+      - 'data/outpost-map-alpha24-canonical-lock-20261018.json'
+      - 'scripts/phalanx-rc5-out024-isolated-nav-guard-20261018.mjs'
+      - '.github/workflows/phalanx-alpha-rc5-out024-isolation-20261018.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  isolation-integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate RC5 and OUT024 isolated source contract
+        run: node scripts/phalanx-rc5-out024-isolated-nav-guard-20261018.mjs
