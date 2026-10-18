@@ -4,7 +4,7 @@ from pathlib import Path
 import re
 
 source = Path("preview/phalanx-alpha-android-integration-20261017.html").read_text(encoding="utf-8")
-assert 'ALPHA BUILD 20261018-k' in source, "Persistent preview build marker missing"
+assert 'ALPHA BUILD 20261018-l' in source, "Persistent preview build marker missing"
 assert "if(b.dataset.key==='rc5'){active='';" in source, "RC5 button must force reload"
 assert "currentPath!==targetPath" in source, "Route must compare iframe actual URL"
 assert "if(active!==k||currentPath!==targetPath)" in source, "Route guard regression"
@@ -23,3 +23,5 @@ print("PASS: alpha harness static navigation contract; browser interaction still
 assert "e.stopImmediatePropagation()" in source, "Candidate Board native click must not navigate to unrelated module"
 assert "view.replaceWith(fresh)" in source, "RC5 return must rebuild iframe"
 assert "RC5 CLICK RECEIVED" in source, "RC5 click acknowledgement missing"
+
+assert "candidate.setAttribute('href','./transfer-scouting-demo-v5.html')" in source, 'Candidate Board link must be corrected in loaded RC5 document'
