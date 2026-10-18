@@ -41,7 +41,7 @@ jobs:
           sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
           sudo apt-get update -qq
           sudo apt-get install -y -qq postgresql-client-18
-          pg_restore --version
+          /usr/lib/postgresql/18/bin/pg_restore --version
       - name: Select latest daily encrypted backup without changing B2
         shell: bash
         run: |
@@ -64,7 +64,7 @@ jobs:
           actual="$(sha256sum backup.enc | cut -d' ' -f1)"
           test "$expected" = "$actual" || { echo '::error::SHA-256 mismatch'; exit 1; }
           openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in backup.enc -out backup.dump -pass env:BACKUP_PASSPHRASE
-          pg_restore --list backup.dump > archive.list
+          /usr/lib/postgresql/18/bin/pg_restore --list backup.dump > archive.list
           entries="$(grep -cv '^;' archive.list || true)"
           test "$entries" -gt 0
           {
