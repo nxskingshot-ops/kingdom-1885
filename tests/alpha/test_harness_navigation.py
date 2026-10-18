@@ -46,3 +46,10 @@ print("PASS: visible module routes are staged in deploy")
 
 assert "'preview/transfer-scouting-demo-v5.html':'transfers'" in source
 assert "tag.textContent='LEGACY 23'" in source
+
+# Build identity must agree with the version registry and must not use stale labels.
+import json
+lock = json.loads(Path("data/phalanx-alpha-version-lock-20261018.json").read_text(encoding="utf-8"))
+assert lock["app"]["build"] == "B002"
+assert "PHX-A001 · B002 | TEST" in source
+assert "B001" not in source
