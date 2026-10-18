@@ -11,6 +11,9 @@ on:
       - 'preview/phalanx-alpha-android-integration-20261017.html'
       - 'preview/phalanx-ranking-integration-rc-20261015.html'
       - 'preview/outpost-report-v11.html'
+      - 'preview/outpost-map-alpha23-frozen.html'
+      - 'preview/phalanx-rc5-isolated-route-adapter-20261017.js'
+      - 'tests/alpha/test_outpost_v2_freeze_gate.py'
       - 'preview/outpost-viewer-an-v1.js'
       - 'index.html'
   workflow_dispatch:
