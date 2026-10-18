@@ -1,0 +1,526 @@
+{
+  "schema": "phalanx.feature-id-baseline.v1",
+  "source_date": "2026-10-13",
+  "feature_count": 74,
+  "module_count": 16,
+  "features": [
+    {
+      "id": "CMD-01",
+      "module_id": "CMD",
+      "name": "Startseite und Profil",
+      "legacy_status": "Teilweise integriert",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "CMD-02",
+      "module_id": "CMD",
+      "name": "Navigation im Hochformat",
+      "legacy_status": "Teilweise integriert",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "CMD-03",
+      "module_id": "CMD",
+      "name": "Quick Access",
+      "legacy_status": "Teilweise integriert",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "CMD-04",
+      "module_id": "CMD",
+      "name": "Sprachwahl DE/EN/FR",
+      "legacy_status": "Teilweise integriert",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "CMD-05",
+      "module_id": "CMD",
+      "name": "Kingdom Status",
+      "legacy_status": "Teilweise integriert",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "OUT-01",
+      "module_id": "OUT",
+      "name": "74 Outpost-Datensätze",
+      "legacy_status": "Android-getestet",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "OUT-02",
+      "module_id": "OUT",
+      "name": "Suche und Dropdown-Filter",
+      "legacy_status": "Android-getestet",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "OUT-03",
+      "module_id": "OUT",
+      "name": "Aktive Filter-Chips",
+      "legacy_status": "Android-getestet",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "OUT-04",
+      "module_id": "OUT",
+      "name": "Auswahl und Koordinaten",
+      "legacy_status": "Android-getestet",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "OUT-05",
+      "module_id": "OUT",
+      "name": "Plus-/Minus-Zoom",
+      "legacy_status": "Android-getestet",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "OUT-06",
+      "module_id": "OUT",
+      "name": "Zwei-Finger-Zoom",
+      "legacy_status": "Android-getestet",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "OUT-07",
+      "module_id": "OUT",
+      "name": "Pan-Begrenzung",
+      "legacy_status": "Android-getestet",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "OUT-08",
+      "module_id": "OUT",
+      "name": "Vollbild",
+      "legacy_status": "Android-getestet",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "OUT-09",
+      "module_id": "OUT",
+      "name": "Home-Reset",
+      "legacy_status": "Android-getestet",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "OUT-10",
+      "module_id": "OUT",
+      "name": "Rücknavigation",
+      "legacy_status": "Android-getestet",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "OPS-01",
+      "module_id": "OPS",
+      "name": "Soll/Ist-Outpost-Transfer",
+      "legacy_status": "Konzipiert / separat",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "OPS-02",
+      "module_id": "OPS",
+      "name": "Quadranten-Balance",
+      "legacy_status": "Konzipiert / separat",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "OPS-03",
+      "module_id": "OPS",
+      "name": "Reportgenerator",
+      "legacy_status": "Konzipiert / separat",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "OPS-04",
+      "module_id": "OPS",
+      "name": "Discord-/Chat-Ausgabe",
+      "legacy_status": "Konzipiert / separat",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "OPS-05",
+      "module_id": "OPS",
+      "name": "Outpost-History",
+      "legacy_status": "Konzipiert / separat",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "KVK-01",
+      "module_id": "KVK",
+      "name": "Kingdom Head-to-Head",
+      "legacy_status": "Separat entwickelt",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "KVK-02",
+      "module_id": "KVK",
+      "name": "Matchmaking-Risiko",
+      "legacy_status": "Separat entwickelt",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "KVK-03",
+      "module_id": "KVK",
+      "name": "Whale Risk",
+      "legacy_status": "Separat entwickelt",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "KVK-04",
+      "module_id": "KVK",
+      "name": "Tactical Alerts",
+      "legacy_status": "Separat entwickelt",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "KVK-05",
+      "module_id": "KVK",
+      "name": "KvK Prep Dashboard",
+      "legacy_status": "Separat entwickelt",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "WATCH-01",
+      "module_id": "WATCH",
+      "name": "Gegnerprofile",
+      "legacy_status": "Konzipiert / separat",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "WATCH-02",
+      "module_id": "WATCH",
+      "name": "Players-to-Watch-Liste",
+      "legacy_status": "Konzipiert / separat",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "WATCH-03",
+      "module_id": "WATCH",
+      "name": "Aktivitätshinweise",
+      "legacy_status": "Konzipiert / separat",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "WATCH-04",
+      "module_id": "WATCH",
+      "name": "Power-Trends",
+      "legacy_status": "Konzipiert / separat",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "READY-01",
+      "module_id": "READY",
+      "name": "Zehn Power-Kategorien",
+      "legacy_status": "Separat entwickelt",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "READY-02",
+      "module_id": "READY",
+      "name": "Stärken und Schwächen",
+      "legacy_status": "Separat entwickelt",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "READY-03",
+      "module_id": "READY",
+      "name": "Bedrohungsbewertung",
+      "legacy_status": "Separat entwickelt",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "TRUE-01",
+      "module_id": "TRUE",
+      "name": "Dauerhafte Power",
+      "legacy_status": "Konzipiert",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "TRUE-02",
+      "module_id": "TRUE",
+      "name": "Truppenpower getrennt",
+      "legacy_status": "Konzipiert",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "TRUE-03",
+      "module_id": "TRUE",
+      "name": "Mystic Trials",
+      "legacy_status": "Konzipiert",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "TRUE-04",
+      "module_id": "TRUE",
+      "name": "Top-40 Ranking",
+      "legacy_status": "Konzipiert",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "ALLY-01",
+      "module_id": "ALLY",
+      "name": "Vier-Allianzen-Vergleich",
+      "legacy_status": "Integration offen",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "ALLY-02",
+      "module_id": "ALLY",
+      "name": "Gesamtpower",
+      "legacy_status": "Integration offen",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "ALLY-03",
+      "module_id": "ALLY",
+      "name": "Mitglieder",
+      "legacy_status": "Integration offen",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "ALLY-04",
+      "module_id": "ALLY",
+      "name": "Truegold",
+      "legacy_status": "Integration offen",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "ALLY-05",
+      "module_id": "ALLY",
+      "name": "Town-Center-Verteilung",
+      "legacy_status": "Integration offen",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "TRANS-01",
+      "module_id": "TRANS",
+      "name": "Kandidatenboard",
+      "legacy_status": "Integration offen",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "TRANS-02",
+      "module_id": "TRANS",
+      "name": "Powergrenze",
+      "legacy_status": "Integration offen",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "TRANS-03",
+      "module_id": "TRANS",
+      "name": "Transfer-Bewertung",
+      "legacy_status": "Integration offen",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "TRANS-04",
+      "module_id": "TRANS",
+      "name": "Einladungsliste",
+      "legacy_status": "Integration offen",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "HERO-01",
+      "module_id": "HERO",
+      "name": "Helden- und Generationen-Datenbank",
+      "legacy_status": "Separat entwickelt",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "HERO-02",
+      "module_id": "HERO",
+      "name": "Skills und Sterne",
+      "legacy_status": "Separat entwickelt",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "HERO-03",
+      "module_id": "HERO",
+      "name": "Leader/Joiner-Empfehlungen",
+      "legacy_status": "Separat entwickelt",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "HERO-04",
+      "module_id": "HERO",
+      "name": "Heldenvergleich und Ampel",
+      "legacy_status": "Separat entwickelt",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "RALLY-01",
+      "module_id": "RALLY",
+      "name": "Truppenverhältnisse",
+      "legacy_status": "Separat entwickelt",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "RALLY-02",
+      "module_id": "RALLY",
+      "name": "Rally-Leader",
+      "legacy_status": "Separat entwickelt",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "RALLY-03",
+      "module_id": "RALLY",
+      "name": "Rally-Joiner",
+      "legacy_status": "Separat entwickelt",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "RALLY-04",
+      "module_id": "RALLY",
+      "name": "Optimierungsrechnung",
+      "legacy_status": "Separat entwickelt",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "WAR-01",
+      "module_id": "WAR",
+      "name": "WarSim UI",
+      "legacy_status": "Konzipiert / separat",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "WAR-02",
+      "module_id": "WAR",
+      "name": "Monte-Carlo-Kern",
+      "legacy_status": "Konzipiert / separat",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "WAR-03",
+      "module_id": "WAR",
+      "name": "Wahrscheinlichkeitsszenarien",
+      "legacy_status": "Konzipiert / separat",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "WAR-04",
+      "module_id": "WAR",
+      "name": "Gegenprüfung",
+      "legacy_status": "Konzipiert / separat",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "REP-01",
+      "module_id": "REP",
+      "name": "Zeitstempel",
+      "legacy_status": "Teilweise separat",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "REP-02",
+      "module_id": "REP",
+      "name": "Snapshothistorie",
+      "legacy_status": "Teilweise separat",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "REP-03",
+      "module_id": "REP",
+      "name": "Chat-Limits 512/2000",
+      "legacy_status": "Teilweise separat",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "REP-04",
+      "module_id": "REP",
+      "name": "Copy/Export",
+      "legacy_status": "Teilweise separat",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "ABP-01",
+      "module_id": "ABP",
+      "name": "Appbeschreibung",
+      "legacy_status": "Android-getestet",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "ABP-02",
+      "module_id": "ABP",
+      "name": "Funktionsstand",
+      "legacy_status": "Android-getestet",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "ABP-03",
+      "module_id": "ABP",
+      "name": "Versionshistorie",
+      "legacy_status": "Android-getestet",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "ABP-04",
+      "module_id": "ABP",
+      "name": "Daten und Credits",
+      "legacy_status": "Android-getestet",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "ABP-05",
+      "module_id": "ABP",
+      "name": "Rücknavigation",
+      "legacy_status": "Android-getestet",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "ABN-01",
+      "module_id": "ABN",
+      "name": "Queen-An-Poster",
+      "legacy_status": "Geplant",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "ABN-02",
+      "module_id": "ABN",
+      "name": "Allianzgeschichte",
+      "legacy_status": "Geplant",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "ABN-03",
+      "module_id": "ABN",
+      "name": "Kingdom-1885-Vorstellung",
+      "legacy_status": "Geplant",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "SET-01",
+      "module_id": "SET",
+      "name": "Sprachauswahl",
+      "legacy_status": "Teilweise / geplant",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "SET-02",
+      "module_id": "SET",
+      "name": "Rechte und Rollen",
+      "legacy_status": "Teilweise / geplant",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "SET-03",
+      "module_id": "SET",
+      "name": "Hilfe und Suche",
+      "legacy_status": "Teilweise / geplant",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "SET-04",
+      "module_id": "SET",
+      "name": "Update-Check",
+      "legacy_status": "Teilweise / geplant",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    },
+    {
+      "id": "SET-05",
+      "module_id": "SET",
+      "name": "Discord-Feedback",
+      "legacy_status": "Teilweise / geplant",
+      "verification": "UNVERIFIED_CURRENT_ALPHA"
+    }
+  ]
+}
