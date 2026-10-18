@@ -1,64 +1,18 @@
-name: PHALANX Alpha Edge Secure Export (Artifact Only)
+name: PHALANX Alpha Edge Export — SECURITY HOLD
+# Deliberately disabled: repository visibility is PUBLIC and artifact download
+# does not meet private encrypted independent-backup requirements.
+# Never re-enable without approved private encrypted storage and broad secret review.
 on:
   workflow_dispatch:
 permissions:
   contents: read
 jobs:
-  export:
+  security-hold:
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
-    env:
-      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-      PROJECT_REF: hcjrdofkdkasznywvcxo
+    timeout-minutes: 2
     steps:
-      - uses: actions/checkout@v4
-      - name: Require isolated branch and credential
-        shell: bash
+      - name: Refuse unsafe export
         run: |
-          test "$GITHUB_REF" = 'refs/heads/alpha/android-integrated-freeze-20261017'
-          test -n "$SUPABASE_ACCESS_TOKEN"
-      - name: Install Supabase CLI
-        run: npm install --global supabase
-      - name: Download deployed functions into temporary workspace
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p "$RUNNER_TEMP/edge-export"
-          cd "$RUNNER_TEMP/edge-export"
-          supabase init
-          supabase link --project-ref "$PROJECT_REF"
-          supabase functions download
-      - name: Verify function count and reject obvious secrets
-        shell: bash
-        run: |
-          set -euo pipefail
-          root="$RUNNER_TEMP/edge-export/supabase/functions"
-          test -d "$root"
-          actual="$(find "$root" -mindepth 1 -maxdepth 1 -type d | wc -l)"
-          test "$actual" -eq 26
-          if grep -REl -- 'PRIVATE KEY-----|gh[pousr]_[[:alnum:]_]{30,}|sk_live_[[:alnum:]]{12,}|AKIA[0-9A-Z]{16}' "$root" >/dev/null; then
-            echo "::error::Potential embedded credential detected; refusing export."
-            exit 1
-          fi
-          echo "All 26 directories present. Pattern scan passed; broader secret review still required." >> "$GITHUB_STEP_SUMMARY"
-      - name: Generate SHA-256 file manifest
-        shell: bash
-        run: |
-          set -euo pipefail
-          cd "$RUNNER_TEMP/edge-export"
-          find supabase/functions -type f -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS
-          echo "Manifest generated for all downloaded files." >> "$GITHUB_STEP_SUMMARY"
-      - name: Package into temporary archive
-        shell: bash
-        run: |
-          set -euo pipefail
-          cd "$RUNNER_TEMP/edge-export"
-          tar -czf "$RUNNER_TEMP/phalanx-edge-functions-20261018.tar.gz" supabase/functions SHA256SUMS
-          sha256sum "$RUNNER_TEMP/phalanx-edge-functions-20261018.tar.gz" >> "$GITHUB_STEP_SUMMARY"
-      - name: Upload short-lived restricted artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: phalanx-edge-functions-alpha-export
-          path: ${{ runner.temp }}/phalanx-edge-functions-20261018.tar.gz
-          retention-days: 1
-          if-no-files-found: error
+          echo "::error::SECURITY HOLD: public-repository artifacts are not approved for confidential Edge Function source."
+          echo "No Supabase credentials accessed; no functions downloaded; no artifact uploaded."
+          exit 1
