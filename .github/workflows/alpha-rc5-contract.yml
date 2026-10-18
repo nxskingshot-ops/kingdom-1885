@@ -124,6 +124,22 @@ jobs:
           cp preview/transfer-scouting-demo-v5.js alpha-deploy/
           cp preview/kingdom-hub-trends-v8.html alpha-deploy/
           cp preview/hero-intelligence-evidence-advisor-v15-2026-10-12.html alpha-deploy/
+          # Preview HTML moves from /preview/ to the alpha-deploy root.
+          # Correct relative PWA references only in deployed copies.
+          python3 - <<'PY'
+          from pathlib import Path
+          for filename in (
+              'nexus-phalanx-command-center-alpha28-local-pair-test-2026-10-13.html',
+              'nexus-phalanx-battle-readiness-verified-status-test-2026-10-12.html',
+          ):
+              path = Path('alpha-deploy') / filename
+              html = path.read_text(encoding='utf-8')
+              assert '../nexus-app-2.webmanifest' in html
+              assert '../icon-192.png' in html
+              html = html.replace('../nexus-app-2.webmanifest', './nexus-app-2.webmanifest')
+              html = html.replace('../icon-192.png', './icon-192.png')
+              path.write_text(html, encoding='utf-8')
+          PY
           test -s alpha-deploy/outpost-map-alpha23-frozen.html
           test -s alpha-deploy/phalanx-rc5-isolated-route-adapter-20261017.js
           grep -Fq "reports:['./outpost-report-v11.html'" alpha-deploy/phalanx-alpha-android-integration-20261017.html
