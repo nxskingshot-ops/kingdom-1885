@@ -1,5 +1,10 @@
 name: PHALANX Alpha Latest Daily Backup Verify (Read Only)
 on:
+  push:
+    branches:
+      - alpha/android-integrated-freeze-20261017
+    paths:
+      - .github/workflows/phalanx-alpha-latest-daily-backup-verify-20261018.yml
   workflow_dispatch:
 permissions:
   contents: read
@@ -28,7 +33,10 @@ jobs:
         run: |
           set -euo pipefail
           sudo apt-get update -qq
-          sudo apt-get install -y -qq postgresql-client openssl awscli
+          sudo apt-get install -y -qq postgresql-common ca-certificates curl openssl awscli
+          sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-client-18
           pg_restore --version
       - name: Select latest daily encrypted backup without changing B2
         shell: bash
