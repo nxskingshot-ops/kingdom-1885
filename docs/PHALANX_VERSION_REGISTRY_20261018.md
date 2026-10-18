@@ -35,3 +35,11 @@
 - Alpha23 aus der Library als unveränderte isolierte Kopie in den Alpha-Branch übernehmen; SHA-256 im CI prüfen; Outpost-Route auf diese Kopie umstellen.
 - Alle übrigen Modul-FREEZEs einzeln mit ihren aktuellen RC5-Zielen abgleichen und Ergebnisse in diesem Register ergänzen.
 - Keine alten Routen entfernen, bevor deren Abhängigkeiten geprüft sind.
+
+## Korrekturprotokoll 2026-10-18 — visuelle Identität hat Vorrang
+- **OUTPOST AKTUELL GESUCHT:** `Outpost Intelligence · Alpha 24`, `MAP 2.0 · KINGDOM #1885 · ALPHA 24`. Referenz sind sechs vom Nutzer bereitgestellte Android-Screenshots (Königin/PHALANX-Banner, Navy/Gold-Diamantkarte, 74 Outposts, Allianzfilter, Scholar's Tower Detailkarte). **Dateipfad und SHA noch NICHT identifiziert.** Status: `REFERENCE_CONFIRMED / SOURCE_UNVERIFIED / INTEGRATION_BLOCKED`.
+- **PHX-OUT-FRZ-001 Alpha23:** Der Hash beweist nur die Identität des Alpha23-Snapshots, **nicht** seine Eignung als aktuelle Karte. Darf nicht als freigegebene aktuelle UI bezeichnet werden. Bestehende Alpha-Testroute gilt als **Fehlzuordnung**, bis Alpha24-Quelle eindeutig identifiziert ist.
+- **Alpha35:** Kein Nachweis, dass die Alpha35-Allianz-Integrationsdateien dieselbe Outpost-Karte darstellen. Versionsnummern unterschiedlicher Module niemals vergleichen.
+- **Verbindliche Reihenfolge:** (1) Screenshots/Designreferenz → (2) Quellpfad plus inhaltlicher Abgleich → (3) Hash → (4) explizite Zielroute → (5) einmaliger notwendiger Integrationstest. Fehlt (2), keine Route ändern und keine Freigabe behaupten.
+- **Nachweisdisziplin:** Grün bei CI bedeutet Build bestanden; ein Browser-Screenshot einer anderen Karte bedeutet nicht Designfreigabe. Keine weiteren Tests von Alpha23; keine Änderung an Produktion oder FREEZE-Originalen.
+- **Konflikt zum alten Registereintrag:** Die oben stehende frühere Aufgabe »Alpha23 in Alpha integrieren« ist historisch erledigt, aber **fachlich durch die bestätigte Alpha24-Referenz überholt**. Nicht wiederholen.
