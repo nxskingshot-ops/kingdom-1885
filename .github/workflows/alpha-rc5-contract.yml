@@ -102,6 +102,7 @@ jobs:
           p.write_text(source,encoding='utf-8')
           PY
           cp preview/phalanx-alpha-android-integration-20261017.html alpha-deploy/
+          cp data/phalanx-alpha-version-lock-20261018.json alpha-deploy/
           cp preview/nexus-phalanx-command-center-alpha28-local-pair-test-2026-10-13.html alpha-deploy/
           cp preview/kvk-prep-five-contrast-v13.html alpha-deploy/
           cp preview/nexus-phalanx-battle-readiness-verified-status-test-2026-10-12.html alpha-deploy/
