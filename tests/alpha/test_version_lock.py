@@ -17,3 +17,6 @@ harness = (root / "preview/phalanx-alpha-android-integration-20261017.html").rea
 assert "Outpost Map V2 · approved Alpha23" not in harness, "BLOCKED: Alpha23 mislabeled as current"
 assert "Outpost Map Alpha23 · legacy reference" in harness
 print("PASS: Alpha23 visibly marked legacy; Alpha24 source remains unverified")
+
+assert lock['app']['id'] in harness
+assert lock['app']['build'] in harness
