@@ -26,5 +26,31 @@
     "currentOutpostMustHaveVerifiedSource": true,
     "allowLegacyOutpostAsCurrent": false,
     "productionChanges": false
-  }
+  },
+  "changes": [
+    {
+      "kind": "warning",
+      "module": "OUT",
+      "message": "Alpha24 screenshot reference confirmed; original source not identified",
+      "verified": true
+    },
+    {
+      "kind": "error",
+      "module": "OUT",
+      "message": "Alpha23 is deployed as legacy preview, not approved current map",
+      "verified": true
+    },
+    {
+      "kind": "changed",
+      "module": "APP",
+      "message": "Visible build ID aligned with registry",
+      "verified": true
+    },
+    {
+      "kind": "added",
+      "module": "APP",
+      "message": "Color-coded status panel added to isolated shell",
+      "verified": true
+    }
+  ]
 }
