@@ -23,7 +23,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Confirm alpha derivative exists
         run: test -f preview/PHALANX_RC5_ALPHA_DERIVED_20261017.html
-      - name: Verify exact bytes and all 39 menu routes
+      - name: Gate approved Outpost V2 before any deployment\n        run: python3 tests/alpha/test_outpost_v2_freeze_gate.py\n      - name: Verify exact bytes and all 39 menu routes
         run: python3 tests/alpha/test_rc5_derived.py preview/PHALANX_RC5_ALPHA_DERIVED_20261017.html
       - name: Verify alpha harness navigation contract
         run: python3 tests/alpha/test_harness_navigation.py
