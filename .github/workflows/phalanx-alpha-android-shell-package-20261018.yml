@@ -1,0 +1,51 @@
+name: PHALANX Alpha Android Shell Package (No Deploy)
+on:
+  workflow_dispatch:
+  push:
+    branches: [alpha/android-integrated-freeze-20261017]
+    paths:
+      - '.github/workflows/phalanx-alpha-android-shell-package-20261018.yml'
+      - 'preview/phalanx-alpha-android-integration-20261017.html'
+permissions:
+  contents: read
+jobs:
+  package:
+    if: github.ref == 'refs/heads/alpha/android-integrated-freeze-20261017'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check alpha routes and current OUT-024 reference
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/phalanx-rc5-out024-isolated-nav-guard-20261018.mjs
+          node <<'NODE'
+          const fs=require('fs');
+          const html=fs.readFileSync('preview/phalanx-alpha-android-integration-20261017.html','utf8');
+          const matches=[...html.matchAll(/['"]\.\/([^'"?#]+\.html)['"]/g)].map(m=>m[1]);
+          if(matches.length<9) throw Error('Too few routes: '+matches.length);
+          for(const file of new Set(matches)) if(!fs.existsSync('preview/'+file)) throw Error('Missing route: '+file);
+          if(!matches.includes('PHX-OUT-024-MAP2-FROZEN-20261018.html')) throw Error('OUT-024 route missing');
+          if(/OUT-023[^\w]/.test(html) && !html.includes('Legacy')) console.log('Review legacy label manually');
+          console.log('Alpha HTML references resolved:',new Set(matches).size);
+          NODE
+      - name: Package isolated Android browser test
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist/phalanx-android-alpha
+          cp preview/phalanx-alpha-android-integration-20261017.html dist/phalanx-android-alpha/index.html
+          cp preview/*.html dist/phalanx-android-alpha/
+          sha256sum dist/phalanx-android-alpha/*.html > dist/phalanx-android-alpha/SHA256SUMS.txt
+          test -s dist/phalanx-android-alpha/index.html
+          echo 'Static alpha bundle only; no deployment, no APK, no auth verification.'
+      - name: Upload temporary test package
+        uses: actions/upload-artifact@v4
+        with:
+          name: phalanx-android-alpha-static-test
+          path: dist/phalanx-android-alpha/
+          retention-days: 7
+          if-no-files-found: error
