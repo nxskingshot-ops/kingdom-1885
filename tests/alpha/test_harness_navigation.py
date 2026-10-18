@@ -57,3 +57,7 @@ assert "B001" not in source
 assert 'id="copy-module"' in source
 assert "navigator.clipboard.writeText(url.href)" in source
 assert "url.hash=active||'rc5'" in source
+
+assert "if(active!=='rc5')show('rc5',true)" in source
+assert "home:['../backups/" not in source
+assert "navigation:['./nexus-phalanx-navigation-sandbox" not in source
