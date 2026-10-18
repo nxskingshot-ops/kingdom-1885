@@ -9,6 +9,7 @@ on:
       - 'tests/alpha/test_harness_navigation.py'
       - '.github/workflows/alpha-rc5-contract.yml'
       - 'preview/phalanx-alpha-android-integration-20261017.html'
+      - 'preview/phalanx-ranking-integration-rc-20261015.html'
   workflow_dispatch:
 permissions:
   contents: read
@@ -37,10 +38,18 @@ jobs:
             hero-intelligence-evidence-advisor-v15-2026-10-12.html; do
             test -s "preview/$file" || exit 1
           done
+      - name: Verify Rankings back link stays inside deployed Alpha
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          source = Path('preview/phalanx-ranking-integration-rc-20261015.html').read_text()
+          assert 'href="./phalanx-alpha-android-integration-20261017.html#rc5" target="_top"' in source
+          assert 'href="./phalanx-home-auth-rc9-20261014.html"' not in source
+          PY
       - name: Package isolated alpha for download (not production)
         uses: actions/upload-artifact@v4
         with:
-          name: phalanx-rc5-alpha-20261018-d
+          name: phalanx-rc5-alpha-20261018-e
           path: |
             preview/PHALANX_RC5_ALPHA_DERIVED_20261017.html
             preview/phalanx-alpha-android-integration-20261017.html
