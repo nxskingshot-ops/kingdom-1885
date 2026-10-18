@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="de">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PHALANX RC5 + OUT-024 — isolierter Navigationstest</title>
+<style>html,body{margin:0;height:100%;background:#061018;color:#f0dcaa;font:13px system-ui,sans-serif}header{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid #826d39}a{color:#f0dcaa}iframe{display:block;width:100%;height:calc(100% - 47px);border:0}small{color:#d5c6a3}</style>
+</head><body>
+<header><span>ISOLIERTER TEST · RC5 → OUT-024 <small>Originale unverändert</small></span><a href="./PHALANX_RC5_ALPHA_DERIVED_20261017.html">RC5 Original öffnen</a></header>
+<iframe id="preview" title="PHALANX RC5 isolierter Integrationstest" src="./PHALANX_RC5_ALPHA_DERIVED_20261017.html"></iframe>
+<script>
+(() => {
+  'use strict';
+  const frame=document.getElementById('preview');
+  const rc5='PHALANX_RC5_ALPHA_DERIVED_20261017.html';
+  const out='PHX-OUT-024-MAP2-FROZEN-20261018.html';
+  frame.addEventListener('load',()=>{
+    try {
+      const doc=frame.contentDocument;
+      if(!doc || !frame.contentWindow.location.pathname.endsWith('/'+rc5)) return;
+      const anchor=Array.from(doc.querySelectorAll('a[data-pending]')).find(a=>a.textContent.includes('Outpost Map'));
+      if(!anchor) throw new Error('RC5 Outpost Map menu entry missing');
+      anchor.removeAttribute('aria-disabled');
+      anchor.removeAttribute('data-pending');
+      anchor.setAttribute('href','./'+out);
+      anchor.setAttribute('title','OUT-024 — freigegebenes Kartenoriginal (isolierter Test)');
+      const badge=anchor.querySelector('.status');
+      if(badge){badge.textContent='OUT-024 TEST';badge.classList.remove('unlinked');badge.classList.add('linked')}
+      // Original RC5 listener remains on the anchor; it prevents default even after removing data-pending.
+      // Open the exact frozen map explicitly in this isolated frame without changing either source file.
+      anchor.addEventListener('click',event=>{
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        frame.src='./'+out;
+      },true);
+    } catch(err){console.error('Isolated OUT-024 navigation setup failed',err)}
+  });
+})();
+</script>
+</body></html>
