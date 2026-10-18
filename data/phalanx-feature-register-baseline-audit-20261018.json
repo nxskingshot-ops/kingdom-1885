@@ -1,0 +1,105 @@
+{
+  "schema": "phalanx.feature-register-baseline-audit.v1",
+  "audit_date": "2026-10-18",
+  "source": "ChatGPT Library /NEXUS PHALANX/Project Management/NEXUS_PHALANX_FEATURE_REGISTER_2026-10-13.json",
+  "source_snapshot_date": "2026-10-13",
+  "modules": [
+    {
+      "id": "CMD",
+      "name": "Command Center",
+      "feature_count": 5
+    },
+    {
+      "id": "OUT",
+      "name": "Outpost Intelligence",
+      "feature_count": 10
+    },
+    {
+      "id": "OPS",
+      "name": "Outpost Operations",
+      "feature_count": 5
+    },
+    {
+      "id": "KVK",
+      "name": "KvK Intelligence",
+      "feature_count": 5
+    },
+    {
+      "id": "WATCH",
+      "name": "Players to Watch",
+      "feature_count": 4
+    },
+    {
+      "id": "READY",
+      "name": "Battle Readiness",
+      "feature_count": 3
+    },
+    {
+      "id": "TRUE",
+      "name": "True Power",
+      "feature_count": 4
+    },
+    {
+      "id": "ALLY",
+      "name": "Alliance Comparison",
+      "feature_count": 5
+    },
+    {
+      "id": "TRANS",
+      "name": "Transfer Scouting",
+      "feature_count": 4
+    },
+    {
+      "id": "HERO",
+      "name": "Hero Intelligence",
+      "feature_count": 4
+    },
+    {
+      "id": "RALLY",
+      "name": "Rally Optimizer",
+      "feature_count": 4
+    },
+    {
+      "id": "WAR",
+      "name": "WarSim",
+      "feature_count": 4
+    },
+    {
+      "id": "REP",
+      "name": "Reports & History",
+      "feature_count": 4
+    },
+    {
+      "id": "ABP",
+      "name": "About PHALANX",
+      "feature_count": 5
+    },
+    {
+      "id": "ABN",
+      "name": "About NEXUS",
+      "feature_count": 3
+    },
+    {
+      "id": "SET",
+      "name": "Settings & Help",
+      "feature_count": 5
+    }
+  ],
+  "feature_count": 74,
+  "status_counts": {
+    "Teilweise integriert": 5,
+    "Android-getestet": 15,
+    "Konzipiert / separat": 13,
+    "Separat entwickelt": 16,
+    "Konzipiert": 4,
+    "Integration offen": 9,
+    "Teilweise separat": 4,
+    "Geplant": 3,
+    "Teilweise / geplant": 5
+  },
+  "duplicate_ids": [],
+  "missing_required_fields": [],
+  "source_to_live_code_parity": "NOT_TESTED",
+  "android_e2e": "NOT_TESTED",
+  "note": "Historical feature inventory only; statuses are not current acceptance results. 15 records marked Android-getestet in historical data, not newly retested."
+}
