@@ -32,6 +32,18 @@ jobs:
           cp preview/PHALANX_RC5_OUT024_ISOLATED_NAV_TEST_V2_20261018.html dist/phalanx-out024-alpha/index.html
           cp preview/PHALANX_RC5_ALPHA_DERIVED_20261017.html dist/phalanx-out024-alpha/
           cp preview/PHX-OUT-024-MAP2-FROZEN-20261018.html dist/phalanx-out024-alpha/
+          # Preserve all seven pre-existing RC5 preview links in this standalone package.
+          for file in \
+            nexus-phalanx-command-center-alpha28-local-pair-test-2026-10-13.html \
+            kvk-prep-five-contrast-v13.html \
+            nexus-phalanx-battle-readiness-verified-status-test-2026-10-12.html \
+            phalanx-ranking-integration-rc-20261015.html \
+            outpost-report-v11.html \
+            kingdom-hub-trends-v8.html \
+            hero-intelligence-evidence-advisor-v15-2026-10-12.html; do
+            test -s "preview/$file" || { echo "Missing existing RC5 target: $file"; exit 1; }
+            cp "preview/$file" dist/phalanx-out024-alpha/
+          done
           test -s dist/phalanx-out024-alpha/index.html
           test -s dist/phalanx-out024-alpha/PHALANX_RC5_ALPHA_DERIVED_20261017.html
           test -s dist/phalanx-out024-alpha/PHX-OUT-024-MAP2-FROZEN-20261018.html
