@@ -27,11 +27,11 @@ assert "RC5 CLICK RECEIVED" in source, "RC5 click acknowledgement missing"
 assert "candidate.setAttribute('href','./transfer-scouting-demo-v5.html')" in source, 'Candidate Board link must be corrected in loaded RC5 document'
 
 # Outpost V2 must never silently fall back to legacy V11 in the Android harness.
-assert "outposts:['./outpost-map-alpha23-frozen.html'" in source
-assert "'preview/outpost-map-alpha23-frozen.html':'outposts'" in source
-assert "outpost.setAttribute('href','./outpost-map-alpha23-frozen.html')" in source
+assert "outposts:['./PHX-OUT-024-MAP2-FROZEN-20261018.html'" in source
+assert "'preview/PHX-OUT-024-MAP2-FROZEN-20261018.html':'outposts'" in source
+assert "outpost.setAttribute('href','./PHX-OUT-024-MAP2-FROZEN-20261018.html')" in source
 assert "reports:['./outpost-report-v11.html','Reports & History · legacy V11']" in source
-assert (Path("preview") / "outpost-map-alpha23-frozen.html").is_file()
+assert (Path("preview") / "PHX-OUT-024-MAP2-FROZEN-20261018.html").is_file()
 
 # Visible buttons must lead to files staged by the alpha workflow.
 workflow = Path(".github/workflows/alpha-rc5-contract.yml").read_text(encoding="utf-8")
@@ -41,18 +41,18 @@ for key in re.findall(r'<button data-key="([^"]+)"', source):
     assert prefix in routes, f"Visible button has no route: {key}"
     filename = routes.split(prefix, 1)[1].split("'", 1)[0]
     assert (Path("preview") / filename).is_file(), f"Missing visible module: {key}"
-    assert "cp preview/" + filename + " alpha-deploy/" in workflow, f"Module not staged: {key}"
+    assert ("cp preview/" + filename + " alpha-deploy/" in workflow or (key=="outposts" and "python3 tests/alpha/stage_outpost_alpha24.py" in workflow)), f"Module not staged: {key}"
 print("PASS: visible module routes are staged in deploy")
 
 assert "'preview/transfer-scouting-demo-v5.html':'transfers'" in source
-assert "tag.textContent='LEGACY 23'" in source
+assert "tag.textContent='MAP 2.0 · 24'" in source
 
 # Build identity must agree with the version registry and must not use stale labels.
 import json
 lock = json.loads(Path("data/phalanx-alpha-version-lock-20261018.json").read_text(encoding="utf-8"))
-assert lock["app"]["build"] == "B002"
-assert "PHX-A001 · B002 | TEST" in source
-assert "B001" not in source
+assert lock["app"]["build"] == "B003"
+assert "PHX-A001 · B003 | TEST" in source
+assert "B001" not in source and "B002" not in source
 
 assert 'id="copy-module"' in source
 assert "navigator.clipboard.writeText(url.href)" in source
