@@ -35,7 +35,7 @@ for(const a of entries){
  else unexpected++;
 }
 const rankings=[...document.querySelectorAll('a:not([data-pending])')].filter(a=>a.textContent.trim().startsWith('Rankings'));const rankingValid=rankings.length===1&&rankings[0].href===PREVIEW_ROOT+'phalanx-ranking-integration-rc-20261015.html';
-const result={total:totalBefore,linked,disabled,unexpected,rankingValid,ready:totalBefore===39&&entries.length===38&&linked===6&&disabled===32&&unexpected===0&&rankingValid};
+const result={total:totalBefore,linked,disabled,unexpected,rankingValid,ready:totalBefore===39&&entries.length===37&&linked===6&&disabled===31&&unexpected===0&&rankingValid&&[...document.querySelectorAll('a')].some(a=>a.textContent.trim().startsWith('Outpost Map')&&a.getAttribute('href')==='./outpost-map-alpha23-frozen.html')};
 document.documentElement.dataset.rc5RouteGate=result.ready?'pass':'fail';
 console.info('[PHALANX RC5 isolated route adapter]',result);
 })();
