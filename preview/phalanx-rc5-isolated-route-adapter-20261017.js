@@ -19,7 +19,7 @@ for(const a of entries){
  const name=label(a),file=targets[name];
  if(file){
   const existing=new URL(a.href,location.href);
-  if(existing.href!==PREVIEW_ROOT+file){unexpected++;continue;}
+  if(existing.href!==PREVIEW_ROOT+file && !(name==='Reports & History' && existing.href===PREVIEW_ROOT+'outpost-report-v11.html')){unexpected++;continue;}
   // The frozen click interceptor is registered directly on each anchor.
   // Replacing the node drops that interceptor WITHOUT changing markup or CSS.
   const clean=a.cloneNode(true);clean.removeAttribute('data-pending');clean.removeAttribute('aria-disabled');
