@@ -4,7 +4,7 @@ from pathlib import Path
 import re
 
 source = Path("preview/phalanx-alpha-android-integration-20261017.html").read_text(encoding="utf-8")
-assert 'ALPHA BUILD 20261018-c' in source, "Persistent preview build marker missing"
+assert 'ALPHA BUILD 20261018-d' in source, "Persistent preview build marker missing"
 assert "if(b.dataset.key==='rc5'){active='';" in source, "RC5 button must force reload"
 assert "currentPath!==targetPath" in source, "Route must compare iframe actual URL"
 assert "if(active!==k||currentPath!==targetPath)" in source, "Route guard regression"
@@ -19,3 +19,6 @@ for filename in (
     assert (Path("preview") / filename).is_file(), f"Missing target: {filename}"
 assert not re.search(r"location\.(?:assign|replace)\(", source), "Unexpected top-level redirect"
 print("PASS: alpha harness static navigation contract; browser interaction still requires manual validation")
+
+assert "view.replaceWith(fresh)" in source, "RC5 return must rebuild iframe"
+assert "RC5 CLICK RECEIVED" in source, "RC5 click acknowledgement missing"
