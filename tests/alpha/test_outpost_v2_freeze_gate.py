@@ -18,10 +18,10 @@ def main():
     if not ADAPTER.is_file():
         sys.exit("BLOCKED: RC5 route adapter missing")
     adapter = ADAPTER.read_text(encoding="utf-8")
-    if "'Reports & History':'outpost-report-v11.html'" in adapter:
-        sys.exit("BLOCKED: legacy Outpost v11 is still wired")
-    if "'Reports & History':'outpost-map-alpha23-frozen.html'" not in adapter:
-        sys.exit("BLOCKED: approved Outpost V2 route not explicitly wired")
+    if "['Outpost Map','outpost-map-alpha23-frozen.html']" not in adapter:
+        sys.exit("BLOCKED: approved V2 must be wired to Outpost Map, not Reports")
+    if "['Reports & History','outpost-report-v11.html']" not in adapter:
+        sys.exit("BLOCKED: legacy Reports & History must remain separately identifiable")
     print("PASS: approved Alpha23 SHA-256 and RC5 route verified")
 
 if __name__ == "__main__":
