@@ -73,6 +73,9 @@ jobs:
           assert source.count(old)==1, 'Outpost Map frozen anchor mismatch'
           source=source.replace(old,new)
           assert source.count('outpost-map-alpha23-frozen.html')==1
+          script='<script src="./phalanx-rc5-isolated-route-adapter-20261017.js"></script>'
+          assert source.count('</body>')==1
+          source=source.replace('</body>',script+'</body>')
           p.write_text(source,encoding='utf-8')
           PY
           cp preview/phalanx-alpha-android-integration-20261017.html alpha-deploy/
