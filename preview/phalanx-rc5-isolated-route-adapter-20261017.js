@@ -7,7 +7,7 @@ const targets={
 'Dashboard':'nexus-phalanx-command-center-alpha28-local-pair-test-2026-10-13.html',
 'KvK Prep':'kvk-prep-five-contrast-v13.html',
 'Battle Readiness':'nexus-phalanx-battle-readiness-verified-status-test-2026-10-12.html',
-'Reports & History':'outpost-report-v11.html',
+'Reports & History':'outpost-map-alpha23-frozen.html',
 'Candidate Board':'kingdom-hub-trends-v8.html',
 'Hero Intelligence':'hero-intelligence-evidence-advisor-v15-2026-10-12.html'
 };
