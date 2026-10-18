@@ -106,7 +106,7 @@ jobs:
           cp preview/hero-intelligence-evidence-advisor-v15-2026-10-12.html alpha-deploy/
           test -s alpha-deploy/outpost-map-alpha23-frozen.html
           test -s alpha-deploy/phalanx-rc5-isolated-route-adapter-20261017.js
-          ! grep -q 'outpost-report-v11.html' alpha-deploy/phalanx-alpha-android-integration-20261017.html
+          grep -Fq "reports:['./outpost-report-v11.html'" alpha-deploy/phalanx-alpha-android-integration-20261017.html
           grep -Fq "['Outpost Map','outpost-map-alpha23-frozen.html']" alpha-deploy/phalanx-rc5-isolated-route-adapter-20261017.js
           python3 tests/alpha/test_outpost_v2_freeze_gate.py
       - name: Deploy verified alpha to isolated Cloudflare Pages
