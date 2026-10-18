@@ -32,3 +32,14 @@ assert "'preview/outpost-map-alpha23-frozen.html':'outposts'" in source
 assert "outpost.setAttribute('href','./outpost-map-alpha23-frozen.html')" in source
 assert "reports:['./outpost-report-v11.html','Reports & History · legacy V11']" in source
 assert (Path("preview") / "outpost-map-alpha23-frozen.html").is_file()
+
+# Visible buttons must lead to files staged by the alpha workflow.
+workflow = Path(".github/workflows/alpha-rc5-contract.yml").read_text(encoding="utf-8")
+routes = source.split("const routes={", 1)[1].split("};let view=", 1)[0]
+for key in re.findall(r'<button data-key="([^"]+)"', source):
+    prefix = key + ":['./"
+    assert prefix in routes, f"Visible button has no route: {key}"
+    filename = routes.split(prefix, 1)[1].split("'", 1)[0]
+    assert (Path("preview") / filename).is_file(), f"Missing visible module: {key}"
+    assert "cp preview/" + filename + " alpha-deploy/" in workflow, f"Module not staged: {key}"
+print("PASS: visible module routes are staged in deploy")
