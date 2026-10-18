@@ -18,6 +18,7 @@ on:
       - 'data/phalanx-alpha-version-lock-20261018.json'
       - 'data/phalanx-alpha-version-baseline-20261018.json'
       - 'tests/alpha/compare_version_locks.py'
+      - 'tests/alpha/test_version_comparator.py'
       - 'preview/outpost-viewer-an-v1.js'
       - 'index.html'
   workflow_dispatch:
@@ -48,6 +49,8 @@ jobs:
           PY
       - name: Check version identity and visible legacy label
         run: python3 tests/alpha/test_version_lock.py
+      - name: Regression test version comparison
+        run: python3 tests/alpha/test_version_comparator.py
       - name: Generate deterministic version comparison
         run: python3 tests/alpha/compare_version_locks.py data/phalanx-alpha-version-baseline-20261018.json data/phalanx-alpha-version-lock-20261018.json alpha-version-diff.json
       - name: Verify alpha harness navigation contract
