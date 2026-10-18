@@ -140,6 +140,15 @@ jobs:
               html = html.replace('../icon-192.png', './icon-192.png')
               path.write_text(html, encoding='utf-8')
           PY
+          python3 - <<'PY'
+          from pathlib import Path
+          for name in ('nexus-phalanx-command-center-alpha28-local-pair-test-2026-10-13.html','nexus-phalanx-battle-readiness-verified-status-test-2026-10-12.html'):
+              html=(Path('alpha-deploy')/name).read_text(encoding='utf-8')
+              assert '../nexus-app-2.webmanifest' not in html and '../icon-192.png' not in html
+              assert './nexus-app-2.webmanifest' in html and './icon-192.png' in html
+          assert (Path('alpha-deploy')/'nexus-app-2.webmanifest').is_file()
+          assert (Path('alpha-deploy')/'icon-192.png').is_file()
+          PY
           test -s alpha-deploy/outpost-map-alpha23-frozen.html
           test -s alpha-deploy/phalanx-rc5-isolated-route-adapter-20261017.js
           grep -Fq "reports:['./outpost-report-v11.html'" alpha-deploy/phalanx-alpha-android-integration-20261017.html
