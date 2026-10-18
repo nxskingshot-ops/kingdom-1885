@@ -26,6 +26,33 @@ script.src=new URL('./outpost-viewer-an-v1.js?build=discord-full-report-v11',loc
 const nestedStyle=doc.createElement('style');
 nestedStyle.textContent='.shared{display:none!important}body:has(>.shared) #bar{display:none!important}body:has(>.shared)>iframe{height:100%!important;flex:1 1 auto!important}/* NEXUS test: no second title strip; compact controls float over the map. */#app{grid-template-rows:0 minmax(0,1fr) 42px!important;--toolbar-h:0px!important}#app>.top{display:none!important}#mapTools{position:absolute!important;left:auto!important;right:6px!important;top:6px!important;width:auto!important;height:auto!important;min-height:0!important;padding:0!important;gap:4px!important;background:transparent!important;border:0!important;box-shadow:none!important}#mapTools .mapbrand,#mapTools #healthBadge{display:none!important}#mapTools button{min-height:27px!important;padding:4px 6px!important}';
 doc.head.appendChild(nestedStyle);
+// Alpha-only portrait support: hide the Kingdom map's landscape-only blocker
+// inside this embedded Outpost preview, without modifying the source map.
+const portraitStyle=doc.createElement('style');
+portraitStyle.textContent='@media (orientation:portrait){#rotateOverlay,#rotationOverlay,#orientationOverlay,#rotateWarning,#rotateNotice,.rotate-overlay,.rotation-overlay,.orientation-overlay,.rotate-warning,.rotate-device,.landscape-only-overlay,[data-orientation-warning]{display:none!important;visibility:hidden!important;pointer-events:none!important}html,body,#app{min-height:0!important;max-width:100vw!important}#mapTools{max-width:calc(100vw - 12px)!important;flex-wrap:wrap!important}}';
+doc.head.appendChild(portraitStyle);
+function clearPortraitBlocker(){
+ if(!matchMedia('(orientation: portrait)').matches)return;
+ const all=doc.querySelectorAll('body *');
+ for(const el of all){
+  if(el.children.length>6)continue;
+  const own=[...el.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent).join(' ').trim();
+  if(!/please rotate your device|landscape only/i.test(own))continue;
+  let blocker=el;
+  for(let n=0;n<4&&blocker.parentElement&&blocker.parentElement!==doc.body;n++){
+   const parent=blocker.parentElement;
+   const cs=doc.defaultView.getComputedStyle(parent);
+   if(cs.position==='fixed'||cs.position==='absolute'){blocker=parent;break}
+   blocker=parent;
+  }
+  blocker.style.setProperty('display','none','important');
+  blocker.setAttribute('data-alpha-portrait-blocker-hidden','true');
+ }
+}
+const portraitObserver=new MutationObserver(()=>clearPortraitBlocker());
+portraitObserver.observe(doc.body,{childList:true,subtree:true});
+clearPortraitBlocker();
+frame.contentWindow.addEventListener('resize',clearPortraitBlocker);
 // The map's own fullscreen icon must not fullscreen ONLY the nested iframe:
 // that would hide the NEXUS header/menu. Forward the same user tap to the
 // top-level NEXUS shell, while leaving all map tools and map data untouched.
