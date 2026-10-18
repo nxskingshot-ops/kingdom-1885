@@ -1,0 +1,46 @@
+name: PHALANX Alpha OUT024 Deploy Package (No Deploy)
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - alpha/android-integrated-freeze-20261017
+    paths:
+      - 'preview/PHALANX_RC5_OUT024_ISOLATED_NAV_TEST_V2_20261018.html'
+      - 'preview/PHALANX_RC5_ALPHA_DERIVED_20261017.html'
+      - 'preview/PHX-OUT-024-MAP2-FROZEN-20261018.html'
+      - 'data/outpost-map-alpha24-canonical-lock-20261018.json'
+      - 'scripts/phalanx-rc5-out024-isolated-nav-guard-20261018.mjs'
+      - '.github/workflows/phalanx-alpha-out024-deploy-package-20261018.yml'
+permissions:
+  contents: read
+jobs:
+  package:
+    if: github.ref == 'refs/heads/alpha/android-integrated-freeze-20261017'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify immutable map and RC5 navigation contract
+        run: node scripts/phalanx-rc5-out024-isolated-nav-guard-20261018.mjs
+      - name: Assemble self-contained isolated static test directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist/phalanx-out024-alpha
+          cp preview/PHALANX_RC5_OUT024_ISOLATED_NAV_TEST_V2_20261018.html dist/phalanx-out024-alpha/index.html
+          cp preview/PHALANX_RC5_ALPHA_DERIVED_20261017.html dist/phalanx-out024-alpha/
+          cp preview/PHX-OUT-024-MAP2-FROZEN-20261018.html dist/phalanx-out024-alpha/
+          test -s dist/phalanx-out024-alpha/index.html
+          test -s dist/phalanx-out024-alpha/PHALANX_RC5_ALPHA_DERIVED_20261017.html
+          test -s dist/phalanx-out024-alpha/PHX-OUT-024-MAP2-FROZEN-20261018.html
+          sha256sum dist/phalanx-out024-alpha/* > dist/phalanx-out024-alpha/SHA256SUMS.txt
+          grep -q '1a87afde964f8eacc730f8a2cd52d7067ebe06b40cc7fc1388c16ee59e3a043d' dist/phalanx-out024-alpha/SHA256SUMS.txt
+      - name: Save test bundle as Actions artifact — NO CLOUDFLARE DEPLOY
+        uses: actions/upload-artifact@v4
+        with:
+          name: phalanx-out024-alpha-isolated-static
+          path: dist/phalanx-out024-alpha/
+          if-no-files-found: error
+          retention-days: 7
