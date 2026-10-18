@@ -44,11 +44,11 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           js=Path('preview/phalanx-rc5-isolated-route-adapter-20261017.js').read_text()
-          assert "['Outpost Map','outpost-map-alpha23-frozen.html']" in js
+          assert "['Outpost Map','PHX-OUT-024-MAP2-FROZEN-20261018.html']" in js
           assert "['Reports & History','outpost-report-v11.html']" in js
           assert "clone.setAttribute('href','./'+file)" in js
           html=Path('preview/phalanx-alpha-android-integration-20261017.html').read_text()
-          assert "outposts:['./outpost-map-alpha23-frozen.html'" in html
+          assert "outposts:['./PHX-OUT-024-MAP2-FROZEN-20261018.html'" in html
           print('PASS: archived Alpha23 map and legacy report remain separate')
           PY
       - name: Reject incorrect OUT-024 source if staged
@@ -56,7 +56,8 @@ jobs:
           if test -f preview/PHX-OUT-024-MAP2-FROZEN-20261018.html; then
             python3 tests/alpha/stage_outpost_alpha24.py
           else
-            echo '::notice::OUT-024 original not uploaded to isolated branch; B003 remains blocked.'
+            echo '::error::OUT-024 original missing; B003 blocked.'
+            exit 1
           fi
       - name: Enforce canonical approved Outpost Alpha24 identity
         run: python3 tests/alpha/test_outpost_alpha24_canonical_lock.py
@@ -94,7 +95,7 @@ jobs:
         run: |
           python3 tests/alpha/test_outpost_v2_freeze_gate.py
           test -s preview/outpost-map-alpha23-frozen.html
-      - name: Stage isolated Cloudflare Pages preview with legacy Outpost reference
+      - name: Stage isolated Cloudflare Pages preview with approved OUT-024
         shell: bash
         run: |
           set -euo pipefail
@@ -102,6 +103,7 @@ jobs:
           cp preview/PHALANX_RC5_ALPHA_DERIVED_20261017.html alpha-deploy/
           cp preview/phalanx-rc5-isolated-route-adapter-20261017.js alpha-deploy/
           cp preview/outpost-map-alpha23-frozen.html alpha-deploy/
+          python3 tests/alpha/stage_outpost_alpha24.py
           cp preview/outpost-report-v11.html alpha-deploy/
           cp preview/outpost-viewer-an-v1.js alpha-deploy/
           cp index.html alpha-deploy/
@@ -110,13 +112,13 @@ jobs:
           p=Path('alpha-deploy/PHALANX_RC5_ALPHA_DERIVED_20261017.html')
           source=p.read_text(encoding='utf-8')
           old='<a aria-disabled="true" data-pending="true" href="#">Outpost Map<small class="status unlinked">NOT LINKED</small></a>'
-          new='<a href="./outpost-map-alpha23-frozen.html" title="Legacy Outpost Alpha23 - not current Alpha24">Outpost Map<small class="status linked">LEGACY 23</small></a>'
+          new='<a href="./PHX-OUT-024-MAP2-FROZEN-20261018.html" title="Approved Outpost Map 2.0 Alpha24">Outpost Map<small class="status linked">MAP 2.0 · 24</small></a>'
           assert source.count(old)==1, 'Outpost Map frozen anchor mismatch'
           source=source.replace(old,new)
-          assert source.count('outpost-map-alpha23-frozen.html')==1
+          assert source.count('PHX-OUT-024-MAP2-FROZEN-20261018.html')==1
           script='<script src="./phalanx-rc5-isolated-route-adapter-20261017.js"></script>'
           assert source.count('./outpost-report-v11.html')==1, 'legacy report link must remain distinct'
-          assert source.count('./outpost-map-alpha23-frozen.html')==1, 'legacy map must have one entry'
+          assert source.count('./PHX-OUT-024-MAP2-FROZEN-20261018.html')==1, 'legacy map must have one entry'
           assert source.count('</body>')==1
           source=source.replace('</body>',script+'</body>')
           p.write_text(source,encoding='utf-8')
@@ -162,10 +164,11 @@ jobs:
           assert (Path('alpha-deploy')/'nexus-app-2.webmanifest').is_file()
           assert (Path('alpha-deploy')/'icon-192.png').is_file()
           PY
+          test -s alpha-deploy/PHX-OUT-024-MAP2-FROZEN-20261018.html
           test -s alpha-deploy/outpost-map-alpha23-frozen.html
           test -s alpha-deploy/phalanx-rc5-isolated-route-adapter-20261017.js
           grep -Fq "reports:['./outpost-report-v11.html'" alpha-deploy/phalanx-alpha-android-integration-20261017.html
-          grep -Fq "['Outpost Map','outpost-map-alpha23-frozen.html']" alpha-deploy/phalanx-rc5-isolated-route-adapter-20261017.js
+          grep -Fq "['Outpost Map','PHX-OUT-024-MAP2-FROZEN-20261018.html']" alpha-deploy/phalanx-rc5-isolated-route-adapter-20261017.js
           python3 tests/alpha/test_outpost_v2_freeze_gate.py
       - name: Deploy verified alpha to isolated Cloudflare Pages
         if: ${{ github.ref == 'refs/heads/alpha/android-integrated-freeze-20261017' }}
