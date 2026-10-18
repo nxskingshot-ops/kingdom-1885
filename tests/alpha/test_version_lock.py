@@ -9,12 +9,17 @@ lock = json.loads((root / "data/phalanx-alpha-version-lock-20261018.json").read_
 assert lock["app"]["status"] == "TEST"
 modules = {m["code"]: m for m in lock["modules"]}
 assert modules["OUT-023"]["current"] is False
+assert modules["OUT-023"]["installed"] is True
+assert modules["OUT-023"]["reference_only"] is False
 legacy = modules["OUT-023"]
 legacy_path = root / legacy["path"]
 assert legacy_path.is_file(), "BLOCKED: legacy source missing"
 assert hashlib.sha256(legacy_path.read_bytes()).hexdigest() == legacy["sha256"], "BLOCKED: legacy source hash mismatch"
 current = modules["OUT-024"]
 assert current["current"] is True
+assert current["installed"] is False
+assert current["reference_only"] is True
+assert not any(m["installed"] and m["reference_only"] for m in modules.values())
 assert current["status"] == "REFERENCE_CONFIRMED_SOURCE_UNVERIFIED"
 assert current["path"] is None
 assert current["sha256"] is None
