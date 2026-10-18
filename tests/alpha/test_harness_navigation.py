@@ -4,7 +4,7 @@ from pathlib import Path
 import re
 
 source = Path("preview/phalanx-alpha-android-integration-20261017.html").read_text(encoding="utf-8")
-assert 'ALPHA BUILD 20261018-n' in source, "Persistent preview build marker missing"
+assert 'PHX-A001' in source, "Persistent preview build marker missing"
 assert "if(b.dataset.key==='rc5'){active='';" in source, "RC5 button must force reload"
 assert "currentPath!==targetPath" in source, "Route must compare iframe actual URL"
 assert "if(active!==k||currentPath!==targetPath)" in source, "Route guard regression"
