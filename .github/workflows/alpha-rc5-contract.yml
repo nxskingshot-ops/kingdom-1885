@@ -182,7 +182,7 @@ jobs:
           Path('alpha-deploy/PHX-B003-BUILD-PROVENANCE.json').write_text(json.dumps(record,indent=2)+'\n')
           print('PASS: provenance attached to staged B003 artifact')
           PY
-      - name: Deploy verified alpha to isolated Cloudflare Pages
+      - name: Deploy and verify B003 on isolated Cloudflare Pages
         if: ${{ github.ref == 'refs/heads/alpha/android-integrated-freeze-20261017' }}
         shell: bash
         env:
@@ -191,11 +191,38 @@ jobs:
         run: |
           set -euo pipefail
           if [[ -z "$CLOUDFLARE_API_TOKEN" || -z "$CLOUDFLARE_ACCOUNT_ID" ]]; then
-            echo "::warning::B003 NOT DEPLOYED: Cloudflare credentials missing. Green CI means artifact only."
-            exit 0
+            echo "::error::B003 deployment blocked: Cloudflare credentials missing. Artifact build succeeded but release cannot be green."
+            exit 1
           fi
           npx --yes wrangler@4 pages deploy alpha-deploy --project-name=nexus-phalanx-rc5-test --branch=phalanx-alpha-rc5 --commit-dirty=true
-          echo "::notice::Cloudflare deployment command completed; verify URL and provenance before Android acceptance."
+          python3 - <<'PY'
+          import json, hashlib, urllib.request, time, sys
+          base='https://phalanx-alpha-rc5.nexus-phalanx-rc5-test.pages.dev/'
+          expected_commit='${{ github.sha }}'
+          expected_hash='1a87afde964f8eacc730f8a2cd52d7067ebe06b40cc7fc1388c16ee59e3a043d'
+          def get(path):
+              request=urllib.request.Request(base+path,headers={'Cache-Control':'no-cache','User-Agent':'PHALANX-B003-Release-Gate'})
+              with urllib.request.urlopen(request,timeout=20) as response:
+                  assert response.status==200
+                  return response.read()
+          for attempt in range(6):
+              try:
+                  provenance=json.loads(get('PHX-B003-BUILD-PROVENANCE.json'))
+                  assert provenance['build']=='B003'
+                  assert provenance['source_commit']==expected_commit
+                  assert provenance['outpost_sha256']==expected_hash
+                  actual=hashlib.sha256(get('PHX-OUT-024-MAP2-FROZEN-20261018.html')).hexdigest()
+                  assert actual==expected_hash, 'Published Outpost map differs from frozen original'
+                  shell=get('phalanx-alpha-android-integration-20261017.html').decode('utf-8')
+                  assert 'PHX-A001 · B003' in shell
+                  assert "outposts:['./PHX-OUT-024-MAP2-FROZEN-20261018.html'" in shell
+                  print('PASS: live Cloudflare B003 commit, original map checksum and route verified: '+base)
+                  break
+              except Exception as error:
+                  print(f'Live verification {attempt+1}/6 failed: {error}',flush=True)
+                  if attempt==5: sys.exit('BLOCKED: deployed B003 not verifiable')
+                  time.sleep(10)
+          PY
       - name: Package isolated alpha for download (not production)
         uses: actions/upload-artifact@v4
         with:
