@@ -2,7 +2,7 @@
   "schema": 1,
   "app": {
     "id": "PHX-A001",
-    "build": "B001",
+    "build": "B002",
     "status": "TEST",
     "branch": "alpha/android-integrated-freeze-20261017"
   },
@@ -55,6 +55,12 @@
       "kind": "added",
       "module": "APP",
       "message": "Color-coded status panel added to isolated shell",
+      "verified": true
+    },
+    {
+      "kind": "changed",
+      "module": "APP",
+      "message": "B002: staged module navigation and RC5 legacy labeling aligned",
       "verified": true
     }
   ]
