@@ -30,6 +30,18 @@ jobs:
         run: python3 tests/alpha/test_outpost_v2_freeze_gate.py
       - name: Verify exact bytes and all 39 menu routes
         run: python3 tests/alpha/test_rc5_derived.py preview/PHALANX_RC5_ALPHA_DERIVED_20261017.html
+      - name: Verify RC5 adapter and V2 routing contract
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          js=Path('preview/phalanx-rc5-isolated-route-adapter-20261017.js').read_text()
+          assert "'Reports & History':'outpost-map-alpha23-frozen.html'" in js
+          assert "clean.href='./'+file" in js
+          assert "'Reports & History':'outpost-report-v11.html'" not in js
+          html=Path('preview/phalanx-alpha-android-integration-20261017.html').read_text()
+          assert "outposts:['./outpost-map-alpha23-frozen.html'" in html
+          print('PASS: RC5 adapter and harness route to approved Outpost V2')
+          PY
       - name: Verify alpha harness navigation contract
         run: python3 tests/alpha/test_harness_navigation.py
       - name: Verify all seven target modules and test harness
