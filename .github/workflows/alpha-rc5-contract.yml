@@ -10,6 +10,9 @@ on:
       - '.github/workflows/alpha-rc5-contract.yml'
       - 'preview/phalanx-alpha-android-integration-20261017.html'
       - 'preview/phalanx-ranking-integration-rc-20261015.html'
+      - 'preview/outpost-report-v11.html'
+      - 'preview/outpost-viewer-an-v1.js'
+      - 'index.html'
   workflow_dispatch:
 permissions:
   contents: read
@@ -46,10 +49,16 @@ jobs:
           assert 'href="./phalanx-alpha-android-integration-20261017.html#rc5" target="_top"' in source
           assert 'href="./phalanx-home-auth-rc9-20261014.html"' not in source
           PY
+      - name: Verify Outpost map dependencies
+        run: |
+          test -s index.html
+          test -s preview/outpost-viewer-an-v1.js
+          grep -q 'src="../index.html?' preview/outpost-report-v11.html
+          grep -q 'outpost-viewer-an-v1.js' preview/outpost-report-v11.html
       - name: Package isolated alpha for download (not production)
         uses: actions/upload-artifact@v4
         with:
-          name: phalanx-rc5-alpha-20261018-e
+          name: phalanx-rc5-alpha-20261018-f
           path: |
             preview/PHALANX_RC5_ALPHA_DERIVED_20261017.html
             preview/phalanx-alpha-android-integration-20261017.html
@@ -58,6 +67,8 @@ jobs:
             preview/nexus-phalanx-battle-readiness-verified-status-test-2026-10-12.html
             preview/phalanx-ranking-integration-rc-20261015.html
             preview/outpost-report-v11.html
+            preview/outpost-viewer-an-v1.js
+            index.html
             preview/kingdom-hub-trends-v8.html
             preview/hero-intelligence-evidence-advisor-v15-2026-10-12.html
           retention-days: 7
