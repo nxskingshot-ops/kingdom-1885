@@ -1,0 +1,263 @@
+{
+  "schema": "phalanx.library-discovery.v1",
+  "as_of": "2026-10-18",
+  "scope": "/NEXUS PHALANX recursive, current library entries only",
+  "files": [
+    {
+      "path": "/NEXUS PHALANX/Recovered Originals/OUTPOST_MAP_ALPHA24_USER_CONFIRMED_20261018.html",
+      "size_bytes": 1105961,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Backups/NEXUS_PHALANX_EPIC_NAVIGATION_V2_FREEZE_BACKUP_2026-10-15.zip",
+      "size_bytes": 940985,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Data/Alliance Snapshots/2026-10-13 All Four/ALLIANCE_SNAPSHOT_2026-10-13.json",
+      "size_bytes": 63666,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Data/Alliance Snapshots/2026-10-13 All Four/FOUR_ALLIANCES_COMPLETE.zip",
+      "size_bytes": 19650,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Data/Alliance Snapshots/2026-10-13 MYM/MYM_snapshot.json",
+      "size_bytes": 15842,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Data/Alliance Snapshots/2026-10-13 MYM/MYM_members_original.csv",
+      "size_bytes": 3898,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Data/Alliance Snapshots/2026-10-13 NXS/NXS_snapshot.json",
+      "size_bytes": 14678,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Data/Alliance Snapshots/2026-10-13 NXS/NXS_members_original.csv",
+      "size_bytes": 3964,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Data/Alliance Snapshots/2026-10-13 OoO/OoO_snapshot.json",
+      "size_bytes": 14759,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Data/Alliance Snapshots/2026-10-13 OoO/OoO_members_original.csv",
+      "size_bytes": 3917,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Data/Kingdom Intelligence/2026-10-13 Top 100/TOP100_QUELLBILDER_DATEN.zip",
+      "size_bytes": 4119891,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Data/Kingdom Intelligence/2026-10-13 Top 100/DATENQUALITAET.md",
+      "size_bytes": 1026,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Data/Kingdom Intelligence/2026-10-13 Top 100/PLAYERS_TO_WATCH_TOP100.json",
+      "size_bytes": 34286,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Data/MightPulse/2026-10-13/AUDIT_UND_BEREICHE.md",
+      "size_bytes": 2536,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Data/MightPulse/2026-10-13/KINGDOM_KVK_MIGHTPULSE_SNAPSHOT.json",
+      "size_bytes": 4426,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Data/MightPulse/2026-10-13/ORIGINALBILDER_UND_DATEN.zip",
+      "size_bytes": 1294285,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Data/Alliance Snapshots/ALLIANCE_SNAPSHOTS_2026-10-13.json",
+      "size_bytes": 54816,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Data/Alliance Snapshots/AUDIT_2026-10-13.md",
+      "size_bytes": 1422,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Design Freeze/Alliance Cards 4 Master 2026-10-13/PHALANX_DASHBOARD_NO_CORNER_BUTTON_TEST.html",
+      "size_bytes": 3866178,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Design Freeze/Zentrale Referenzbilder-Datenbank/REFERENZ_INDEX.md",
+      "size_bytes": 3521,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Design Freeze/Zentrale Referenzbilder-Datenbank/REFERENZBILDER_FREEZE_2026-10-13.zip",
+      "size_bytes": 21646308,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Backups/2026-10-13 Projektstand/NEXUS_PHALANX_PROJEKT_BACKUP_2026-10-13_FINAL.zip",
+      "size_bytes": 15578998,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Backups/2026-10-13 Projektstand/BACKUP_MANIFEST.md",
+      "size_bytes": 3097,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Design Freeze/Alliance Cards 4 Master 2026-10-13/PHALANX_DASHBOARD_FOUR_CARDS_TEST.html",
+      "size_bytes": 3866407,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Design Freeze/Alliance Cards 4 Master 2026-10-13/FOUR_APPROVED_MASTER_CARDS.zip",
+      "size_bytes": 6948445,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Assets/Alliance Banners 2026-10-13/PHALANX_ALLIANCE_ORIGINALS_2026-10-13.zip",
+      "size_bytes": 61108,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Project Management/Ideas/PHALANX_IDEA_TROOP_RATIO_CALCULATOR_2026-10-13.md",
+      "size_bytes": 11697,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Project Management/NEXUS_PHALANX_FEATURE_REGISTER_2026-10-13.json",
+      "size_bytes": 29326,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Project Management/NEXUS_PHALANX_FEATURE_REGISTER_2026-10-13.xlsx",
+      "size_bytes": 12901,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Design Freeze/Alpha35 Function Freeze/NEXUS_PHALANX_ALPHA35_FUNCTION_FROZEN.html",
+      "size_bytes": 1912593,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Design Freeze/Alpha35 Function Freeze/ALPHA35_FUNCTION_FREEZE_BACKUP_2026-10-13.zip",
+      "size_bytes": 1366060,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Design Freeze/Outpost Map Alpha23/ALPHA23_FREEZE_BACKUP_2026-10-13.zip",
+      "size_bytes": 823973,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Design Freeze/Outpost Map Alpha23/OUTPOST_MAP_ALPHA23_FROZEN.html",
+      "size_bytes": 1101982,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Development Tests/NEXUS_PHALANX_HOME_FUNCTIONS_ALPHA19_2026-10-12.html",
+      "size_bytes": 439781,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Development Tests/NEXUS_PHALANX_HOME_FUNCTIONS_ALPHA18_2026-10-12.html",
+      "size_bytes": 439492,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Development Tests/NEXUS_PHALANX_HOME_FUNCTIONS_ALPHA17_2026-10-12.html",
+      "size_bytes": 439316,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Development Tests/NEXUS_PHALANX_HOME_FUNCTIONS_ALPHA16_2026-10-12.html",
+      "size_bytes": 439278,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Development Tests/NEXUS_PHALANX_HOME_FUNCTIONS_ALPHA15_2026-10-12.html",
+      "size_bytes": 438625,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Development Tests/NEXUS_PHALANX_HOME_FUNCTIONS_ALPHA14_2026-10-12.html",
+      "size_bytes": 438078,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Design Freeze/NEXUS_PHALANX_HOME_FUNCTIONAL_TEST_ALPHA13_2026-10-12.html",
+      "size_bytes": 436548,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Design Freeze/NEXUS_PHALANX_HOME_ORIGINAL_2026-10-11.html",
+      "size_bytes": 435650,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    },
+    {
+      "path": "/NEXUS PHALANX/Design Freeze/NEXUS_PHALANX_HOME_APPROVED_ALPHA12_2026-10-12.html",
+      "size_bytes": 436149,
+      "verification": "LIBRARY_METADATA_LISTED_2026-10-18",
+      "sha256_verified": false
+    }
+  ],
+  "files_count": 42,
+  "folders_count": 23,
+  "complete_listing": true,
+  "disclaimer": "Metadata listing only. Not SHA256, ZIP contents, live integration, or backup-restore proof. No personal data or secret values included."
+}
