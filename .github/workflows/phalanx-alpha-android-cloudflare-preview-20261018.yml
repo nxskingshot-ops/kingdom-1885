@@ -1,0 +1,47 @@
+name: PHALANX Alpha Android Isolated Cloudflare Preview
+on:
+  workflow_dispatch:
+  push:
+    branches: [alpha/android-integrated-freeze-20261017]
+    paths:
+      - '.github/workflows/phalanx-alpha-android-cloudflare-preview-20261018.yml'
+permissions:
+  contents: read
+jobs:
+  preview:
+    if: github.ref == 'refs/heads/alpha/android-integrated-freeze-20261017'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify frozen OUT-024 and alpha entrypoints
+        run: |
+          set -euo pipefail
+          node scripts/phalanx-rc5-out024-isolated-nav-guard-20261018.mjs
+          test -s preview/phalanx-alpha-android-integration-20261017.html
+          test -s preview/PHX-OUT-024-MAP2-FROZEN-20261018.html
+      - name: Assemble alpha-only static preview
+        run: |
+          set -euo pipefail
+          mkdir -p dist/android-preview
+          cp preview/phalanx-alpha-android-integration-20261017.html dist/android-preview/index.html
+          cp preview/*.html dist/android-preview/
+          printf 'User-agent: *\nDisallow: /\n' > dist/android-preview/robots.txt
+          test -s dist/android-preview/index.html
+      - name: Deploy to existing isolated Cloudflare Pages test project only
+        if: ${{ env.CF_READY == 'true' }}
+        env:
+          CF_READY: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          # Existing test project only. No project creation or production deployment.
+          npx --yes wrangler@3 pages deploy dist/android-preview --project-name=nexus-phalanx-kvk-test --branch=phalanx-android-alpha-20261018 --commit-dirty=true
+      - name: Explain unavailable deployment permissions
+        if: ${{ env.CF_READY != 'true' }}
+        env:
+          CF_READY: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
+        run: echo 'Cloudflare credentials unavailable. No deployment attempted.'
