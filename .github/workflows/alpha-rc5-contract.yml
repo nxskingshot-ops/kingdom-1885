@@ -17,6 +17,8 @@ on:
       - 'tests/alpha/test_version_lock.py'
       - 'tests/alpha/test_outpost_alpha24_canonical_lock.py'
       - 'data/outpost-map-alpha24-canonical-lock-20261018.json'
+      - 'preview/PHX-OUT-024-MAP2-FROZEN-20261018.html'
+      - 'tests/alpha/stage_outpost_alpha24.py'
       - 'data/phalanx-alpha-version-lock-20261018.json'
       - 'data/phalanx-alpha-version-baseline-20261018.json'
       - 'tests/alpha/compare_version_locks.py'
@@ -49,6 +51,13 @@ jobs:
           assert "outposts:['./outpost-map-alpha23-frozen.html'" in html
           print('PASS: archived Alpha23 map and legacy report remain separate')
           PY
+      - name: Reject incorrect OUT-024 source if staged
+        run: |
+          if test -f preview/PHX-OUT-024-MAP2-FROZEN-20261018.html; then
+            python3 tests/alpha/stage_outpost_alpha24.py
+          else
+            echo '::notice::OUT-024 original not uploaded to isolated branch; B003 remains blocked.'
+          fi
       - name: Enforce canonical approved Outpost Alpha24 identity
         run: python3 tests/alpha/test_outpost_alpha24_canonical_lock.py
       - name: Check version identity and visible legacy label
