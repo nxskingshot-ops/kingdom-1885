@@ -7,5 +7,7 @@ result = compare(base, next_version)
 kinds = {item['code']: item['kind'] for item in result['modules']}
 assert kinds == {'A': 'changed', 'B': 'removed', 'C': 'unverified'}
 assert result['source_verified'] is False
+assert result['same_build'] is False
+assert compare(base, base)['same_build'] is True
 assert compare(base, base)['modules'][0]['kind'] == 'unchanged'
 print('PASS: comparator regression tests')
