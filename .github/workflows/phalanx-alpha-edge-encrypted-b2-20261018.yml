@@ -1,0 +1,98 @@
+name: PHALANX Alpha Edge Encrypted Private B2 Archive
+on:
+  push:
+    branches:
+      - alpha/android-integrated-freeze-20261017
+    paths:
+      - .github/workflows/phalanx-alpha-edge-encrypted-b2-20261018.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  archive:
+    if: github.ref == 'refs/heads/alpha/android-integrated-freeze-20261017'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.B2_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.B2_APPLICATION_KEY }}
+      AWS_DEFAULT_REGION: eu-central-003
+      AWS_EC2_METADATA_DISABLED: 'true'
+      BACKUP_PASSPHRASE: ${{ secrets.PHALANX_BACKUP_ENCRYPTION_KEY }}
+      B2_ENDPOINT: https://s3.eu-central-003.backblazeb2.com
+      B2_BUCKET: nexus-phalanx-backup
+      PROJECT_REF: hcjrdofkdkasznywvcxo
+    steps:
+      - name: Checkout metadata only
+        uses: actions/checkout@v4
+      - name: Require existing secrets without printing values
+        shell: bash
+        run: |
+          set -euo pipefail
+          for key in SUPABASE_ACCESS_TOKEN AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY BACKUP_PASSPHRASE; do
+            test -n "${!key}" || { echo "::error::Missing secret: $key"; exit 1; }
+          done
+      - name: Install CLI tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq curl unzip openssl jq
+          curl -fsSL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o "$RUNNER_TEMP/aws.zip"
+          unzip -q "$RUNNER_TEMP/aws.zip" -d "$RUNNER_TEMP"
+          sudo "$RUNNER_TEMP/aws/install" --update
+          curl -fsSL https://github.com/supabase/cli/releases/download/v2.54.11/supabase_linux_amd64.tar.gz -o "$RUNNER_TEMP/supabase.tar.gz"
+          tar -xzf "$RUNNER_TEMP/supabase.tar.gz" -C "$RUNNER_TEMP" supabase
+          chmod +x "$RUNNER_TEMP/supabase"
+          echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
+      - name: Download exactly the 26 inventoried functions into temporary private workspace
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          mkdir -p "$RUNNER_TEMP/edge-archive/supabase/functions"
+          cd "$RUNNER_TEMP/edge-archive"
+          cp "$GITHUB_WORKSPACE/data/phalanx-edge-functions-live-20261018.json" inventory.json
+          jq -e '.count == 26 and (.functions | length == 26) and ([.functions[].slug] | unique | length == 26)' inventory.json >/dev/null
+          jq -r '.functions[].slug' inventory.json > expected-slugs.txt
+          while IFS= read -r slug; do
+            [[ "$slug" =~ ^[a-z0-9][a-z0-9-]*$ ]] || exit 1
+            supabase functions download "$slug" --project-ref "$PROJECT_REF" --use-api
+            test -d "supabase/functions/$slug" || { echo "::error::Missing source directory: $slug"; exit 1; }
+            find "supabase/functions/$slug" -type f -size +0c | grep -q . || { echo "::error::Empty source: $slug"; exit 1; }
+            echo "Retrieved: $slug"
+          done < expected-slugs.txt
+          find supabase/functions -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort > actual-slugs.txt
+          sort expected-slugs.txt > sorted-expected.txt
+          diff -u sorted-expected.txt actual-slugs.txt
+          find supabase/functions -type f -print0 | sort -z | xargs -0 sha256sum > file-sha256.txt
+          tar -czf "$RUNNER_TEMP/edge-archive.tar.gz" inventory.json expected-slugs.txt file-sha256.txt supabase/functions
+          test -s "$RUNNER_TEMP/edge-archive.tar.gz"
+      - name: Encrypt before upload and verify private remote bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          cd "$RUNNER_TEMP"
+          stamp="$(date -u +%Y%m%dT%H%M%SZ)"
+          file="phalanx-edge-functions-26-${stamp}-run${GITHUB_RUN_ID}.tar.gz.enc"
+          openssl enc -aes-256-cbc -salt -pbkdf2 -iter 200000 -in edge-archive.tar.gz -out "$file" -pass env:BACKUP_PASSPHRASE
+          sha256sum "$file" > "$file.sha256"
+          remote="s3://$B2_BUCKET/edge-functions/manual/$file"
+          aws --endpoint-url "$B2_ENDPOINT" s3 cp "$file" "$remote" --no-progress
+          aws --endpoint-url "$B2_ENDPOINT" s3 cp "$file.sha256" "$remote.sha256" --no-progress
+          aws --endpoint-url "$B2_ENDPOINT" s3 cp "$remote" downloaded.enc --no-progress
+          cmp "$file" downloaded.enc
+          openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in downloaded.enc -out restored.tar.gz -pass env:BACKUP_PASSPHRASE
+          cmp edge-archive.tar.gz restored.tar.gz
+          tar -tzf restored.tar.gz | grep -q '^supabase/functions/'
+          {
+            echo '### Encrypted Edge Function private B2 archive verified'
+            echo "- Source functions: 26 (inventory and directory parity checked)"
+            echo "- Remote: edge-functions/manual/$file"
+            echo '- Checks: local source presence, SHA-256 manifest, AES-256 encryption, remote download byte equality, decrypt and archive listing'
+            echo '- No source committed or uploaded as a GitHub artifact; no Supabase deployment or production writes.'
+            echo '- Full functional restoration in an isolated Supabase project is NOT verified.'
+          } >> "$GITHUB_STEP_SUMMARY"
+          rm -rf "$RUNNER_TEMP/edge-archive" "$RUNNER_TEMP/edge-archive.tar.gz" "$RUNNER_TEMP/restored.tar.gz" "$RUNNER_TEMP/downloaded.enc"
