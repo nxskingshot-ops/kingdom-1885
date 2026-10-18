@@ -78,6 +78,9 @@ jobs:
           cp preview/PHALANX_RC5_ALPHA_DERIVED_20261017.html alpha-deploy/
           cp preview/phalanx-rc5-isolated-route-adapter-20261017.js alpha-deploy/
           cp preview/outpost-map-alpha23-frozen.html alpha-deploy/
+          cp preview/outpost-report-v11.html alpha-deploy/
+          cp preview/outpost-viewer-an-v1.js alpha-deploy/
+          cp index.html alpha-deploy/
           python3 - <<'PY'
           from pathlib import Path
           p=Path('alpha-deploy/PHALANX_RC5_ALPHA_DERIVED_20261017.html')
@@ -104,7 +107,7 @@ jobs:
           test -s alpha-deploy/outpost-map-alpha23-frozen.html
           test -s alpha-deploy/phalanx-rc5-isolated-route-adapter-20261017.js
           ! grep -q 'outpost-report-v11.html' alpha-deploy/phalanx-alpha-android-integration-20261017.html
-          ! grep -q "'Reports & History':'outpost-report-v11.html'" alpha-deploy/phalanx-rc5-isolated-route-adapter-20261017.js
+          grep -Fq "['Outpost Map','outpost-map-alpha23-frozen.html']" alpha-deploy/phalanx-rc5-isolated-route-adapter-20261017.js
           python3 tests/alpha/test_outpost_v2_freeze_gate.py
       - name: Deploy verified alpha to isolated Cloudflare Pages
         if: ${{ github.ref == 'refs/heads/alpha/android-integrated-freeze-20261017' }}
