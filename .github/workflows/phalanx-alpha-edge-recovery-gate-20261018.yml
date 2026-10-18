@@ -1,0 +1,29 @@
+name: PHALANX Alpha Edge Recovery Gate (No Deploy)
+on:
+  push:
+    branches:
+      - alpha/android-integrated-freeze-20261017
+    paths:
+      - 'tests/alpha/test_edge_recovery_archive_gate.py'
+      - 'data/phalanx-edge-functions-live-20261018.json'
+      - 'recovery/supabase/functions/**'
+      - '.github/workflows/phalanx-alpha-edge-recovery-gate-20261018.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify-inventory:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify inventory and inspect archive if present
+        run: python3 -m unittest discover -s tests/alpha -p test_edge_recovery_archive_gate.py -v
+      - name: Declare archival evidence status
+        shell: bash
+        run: |
+          if [ -d recovery/supabase/functions ]; then
+            echo 'Archive present; check source parity separately.' >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'INVENTORY ONLY: no source archive; full recovery NOT VERIFIED.' >> "$GITHUB_STEP_SUMMARY"
+          fi
