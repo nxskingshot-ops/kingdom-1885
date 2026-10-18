@@ -12,20 +12,25 @@
       "status": "LEGACY_WRONG_REFERENCE",
       "path": "preview/outpost-map-alpha23-frozen.html",
       "sha256": "e8109617ef6d4578f4bfd7ca3a519bceedbae0850b432e6f27e24ef2d82fe0b0",
-      "current": false
+      "current": false,
+      "installed": true,
+      "reference_only": false
     },
     {
       "code": "OUT-024",
       "status": "REFERENCE_CONFIRMED_SOURCE_UNVERIFIED",
       "path": null,
       "sha256": null,
-      "current": true
+      "current": true,
+      "installed": false,
+      "reference_only": true
     }
   ],
   "policy": {
     "currentOutpostMustHaveVerifiedSource": true,
     "allowLegacyOutpostAsCurrent": false,
-    "productionChanges": false
+    "productionChanges": false,
+    "requireExplicitInstallState": true
   },
   "changes": [
     {
