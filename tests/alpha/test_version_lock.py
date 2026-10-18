@@ -20,3 +20,7 @@ print("PASS: Alpha23 visibly marked legacy; Alpha24 source remains unverified")
 
 assert lock['app']['id'] in harness
 assert lock['app']['build'] in harness
+
+assert len(lock['changes']) >= 1
+assert all(item['kind'] in ('warning','error','changed','added','unchanged') for item in lock['changes'])
+assert all(item['verified'] is True for item in lock['changes'])
