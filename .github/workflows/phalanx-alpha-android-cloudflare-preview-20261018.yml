@@ -23,8 +23,10 @@ jobs:
           set -euo pipefail
           node scripts/phalanx-rc5-out024-isolated-nav-guard-20261018.mjs
           test -s preview/phalanx-alpha-android-integration-20261017.html
-          grep -q 'PHX-A001 · B005' preview/phalanx-alpha-android-integration-20261017.html
+          grep -q 'PHX-A001 · B006' preview/phalanx-alpha-android-integration-20261017.html
           test -s preview/PHX-OUT-024-MAP2-FROZEN-20261018.html
+          test -s preview/phalanx-reports-out024-safe-entry-20261018.html
+          ! grep -q 'outpost-report-v11.html' preview/phalanx-alpha-android-integration-20261017.html
       - name: Assemble alpha-only static preview
         run: |
           set -euo pipefail
