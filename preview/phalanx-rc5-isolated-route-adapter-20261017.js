@@ -30,7 +30,7 @@ for(const a of anchors){
  clone.setAttribute('href','./'+file);
  clone.removeAttribute('data-pending');clone.removeAttribute('aria-disabled');
  const status=clone.querySelector('.status');
- if(status){status.textContent=label==='Outpost Map'?'LEGACY 23':label==='Reports & History'?'LEGACY':'PREVIEW';status.classList.remove('unlinked');status.classList.add('linked');}
+ if(status){status.textContent=label==='Outpost Map'?'MAP 2.0 · 24':label==='Reports & History'?'LEGACY':'PREVIEW';status.classList.remove('unlinked');status.classList.add('linked');}
  clone.addEventListener('click',e=>{
   if(window.parent===window)return;
   e.preventDefault();
