@@ -2,7 +2,7 @@
   "schema": 1,
   "app": {
     "id": "PHX-A001",
-    "build": "B002",
+    "build": "B003",
     "status": "TEST",
     "branch": "alpha/android-integrated-freeze-20261017"
   },
@@ -18,12 +18,13 @@
     },
     {
       "code": "OUT-024",
-      "status": "REFERENCE_CONFIRMED_SOURCE_UNVERIFIED",
-      "path": null,
-      "sha256": null,
+      "status": "USER_APPROVED_SOURCE_STAGED_AWAITING_CI",
+      "path": "preview/PHX-OUT-024-MAP2-FROZEN-20261018.html",
+      "sha256": "1a87afde964f8eacc730f8a2cd52d7067ebe06b40cc7fc1388c16ee59e3a043d",
       "current": true,
-      "installed": false,
-      "reference_only": true
+      "installed": true,
+      "reference_only": false,
+      "canonical_id": "PHX-OUT-024-MAP2-FROZEN-20261018"
     }
   ],
   "policy": {
@@ -33,6 +34,12 @@
     "requireExplicitInstallState": true
   },
   "changes": [
+    {
+      "kind": "added",
+      "module": "OUT-024",
+      "message": "B003: user-approved Map 2.0 source staged, checksum guarded; deployment pending",
+      "verified": true
+    },
     {
       "kind": "warning",
       "module": "OUT",
