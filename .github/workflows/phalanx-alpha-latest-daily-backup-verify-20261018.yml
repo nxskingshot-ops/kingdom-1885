@@ -33,7 +33,11 @@ jobs:
         run: |
           set -euo pipefail
           sudo apt-get update -qq
-          sudo apt-get install -y -qq postgresql-common ca-certificates curl openssl awscli
+          sudo apt-get install -y -qq postgresql-common ca-certificates curl unzip openssl
+          curl -fsSL 'https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip' -o /tmp/awscliv2.zip
+          unzip -q /tmp/awscliv2.zip -d /tmp
+          sudo /tmp/aws/install --update
+          aws --version
           sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
           sudo apt-get update -qq
           sudo apt-get install -y -qq postgresql-client-18
