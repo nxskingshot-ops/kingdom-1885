@@ -97,7 +97,7 @@ jobs:
           p=Path('alpha-deploy/PHALANX_RC5_ALPHA_DERIVED_20261017.html')
           source=p.read_text(encoding='utf-8')
           old='<a aria-disabled="true" data-pending="true" href="#">Outpost Map<small class="status unlinked">NOT LINKED</small></a>'
-          new='<a href="./outpost-map-alpha23-frozen.html" title="Legacy Outpost Alpha23 - not current Alpha24">Outpost Map<small class="status linked">PREVIEW</small></a>'
+          new='<a href="./outpost-map-alpha23-frozen.html" title="Legacy Outpost Alpha23 - not current Alpha24">Outpost Map<small class="status linked">LEGACY 23</small></a>'
           assert source.count(old)==1, 'Outpost Map frozen anchor mismatch'
           source=source.replace(old,new)
           assert source.count('outpost-map-alpha23-frozen.html')==1
