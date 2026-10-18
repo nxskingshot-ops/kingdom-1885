@@ -35,12 +35,12 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           js=Path('preview/phalanx-rc5-isolated-route-adapter-20261017.js').read_text()
-          assert "'Reports & History':'outpost-map-alpha23-frozen.html'" in js
-          assert "clean.href='./'+file" in js
-          assert "'Reports & History':'outpost-report-v11.html'" not in js
+          assert "['Outpost Map','outpost-map-alpha23-frozen.html']" in js
+          assert "['Reports & History','outpost-report-v11.html']" in js
+          assert "clone.setAttribute('href','./'+file)" in js
           html=Path('preview/phalanx-alpha-android-integration-20261017.html').read_text()
           assert "outposts:['./outpost-map-alpha23-frozen.html'" in html
-          print('PASS: RC5 adapter and harness route to approved Outpost V2')
+          print('PASS: V2 map and legacy report remain separate')
           PY
       - name: Verify alpha harness navigation contract
         run: python3 tests/alpha/test_harness_navigation.py
