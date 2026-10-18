@@ -1,0 +1,25 @@
+name: PHALANX Alpha Canonical Integrity
+on:
+  push:
+    branches:
+      - alpha/android-integrated-freeze-20261017
+  pull_request:
+    paths:
+      - 'preview/PHX-OUT-024-MAP2-FROZEN-20261018.html'
+      - 'preview/PHALANX_RC5_ALPHA_DERIVED_20261017.html'
+      - 'data/outpost-map-alpha24-canonical-lock-20261018.json'
+      - 'scripts/phalanx-alpha-canonical-guard-20261018.mjs'
+      - '.github/workflows/phalanx-alpha-canonical-integrity-20261018.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  canonical-integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify immutable OUT-024 and RC5 source presence
+        run: node scripts/phalanx-alpha-canonical-guard-20261018.mjs
