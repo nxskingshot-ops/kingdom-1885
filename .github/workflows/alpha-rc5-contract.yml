@@ -15,6 +15,8 @@ on:
       - 'preview/phalanx-rc5-isolated-route-adapter-20261017.js'
       - 'tests/alpha/test_outpost_v2_freeze_gate.py'
       - 'tests/alpha/test_version_lock.py'
+      - 'tests/alpha/test_outpost_alpha24_canonical_lock.py'
+      - 'data/outpost-map-alpha24-canonical-lock-20261018.json'
       - 'data/phalanx-alpha-version-lock-20261018.json'
       - 'data/phalanx-alpha-version-baseline-20261018.json'
       - 'tests/alpha/compare_version_locks.py'
@@ -47,6 +49,8 @@ jobs:
           assert "outposts:['./outpost-map-alpha23-frozen.html'" in html
           print('PASS: archived Alpha23 map and legacy report remain separate')
           PY
+      - name: Enforce canonical approved Outpost Alpha24 identity
+        run: python3 tests/alpha/test_outpost_alpha24_canonical_lock.py
       - name: Check version identity and visible legacy label
         run: python3 tests/alpha/test_version_lock.py
       - name: Regression test version comparison
