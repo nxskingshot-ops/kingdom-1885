@@ -11,6 +11,13 @@ iframe{border:0;width:100%;height:100%;display:block}
 <iframe id="kingdom" src="../index.html?kingdom-preview=an-viewer-v1&single-header=3" title="Kingdom #1885 Outpost Map" allow="fullscreen"></iframe>
 <script>
 const frame=document.getElementById('kingdom'),status=document.getElementById('loading');
+let mapReady=false;
+const diagnostic=document.createElement('div');
+diagnostic.setAttribute('role','status');
+diagnostic.style.cssText='position:fixed;left:10px;bottom:10px;z-index:2147483646;max-width:90vw;padding:8px 10px;background:#281c13;color:#ffe8bc;border:1px solid #d4a458;border-radius:8px;font:12px system-ui';
+diagnostic.textContent='Outpost Alpha: waiting for map';
+document.body.appendChild(diagnostic);
+setTimeout(()=>{if(!mapReady){status.hidden=false;status.textContent='Outpost map not ready · check alpha package';diagnostic.textContent='Map startup timeout (15s) · no live map confirmed';}},15000);
 frame.addEventListener('load',()=>{try{
 const doc=frame.contentDocument;if(!doc||!doc.body)throw Error('map unavailable');
 const script=doc.createElement('script');
@@ -74,9 +81,9 @@ function enforceSingleHeader(){
  if(badge)badge.style.setProperty('display','none','important');
  for(const [key,val] of Object.entries({position:'absolute',left:'auto',right:'6px',top:'6px',width:'auto',height:'auto',background:'transparent',border:'0',boxShadow:'none'}))tools.style.setProperty(key.replace(/[A-Z]/g,m=>'-'+m.toLowerCase()),val,'important');
 }
-script.onload=()=>{status.hidden=true;enforceSingleHeader();requestAnimationFrame(()=>{enforceSingleHeader();fillOnStartup()});setTimeout(()=>{enforceSingleHeader();selectNativeCover()},1200)};
-script.onerror=()=>{status.textContent='Live controls unavailable · reload to retry'};
+script.onload=()=>{mapReady=true;diagnostic.textContent='Outpost viewer script loaded';status.hidden=true;enforceSingleHeader();requestAnimationFrame(()=>{enforceSingleHeader();fillOnStartup()});setTimeout(()=>{enforceSingleHeader();selectNativeCover()},1200)};
+script.onerror=()=>{status.hidden=false;status.textContent='Outpost viewer script missing or blocked';diagnostic.textContent='Dependency error: outpost-viewer-an-v1.js'};
 doc.body.appendChild(script);
 setTimeout(()=>{if(!status.hidden&&status.textContent==='Loading Kingdom #1885…')status.textContent='Still loading map…';},12000)
-}catch(e){status.textContent='Map setup error · reload to retry'}});
+}catch(e){status.textContent='Map setup error · check map document';diagnostic.textContent='Map setup failed: '+String(e.message||e).slice(0,120)}});
 </script></body></html>
