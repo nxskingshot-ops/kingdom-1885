@@ -24,7 +24,7 @@ def compare(old, new):
         result.append({"code": code, "kind": kind, "color": COLORS[kind],
                        "before": a, "after": b})
     return {"schema": 1, "before_build": old["app"]["build"],
-            "after_build": new["app"]["build"], "modules": result,
+            "after_build": new["app"]["build"], "same_build": old["app"]["build"] == new["app"]["build"], "modules": result,
             "source_verified": all(not m.get("current") or
                (m.get("path") and m.get("sha256")) for m in after.values())}
 
