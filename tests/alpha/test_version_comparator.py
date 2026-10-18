@@ -10,4 +10,15 @@ assert result['source_verified'] is False
 assert result['same_build'] is False
 assert compare(base, base)['same_build'] is True
 assert compare(base, base)['modules'][0]['kind'] == 'unchanged'
+for bad in (
+    {'app': {'build': 'B001'}, 'modules': [{'code': 'X'}, {'code': 'X'}]},
+    {'app': {'build': 'B001'}, 'modules': [{'code': 'X', 'installed': True, 'reference_only': True}]},
+    {'app': {'build': 'B001'}, 'modules': [{'code': 'X', 'installed': True, 'path': None, 'sha256': None}]},
+):
+    try:
+        compare(base, bad)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError('invalid registry accepted')
 print('PASS: comparator regression tests')
