@@ -52,6 +52,8 @@ jobs:
       - name: Verify Outpost map dependencies
         run: |
           test -s index.html
+          grep -q 'id="app"' index.html
+          grep -q 'coverMode' index.html
           test -s preview/outpost-viewer-an-v1.js
           grep -q 'src="./index.html?' preview/outpost-report-v11.html
           grep -q 'outpost-viewer-an-v1.js' preview/outpost-report-v11.html
