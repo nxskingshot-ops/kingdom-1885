@@ -40,7 +40,7 @@ jobs:
       - name: Package isolated alpha for download (not production)
         uses: actions/upload-artifact@v4
         with:
-          name: phalanx-rc5-alpha-20261018-c
+          name: phalanx-rc5-alpha-20261018-d
           path: |
             preview/PHALANX_RC5_ALPHA_DERIVED_20261017.html
             preview/phalanx-alpha-android-integration-20261017.html
