@@ -16,6 +16,8 @@ on:
       - 'tests/alpha/test_outpost_v2_freeze_gate.py'
       - 'tests/alpha/test_version_lock.py'
       - 'data/phalanx-alpha-version-lock-20261018.json'
+      - 'data/phalanx-alpha-version-baseline-20261018.json'
+      - 'tests/alpha/compare_version_locks.py'
       - 'preview/outpost-viewer-an-v1.js'
       - 'index.html'
   workflow_dispatch:
@@ -46,6 +48,8 @@ jobs:
           PY
       - name: Check version identity and visible legacy label
         run: python3 tests/alpha/test_version_lock.py
+      - name: Generate deterministic version comparison
+        run: python3 tests/alpha/compare_version_locks.py data/phalanx-alpha-version-baseline-20261018.json data/phalanx-alpha-version-lock-20261018.json alpha-version-diff.json
       - name: Verify alpha harness navigation contract
         run: python3 tests/alpha/test_harness_navigation.py
       - name: Verify all seven target modules and test harness
@@ -103,6 +107,7 @@ jobs:
           PY
           cp preview/phalanx-alpha-android-integration-20261017.html alpha-deploy/
           cp data/phalanx-alpha-version-lock-20261018.json alpha-deploy/
+          cp alpha-version-diff.json alpha-deploy/
           cp preview/nexus-phalanx-command-center-alpha28-local-pair-test-2026-10-13.html alpha-deploy/
           cp preview/kvk-prep-five-contrast-v13.html alpha-deploy/
           cp preview/nexus-phalanx-battle-readiness-verified-status-test-2026-10-12.html alpha-deploy/
