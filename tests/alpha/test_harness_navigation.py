@@ -53,3 +53,7 @@ lock = json.loads(Path("data/phalanx-alpha-version-lock-20261018.json").read_tex
 assert lock["app"]["build"] == "B002"
 assert "PHX-A001 · B002 | TEST" in source
 assert "B001" not in source
+
+assert 'id="copy-module"' in source
+assert "navigator.clipboard.writeText(url.href)" in source
+assert "url.hash=active||'rc5'" in source
