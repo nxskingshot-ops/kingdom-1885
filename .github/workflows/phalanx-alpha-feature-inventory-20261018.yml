@@ -1,0 +1,23 @@
+name: PHALANX Alpha Feature Inventory
+on:
+  push:
+    branches:
+      - alpha/android-integrated-freeze-20261017
+  pull_request:
+    paths:
+      - 'data/phalanx-feature-id-baseline-20261018.json'
+      - 'scripts/phalanx-feature-baseline-guard-20261018.mjs'
+      - '.github/workflows/phalanx-alpha-feature-inventory-20261018.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inventory-integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate 74 feature IDs and 16 modules
+        run: node scripts/phalanx-feature-baseline-guard-20261018.mjs
