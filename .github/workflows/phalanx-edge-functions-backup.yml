@@ -1,46 +1,18 @@
-name: PHALANX Edge Function source backup
+name: PHALANX Edge Function Source Backup — SECURITY HOLD
+# Public repository: do not commit confidential deployed source here.
+# The former implementation downloaded and pushed sources into this repository.
+# Retained as a disabled manual entrypoint until a private encrypted backup is approved.
 on:
   workflow_dispatch:
 permissions:
-  contents: write
+  contents: read
 jobs:
-  backup:
+  security-hold:
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
-    env:
-      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-      PROJECT_REF: hcjrdofkdkasznywvcxo
+    timeout-minutes: 2
     steps:
-      - uses: actions/checkout@v4
-      - name: Check credential
-        run: test -n "$SUPABASE_ACCESS_TOKEN"
-      - name: Install Supabase CLI
-        run: npm install --global supabase
-      - name: Download deployed functions
+      - name: Refuse unsafe public source commit
         run: |
-          set -euo pipefail
-          rm -rf recovery/supabase/functions
-          mkdir -p recovery/supabase/functions
-          tmp="$(mktemp -d)"
-          cd "$tmp"
-          supabase init
-          supabase link --project-ref "$PROJECT_REF"
-          supabase functions download
-          cd "$GITHUB_WORKSPACE"
-          cp -a "$tmp/supabase/functions/." recovery/supabase/functions/
-      - name: Guard against private keys
-        run: |
-          set -euo pipefail
-          if grep -RIl 'PRIVATE KEY-----' recovery/supabase/functions | grep -q .; then
-            echo "::error::Possible private key found; refusing to commit."
-            exit 1
-          fi
-      - name: Commit snapshot if changed
-        run: |
-          set -euo pipefail
-          git add recovery/supabase/functions
-          if git diff --cached --quiet; then exit 0; fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "Backup deployed Supabase Edge Function sources"
-          git push
+          echo "::error::SECURITY HOLD: do not commit deployed Edge Function source to a public repository."
+          echo "No Supabase access, no source export and no git push performed."
+          exit 1
