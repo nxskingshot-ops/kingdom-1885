@@ -1,0 +1,22 @@
+import fs from 'node:fs';
+import crypto from 'node:crypto';
+import assert from 'node:assert/strict';
+
+const lockPath = 'data/outpost-map-alpha24-canonical-lock-20261018.json';
+const lock = JSON.parse(fs.readFileSync(lockPath, 'utf8'));
+assert.equal(lock.canonical_id, 'PHX-OUT-024-MAP2-FROZEN-20261018');
+assert.equal(lock.original.immutable, true);
+assert.equal(lock.guards.require_exact_sha256, true);
+assert.equal(lock.guards.forbid_legacy_as_current, true);
+assert.equal(lock.integration.full_functional_acceptance, false);
+assert.match(lock.original.sha256, /^[a-f0-9]{64}$/);
+const currentPath = lock.integration.preview_path;
+assert.equal(currentPath, 'preview/PHX-OUT-024-MAP2-FROZEN-20261018.html');
+assert.ok(fs.existsSync(currentPath), 'Canonical OUT-024 preview is missing');
+const current = fs.readFileSync(currentPath);
+assert.ok(current.length > 0, 'Canonical OUT-024 preview is empty');
+const actual = crypto.createHash('sha256').update(current).digest('hex');
+assert.equal(actual, lock.original.sha256, 'OUT-024 SHA256 differs from frozen original');
+assert.equal(current.length, lock.original.bytes, 'OUT-024 size differs from frozen original');
+assert.ok(fs.existsSync('preview/PHALANX_RC5_ALPHA_DERIVED_20261017.html'), 'RC5 navigation preview is missing');
+console.log('PASS: OUT-024 immutable canonical source and RC5 file presence');
