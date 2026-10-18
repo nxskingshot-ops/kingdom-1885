@@ -24,7 +24,10 @@ def main():
         sys.exit("BLOCKED: legacy Reports & History must remain separately identifiable")
     if "label==='Outpost Map'?'LEGACY 23'" not in adapter:
         sys.exit("BLOCKED: Alpha23 must be visibly marked legacy")
-    print("PASS: archived Alpha23 SHA-256 and legacy RC5 route verified")
+    workflow = (ROOT / ".github/workflows/alpha-rc5-contract.yml").read_text(encoding="utf-8")
+    if 'Outpost Map<small class="status linked">LEGACY 23</small>' not in workflow:
+        sys.exit("BLOCKED: staged RC5 map must be labeled LEGACY 23")
+    print("PASS: archived Alpha23 identity, route and staged label verified")
 
 if __name__ == "__main__":
     main()
