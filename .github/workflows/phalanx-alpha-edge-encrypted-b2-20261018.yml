@@ -86,7 +86,8 @@ jobs:
           cmp "$file" downloaded.enc
           openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in downloaded.enc -out restored.tar.gz -pass env:BACKUP_PASSPHRASE
           cmp edge-archive.tar.gz restored.tar.gz
-          tar -tzf restored.tar.gz | grep -q '^supabase/functions/'
+          tar -tzf restored.tar.gz > restored-files.txt
+          grep -q '^supabase/functions/' restored-files.txt
           {
             echo '### Encrypted Edge Function private B2 archive verified'
             echo "- Source functions: 26 (inventory and directory parity checked)"
