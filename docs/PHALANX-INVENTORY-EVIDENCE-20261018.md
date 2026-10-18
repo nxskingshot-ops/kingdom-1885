@@ -19,7 +19,7 @@ Status: laufende Inventur, **keine** Produktivfreigabe und **keine** automatisch
 | Command Center | `preview/nexus-phalanx-command-center-alpha28-local-pair-test-2026-10-13.html` | Android-Seite öffnet | altes lokales Testdesign, historische Daten, finaler HOME-FREEZE noch nicht integriert |
 | KvK Prep | `preview/kvk-prep-five-contrast-v13.html` | Android-Loginseite öffnet | Auth/zentraler Login, altes Branding, eigentliche KvK-Funktionen |
 | Battle Readiness | `preview/nexus-phalanx-battle-readiness-verified-status-test-2026-10-12.html` | Datei; Computational-Milestone nennt Android-Test | Rollen-/Mitglieder-End-to-End fehlt |
-| Rankings | `preview/phalanx-ranking-integration-rc-20261015.html` | Datei | Funktion und aktuelle Daten nicht abgenommen |
+| Rankings | `preview/phalanx-ranking-integration-rc-20261015.html` | 20/40/100-Ansicht vorhanden; dokumentierte 16 Boards × 100 Ranking-Einträge, 242 eindeutige Spieler-UIDs über 14 Spielerboards (Snapshot 14.10.) | aktuelle Datenfrische, Auth, vollständige Android-Integration und End-to-End offen |
 | Reports & History | `preview/outpost-report-v11.html` | Legacy-Datei | aktueller Modulstand/Exports nicht abgenommen |
 | Transfer Command | `preview/transfer-scouting-demo-v5.html` | ausdrücklich Demo | Live-Daten und Freigabe fehlen |
 | Hero Intelligence | `preview/hero-intelligence-evidence-advisor-v15-2026-10-12.html` | Datei, dokumentierte Gen1–5 Daten/Modelle | Datenvalidierung und Spielkalibrierung offen |
@@ -29,6 +29,14 @@ Status: laufende Inventur, **keine** Produktivfreigabe und **keine** automatisch
 - `docs/NEXUS-PHALANX-COMPUTATIONAL-INTELLIGENCE-MILESTONE-2026-10-12.md`: Rally Selection Alpha32, Monte Carlo Alpha31, Hero Investment Lab Alpha2, Optimierung und Pets/Buffs. Explizit Forschungsstand, keine kalibrierten Kingshot-Gewinnchancen.
 - `docs/PHALANX-PROJECT-MEMORY-2026-10-14.md`: Kingdom #1913 Scout, Rankings, Edge-Function und Datenmodelle; dokumentierte Tests und offene Browser-/Quellenprüfungen.
 - Design-FREEZEs vom 16.10. (Unified Header V2, HOME, PYLON IX) aus Nutzerentscheidungen sind für die spätere Designintegration bindend; diese Inventur behauptet keine geprüfte, aktuelle GitHub-Originalgrafik.
+
+## C2. Nachrecherchierte Datenabdeckung (14.10.2026)
+
+- `docs/PHALANX-MIGHTPULSE-DATA-INVENTORY-2026-10-14.md`: 16 Boards × 100 = 1.600 **Ranking-Einträge**, davon 14 Spielerboards × 100 mit 242 verschiedenen Spieler-UIDs und 2 Allianzboards × 100. Dies sind historische, dokumentierte SQL-Prüfergebnisse, keine am 18.10. neu ausgeführte Datenbankabfrage.
+- `docs/PHALANX-DATA-STRATEGY-2-0-2026-10-14.md`: Auswertungen bis Top100 **wo Daten verfügbar**; keine Extrapolation über verfügbare Rangtiefe hinaus.
+- `preview/phalanx-ranking-integration-rc-20261015.html`: sichtbare Filter 20/40/100, kein Beleg für unbegrenzte Daten oder erfolgreiches heutiges Laden.
+- `docs/PHALANX_NAVIGATION_V1_2026-10-15.md`: Ranking Top40 als Filter/Ansicht, nicht eigenständiges Modul; frühere HOME→Ranking-Verbindung ausdrücklich noch nicht validiert.
+- Die Beschränkung auf 40 manuelle Screenshots ist historisch und **nicht** als Funktionslimit anzusehen. Datenverfügbarkeit, Ansichtslimit und Geschäftsregel stets getrennt dokumentieren.
 
 ## D. Festgestellte Risiken und nächste Prüfung
 
