@@ -70,19 +70,24 @@ jobs:
           cp preview/phalanx-ranking-integration-rc-20261015.html alpha-deploy/
           cp preview/outpost-report-v11.html alpha-deploy/
           cp preview/outpost-viewer-an-v1.js alpha-deploy/
+          cp preview/transfer-scouting-demo-v5.html alpha-deploy/
+          cp preview/transfer-scouting-demo-v5.js alpha-deploy/
           cp index.html alpha-deploy/
           cp preview/kingdom-hub-trends-v8.html alpha-deploy/
           cp preview/hero-intelligence-evidence-advisor-v15-2026-10-12.html alpha-deploy/
-          test "$(find alpha-deploy -maxdepth 1 -type f | wc -l)" -eq 11
+          test "$(find alpha-deploy -maxdepth 1 -type f | wc -l)" -eq 13
           test -s alpha-deploy/index.html
           test -s alpha-deploy/outpost-report-v11.html
           test -s alpha-deploy/outpost-viewer-an-v1.js
           test -s alpha-deploy/phalanx-alpha-android-integration-20261017.html
           grep -q 'src="./index.html?' alpha-deploy/outpost-report-v11.html
+          test -s alpha-deploy/transfer-scouting-demo-v5.html
+          test -s alpha-deploy/transfer-scouting-demo-v5.js
+          grep -q 'href="./transfer-scouting-demo-v5.html"' alpha-deploy/PHALANX_RC5_ALPHA_DERIVED_20261017.html
           test ! -d alpha-deploy/preview
       - name: Package isolated alpha for download (not production)
         uses: actions/upload-artifact@v4
         with:
-          name: phalanx-rc5-alpha-20261018-h
+          name: phalanx-rc5-alpha-20261018-i
           path: alpha-deploy/*
           retention-days: 7
