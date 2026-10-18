@@ -25,3 +25,10 @@ assert "view.replaceWith(fresh)" in source, "RC5 return must rebuild iframe"
 assert "RC5 CLICK RECEIVED" in source, "RC5 click acknowledgement missing"
 
 assert "candidate.setAttribute('href','./transfer-scouting-demo-v5.html')" in source, 'Candidate Board link must be corrected in loaded RC5 document'
+
+# Outpost V2 must never silently fall back to legacy V11 in the Android harness.
+assert "outposts:['./outpost-map-alpha23-frozen.html'" in source
+assert "'preview/outpost-map-alpha23-frozen.html':'outposts'" in source
+assert "outpost.setAttribute('href','./outpost-map-alpha23-frozen.html')" in source
+assert "outpost-report-v11.html" not in source
+assert (Path("preview") / "outpost-map-alpha23-frozen.html").is_file()
