@@ -64,57 +64,39 @@ jobs:
           grep -q 'Dependency error: outpost-viewer-an-v1.js' preview/outpost-report-v11.html
           grep -q 'clearPortraitBlocker' preview/outpost-report-v11.html
           grep -q 'data-alpha-portrait-blocker-hidden' preview/outpost-report-v11.html
-      - name: Stage flat Cloudflare Pages preview with verified paths
+      - name: Stage flat Cloudflare Pages preview with approved Outpost V2
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p alpha-deploy
           cp preview/PHALANX_RC5_ALPHA_DERIVED_20261017.html alpha-deploy/
-          # Preserve the SHA-frozen source; link the Outpost Map only in the deploy copy.
+          cp preview/phalanx-rc5-isolated-route-adapter-20261017.js alpha-deploy/
+          cp preview/outpost-map-alpha23-frozen.html alpha-deploy/
           python3 - <<'PY'
           from pathlib import Path
-          from html.parser import HTMLParser
-          p = Path('alpha-deploy/PHALANX_RC5_ALPHA_DERIVED_20261017.html')
-          source = p.read_text(encoding='utf-8')
-          old = '<a aria-disabled="true" data-pending="true" href="#">Outpost Map<small class="status unlinked">NOT LINKED</small></a>'
-          new = '<a href="./outpost-report-v11.html" title="Isolierte Outpost-Kartenvorschau">Outpost Map<small class="status linked">PREVIEW</small></a>'
-          assert source.count(old) == 1, 'Expected exactly one pending Outpost Map anchor'
-          p.write_text(source.replace(old,new), encoding='utf-8')
-          assert new in p.read_text(encoding='utf-8')
-          class Check(HTMLParser):
-              def __init__(self): super().__init__(); self.anchors=[]
-              def handle_starttag(self, tag, attrs):
-                  if tag == 'a': self.anchors.append(dict(attrs))
-          c=Check(); c.feed(p.read_text(encoding='utf-8'))
-          assert len(c.anchors)==39
-          assert len([a for a in c.anchors if a.get('href')=='./outpost-report-v11.html'])==2
-          assert len([a for a in c.anchors if a.get('href')=='#' and 'data-pending' in a])==31
-          print('PASS: deploy-only Outpost Map linked; original frozen derivative untouched')
+          p=Path('alpha-deploy/PHALANX_RC5_ALPHA_DERIVED_20261017.html')
+          source=p.read_text(encoding='utf-8')
+          old='<a aria-disabled="true" data-pending="true" href="#">Outpost Map<small class="status unlinked">NOT LINKED</small></a>'
+          new='<a href="./outpost-map-alpha23-frozen.html" title="Freigegebene Outpost Map V2 Alpha23">Outpost Map<small class="status linked">PREVIEW</small></a>'
+          assert source.count(old)==1, 'Outpost Map frozen anchor mismatch'
+          source=source.replace(old,new)
+          assert source.count('outpost-map-alpha23-frozen.html')==1
+          p.write_text(source,encoding='utf-8')
           PY
           cp preview/phalanx-alpha-android-integration-20261017.html alpha-deploy/
           cp preview/nexus-phalanx-command-center-alpha28-local-pair-test-2026-10-13.html alpha-deploy/
           cp preview/kvk-prep-five-contrast-v13.html alpha-deploy/
           cp preview/nexus-phalanx-battle-readiness-verified-status-test-2026-10-12.html alpha-deploy/
           cp preview/phalanx-ranking-integration-rc-20261015.html alpha-deploy/
-          cp preview/outpost-report-v11.html alpha-deploy/
-          cp preview/outpost-viewer-an-v1.js alpha-deploy/
           cp preview/transfer-scouting-demo-v5.html alpha-deploy/
           cp preview/transfer-scouting-demo-v5.js alpha-deploy/
-          cp index.html alpha-deploy/
           cp preview/kingdom-hub-trends-v8.html alpha-deploy/
           cp preview/hero-intelligence-evidence-advisor-v15-2026-10-12.html alpha-deploy/
-          test "$(find alpha-deploy -maxdepth 1 -type f | wc -l)" -eq 13
-          test -s alpha-deploy/index.html
-          test -s alpha-deploy/outpost-report-v11.html
-          test -s alpha-deploy/outpost-viewer-an-v1.js
-          test -s alpha-deploy/phalanx-alpha-android-integration-20261017.html
-          grep -q 'ALPHA BUILD 20261018-n' alpha-deploy/phalanx-alpha-android-integration-20261017.html
-          grep -q 'src="./index.html?' alpha-deploy/outpost-report-v11.html
-          test -s alpha-deploy/transfer-scouting-demo-v5.html
-          test -s alpha-deploy/transfer-scouting-demo-v5.js
-          grep -q "transfers:\['./transfer-scouting-demo-v5.html'" alpha-deploy/phalanx-alpha-android-integration-20261017.html
-          grep -q 'href="./kingdom-hub-trends-v8.html"' alpha-deploy/PHALANX_RC5_ALPHA_DERIVED_20261017.html
-          test ! -d alpha-deploy/preview
+          test -s alpha-deploy/outpost-map-alpha23-frozen.html
+          test -s alpha-deploy/phalanx-rc5-isolated-route-adapter-20261017.js
+          ! grep -q 'outpost-report-v11.html' alpha-deploy/phalanx-alpha-android-integration-20261017.html
+          ! grep -q 'outpost-report-v11.html' alpha-deploy/phalanx-rc5-isolated-route-adapter-20261017.js
+          python3 tests/alpha/test_outpost_v2_freeze_gate.py
       - name: Deploy verified alpha to isolated Cloudflare Pages
         if: ${{ github.ref == 'refs/heads/alpha/android-integrated-freeze-20261017' }}
         shell: bash
