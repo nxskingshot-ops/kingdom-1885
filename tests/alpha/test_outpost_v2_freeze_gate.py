@@ -11,7 +11,7 @@ ADAPTER = ROOT / "preview" / "phalanx-rc5-isolated-route-adapter-20261017.js"
 
 def main():
     if not FROZEN.is_file():
-        sys.exit("BLOCKED: approved Alpha23 frozen HTML missing from isolated branch")
+        sys.exit("BLOCKED: archived Alpha23 frozen HTML missing from isolated branch")
     actual = hashlib.sha256(FROZEN.read_bytes()).hexdigest()
     if actual != EXPECTED:
         sys.exit(f"BLOCKED: Alpha23 SHA-256 mismatch: {actual}")
@@ -19,10 +19,12 @@ def main():
         sys.exit("BLOCKED: RC5 route adapter missing")
     adapter = ADAPTER.read_text(encoding="utf-8")
     if "['Outpost Map','outpost-map-alpha23-frozen.html']" not in adapter:
-        sys.exit("BLOCKED: approved V2 must be wired to Outpost Map, not Reports")
+        sys.exit("BLOCKED: legacy Alpha23 must be wired to Outpost Map, not Reports")
     if "['Reports & History','outpost-report-v11.html']" not in adapter:
         sys.exit("BLOCKED: legacy Reports & History must remain separately identifiable")
-    print("PASS: approved Alpha23 SHA-256 and RC5 route verified")
+    if "label==='Outpost Map'?'LEGACY 23'" not in adapter:
+        sys.exit("BLOCKED: Alpha23 must be visibly marked legacy")
+    print("PASS: archived Alpha23 SHA-256 and legacy RC5 route verified")
 
 if __name__ == "__main__":
     main()
