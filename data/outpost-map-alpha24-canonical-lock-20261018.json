@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "canonical_id": "PHX-OUT-024-MAP2-FROZEN-20261018",
+  "module": "OUT-024",
+  "display_name": "Outpost Intelligence · Map 2.0 · Alpha 24",
+  "approval": {
+    "date": "2026-10-18",
+    "method": "user visual and Android interaction confirmation",
+    "reference_capture": "2026-10-15 14:59"
+  },
+  "original": {
+    "library_path": "/NEXUS PHALANX/Recovered Originals/OUTPOST_MAP_ALPHA24_USER_CONFIRMED_20261018.html",
+    "library_file_id": "libfile_772e3816358881918833797caa234d20",
+    "sha256": "1a87afde964f8eacc730f8a2cd52d7067ebe06b40cc7fc1388c16ee59e3a043d",
+    "bytes": 1105961,
+    "immutable": true
+  },
+  "historical_internal_title": "Alpha 19 (embedded payload)",
+  "visible_ui_version": "Alpha 24",
+  "integration": {
+    "state": "SOURCE_SAVED_NOT_STAGED",
+    "preview_path": null,
+    "verified_deployed": false
+  },
+  "guards": {
+    "fail_closed_on_missing_or_mismatch": true,
+    "forbid_legacy_as_current": true,
+    "require_exact_sha256": true,
+    "forbid_overwrite_original": true,
+    "production_changes": false
+  }
+}
