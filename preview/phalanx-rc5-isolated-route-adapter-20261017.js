@@ -23,7 +23,7 @@ for(const a of entries){
   // The frozen click interceptor is registered directly on each anchor.
   // Replacing the node drops that interceptor WITHOUT changing markup or CSS.
   const clean=a.cloneNode(true);clean.removeAttribute('data-pending');clean.removeAttribute('aria-disabled');
-  clean.href=PREVIEW_ROOT+file;
+  clean.href='./'+file;
   clean.addEventListener('click',event=>{
    // Intercept only in embedded alpha harness; keep ordinary browser links otherwise.
    if(window.parent===window)return;
