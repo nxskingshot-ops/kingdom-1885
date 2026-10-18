@@ -96,4 +96,4 @@ jobs:
             echo '- No source committed or uploaded as a GitHub artifact; no Supabase deployment or production writes.'
             echo '- Full functional restoration in an isolated Supabase project is NOT verified.'
           } >> "$GITHUB_STEP_SUMMARY"
-          rm -rf "$RUNNER_TEMP/edge-archive" "$RUNNER_TEMP/edge-archive.tar.gz" "$RUNNER_TEMP/restored.tar.gz" "$RUNNER_TEMP/downloaded.enc"
+          # Ephemeral GitHub runner is destroyed after this job; Supabase-extracted files may be root-owned.
