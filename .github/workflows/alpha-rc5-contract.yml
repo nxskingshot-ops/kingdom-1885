@@ -115,6 +115,9 @@ jobs:
           test -s alpha-deploy/phalanx-alpha-version-lock-20261018.json
           cp preview/nexus-phalanx-command-center-alpha28-local-pair-test-2026-10-13.html alpha-deploy/
           cp preview/kvk-prep-five-contrast-v13.html alpha-deploy/
+          cp preview/kingdom-hub-scouting-v6.html alpha-deploy/
+          cp nexus-app-2.webmanifest alpha-deploy/
+          cp icon-192.png alpha-deploy/
           cp preview/nexus-phalanx-battle-readiness-verified-status-test-2026-10-12.html alpha-deploy/
           cp preview/phalanx-ranking-integration-rc-20261015.html alpha-deploy/
           cp preview/transfer-scouting-demo-v5.html alpha-deploy/
