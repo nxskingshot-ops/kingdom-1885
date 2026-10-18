@@ -1,0 +1,168 @@
+{
+  "schema": "phalanx.edge-function-live-inventory.v1",
+  "checked_at": "2026-10-18",
+  "project_id": "hcjrdofkdkasznywvcxo",
+  "source": "Supabase list_edge_functions read-only",
+  "count": 26,
+  "functions": [
+    {
+      "slug": "kvk-sync",
+      "version": 4,
+      "status": "ACTIVE",
+      "ezbr_sha256": "c2b8de2f2004266e3307f060ac7c149854c430e09dfe4866daf693154a7db0f2"
+    },
+    {
+      "slug": "outpost-sync",
+      "version": 4,
+      "status": "ACTIVE",
+      "ezbr_sha256": "75ff598c4a8cafeb7d98ce22c7e4480e2a2005d0f9b50ea29dceb6768e18611d"
+    },
+    {
+      "slug": "outpost-editor",
+      "version": 6,
+      "status": "ACTIVE",
+      "ezbr_sha256": "8ce5ae485d8481c6ebc3c2b84d9db0b81ed8c01a58e37d2823aaa2403aca033a"
+    },
+    {
+      "slug": "nxs-guest-setup",
+      "version": 5,
+      "status": "ACTIVE",
+      "ezbr_sha256": "9705d149e9aae5f851ae076bf4951f623ce8b48e248f74e2912447bcdb6394f1"
+    },
+    {
+      "slug": "nexus-feedback",
+      "version": 3,
+      "status": "ACTIVE",
+      "ezbr_sha256": "4acb74efd48cc740c42bbcee6ef582a8d7099980cdc944e8b85479f2404f7dfd"
+    },
+    {
+      "slug": "nexus-true-power",
+      "version": 6,
+      "status": "ACTIVE",
+      "ezbr_sha256": "a655806a83377e78db0cdf4b81f29537c91c718d04a02e2d4f5ccd8164828628"
+    },
+    {
+      "slug": "nexus-access-review",
+      "version": 6,
+      "status": "ACTIVE",
+      "ezbr_sha256": "3896faeb2e03981b9e9d65ae8bb8b3d15679334f84de02ca76aa833b716bbbb2"
+    },
+    {
+      "slug": "verified-outpost-sync",
+      "version": 3,
+      "status": "ACTIVE",
+      "ezbr_sha256": "b198980e5d21ea93c9d7a6075eed2629099030dcc0e8f33427056341d96ef0b7"
+    },
+    {
+      "slug": "mightpulse-ranking-test",
+      "version": 2,
+      "status": "ACTIVE",
+      "ezbr_sha256": "47b14b0b2830b86db6c4652469ae6337e68ff6daabb4a970fa02881707dab974"
+    },
+    {
+      "slug": "mightpulse-ranking-audit",
+      "version": 3,
+      "status": "ACTIVE",
+      "ezbr_sha256": "cd3071786d23e97ad03ca5bb43a3cf2f301bf47d7c36f5c29201dd23c3049ef5"
+    },
+    {
+      "slug": "mightpulse-ranking-identity-audit",
+      "version": 2,
+      "status": "ACTIVE",
+      "ezbr_sha256": "67e15929b203c0fcf5ae6fb90cfd468c1547c70a61b3b4fe5f42ef77193c1d40"
+    },
+    {
+      "slug": "mightpulse-board-coverage-audit",
+      "version": 2,
+      "status": "ACTIVE",
+      "ezbr_sha256": "2cef47806d64ad55a56c398fc1581133b17290b1da9cad04d60e60cf95215b84"
+    },
+    {
+      "slug": "mightpulse-coverage-round2-fixed",
+      "version": 2,
+      "status": "ACTIVE",
+      "ezbr_sha256": "124a312528cb1ee3b348ddde425551e1ac8600646964408353060105d2abe599"
+    },
+    {
+      "slug": "mightpulse-freshness-quality-audit",
+      "version": 2,
+      "status": "ACTIVE",
+      "ezbr_sha256": "263445320135d83e551db674de4ba52ff8b6ec2cf60c126f5e5200b6bfd67893"
+    },
+    {
+      "slug": "mightpulse-quality-batch-audit",
+      "version": 2,
+      "status": "ACTIVE",
+      "ezbr_sha256": "cbe1b4aa9d693d57c268c279be24268c21c6757807d66067391ac24cdf612b96"
+    },
+    {
+      "slug": "mightpulse-quality-batch-4-7",
+      "version": 2,
+      "status": "ACTIVE",
+      "ezbr_sha256": "b7963797073a4eb3c25fd626b931eb64f68fb44741382a9e00a644324bf1eee7"
+    },
+    {
+      "slug": "mightpulse-quality-overview-16",
+      "version": 5,
+      "status": "ACTIVE",
+      "ezbr_sha256": "bc55e63fee296af3c8e6fe0cfa820356ab2420e35bdd23e21040bc4ae150963d"
+    },
+    {
+      "slug": "mightpulse-alliance-schema-diagnostic",
+      "version": 2,
+      "status": "ACTIVE",
+      "ezbr_sha256": "f03c886dd61019069c063d15037697d79f408ceb13d736e08e03c6e5f388c695"
+    },
+    {
+      "slug": "mightpulse-kills-diagnostic",
+      "version": 3,
+      "status": "ACTIVE",
+      "ezbr_sha256": "1640b287637b8dddb5c9e7fda55d91810f20739883b01ea65a4bfc67b0261962"
+    },
+    {
+      "slug": "phalanx-mightpulse-poll",
+      "version": 7,
+      "status": "ACTIVE",
+      "ezbr_sha256": "87bb4902890672571fb6f55b511927ca04117cca2a8982d10ae0ee394830e182"
+    },
+    {
+      "slug": "phalanx-mightpulse-status",
+      "version": 4,
+      "status": "ACTIVE",
+      "ezbr_sha256": "c4e4eea7f1e3de2a073d78d638986beaa73dda0feb030f3f34fd68a096e73c8e"
+    },
+    {
+      "slug": "phalanx-mightpulse-scheduled",
+      "version": 2,
+      "status": "ACTIVE",
+      "ezbr_sha256": "6dd0351463fef00d2991c679a28e0a1b423d249cc2c6f58884fe468cf09a7662"
+    },
+    {
+      "slug": "phalanx-mightpulse-value-diff-test",
+      "version": 2,
+      "status": "ACTIVE",
+      "ezbr_sha256": "38116468e49de6495ae4c760327727b0d7132e3db538ac54a0c53bb97897cc53"
+    },
+    {
+      "slug": "phalanx-kingdom-1913-scout-test",
+      "version": 2,
+      "status": "ACTIVE",
+      "ezbr_sha256": "ff2fd32927e10c89069c5ebe41d0f27092b6bdc1a9d29f6916ac12a4a357737e"
+    },
+    {
+      "slug": "phalanx-kingdom-scout-report-test",
+      "version": 3,
+      "status": "ACTIVE",
+      "ezbr_sha256": "42bf06327e6a950d68f8a4bb5d30660dfc12c53000b3297106cb2de076f70c2f"
+    },
+    {
+      "slug": "phalanx-native-ranking-rc-test",
+      "version": 2,
+      "status": "ACTIVE",
+      "ezbr_sha256": "ede15485a20fbc020153c1330b6f8a6d4d77e5d2f981a8cd03db50fb7050729c"
+    }
+  ],
+  "source_parity": "NOT_VERIFIED",
+  "restore_status": "NOT_VERIFIED",
+  "note": "Metadata/hash values from provider are not independently verified source archives. No secrets included."
+}
