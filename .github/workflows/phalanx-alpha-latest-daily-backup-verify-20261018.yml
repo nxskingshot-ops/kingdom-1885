@@ -1,0 +1,65 @@
+name: PHALANX Alpha Latest Daily Backup Verify (Read Only)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.B2_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.B2_APPLICATION_KEY }}
+      AWS_DEFAULT_REGION: eu-central-003
+      AWS_EC2_METADATA_DISABLED: 'true'
+      BACKUP_PASSPHRASE: ${{ secrets.PHALANX_BACKUP_ENCRYPTION_KEY }}
+      B2_ENDPOINT: https://s3.eu-central-003.backblazeb2.com
+      B2_BUCKET: nexus-phalanx-backup
+    steps:
+      - name: Restrict to isolated alpha branch
+        shell: bash
+        run: |
+          test "$GITHUB_REF" = 'refs/heads/alpha/android-integrated-freeze-20261017'
+          for name in AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY BACKUP_PASSPHRASE; do
+            test -n "${!name}" || { echo "::error::Missing $name"; exit 1; }
+          done
+      - name: Install verification clients
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-client openssl awscli
+          pg_restore --version
+      - name: Select latest daily encrypted backup without changing B2
+        shell: bash
+        run: |
+          set -euo pipefail
+          key="$(aws --endpoint-url "$B2_ENDPOINT" s3api list-objects-v2 --bucket "$B2_BUCKET" --prefix 'postgres/daily/' --query "sort_by(Contents[?ends_with(Key, '.dump.enc')], &LastModified)[-1].Key" --output text)"
+          [[ "$key" == postgres/daily/*.dump.enc ]] || { echo '::error::No daily encrypted backup found'; exit 1; }
+          echo "BACKUP_KEY=$key" >> "$GITHUB_ENV"
+          echo "Selected: $key" >> "$GITHUB_STEP_SUMMARY"
+      - name: Download, checksum, decrypt and parse archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          dir="$(mktemp -d)"
+          trap 'rm -rf "$dir"' EXIT
+          cd "$dir"
+          aws --endpoint-url "$B2_ENDPOINT" s3 cp "s3://$B2_BUCKET/$BACKUP_KEY" backup.enc --no-progress
+          aws --endpoint-url "$B2_ENDPOINT" s3 cp "s3://$B2_BUCKET/$BACKUP_KEY.sha256" backup.sha256 --no-progress
+          expected="$(awk 'NR==1 {print $1}' backup.sha256)"
+          actual="$(sha256sum backup.enc | cut -d' ' -f1)"
+          test "$expected" = "$actual" || { echo '::error::SHA-256 mismatch'; exit 1; }
+          openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in backup.enc -out backup.dump -pass env:BACKUP_PASSPHRASE
+          pg_restore --list backup.dump > archive.list
+          entries="$(grep -cv '^;' archive.list || true)"
+          test "$entries" -gt 0
+          {
+            echo '### Latest daily backup verification PASSED'
+            echo "- Object: $BACKUP_KEY"
+            echo "- Encrypted SHA-256: $actual"
+            echo "- Archive entries: $entries"
+            echo '- Checks: private B2 download, SHA-256 match, decrypt, PostgreSQL archive listing'
+            echo '- This is NOT a database restore; no database connection or B2 write was performed.'
+          } >> "$GITHUB_STEP_SUMMARY"
