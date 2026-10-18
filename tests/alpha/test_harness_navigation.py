@@ -43,3 +43,6 @@ for key in re.findall(r'<button data-key="([^"]+)"', source):
     assert (Path("preview") / filename).is_file(), f"Missing visible module: {key}"
     assert "cp preview/" + filename + " alpha-deploy/" in workflow, f"Module not staged: {key}"
 print("PASS: visible module routes are staged in deploy")
+
+assert "'preview/transfer-scouting-demo-v5.html':'transfers'" in source
+assert "tag.textContent='LEGACY 23'" in source
