@@ -52,18 +52,10 @@ jobs:
           assert 'href="./phalanx-alpha-android-integration-20261017.html#rc5" target="_top"' in source
           assert 'href="./phalanx-home-auth-rc9-20261014.html"' not in source
           PY
-      - name: Verify Outpost map dependencies
+      - name: Verify approved Outpost Map V2 identity
         run: |
-          test -s index.html
-          grep -q 'id="app"' index.html
-          grep -q 'coverMode' index.html
-          test -s preview/outpost-viewer-an-v1.js
-          grep -q 'src="./index.html?' preview/outpost-report-v11.html
-          grep -q 'outpost-viewer-an-v1.js' preview/outpost-report-v11.html
-          grep -q 'Map startup timeout (15s)' preview/outpost-report-v11.html
-          grep -q 'Dependency error: outpost-viewer-an-v1.js' preview/outpost-report-v11.html
-          grep -q 'clearPortraitBlocker' preview/outpost-report-v11.html
-          grep -q 'data-alpha-portrait-blocker-hidden' preview/outpost-report-v11.html
+          python3 tests/alpha/test_outpost_v2_freeze_gate.py
+          test -s preview/outpost-map-alpha23-frozen.html
       - name: Stage flat Cloudflare Pages preview with approved Outpost V2
         shell: bash
         run: |
