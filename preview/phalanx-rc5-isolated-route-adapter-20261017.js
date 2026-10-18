@@ -4,7 +4,7 @@
 const anchors=[...document.querySelectorAll('nav .submenu a')];
 const map=anchors.find(a=>a.textContent.trim().startsWith('Outpost Map'));
 const legacy=anchors.find(a=>a.textContent.trim().startsWith('Reports & History'));
-const expectedMap=map&&(map.getAttribute('href')==='#'&&map.hasAttribute('data-pending')||map.getAttribute('href')==='./outpost-map-alpha23-frozen.html');
+const expectedMap=map&&(map.getAttribute('href')==='#'&&map.hasAttribute('data-pending')||map.getAttribute('href')==='./PHX-OUT-024-MAP2-FROZEN-20261018.html');
 const expectedLegacy=legacy&&legacy.getAttribute('href')==='./outpost-report-v11.html';
 if(anchors.length!==39||!expectedMap||!expectedLegacy){
  document.documentElement.dataset.rc5RouteGate='fail';
@@ -16,7 +16,7 @@ const routeTargets=new Map([
  ['KvK Prep','kvk-prep-five-contrast-v13.html'],
  ['Battle Readiness','nexus-phalanx-battle-readiness-verified-status-test-2026-10-12.html'],
  ['Rankings','phalanx-ranking-integration-rc-20261015.html'],
- ['Outpost Map','outpost-map-alpha23-frozen.html'],
+ ['Outpost Map','PHX-OUT-024-MAP2-FROZEN-20261018.html'],
  ['Reports & History','outpost-report-v11.html'],
  ['Candidate Board','transfer-scouting-demo-v5.html'],
  ['Hero Intelligence','hero-intelligence-evidence-advisor-v15-2026-10-12.html']
