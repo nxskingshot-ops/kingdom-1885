@@ -1,41 +1,45 @@
-/* NEXUS PHALANX RC5 isolated alpha route adapter.
-   Include ONLY in a derivative of the byte-frozen RC5 HTML.
-   Original frozen asset is immutable. No write operations. */
+/* NEXUS PHALANX RC5 alpha adapter — only deploy derivative, never frozen source.
+   Preserve Reports & History (legacy report) as a separate module from Outpost Map V2. */
 (()=>{'use strict';
-const PREVIEW_ROOT='https://nxskingshot-ops.github.io/kingdom-1885/preview/';
-const targets={
-'Dashboard':'nexus-phalanx-command-center-alpha28-local-pair-test-2026-10-13.html',
-'KvK Prep':'kvk-prep-five-contrast-v13.html',
-'Battle Readiness':'nexus-phalanx-battle-readiness-verified-status-test-2026-10-12.html',
-'Reports & History':'outpost-map-alpha23-frozen.html',
-'Candidate Board':'kingdom-hub-trends-v8.html',
-'Hero Intelligence':'hero-intelligence-evidence-advisor-v15-2026-10-12.html'
-};
-const entries=[...document.querySelectorAll('a[data-pending]')];
-const totalBefore=document.querySelectorAll('nav .submenu a').length;
-function label(a){return [...a.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent).join(' ').trim();}
-let linked=0,disabled=0,unexpected=0;
-for(const a of entries){
- const name=label(a),file=targets[name];
- if(file){
-  const existing=new URL(a.href,location.href);
-  if(existing.href!==PREVIEW_ROOT+file && !(name==='Reports & History' && existing.href===PREVIEW_ROOT+'outpost-report-v11.html')){unexpected++;continue;}
-  // The frozen click interceptor is registered directly on each anchor.
-  // Replacing the node drops that interceptor WITHOUT changing markup or CSS.
-  const clean=a.cloneNode(true);clean.removeAttribute('data-pending');clean.removeAttribute('aria-disabled');
-  clean.href='./'+file;
-  clean.addEventListener('click',event=>{
-   // Intercept only in embedded alpha harness; keep ordinary browser links otherwise.
-   if(window.parent===window)return;
-   event.preventDefault();
-   window.parent.postMessage({type:'phalanx-alpha-rc5-route',path:'preview/'+file},location.origin);
-  });
-  a.replaceWith(clean);linked++;
- }else if(a.getAttribute('href')==='#'){disabled++;a.setAttribute('aria-disabled','true');}
- else unexpected++;
+const anchors=[...document.querySelectorAll('nav .submenu a')];
+const map=anchors.find(a=>a.textContent.trim().startsWith('Outpost Map'));
+const legacy=anchors.find(a=>a.textContent.trim().startsWith('Reports & History'));
+const expectedMap=map&&map.getAttribute('href')==='#'&&map.hasAttribute('data-pending');
+const expectedLegacy=legacy&&legacy.getAttribute('href')==='./outpost-report-v11.html';
+if(anchors.length!==39||!expectedMap||!expectedLegacy){
+ document.documentElement.dataset.rc5RouteGate='fail';
+ console.error('[PHALANX] RC5 source contract changed: stop before route mutation');
+ return;
 }
-const rankings=[...document.querySelectorAll('a:not([data-pending])')].filter(a=>a.textContent.trim().startsWith('Rankings'));const rankingValid=rankings.length===1&&rankings[0].href===PREVIEW_ROOT+'phalanx-ranking-integration-rc-20261015.html';
-const result={total:totalBefore,linked,disabled,unexpected,rankingValid,ready:totalBefore===39&&entries.length===37&&linked===6&&disabled===31&&unexpected===0&&rankingValid&&[...document.querySelectorAll('a')].some(a=>a.textContent.trim().startsWith('Outpost Map')&&a.getAttribute('href')==='./outpost-map-alpha23-frozen.html')};
-document.documentElement.dataset.rc5RouteGate=result.ready?'pass':'fail';
-console.info('[PHALANX RC5 isolated route adapter]',result);
+const routeTargets=new Map([
+ ['Dashboard','nexus-phalanx-command-center-alpha28-local-pair-test-2026-10-13.html'],
+ ['KvK Prep','kvk-prep-five-contrast-v13.html'],
+ ['Battle Readiness','nexus-phalanx-battle-readiness-verified-status-test-2026-10-12.html'],
+ ['Rankings','phalanx-ranking-integration-rc-20261015.html'],
+ ['Outpost Map','outpost-map-alpha23-frozen.html'],
+ ['Reports & History','outpost-report-v11.html'],
+ ['Candidate Board','transfer-scouting-demo-v5.html'],
+ ['Hero Intelligence','hero-intelligence-evidence-advisor-v15-2026-10-12.html']
+]);
+let wired=0;
+for(const a of anchors){
+ const label=[...a.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent).join(' ').trim();
+ const file=routeTargets.get(label);
+ if(!file)continue;
+ const clone=a.cloneNode(true); // removes frozen per-anchor click blocker
+ clone.setAttribute('href','./'+file);
+ clone.removeAttribute('data-pending');clone.removeAttribute('aria-disabled');
+ const status=clone.querySelector('.status');
+ if(status){status.textContent=label==='Reports & History'?'LEGACY':'PREVIEW';status.classList.remove('unlinked');status.classList.add('linked');}
+ clone.addEventListener('click',e=>{
+  if(window.parent===window)return;
+  e.preventDefault();
+  window.parent.postMessage({type:'phalanx-alpha-rc5-route',path:'preview/'+file},location.origin);
+ });
+ a.replaceWith(clone);wired++;
+}
+const pending=[...document.querySelectorAll('nav .submenu a[data-pending]')].length;
+const ready=wired===8&&pending===31;
+document.documentElement.dataset.rc5RouteGate=ready?'pass':'fail';
+console.info('[PHALANX RC5 route gate]',{total:anchors.length,wired,pending,ready});
 })();
