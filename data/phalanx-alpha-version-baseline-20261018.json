@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "app": {
+    "id": "PHX-A001",
+    "build": "B001",
+    "status": "TEST",
+    "branch": "alpha/android-integrated-freeze-20261017"
+  },
+  "modules": [
+    {
+      "code": "OUT-023",
+      "status": "LEGACY_WRONG_REFERENCE",
+      "path": "preview/outpost-map-alpha23-frozen.html",
+      "sha256": "e8109617ef6d4578f4bfd7ca3a519bceedbae0850b432e6f27e24ef2d82fe0b0",
+      "current": false
+    },
+    {
+      "code": "OUT-024",
+      "status": "REFERENCE_CONFIRMED_SOURCE_UNVERIFIED",
+      "path": null,
+      "sha256": null,
+      "current": true
+    }
+  ],
+  "policy": {
+    "currentOutpostMustHaveVerifiedSource": true,
+    "allowLegacyOutpostAsCurrent": false,
+    "productionChanges": false
+  },
+  "changes": []
+}
