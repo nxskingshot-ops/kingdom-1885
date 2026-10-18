@@ -63,3 +63,9 @@ assert "home:['../backups/" not in source
 assert "navigation:['./nexus-phalanx-navigation-sandbox" not in source
 
 assert 'history.back()' not in source, 'RC5 back must not reopen an older module'
+
+# Dependencies used by staged KvK and Command/Battle pages must be packaged.
+workflow = Path(".github/workflows/alpha-rc5-contract.yml").read_text(encoding="utf-8")
+for dependency in ("preview/kingdom-hub-scouting-v6.html", "nexus-app-2.webmanifest", "icon-192.png"):
+    assert Path(dependency).is_file(), f"Missing dependency: {dependency}"
+    assert "cp " + dependency + " alpha-deploy/" in workflow, f"Unstaged dependency: {dependency}"
