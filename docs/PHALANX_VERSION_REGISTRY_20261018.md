@@ -43,3 +43,17 @@
 - **Verbindliche Reihenfolge:** (1) Screenshots/Designreferenz → (2) Quellpfad plus inhaltlicher Abgleich → (3) Hash → (4) explizite Zielroute → (5) einmaliger notwendiger Integrationstest. Fehlt (2), keine Route ändern und keine Freigabe behaupten.
 - **Nachweisdisziplin:** Grün bei CI bedeutet Build bestanden; ein Browser-Screenshot einer anderen Karte bedeutet nicht Designfreigabe. Keine weiteren Tests von Alpha23; keine Änderung an Produktion oder FREEZE-Originalen.
 - **Konflikt zum alten Registereintrag:** Die oben stehende frühere Aufgabe »Alpha23 in Alpha integrieren« ist historisch erledigt, aber **fachlich durch die bestätigte Alpha24-Referenz überholt**. Nicht wiederholen.
+
+## Alpha-Modul-Audit 2026-10-18 – offene Quellfreigaben
+
+| Modul | Bekannte RC5-Zuordnung | Status | Nächste notwendige Prüfung |
+|---|---|---|---|
+| OUT | Alpha23 Legacy-Vorschau; Alpha24 nur Bildreferenz | BLOCKED | Original-Alpha24-HTML + Inhaltsvergleich + Hash |
+| CMD | Command Center Alpha28 Local Pair | UNVERIFIED | Freigegebene Command-Center-Referenz gegen Route prüfen |
+| BRD | Battle Readiness Verified Status Test | UNVERIFIED | FREEZE und Navigation gegen tatsächlich eingebundene Datei prüfen |
+| KVK | KvK Prep Five Contrast v13 | UNVERIFIED | Funktionsumfang und freigegebenen Stand vergleichen |
+| TRF | Transfer Scouting Demo v5 | DEMO / UNVERIFIED | Demo nicht als Live-Funktion ausgeben |
+| HER | Hero Intelligence Evidence Advisor v15 | UNVERIFIED | Quellen und Funktionsumfang des Hero-Moduls abgleichen |
+| HOM | Historische HOME-Verweise in Testhülle | UNVERIFIED | Aktuelle HOME-FREEZE-Originalquelle zuordnen |
+
+Diese Tabelle ist ein **Prüfauftrag, keine Freigabe**. Versionsnummern unterschiedlicher Module dürfen nicht als Aktualitätsbeleg verwendet werden. Bestehende Routen und FREEZE-Originale bleiben unangetastet. Neue Modulkennungen erst nach Quellnachweis vergeben.
