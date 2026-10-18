@@ -8,7 +8,7 @@ Status: laufende Inventur, **keine** Produktivfreigabe und **keine** automatisch
 | --- | --- | --- | --- |
 | HOME | `docs/NEXUS-PHALANX-CANONICAL-HOME-FREEZE-2026-10-12.md` | Original-Library-HTML, SHA-256 f8e8a4c4… | Original nicht durch alte KvK-HTML ersetzen; B003 HOME-Integration nicht bestätigt |
 | Alpha35 Outpost-Funktion | `docs/freezes/NEXUS-PHALANX-ALPHA35-FUNCTION-FREEZE-2026-10-13.md` | User-geprüfte Android-Filter, Zoom, Pan, Fullscreen, 74 Outposts | Funktionales Original gesondert von OUT-024 aufbewahren |
-| Alpha35 Alliance Comparison (HISTORISCH) | `docs/freezes/NEXUS-PHALANX-ALPHA35-ALLIANCE-INTEGRATION-FREEZE-2026-10-13.md` | NXS/FRA/OoO/MYM, damaliger Top40-Stand und Rücknavigation dokumentiert | **Top40 laut Nutzer am 18.10. nicht mehr aktueller Stand.** Nicht als Zielversion übernehmen; aktuelle Ranking-/Vergleichsgrenze erst ermitteln |
+| Alpha35 Alliance Comparison (HISTORISCH) | `docs/freezes/NEXUS-PHALANX-ALPHA35-ALLIANCE-INTEGRATION-FREEZE-2026-10-13.md` | NXS/FRA/OoO/MYM, damaliger Top40-Stand und Rücknavigation dokumentiert | **Top40 war keine Produktgrenze**, sondern lediglich die damals durch Screenshots verfügbare Datenstichprobe (Nutzerklärung 18.10.). Keine feste Top40-Begrenzung ableiten; tatsächliche Abdeckung abhängig von verfügbarer Datenquelle |
 | OUT-024 Map 2.0 | `data/outpost-map-alpha24-canonical-lock-20261018.json` | gesichertes SHA-256-Original, B003 CI-Gate und Android-Screenshots | vollständige Interaktion/Live-Daten nicht erneut end-to-end abgenommen |
 | RC5 Epic Navigation | `preview/PHALANX_RC5_ALPHA_DERIVED_20261017.html` | B003 Android RC5→Command Center→RC5→Outpost getestet | übrige 39 Unterrouten nicht vollständig abgenommen |
 
@@ -32,7 +32,7 @@ Status: laufende Inventur, **keine** Produktivfreigabe und **keine** automatisch
 
 ## D. Festgestellte Risiken und nächste Prüfung
 
-1. **Historischer Top40-Stand**: Nutzer bestätigt, dass Top40 längst überholt ist. Nicht als aktuelle Funktion oder Release-Anforderung darstellen. Aktuelle Top-N-/Vergleichsversion offen und zu verifizieren.
+1. **Historische Top40-Datenstichprobe**: 40 war ausschließlich die Anzahl damals manuell bereitgestellter Spieler-Screenshots, keine fachliche Ranking-Grenze. Aktuelle Datenquelle, tatsächliche Abdeckung und mögliche technische Limits getrennt prüfen; nicht automatisch Top100 oder unbegrenzte Daten behaupten.
 2. **Versionskonflikt**: alte OUT-023-Vorschau existiert weiter als Legacy; OUT-024 ist die alleinige aktuelle freigegebene Map. Nicht vertauschen.
 2. **Design-Mix**: RC5, Alpha28 Command Center und KvK V13 haben unterschiedliche Oberflächen; keine automatische Restyling-Freigabe.
 3. **Pfadstatus**: B003-Android-Screenshots zeigten `route mismatch` trotz sichtbarer Module. Separat testen, nicht das Modul-Original verändern.
