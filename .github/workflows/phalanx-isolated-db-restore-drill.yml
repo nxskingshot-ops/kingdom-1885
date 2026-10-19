@@ -44,7 +44,7 @@ jobs:
           # Create a dedicated ephemeral cluster; GitHub runner may not have 17/main.
           sudo pg_createcluster 17 phalanxdrill -p 55432 --start
           sudo pg_ctlcluster 17 phalanxdrill status
-          sudo -u postgres psql -X -v ON_ERROR_STOP=1 -d postgres -Atc "select version()" >/dev/null
+          sudo -u postgres psql -p 55432 -X -v ON_ERROR_STOP=1 -d postgres -Atc "select version()" >/dev/null
       - name: Retrieve and validate latest encrypted backup
         shell: bash
         run: |
@@ -72,11 +72,11 @@ jobs:
           umask 077
           dir="$BACKUP_DIRECTORY"
           # The database exists ONLY inside this ephemeral GitHub Actions machine.
-          sudo -u postgres createdb -T template0 phalanx_restore_drill
+          sudo -u postgres createdb -p 55432 -T template0 phalanx_restore_drill
           # Supabase-managed roles/extensions may not exist in vanilla PostgreSQL.
           # Never silently downgrade failure to a successful full restore.
           set +e
-          sudo -u postgres /usr/lib/postgresql/18/bin/pg_restore --verbose --no-owner --no-acl --exit-on-error --dbname=phalanx_restore_drill < "$dir/backup.dump" > "$dir/restore.stdout" 2> "$dir/restore.stderr"
+          sudo -u postgres /usr/lib/postgresql/18/bin/pg_restore --port=55432 --verbose --no-owner --no-acl --exit-on-error --dbname=phalanx_restore_drill < "$dir/backup.dump" > "$dir/restore.stdout" 2> "$dir/restore.stderr"
           status=$?
           set -e
           if [ "$status" -ne 0 ]; then
@@ -90,7 +90,7 @@ jobs:
             echo "::error::Isolated restore failed; privately inspect dependency compatibility, no sensitive logs emitted."
             exit 1
           fi
-          count="$(sudo -u postgres psql -X -At -d phalanx_restore_drill -c "SELECT count(*) FROM pg_catalog.pg_tables WHERE schemaname = 'public';")"
+          count="$(sudo -u postgres psql -p 55432 -X -At -d phalanx_restore_drill -c "SELECT count(*) FROM pg_catalog.pg_tables WHERE schemaname = 'public';")"
           test "$count" -ge 20 || { echo "::error::Fewer than 20 public tables after restore"; exit 1; }
           {
             echo "### PHALANX isolated PostgreSQL restore succeeded"
