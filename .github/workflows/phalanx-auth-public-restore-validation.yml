@@ -126,6 +126,20 @@ jobs:
                       break
           print('::error::Sanitized restore failure category: ' + primary)
           print('Sanitized restore object type: ' + phase)
+          # Analyze the actual PostgreSQL ERROR lines separately from the TOC phase.
+          # All emitted values are fixed labels: never print raw SQL, names, or identifiers.
+          error_lines = [line.split('ERROR:', 1)[1] for line in raw.splitlines() if 'ERROR:' in line]
+          missing_kinds = ('TYPE', 'SCHEMA', 'RELATION', 'FUNCTION', 'OPERATOR', 'SEQUENCE')
+          sql_missing_kind = 'NOT_CLASSIFIED'
+          for line in error_lines:
+              for kind in missing_kinds:
+                  if re.search(r'\b' + kind.lower() + r'\b[^\r\n]{0,300}\bdoes not exist\b', line, re.I):
+                      sql_missing_kind = kind
+                      break
+              if sql_missing_kind != 'NOT_CLASSIFIED':
+                  break
+          print('Sanitized actual SQL missing-object kind: ' + sql_missing_kind)
+          print('Sanitized SQL error lines present: ' + ('YES' if error_lines else 'NO'))
           # Disclose only the missing TYPE namespace, never its identifier or SQL.
           # A TYPE failure can be in an excluded extension schema or an auth/public dependency.
           missing_type_namespace = 'UNKNOWN'
