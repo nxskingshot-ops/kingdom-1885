@@ -43,3 +43,18 @@ class TestSafety(unittest.TestCase):
     def test_duplicate(self):
         self.file.write_text('safe')
         with self.assertRaises(ValueError): inspect(self.root,INV+INV)
+
+    def test_traversal_slug(self):
+        self.file.write_text('safe')
+        with self.assertRaises(ValueError):
+            inspect(self.root,[{'slug':'../escape','version':1,'ezbr_sha256':'a'*64}])
+
+    def test_symlink_directory(self):
+        self.file.write_text('safe')
+        (self.root/'test-fn'/'outside').symlink_to(self.root,target_is_directory=True)
+        with self.assertRaises(ValueError): inspect(self.root,INV)
+
+    def test_unexpected_root_file(self):
+        self.file.write_text('safe')
+        (self.root/'unexpected.txt').write_text('unexpected')
+        with self.assertRaises(ValueError): inspect(self.root,INV)
