@@ -9,6 +9,7 @@ on:
       - 'tests/alpha/test_reports_out024_local_adapter.py'
       - 'tests/alpha/test_reports_out024_runtime.cjs'
       - 'tests/alpha/test_reports_out024_navigation_runtime.cjs'
+      - 'tests/alpha/test_reports_out024_browser.cjs'
       - 'tests/alpha/test_out024_report_normalizer.cjs'
       - 'preview/PHALANX_RC5_OUT024_REPORTS_ISOLATED_NAV_20261019.html'
       - 'preview/phalanx-reports-out024-local-adapter-20261019.html'
@@ -54,6 +55,13 @@ jobs:
           cp preview/phalanx-reports-out024-local-adapter-20261019.html dist/reports-out024/
           cp preview/phalanx-out024-report-normalizer-20261019.js dist/reports-out024/
           printf 'User-agent: *\\nDisallow: /\\n' > dist/reports-out024/robots.txt
+      - name: Chromium end-to-end navigation gate (local isolated files)
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --no-save --no-package-lock playwright@1.58.2
+          npx playwright install --with-deps chromium
+          node tests/alpha/test_reports_out024_browser.cjs
       - name: Deploy only to existing isolated Pages project preview branch
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
