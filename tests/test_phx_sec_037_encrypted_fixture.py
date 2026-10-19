@@ -40,3 +40,17 @@ class TestEncryptedFixture(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             (Path(d)/'link').symlink_to('/etc/hosts')
             with self.assertRaises(ValueError): module.archive_synthetic(d,os.urandom(32))
+
+    def test_empty_archive_rejected(self):
+        with tempfile.TemporaryDirectory() as d:
+            with self.assertRaises(ValueError):
+                module.archive_synthetic(d,os.urandom(32))
+
+    def test_symlink_root_rejected(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d)
+            (root/'real').mkdir()
+            (root/'real'/'file.txt').write_text('fixture')
+            (root/'alias').symlink_to(root/'real',target_is_directory=True)
+            with self.assertRaises(ValueError):
+                module.archive_synthetic(root/'alias',os.urandom(32))
