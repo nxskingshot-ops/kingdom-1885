@@ -88,15 +88,20 @@ document.getElementById('export-copy').addEventListener('click',async()=>{
  try{await navigator.clipboard.writeText(value);status.textContent='Gefilterter Bericht kopiert.'}
  catch{status.textContent='Kopieren nicht verfügbar.'}
 });
-document.getElementById('export-txt').addEventListener('click',()=>{
+const saveButton=document.getElementById('export-txt');
+let activeUrl=null,saveLink=null;
+saveButton.addEventListener('click',()=>{
  const value=getText();if(!value){status.textContent='Bitte zuerst Outposts laden.';return}
  try{
-  const blob=new Blob([value],{type:'text/plain;charset=utf-8'});
-  const link=document.createElement('a'),url=URL.createObjectURL(blob);
-  link.href=url;link.download='phalanx-out024-report.txt';link.textContent='Datei speichern';
-  document.body.appendChild(link);link.click();
-  setTimeout(()=>{URL.revokeObjectURL(url);link.remove()},60000);
-  status.textContent='Download angefordert. Falls dein Browser nichts speichert, nutze „Bericht kopieren“.';
+  if(saveLink)saveLink.remove();
+  if(activeUrl)URL.revokeObjectURL(activeUrl);
+  activeUrl=URL.createObjectURL(new Blob([value],{type:'text/plain;charset=utf-8'}));
+  saveLink=document.createElement('a');
+  saveLink.href=activeUrl;saveLink.download='phalanx-out024-report.txt';
+  saveLink.textContent='TXT-Datei speichern';
+  saveLink.style.cssText='display:inline-block;padding:12px 16px;margin:12px 0;border:1px solid #d8b66d;border-radius:8px;color:#f5d58a';
+  saveButton.insertAdjacentElement('afterend',saveLink);
+  status.textContent='Tippe auf „TXT-Datei speichern“. Falls dein Browser das Speichern verhindert, nutze „Bericht kopieren“.';
  }catch(e){status.textContent='Download nicht möglich: '+e.message}
 });
 })();
