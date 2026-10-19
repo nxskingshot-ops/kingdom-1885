@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="de">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PHALANX RC5 + OUT-024 — isolierter Navigationstest V2</title>
+<style>html,body{margin:0;height:100%;background:#061018;color:#f0dcaa;font:13px system-ui,sans-serif}header{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid #826d39}button,a{color:#f0dcaa;background:#12212a;border:1px solid #826d39;border-radius:5px;padding:6px 10px;text-decoration:none;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}iframe{display:block;width:100%;height:calc(100% - 55px);border:0}small{color:#d5c6a3}</style>
+</head><body>
+<header><span>ISOLIERTER TEST · RC5 → OUT-024 <small id="status">RC5 lädt …</small></span><button id="back" type="button" disabled>← Zur Navigation</button></header>
+<iframe id="preview" title="PHALANX RC5 isolierter Integrationstest V2" src="./PHALANX_RC5_ALPHA_DERIVED_20261017.html"></iframe>
+<script>
+(() => {
+  'use strict';
+  const frame=document.getElementById('preview');
+  const back=document.getElementById('back');
+  const status=document.getElementById('status');
+  const rc5='./PHALANX_RC5_ALPHA_DERIVED_20261017.html';
+  const out='./PHX-OUT-024-MAP2-FROZEN-20261018.html';
+  const reports='./phalanx-reports-out024-local-adapter-20261019.html';
+  const rc5Name=rc5.slice(2);
+  const outName=out.slice(2);
+  let mode='rc5';
+  function showRc5(){
+    mode='rc5';
+    back.disabled=true;
+    status.textContent='RC5 lädt …';
+    frame.src=rc5;
+  }
+  function showReports(){mode='reports';back.disabled=false;status.textContent='Reports · lokaler Alpha-Adapter';frame.src=reports;}
+  function showMap(){
+    mode='map';
+    back.disabled=false;
+    status.textContent='OUT-024 Originalkarte';
+    frame.src=out;
+  }
+  back.addEventListener('click',showRc5);
+  frame.addEventListener('load',()=>{
+    try {
+      const path=frame.contentWindow.location.pathname;
+      if(path.endsWith('/'+reports.slice(2))){mode='reports';back.disabled=false;status.textContent='Reports-Adapter geladen';return}
+      if(path.endsWith('/'+outName)){mode='map';back.disabled=false;status.textContent='OUT-024 geladen · Zur Navigation möglich';return}
+      if(!path.endsWith('/'+rc5Name))return;
+      mode='rc5';back.disabled=true;
+      const doc=frame.contentDocument;
+      if(!doc)throw new Error('RC5 iframe document unavailable');
+      const matches=Array.from(doc.querySelectorAll('a[data-pending]')).filter(a=>a.textContent.includes('Outpost Map'));
+      if(matches.length!==1)throw new Error('Expected exactly one pending Outpost Map entry; found '+matches.length);
+      const anchor=matches[0];
+      anchor.removeAttribute('aria-disabled');
+      anchor.removeAttribute('data-pending');
+      anchor.href=out;
+      anchor.title='OUT-024 freigegebene Originalkarte · isolierter Test';
+      const badge=anchor.querySelector('.status');
+      if(badge){badge.textContent='OUT-024 TEST';badge.classList.remove('unlinked');badge.classList.add('linked')}
+      // RC5 registers a click preventDefault listener on pending anchors.
+      // Capture-phase interception runs before that original listener.
+      anchor.addEventListener('click',event=>{
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        showMap();
+      },true);
+      const reportsEntry=Array.from(doc.querySelectorAll('a[data-pending]')).filter(a=>/Reports/i.test(a.textContent));
+      if(reportsEntry.length===1){const a=reportsEntry[0];a.removeAttribute('aria-disabled');a.removeAttribute('data-pending');a.href=reports;a.title='Isolierter Reports-Prototyp · keine Live-Daten';a.addEventListener('click',event=>{event.preventDefault();event.stopImmediatePropagation();showReports();},true);const b=a.querySelector('.status');if(b){b.textContent='ALPHA TEST';b.classList.remove('unlinked');b.classList.add('linked')}}
+      status.textContent='RC5 bereit · OUT-024 und Reports-Test verknüpft';
+    } catch(err){
+      status.textContent='Navigationsfehler – Konsole prüfen';
+      console.error('OUT-024 isolated navigation test',err);
+    }
+  });
+})();
+</script>
+</body></html>
