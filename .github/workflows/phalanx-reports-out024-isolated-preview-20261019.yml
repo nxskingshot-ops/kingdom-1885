@@ -1,0 +1,53 @@
+name: PHALANX Reports OUT024 isolated preview
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: phalanx-reports-out024-preview
+  cancel-in-progress: false
+jobs:
+  preview:
+    if: github.ref == 'refs/heads/work/reports-out024-readonly-20261019'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate isolated source and report tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tests/alpha/test_out024_report_normalizer.cjs
+          node tests/alpha/test_reports_out024_runtime.cjs
+          python3 tests/alpha/test_reports_out024_local_adapter.py
+          python3 tests/alpha/test_reports_out024_route_contract.py
+          test -s preview/PHALANX_RC5_ALPHA_DERIVED_20261017.html
+          test -s preview/PHX-OUT-024-MAP2-FROZEN-20261018.html
+          test -s preview/PHALANX_RC5_OUT024_REPORTS_ISOLATED_NAV_20261019.html
+          test -s preview/phalanx-reports-out024-local-adapter-20261019.html
+          test -s preview/phalanx-out024-report-normalizer-20261019.js
+          grep -q 'Report Center' preview/PHALANX_RC5_OUT024_REPORTS_ISOLATED_NAV_20261019.html
+          grep -q 'phalanx-out024-report-normalizer-20261019.js' preview/phalanx-reports-out024-local-adapter-20261019.html
+      - name: Assemble separate Reports-only static preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist/reports-out024
+          cp preview/PHALANX_RC5_ALPHA_DERIVED_20261017.html dist/reports-out024/
+          cp preview/PHX-OUT-024-MAP2-FROZEN-20261018.html dist/reports-out024/
+          cp preview/PHALANX_RC5_OUT024_REPORTS_ISOLATED_NAV_20261019.html dist/reports-out024/index.html
+          cp preview/phalanx-reports-out024-local-adapter-20261019.html dist/reports-out024/
+          cp preview/phalanx-out024-report-normalizer-20261019.js dist/reports-out024/
+          printf 'User-agent: *\\nDisallow: /\\n' > dist/reports-out024/robots.txt
+      - name: Deploy only to existing isolated Pages project preview branch
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$CLOUDFLARE_API_TOKEN" || { echo "No Cloudflare token; refusing deploy"; exit 1; }
+          test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo "No Cloudflare account; refusing deploy"; exit 1; }
+          npx --yes wrangler@3 pages deploy dist/reports-out024 --project-name=nexus-phalanx-kvk-test --branch=phalanx-reports-out024-20261019 --commit-dirty=true
