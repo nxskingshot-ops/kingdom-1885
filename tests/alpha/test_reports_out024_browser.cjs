@@ -80,7 +80,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
     const directPage=await popupPromise;
     await directPage.waitForLoadState('load');
     await directPage.waitForFunction(()=>document.querySelector('#source').value.includes('DIRECT1'));
-    assert.match(await directPage.locator('#status').innerText(),/direkt übernommen/);
+    assert.match(await directPage.locator('#status').innerText(),/Lokaler Entwurf erstellt/);
     await directPage.locator('#generate').click();
     assert.match(await directPage.locator('#result').innerText(),/MYM · S: 1/);
     await page.waitForFunction(()=>document.querySelector('#status').textContent.includes('bestätigt'));
