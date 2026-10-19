@@ -126,6 +126,15 @@ jobs:
                       break
           print('::error::Sanitized restore failure category: ' + primary)
           print('Sanitized restore object type: ' + phase)
+          # Disclose only the missing TYPE namespace, never its identifier or SQL.
+          # A TYPE failure can be in an excluded extension schema or an auth/public dependency.
+          missing_type_namespace = 'UNKNOWN'
+          m = re.search(r'type\s+(?:(?:"([A-Za-z_][A-Za-z_0-9]*)"|([A-Za-z_][A-Za-z_0-9]*))\.)?(?:"[A-Za-z_][A-Za-z_0-9]*"|[A-Za-z_][A-Za-z_0-9]*)\s+does not exist', raw, re.I)
+          if m:
+              namespace = (m.group(1) or m.group(2) or '').lower()
+              missing_type_namespace = namespace.upper() if namespace in ('extensions', 'auth', 'public', 'storage', 'graphql_public') else 'OTHER_OR_UNQUALIFIED'
+          if primary == 'SCHEMA_OR_OBJECT_MISSING' and phase == 'TYPE':
+              print('Sanitized missing type namespace: ' + missing_type_namespace)
           with open(__import__('os').environ['GITHUB_STEP_SUMMARY'], 'a') as f:
               f.write('### Partial auth + public schema restore NOT VERIFIED\n')
               f.write('- Failure category: ' + primary + '\n')
@@ -151,7 +160,7 @@ jobs:
           foreign_keys="$(docker exec phalanx-supabase-recovery psql -U supabase_admin -d phalanx_restore_drill -X -At -v ON_ERROR_STOP=1 -c "select count(*) from pg_constraint c join pg_class t on t.oid=c.conrelid join pg_namespace n on n.oid=t.relnamespace join pg_class rt on rt.oid=c.confrelid join pg_namespace rn on rn.oid=rt.relnamespace where c.contype='f' and n.nspname='public' and rn.nspname='auth'")"
           test "$foreign_keys" -eq 5 || { echo "::error::Public-to-auth foreign key baseline mismatch"; exit 1; }
           echo '### Partial PHALANX auth + public schema restore succeeded (NOT full Supabase restore)'
-          echo "- Public-to-auth FK constraints: $foreign_keys" >> "$GITHUB_STEP_SUMMARY" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Public-to-auth FK constraints: $foreign_keys" >> "$GITHUB_STEP_SUMMARY"
           echo '- Supabase-compatible PostgreSQL 17.6 image; ephemeral network-disabled container' >> "$GITHUB_STEP_SUMMARY"
           echo "- Public tables: $tables; RLS-enabled: $rls" >> "$GITHUB_STEP_SUMMARY"
           echo '- Private encrypted B2 backup checksum verified and decrypted before restore' >> "$GITHUB_STEP_SUMMARY"
