@@ -59,7 +59,7 @@ def summarize(day, commits, runs, truncated):
         "**Begrenzung:** GitHub-Ereignisse, keine Chat-Zeiten, keine persönlichen Arbeitsstunden.",
         "**Status:** Automatischer Nachweisbericht, KEINE Freigabe/Abnahme.",
         "",
-        "## Commits (alle Branches im Repository)",
+        "## Commits (Standardbranch main)",
         "",
         "| Zeit UTC | Commit | Nachricht |",
         "| --- | --- | --- |",
