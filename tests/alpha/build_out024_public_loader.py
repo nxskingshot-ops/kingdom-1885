@@ -53,8 +53,20 @@ btn.addEventListener('click',async()=>{
         status.textContent=subset.length+' von '+rows.length+' veröffentlichten Outposts ausgewählt und geprüft.';
       }else status.textContent='Keine Outposts für diese Filter.';
     };
-    allianceFilter.onchange=apply;quadrantFilter.onchange=apply;
-    apply();
+    const reportArea=document.getElementById('one-tap-report');
+    const makeReport=()=>{
+      const selected=JSON.parse(source.value);
+      if(!selected.length){reportArea.textContent='Keine Outposts für diese Auswahl.';return}
+      const totals=new Map();
+      for(const row of selected){
+        const x=row.coord_x,y=row.coord_y,q=x<600?(y<600?'N':'W'):(y<600?'O':'S');
+        const key=row.alliance+' · '+q;totals.set(key,(totals.get(key)||0)+1);
+      }
+      reportArea.textContent=['KINGDOM #1885 | OUTPOST REPORT','Quelle: veröffentlichte OUT-024-Daten','Einträge: '+selected.length,'',...[...totals].sort((a,b)=>a[0].localeCompare(b[0])).map(([k,n])=>k+': '+n)].join('\\n');
+    };
+    allianceFilter.onchange=()=>{apply();makeReport()};
+    quadrantFilter.onchange=()=>{apply();makeReport()};
+    apply();makeReport();
   }catch(e){status.textContent='Laden abgelehnt: '+e.message}
   finally{clearTimeout(timer);btn.disabled=false}
 });
@@ -64,6 +76,7 @@ if bridge.count('<button id="check">') != 1 or bridge.count('</main></html>') !=
     raise SystemExit("Fail closed: import bridge markup changed")
 filters = '<p><label>Allianz <select id="alliance-filter"><option value="">Alle</option></select></label> <label>Quadrant <select id="quadrant-filter"><option value="">Alle</option><option value="N">Nord</option><option value="O">Ost</option><option value="S">Süd</option><option value="W">West</option></select></label></p>'
 bridge=bridge.replace('<button id="check">',filters+'<button id="check">',1)
+bridge=bridge.replace('<button id="check">','<h2>Outpost-Bericht</h2><pre id="one-tap-report" style="white-space:pre-wrap;overflow-wrap:anywhere">Noch kein Bericht erstellt.</pre><button id="check">',1)
 bridge=bridge.replace('<button id="check">',button+' <button id="check">',1)
 bridge=bridge.replace('</main></html>','</main>'+script+'</html>',1)
 if bridge.count('id="load-public"') != 1 or bridge.count('published=eq.true') != 1:
