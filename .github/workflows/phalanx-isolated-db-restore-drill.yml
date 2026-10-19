@@ -1,0 +1,107 @@
+name: PHALANX Isolated DB Restore Drill (No Production Writes)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  restore-drill:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.B2_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.B2_APPLICATION_KEY }}
+      AWS_DEFAULT_REGION: eu-central-003
+      AWS_EC2_METADATA_DISABLED: 'true'
+      BACKUP_PASSPHRASE: ${{ secrets.PHALANX_BACKUP_ENCRYPTION_KEY }}
+      B2_ENDPOINT: https://s3.eu-central-003.backblazeb2.com
+      B2_BUCKET: nexus-phalanx-backup
+    steps:
+      - name: Verify isolated read-only scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = "refs/heads/main"
+          for key in AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY BACKUP_PASSPHRASE; do
+            test -n "${!key}" || { echo "::error::Missing $key"; exit 1; }
+          done
+          # Deliberately NO database URL, database password or Supabase token.
+          test -z "${PGHOST:-}" && test -z "${PGPASSWORD:-}" || { echo "::error::Unexpected production DB variables"; exit 1; }
+      - name: Install PostgreSQL server and private backup clients
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-common ca-certificates curl unzip openssl
+          sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-17 postgresql-client-18
+          curl -fsSL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o "$RUNNER_TEMP/awscli.zip"
+          unzip -q "$RUNNER_TEMP/awscli.zip" -d "$RUNNER_TEMP/aws-install"
+          sudo "$RUNNER_TEMP/aws-install/aws/install" --update
+          /usr/lib/postgresql/18/bin/pg_restore --version
+          sudo pg_ctlcluster 17 main start || sudo pg_ctlcluster 17 main status
+          sudo -u postgres psql -X -v ON_ERROR_STOP=1 -d postgres -Atc "select version()" >/dev/null
+      - name: Retrieve and validate latest encrypted backup
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          dir="$RUNNER_TEMP/phalanx-restore-private"
+          mkdir -p "$dir"
+          cd "$dir"
+          key="$(aws --endpoint-url "$B2_ENDPOINT" s3api list-objects-v2 --bucket "$B2_BUCKET" --prefix 'postgres/daily/' --query "sort_by(Contents[?ends_with(Key, '.dump.enc')], &LastModified)[-1].Key" --output text)"
+          [[ "$key" == postgres/daily/*.dump.enc ]] || { echo "::error::No encrypted daily dump"; exit 1; }
+          aws --endpoint-url "$B2_ENDPOINT" s3 cp "s3://$B2_BUCKET/$key" dump.enc --no-progress >/dev/null
+          aws --endpoint-url "$B2_ENDPOINT" s3 cp "s3://$B2_BUCKET/$key.sha256" expected.sha256 --no-progress >/dev/null
+          expected="$(awk 'NR==1 {print $1}' expected.sha256)"
+          actual="$(sha256sum dump.enc | cut -d' ' -f1)"
+          test "$expected" = "$actual" || { echo "::error::Encrypted object SHA mismatch"; exit 1; }
+          openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in dump.enc -out backup.dump -pass env:BACKUP_PASSPHRASE
+          /usr/lib/postgresql/18/bin/pg_restore --list backup.dump > archive.list
+          test "$(grep -cv '^;' archive.list)" -gt 0
+          echo "BACKUP_DIRECTORY=$dir" >> "$GITHUB_ENV"
+          echo "Encrypted backup verified; archive readable. Content stays inside temporary runner."
+      - name: Attempt complete restore into fresh disposable local database
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          dir="$BACKUP_DIRECTORY"
+          # The database exists ONLY inside this ephemeral GitHub Actions machine.
+          sudo -u postgres createdb -T template0 phalanx_restore_drill
+          # Supabase-managed roles/extensions may not exist in vanilla PostgreSQL.
+          # Never silently downgrade failure to a successful full restore.
+          set +e
+          sudo -u postgres /usr/lib/postgresql/18/bin/pg_restore --verbose --no-owner --no-acl --exit-on-error --dbname=phalanx_restore_drill < "$dir/backup.dump" > "$dir/restore.stdout" 2> "$dir/restore.stderr"
+          status=$?
+          set -e
+          if [ "$status" -ne 0 ]; then
+            {
+              echo "### PHALANX database restore: NOT VERIFIED"
+              echo '- The encrypted backup passed checksum, decryption and archive-list checks.'
+              echo '- Full restore against vanilla PostgreSQL 17 FAILED (possible Supabase-specific role/extension dependencies).'
+              echo '- Restore logs were not uploaded or printed because they may contain sensitive database identifiers.'
+              echo '- No production connection or database writes occurred.'
+            } >> "$GITHUB_STEP_SUMMARY"
+            echo "::error::Isolated restore failed; privately inspect dependency compatibility, no sensitive logs emitted."
+            exit 1
+          fi
+          count="$(sudo -u postgres psql -X -At -d phalanx_restore_drill -c "SELECT count(*) FROM pg_catalog.pg_tables WHERE schemaname = 'public';")"
+          test "$count" -ge 20 || { echo "::error::Fewer than 20 public tables after restore"; exit 1; }
+          {
+            echo "### PHALANX isolated PostgreSQL restore succeeded"
+            echo "- Restored public tables: $count"
+            echo '- Source: latest encrypted private B2 daily backup'
+            echo '- Tests: encrypted SHA-256, decrypt, PostgreSQL archive, full pg_restore exit status, local public table count'
+            echo '- Scope: vanilla PostgreSQL recovery only; separate Supabase Auth, Edge, secrets and service restore NOT verified.'
+            echo '- No production connection/writes; no private data or archive uploaded to GitHub artifacts.'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Remove temporary backup files
+        if: always()
+        shell: bash
+        run: |
+          if [ -d "$RUNNER_TEMP/phalanx-restore-private" ]; then
+            chmod -R u+rwX "$RUNNER_TEMP/phalanx-restore-private" || true
+            rm -rf "$RUNNER_TEMP/phalanx-restore-private"
+          fi
