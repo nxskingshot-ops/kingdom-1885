@@ -68,7 +68,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
     await bridgeCopy.click();
     await page.locator('#status').getByText(/kopiert/).waitFor({timeout:5000});
     await page.getByRole('link',{name:'Report Center öffnen'}).click();
-    await page.waitForURL(/phalanx-reports-out024-local-adapter-20261019\\.html$/);
+    await page.waitForURL(/phalanx-reports-out024-local-adapter-20261019\.html$/);
     await page.locator('#paste-json').click();
     assert.match(await page.locator('#source').inputValue(),/OP1/,'Report Center must receive clipboard JSON');
     await page.locator('#generate').click();
