@@ -70,8 +70,7 @@ jobs:
           test "$expected" = "$actual" || { echo "::error::Encrypted archive SHA256 does not match"; exit 1; }
           openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in "$dir/archive.enc" -out "$dir/database.dump" -pass env:BACKUP_PASSPHRASE
           test -s "$dir/database.dump"
-          # Container is network-none. The source archive never leaves the GitHub runner.
-          docker cp "$dir/database.dump" phalanx-supabase-recovery:/tmp/phalanx-restore.dump
+          # Archive remains in private runner directory; stream into network-disabled container.
           echo 'Encrypted archive retrieved, hashed and decrypted on temporary runner.'
       - name: Restore archive and classify errors without printing SQL or data
         shell: bash
@@ -79,9 +78,9 @@ jobs:
           set -euo pipefail
           dir="$PHALANX_RESTORE_DIR"
           set +e
-          docker exec phalanx-supabase-recovery pg_restore --no-owner --no-acl --exit-on-error \
-            -U supabase_admin -d phalanx_restore_drill /tmp/phalanx-restore.dump \
-            > "$dir/restore.stdout" 2> "$dir/restore.stderr"
+          docker exec -i phalanx-supabase-recovery pg_restore --no-owner --no-acl --exit-on-error \
+            -U supabase_admin -d phalanx_restore_drill \
+            < "$dir/database.dump" > "$dir/restore.stdout" 2> "$dir/restore.stderr"
           status=$?
           set -e
           if [ "$status" -ne 0 ]; then
