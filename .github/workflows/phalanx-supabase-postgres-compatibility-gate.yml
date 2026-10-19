@@ -1,0 +1,72 @@
+name: PHALANX Supabase PostgreSQL Compatibility Gate (Dummy Only)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  extension-smoke:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Confirm zero-production credential scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = 'refs/heads/main'
+          # This workflow has NO production secrets, NO B2 credentials and NO backup downloads.
+          test -z "${PGHOST:-}" && test -z "${PGPASSWORD:-}"
+      - name: Pull pinned official Supabase Postgres 17 image
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker pull supabase/postgres:17.6.1.173
+      - name: Start private disposable local database
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run -d --name phalanx-sb-smoke --network none \
+            -e POSTGRES_PASSWORD='throwaway-local-only-not-a-real-secret' \
+            supabase/postgres:17.6.1.173 \
+            postgres -c config_file=/etc/postgresql/postgresql.conf
+          ready=0
+          for attempt in $(seq 1 45); do
+            if docker exec phalanx-sb-smoke pg_isready -U supabase_admin >/dev/null 2>&1; then ready=1; break; fi
+            sleep 2
+          done
+          if [ "$ready" -ne 1 ]; then
+            echo "::error::Disposable Supabase PostgreSQL container did not start."
+            exit 1
+          fi
+      - name: Verify target extensions can be loaded using dummy database
+        shell: bash
+        run: |
+          set -euo pipefail
+          # No production data. This tests extension availability, not restore compatibility.
+          pg_major_ok="$(docker exec -i phalanx-sb-smoke psql -U supabase_admin -d postgres -X -v ON_ERROR_STOP=1 -At -c "SELECT current_setting('server_version_num')::integer BETWEEN 170000 AND 179999;")"
+          test "$pg_major_ok" = t || { echo "::error::Expected PostgreSQL 17"; exit 1; }
+          # Fail closed if any required extension is unavailable.
+          docker exec -i phalanx-sb-smoke psql -U supabase_admin -d postgres -X -v ON_ERROR_STOP=1 -At <<'SQL' > "$RUNNER_TEMP/phalanx-extension-check.txt"
+          WITH required(ext) AS (
+            VALUES ('pg_cron'),('pg_net'),('pg_stat_statements'),('pgcrypto'),('supabase_vault'),('uuid-ossp')
+          )
+          SELECT ext FROM required WHERE NOT EXISTS
+            (SELECT 1 FROM pg_available_extensions a WHERE a.name=required.ext);
+          SQL
+          if [ -s "$RUNNER_TEMP/phalanx-extension-check.txt" ]; then
+            echo "::error::At least one required extension is unavailable in pinned test image."
+            exit 1
+          fi
+          {
+            echo '### Supabase PostgreSQL compatibility smoke PASS'
+            echo '- Official pinned supabase/postgres 17 image booted on disposable GitHub runner'
+            echo '- All six non-core extension names appear in pg_available_extensions'
+            echo '- NO production credentials, real backup, or confidential data used'
+            echo '- Not a successful database or Supabase restore; extension versions/roles not yet verified'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Always remove disposable database
+        if: always()
+        shell: bash
+        run: |
+          docker rm -f phalanx-sb-smoke >/dev/null 2>&1 || true
+          rm -f "$RUNNER_TEMP/phalanx-extension-check.txt"
