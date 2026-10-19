@@ -74,8 +74,8 @@ class ReportsContract(unittest.TestCase):
         self.assertIn("report.textContent.startsWith('KINGDOM #1885')", builder)
         self.assertIn("navigator.clipboard.writeText(value)", builder)
         self.assertIn("new Blob([value]", builder)
-        self.assertIn("URL.createObjectURL(blob)", builder)
-        self.assertIn("URL.revokeObjectURL(url)", builder)
+        self.assertIn("URL.createObjectURL(new Blob([value]", builder)
+        self.assertIn("URL.revokeObjectURL(activeUrl)", builder)
         self.assertIn("phalanx-out024-report.txt", builder)
 
     def test_public_loader_build_is_isolated_and_fail_closed(self):
