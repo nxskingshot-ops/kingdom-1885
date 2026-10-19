@@ -47,15 +47,14 @@ btn.addEventListener('click',async()=>{
       });
       source.value=JSON.stringify(subset.map(r=>({source_key:r.source_key,alliance:String(r.alliance||'').trim().toUpperCase(),coord_x:r.coord_x,coord_y:r.coord_y})));
       source.dispatchEvent(new Event('input',{bubbles:true}));
-      if(subset.length)document.getElementById('check').click();
-      else status.textContent='Keine Outposts für diese Filter.';
+      if(subset.length){
+        document.getElementById('check').click();
+        if(document.getElementById('direct').disabled)throw Error('Datenprüfung fehlgeschlagen');
+        status.textContent=subset.length+' von '+rows.length+' veröffentlichten Outposts ausgewählt und geprüft.';
+      }else status.textContent='Keine Outposts für diese Filter.';
     };
     allianceFilter.onchange=apply;quadrantFilter.onchange=apply;
     apply();
-    source.dispatchEvent(new Event('input',{bubbles:true}));
-    document.getElementById('check').click();
-    if(document.getElementById('direct').disabled)throw Error('Datenprüfung fehlgeschlagen');
-    status.textContent=rows.length+' veröffentlichte Outposts geladen und geprüft. Direkte Übergabe möglich.';
   }catch(e){status.textContent='Laden abgelehnt: '+e.message}
   finally{clearTimeout(timer);btn.disabled=false}
 });
