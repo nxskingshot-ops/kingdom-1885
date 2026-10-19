@@ -12,11 +12,15 @@ PATTERNS = [
 def inspect(root, inventory):
     if not root.is_dir() or not inventory:
         raise ValueError('missing source directory or live inventory')
+    if any(not isinstance(x, dict) or not isinstance(x.get('slug'), str) or not re.fullmatch(r'[a-zA-Z0-9][a-zA-Z0-9_-]*', x['slug']) for x in inventory):
+        raise ValueError('invalid function slug')
     expected = {x['slug']: x for x in inventory}
     if len(expected) != len(inventory) or not all(x.get('version') is not None and x.get('ezbr_sha256') for x in inventory):
         raise ValueError('invalid or duplicate inventory entries')
+    if any(p.is_symlink() for p in root.rglob('*')):
+        raise ValueError('symlinks prohibited')
     actual = {p.name for p in root.iterdir() if p.is_dir()}
-    if actual != set(expected):
+    if actual != set(expected) or any(p.is_file() for p in root.iterdir()):
         raise ValueError('source inventory mismatch')
     entries = []
     for slug in sorted(expected):
