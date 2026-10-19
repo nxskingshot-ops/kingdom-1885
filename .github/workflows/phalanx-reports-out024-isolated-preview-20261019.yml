@@ -12,6 +12,7 @@ on:
       - 'tests/alpha/test_reports_out024_browser.cjs'
       - 'tests/alpha/test_out024_report_normalizer.cjs'
       - 'preview/PHALANX_RC5_OUT024_REPORTS_ISOLATED_NAV_20261019.html'
+      - 'preview/PHALANX_RC5_OUT024_REPORTS_DIRECT_NAV_20261019.html'
       - 'preview/phalanx-reports-out024-local-adapter-20261019.html'
       - 'preview/phalanx-out024-report-normalizer-20261019.js'
 permissions:
@@ -52,6 +53,7 @@ jobs:
           cp preview/PHALANX_RC5_ALPHA_DERIVED_20261017.html dist/reports-out024/
           cp preview/PHX-OUT-024-MAP2-FROZEN-20261018.html dist/reports-out024/
           cp preview/PHALANX_RC5_OUT024_REPORTS_ISOLATED_NAV_20261019.html dist/reports-out024/index.html
+          cp preview/PHALANX_RC5_OUT024_REPORTS_DIRECT_NAV_20261019.html dist/reports-out024/direct.html
           cp preview/phalanx-reports-out024-local-adapter-20261019.html dist/reports-out024/
           cp preview/phalanx-out024-report-normalizer-20261019.js dist/reports-out024/
           printf 'User-agent: *\\nDisallow: /\\n' > dist/reports-out024/robots.txt
