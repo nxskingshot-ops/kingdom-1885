@@ -32,7 +32,7 @@
     frame.src=out;
   }
   back.addEventListener('click',showRc5);
-  frame.addEventListener('load',()=>{
+  function reconcileFrame(){
     try {
       const path=frame.contentWindow.location.pathname;
       if(path.endsWith('/'+reports.slice(2))){mode='reports';back.disabled=false;status.textContent='Reports-Adapter geladen';return}
@@ -65,7 +65,23 @@
       status.textContent='Navigationsfehler – Konsole prüfen';
       console.error('OUT-024 isolated navigation test',err);
     }
-  });
+  }
+  frame.addEventListener('load',reconcileFrame);
+  // Android/WebView fallback: iframe load events may be missed or deferred.
+  // Bounded, read-only readiness probe; never changes the frozen RC5 document on disk.
+  let checks=0;
+  const probe=setInterval(()=>{
+    checks++;
+    if(status.textContent.includes('verknüpft') || status.textContent.includes('Navigationsfehler') || checks>=30){
+      clearInterval(probe);
+      if(checks>=30 && status.textContent.includes('lädt')) status.textContent='Navigationsfehler – RC5-Ladeereignis/iframe prüfen';
+      return;
+    }
+    try {
+      const doc=frame.contentDocument;
+      if(doc && doc.readyState==='complete' && frame.contentWindow.location.pathname.endsWith('/'+rc5Name)) reconcileFrame();
+    } catch(err) {status.textContent='Navigationsfehler – iframe-Zugriff blockiert';clearInterval(probe);console.error('RC5 iframe probe',err);}
+  },300);
   // Start navigation only after its load handler is registered.
   frame.src=rc5;
 })();
