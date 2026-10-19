@@ -26,7 +26,7 @@ jobs:
           grep -q 'PHX-A001 · B006' preview/phalanx-alpha-android-integration-20261017.html
           test -s preview/PHX-OUT-024-MAP2-FROZEN-20261018.html
           test -s preview/phalanx-reports-out024-safe-entry-20261018.html
-          ! grep -q 'outpost-report-v11.html' preview/phalanx-alpha-android-integration-20261017.html
+          grep -Fq "reports:['./phalanx-reports-out024-safe-entry-20261018.html'" preview/phalanx-alpha-android-integration-20261017.html
       - name: Assemble alpha-only static preview
         run: |
           set -euo pipefail
