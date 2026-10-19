@@ -110,18 +110,19 @@ jobs:
           kinds = ('TABLE DATA','ROW SECURITY','FK CONSTRAINT','MATERIALIZED VIEW',
                    'SCHEMA','EXTENSION','TABLE','FUNCTION','TYPE','SEQUENCE',
                    'INDEX','TRIGGER','POLICY','VIEW','CONSTRAINT','DEFAULT')
-          phases = re.findall(r'^pg_restore:\\s+(?:creating|processing)\\s+([^\\n]*)', raw, re.M | re.I)
+          phases = re.findall(r'^pg_restore:\s+(?:creating|processing)\s+([^\n]*)', raw, re.M | re.I)
           phase = 'UNDETERMINED'
           if phases:
               for kind in kinds:
-                  if re.search(r'\\b' + re.escape(kind) + r'\\b', phases[-1], re.I):
+                  if re.search(r'\b' + re.escape(kind) + r'\b', phases[-1], re.I):
                       phase = kind.replace(' ','_')
                       break
           print('::error::Sanitized restore failure category: ' + primary)
           print('Sanitized restore object type: ' + phase)
           with open(__import__('os').environ['GITHUB_STEP_SUMMARY'], 'a') as f:
               f.write('### Isolated Supabase DB restore NOT VERIFIED\n')
-              f.write('- Failure category: ' + primary + '\n')\n              f.write('- Object type: ' + phase + '\n')
+              f.write('- Failure category: ' + primary + '\n')
+              f.write('- Object type: ' + phase + '\n')
               f.write('- No SQL, table names, passwords or database rows emitted.\n')
           PY
             exit 1
