@@ -114,6 +114,13 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
     assert.equal(await copy.isDisabled(),true,'Rejected import must disable copy');
     assert.equal(await page.locator('#part-preview').innerText(),'','Rejected import must clear chunk preview');
     assert.equal(await page.locator('#copy-part').isDisabled(),true,'Rejected import must disable chunk copying');
+    // The documented maximum itself must remain accepted.
+    await source.fill(JSON.stringify(Array.from({length:1000},(_,i)=>({
+      id:'MAX'+i,alliance:'NXS',quadrant:'N'
+    }))));
+    await generate.click();
+    assert.match(await page.locator('#result').innerText(),/Einträge: 1000/,'Exactly 1000 rows must be accepted');
+    assert.equal(await copy.isEnabled(),true,'Valid maximum-size import must enable copying');
     // Boundary gate: reject oversized imports and never retain the previous output.
     await source.fill(JSON.stringify(Array.from({length:1001},(_,i)=>({
       id:'OVER'+i,alliance:'NXS',quadrant:'N'
