@@ -1,5 +1,8 @@
 # PHALANX Design Audit
 
+> **START HERE:** Canonical asset IDs, Library locations, freeze status, and no-loop retrieval procedure: [PHALANX Reference Image Database](assets/PHALANX_REFERENCE_IMAGE_DATABASE_2026-10-13.md#header-20261016--unified-header-asset-register-added-2026-10-19). Do not reconstruct or search images before checking this register.
+
+
 Status: audit only. No production change.
 
 HOME: gold eyes, no drawer. Module: red eyes, drawer and back. Function: blue eyes, drawer and back.
