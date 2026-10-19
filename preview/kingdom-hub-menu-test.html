@@ -780,4 +780,59 @@ document.getElementById('map')?.addEventListener('load',()=>{
  }
  translateAll();
 })();
-</script></body></html>
+</script>
+<!-- PHALANX access check: isolated test-branch-only diagnostic; no credential fields. -->
+<style>
+#phalanxAccessDiagnosticOverlay[hidden]{display:none!important}
+#phalanxAccessDiagnosticOverlay{position:fixed;inset:0;z-index:2147483600;background:#100c09dc;display:flex;align-items:center;justify-content:center;padding:14px}
+#phalanxAccessDiagnosticPanel{width:min(440px,100%);max-height:85dvh;overflow:auto;background:#302319;border:2px solid #c59c5c;border-radius:13px;padding:17px;color:#f6dfb4;box-shadow:0 10px 30px #0009}
+#phalanxAccessDiagnosticPanel h2{font:700 19px Georgia,serif;margin:0 0 9px}
+#phalanxAccessDiagnosticResult{white-space:pre-wrap;word-break:break-word;font:13px/1.7 ui-monospace,monospace;padding:12px;background:#211912;border-radius:8px}
+#phalanxAccessDiagnosticPanel .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+</style>
+<div id="phalanxAccessDiagnosticOverlay" hidden role="dialog" aria-modal="true" aria-labelledby="phalanxAccessDiagnosticTitle">
+ <div id="phalanxAccessDiagnosticPanel">
+  <h2 id="phalanxAccessDiagnosticTitle">🔒 PHALANX · Zugriffstest</h2>
+  <p>Verwendet nur deine bestehende NEXUS-Anmeldung. Keine Passwörter oder Tokens eingeben oder weitergeben.</p>
+  <pre id="phalanxAccessDiagnosticResult" aria-live="polite">Noch nicht geprüft.</pre>
+  <div class="actions">
+   <button type="button" id="phalanxAccessDiagnosticRun">Zugriff prüfen</button>
+   <button type="button" id="phalanxAccessDiagnosticCopy">Ergebnis kopieren</button>
+   <button type="button" id="phalanxAccessDiagnosticClose">Schließen</button>
+  </div>
+ </div>
+</div>
+<script type="module">
+const overlay=document.getElementById('phalanxAccessDiagnosticOverlay');
+const result=document.getElementById('phalanxAccessDiagnosticResult');
+const run=document.getElementById('phalanxAccessDiagnosticRun');
+const close=()=>{overlay.hidden=true;};
+document.getElementById('phalanxAccessDiagnosticClose').addEventListener('click',close);
+overlay.addEventListener('click',e=>{if(e.target===overlay)close();});
+const menu=document.getElementById('nexusMenu');
+const accessGroup=menu?.querySelector('[data-group="access"] .nexus-menu-grid') || menu?.querySelector('[data-group="access"]') || menu;
+const launch=document.createElement('button');
+launch.id='phalanxAccessDiagnosticButton';launch.type='button';launch.textContent='🔒 PHALANX · Zugriff prüfen';
+accessGroup?.appendChild(launch);
+launch.addEventListener('click',()=>{
+ overlay.hidden=false;result.textContent='Noch nicht geprüft.';
+ document.getElementById('nexusMenu').hidden=true;
+ document.getElementById('nexusMenuButton').setAttribute('aria-expanded','false');
+});
+run.addEventListener('click',async()=>{
+ run.disabled=true;result.textContent='Prüfe Anmeldung und Datenbankberechtigung …';
+ try{
+  if(typeof getNexusAccessAdminClient!=='function')throw new Error('Bestehender App-Client nicht verfügbar');
+  const client=await getNexusAccessAdminClient();
+  const {checkAllianceAccess}=await import('../integration/phalanx-access-diagnostic.mjs');
+  const data=await checkAllianceAccess(client);
+  result.textContent=['signedIn: '+data.signedIn,'overview: '+data.overview,'allianceCount: '+(data.allianceCount??'-'),'top40: '+data.top40,'top40Count: '+(data.top40Count??'-')].join('\n');
+ }catch(_){
+  result.textContent='TEST_ERROR: Diagnose konnte nicht ausgeführt werden. Keine Zugangsdaten senden.';
+ }finally{run.disabled=false;}
+});
+document.getElementById('phalanxAccessDiagnosticCopy').addEventListener('click',async()=>{
+ try{await navigator.clipboard.writeText(result.textContent)}catch(_){/* clipboard permission may be denied */}
+});
+</script>
+</body></html>
