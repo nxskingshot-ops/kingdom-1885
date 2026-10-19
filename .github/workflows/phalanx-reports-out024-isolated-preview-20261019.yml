@@ -16,6 +16,7 @@ on:
       - 'preview/PHALANX_RC5_OUT024_REPORTS_DIRECT_NAV_20261019.html'
       - 'preview/phalanx-reports-out024-local-adapter-20261019.html'
       - 'preview/phalanx-out024-report-normalizer-20261019.js'
+      - 'preview/phalanx-out024-public-json-bridge-20261019.html'
 permissions:
   contents: read
 concurrency:
@@ -44,6 +45,7 @@ jobs:
           test -s preview/PHALANX_RC5_OUT024_REPORTS_ISOLATED_NAV_20261019.html
           test -s preview/phalanx-reports-out024-local-adapter-20261019.html
           test -s preview/phalanx-out024-report-normalizer-20261019.js
+          test -s preview/phalanx-out024-public-json-bridge-20261019.html
           grep -q 'Report Center' preview/PHALANX_RC5_OUT024_REPORTS_ISOLATED_NAV_20261019.html
           grep -q 'phalanx-out024-report-normalizer-20261019.js' preview/phalanx-reports-out024-local-adapter-20261019.html
       - name: Assemble separate Reports-only static preview
@@ -58,6 +60,7 @@ jobs:
           cp preview/PHALANX_RC5_OUT024_REPORTS_DIRECT_NAV_20261019.html dist/reports-out024/direct.html
           cp preview/phalanx-reports-out024-local-adapter-20261019.html dist/reports-out024/
           cp preview/phalanx-out024-report-normalizer-20261019.js dist/reports-out024/
+          cp preview/phalanx-out024-public-json-bridge-20261019.html dist/reports-out024/
           printf 'User-agent: *\\nDisallow: /\\n' > dist/reports-out024/robots.txt
       - name: Chromium end-to-end navigation gate (local isolated files)
         shell: bash
