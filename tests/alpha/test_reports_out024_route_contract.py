@@ -22,7 +22,7 @@ class RouteContract(unittest.TestCase):
             self.assertIn(target,NAV)
             self.assertTrue((ROOT/'preview'/target).is_file(),target)
         self.assertIn("querySelectorAll('.submenu a')",NAV)
-        self.assertIn("Report Center|Reports & History",NAV.replace(r"\\s*", " "))
+        self.assertIn("Report Center|Reports & History", NAV)
         self.assertIn("reportsEntry.length!==1",NAV)
 
     def test_back_navigation(self):
