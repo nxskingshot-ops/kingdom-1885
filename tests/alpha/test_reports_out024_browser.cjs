@@ -95,6 +95,15 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
     const secondPreview=await page.locator('#part-preview').innerText();
     assert.ok(secondPreview.length>0&&secondPreview.length<=512,'Second preview must fit chat limit');
     assert.notEqual(secondPreview,firstPreview,'Preview must follow selected chunk');
+    const totalParts=Number((await page.locator('#parts').innerText()).match(/von (\d+)/)?.[1]);
+    assert.ok(totalParts>1,'Multi-part report must have more than one chunk');
+    const previews=[firstPreview,secondPreview];
+    for(let i=2;i<totalParts;i++){
+      await page.locator('#next-part').click();
+      previews.push(await page.locator('#part-preview').innerText());
+    }
+    assert.ok(previews.every(p=>p.length>0&&p.length<=512),'Every chunk must fit alliance chat');
+    assert.equal(previews.join(String.fromCharCode(10)),await page.locator('#result').innerText(),'Chunks must reconstruct the full report without lost lines');
     await page.locator('#channel').selectOption('2000');
     assert.match(await page.locator('#parts').innerText(),/Teil 1 von/,'Switching channel recalculates chunks');
     await source.fill('[{"id":"X","alliance":"NXS","quadrant":"N"},{"id":"X","alliance":"FRA","quadrant":"S"}]');
