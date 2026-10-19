@@ -5,7 +5,7 @@
 <style>html,body{margin:0;height:100%;background:#061018;color:#f0dcaa;font:13px system-ui,sans-serif}header{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid #826d39}button,a{color:#f0dcaa;background:#12212a;border:1px solid #826d39;border-radius:5px;padding:6px 10px;text-decoration:none;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}iframe{display:block;width:100%;height:calc(100% - 55px);border:0}small{color:#d5c6a3}</style>
 </head><body>
 <header><span>ISOLIERTER TEST · RC5 → OUT-024 <small id="status">RC5 lädt …</small></span><button id="back" type="button" disabled>← Zur Navigation</button></header>
-<iframe id="preview" title="PHALANX RC5 isolierter Integrationstest V2" src="./PHALANX_RC5_ALPHA_DERIVED_20261017.html"></iframe>
+<iframe id="preview" title="PHALANX RC5 isolierter Integrationstest V2" src="about:blank"></iframe>
 <script>
 (() => {
   'use strict';
@@ -66,6 +66,8 @@
       console.error('OUT-024 isolated navigation test',err);
     }
   });
+  // Start navigation only after its load handler is registered.
+  frame.src=rc5;
 })();
 </script>
 </body></html>
