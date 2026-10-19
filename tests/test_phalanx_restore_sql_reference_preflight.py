@@ -21,7 +21,7 @@ class TestLexicalReferencePreflight(unittest.TestCase):
     def test_masks_comments_literals_and_dollar_bodies(self):
         sample = """-- storage.objects
 /* outer auth.users /* inner vault.items */ end */
-SELECT public.items, 'realtime.events', $ storage.private $,
+SELECT public.items, 'realtime.events', $quoted$ storage.private $quoted$,
 $func$ SELECT auth.hidden; $func$;
 """
         result = module.summarize(sample)
