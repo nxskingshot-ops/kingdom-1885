@@ -15,6 +15,7 @@ on:
         type: boolean
 permissions:
   contents: write
+  actions: read
 concurrency:
   group: phalanx-technical-journal
   cancel-in-progress: false
