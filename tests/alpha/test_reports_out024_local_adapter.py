@@ -18,9 +18,9 @@ class ReportsContract(unittest.TestCase):
         self.assertNotIn('outpost-report-v11.html', self.html)
 
     def test_no_network_or_storage_side_effects(self):
-        for pattern in (r'\\bfetch\\s*\\(', r'XMLHttpRequest', r'WebSocket',
+        for pattern in (r'\bfetch\s*\(', r'XMLHttpRequest', r'WebSocket',
                         r'localStorage', r'sessionStorage', r'supabase',
-                        r'\\bindexedDB\\b'):
+                        r'\bindexedDB\b'):
             self.assertIsNone(re.search(pattern, self.html, re.I), pattern)
 
     def test_fail_closed_validation(self):
