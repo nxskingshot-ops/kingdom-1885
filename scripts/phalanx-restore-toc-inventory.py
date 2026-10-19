@@ -53,14 +53,22 @@ def inspect(toc):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("archive")
+    parser.add_argument("archive", nargs="?")
+    parser.add_argument("--toc-file", help="Private pg_restore --list output from isolated PostgreSQL client")
     args = parser.parse_args()
-    result = subprocess.run(["pg_restore", "--list", args.archive],
-                            capture_output=True, text=True)
-    if result.returncode:
-        print("::error::Cannot read archive TOC (details suppressed)", file=sys.stderr)
-        return 1
-    types, declared, used, unparsed = inspect(result.stdout)
+    if args.toc_file:
+        with open(args.toc_file, encoding="utf-8", errors="replace") as stream:
+            toc = stream.read()
+    elif args.archive:
+        result = subprocess.run(["pg_restore", "--list", args.archive],
+                                capture_output=True, text=True)
+        if result.returncode:
+            print("::error::Cannot read archive TOC (details suppressed)", file=sys.stderr)
+            return 1
+        toc = result.stdout
+    else:
+        parser.error("provide an archive or --toc-file")
+    types, declared, used, unparsed = inspect(toc)
     print("PHALANX encrypted-backup TOC inventory (metadata only; NOT restore)")
     print("Classified entries:", sum(types.values()))
     print("Unparsed lines:", unparsed)
