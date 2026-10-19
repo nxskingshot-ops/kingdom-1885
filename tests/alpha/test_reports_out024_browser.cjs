@@ -73,6 +73,11 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
     assert.match(await page.locator('#parts').innerText(),/Teil 1 von 1/);
     assert.equal(await page.locator('#copy-part').isEnabled(),true,'Manual chunk copy available');
     assert.equal(await page.locator('#next-part').isDisabled(),true,'No second chunk for short report');
+    await source.fill(JSON.stringify([{id:'EDIT',alliance:'NXS',quadrant:'O'}]));
+    assert.equal(await page.locator('#result').innerText(),'','Editing input must clear report');
+    assert.equal(await copy.isDisabled(),true,'Editing input must disable full report copy');
+    assert.equal(await page.locator('#copy-part').isDisabled(),true,'Editing input must disable chunk copy');
+    assert.equal(await page.locator('#next-part').isDisabled(),true,'Editing input must disable navigation');
     // Verify a long but valid report is split into copy-safe chunks.
     await source.fill(JSON.stringify(Array.from({length:80},(_,i)=>({
       id:'T'+i,alliance:'ALLIANCE_'+String(i).padStart(3,'0'),quadrant:'N'
