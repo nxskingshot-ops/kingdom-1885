@@ -123,6 +123,15 @@ bridge=bridge.replace('<button id="export-txt" type="button">TXT herunterladen</
 bridge=bridge.replace("const saveButton=document.getElementById('export-txt');", "const saveButton=document.getElementById('export-txt'),feedback=document.getElementById('export-feedback');", 1)
 bridge=bridge.replace("status.textContent='Tippe auf „TXT-Datei speichern“. Falls dein Browser nichts speichert, nutze „Bericht kopieren“.';", "feedback.textContent='Datei vorbereitet. Tippe auf „TXT-Datei speichern“. Alternativ Bericht kopieren.';", 1)
 bridge=bridge.replace("status.textContent='Tippe auf „TXT-Datei speichern“. Falls dein Browser das Speichern verhindert, nutze „Bericht kopieren“.';", "feedback.textContent='Datei vorbereitet. Tippe auf „TXT-Datei speichern“. Alternativ Bericht kopieren.';", 1)
+# Explicit function-level classification, without fabricating a frozen header asset.
+# The shared PHALANX function header must be integrated from its verified canonical source.
+bridge=bridge.replace('<h1>⚔ OUT-024 · Outpost Reports</h1>', '<nav id="out024-context" aria-label="PHALANX navigation"><span class="out024-level">TERRITORY CONTROL / FUNKTION</span><strong>Outpost Reports</strong></nav><h1>Outpost Reports</h1>', 1)
+bridge=bridge.replace('Veröffentlichte Outposts laden, filtern und den Bericht kopieren. Die Karte bleibt unverändert.', 'Veröffentlichte Outposts laden, filtern und den Bericht kopieren.', 1)
+bridge=bridge.replace('''<style id="out024-one-tap-style">''', '''<style id="out024-one-tap-style">
+#out024-context{display:flex;flex-direction:column;gap:5px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid #9f793b;color:#f4d494}
+#out024-context .out024-level{font-size:11px;letter-spacing:.15em;color:#9eb8ca;font-weight:750}
+#out024-context strong{font:700 clamp(17px,4vw,23px) Georgia,serif}
+''', 1)
 # Isolated visual polish only; no edits to frozen branding or application shell.
 style='''<style id="out024-one-tap-style">
 body{padding:14px;background:radial-gradient(ellipse at 50% 0%,#172d39 0%,#06111c 65%);font-family:system-ui,-apple-system,sans-serif}
