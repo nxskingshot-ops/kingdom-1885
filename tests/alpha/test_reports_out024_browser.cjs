@@ -54,6 +54,27 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
     await page.goBack({waitUntil:'load'});
     await page.getByRole('link',{name:/^Outpost Map/}).click();
     await page.waitForURL(/PHX-OUT-024-MAP2-FROZEN-20261018\.html$/);
+    // Functional report gate: valid manual data produces a deterministic local summary.
+    await page.goto('http://127.0.0.1:8765/phalanx-reports-out024-local-adapter-20261019.html',{waitUntil:'load'});
+    const source=page.locator('#source'),generate=page.locator('#generate'),copy=page.locator('#copy');
+    assert.equal(await copy.isDisabled(),true,'Copy must start disabled');
+    await source.fill(JSON.stringify([
+      {id:'A1',alliance:'NXS',quadrant:'N'},
+      {id:'A2',alliance:'NXS',quadrant:'N'},
+      {id:'B1',alliance:'FRA',quadrant:'S'}
+    ]));
+    await generate.click();
+    const summary=await page.locator('#result').innerText();
+    assert.match(summary,/Einträge: 3/);
+    assert.match(summary,/NXS · N: 2/);
+    assert.match(summary,/FRA · S: 1/);
+    assert.equal(await copy.isEnabled(),true,'Copy must activate for valid report');
+    await source.fill('[{"id":"X","alliance":"NXS","quadrant":"N"},{"id":"X","alliance":"FRA","quadrant":"S"}]');
+    await generate.click();
+    assert.match(await page.locator('#status').innerText(),/Import abgelehnt/);
+    assert.equal(await page.locator('#result').innerText(),'','Rejected import must clear stale report');
+    assert.equal(await copy.isDisabled(),true,'Rejected import must disable copy');
+    console.log('PASS: manual report aggregation and fail-closed invalid import');
     console.log('PASS: native RC5 derivative routes Reports and OUT-024 without an external test bar');
     console.log('PASS: Chromium direct navigation RC5 → Reports → RC5 → OUT-024');
   } finally {if(browser)await browser.close();server.kill();}
