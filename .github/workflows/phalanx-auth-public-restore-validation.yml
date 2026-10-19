@@ -151,7 +151,7 @@ jobs:
           foreign_keys="$(docker exec phalanx-supabase-recovery psql -U supabase_admin -d phalanx_restore_drill -X -At -v ON_ERROR_STOP=1 -c "select count(*) from pg_constraint c join pg_class t on t.oid=c.conrelid join pg_namespace n on n.oid=t.relnamespace join pg_class rt on rt.oid=c.confrelid join pg_namespace rn on rn.oid=rt.relnamespace where c.contype='f' and n.nspname='public' and rn.nspname='auth'")"
           test "$foreign_keys" -eq 5 || { echo "::error::Public-to-auth foreign key baseline mismatch"; exit 1; }
           echo '### Partial PHALANX auth + public schema restore succeeded (NOT full Supabase restore)'
-          echo "- Public-to-auth FK constraints: $foreign_keys" >> "$GITHUB_STEP_SUMMARY" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Public-to-auth FK constraints: $foreign_keys" >> "$GITHUB_STEP_SUMMARY"
           echo '- Supabase-compatible PostgreSQL 17.6 image; ephemeral network-disabled container' >> "$GITHUB_STEP_SUMMARY"
           echo "- Public tables: $tables; RLS-enabled: $rls" >> "$GITHUB_STEP_SUMMARY"
           echo '- Private encrypted B2 backup checksum verified and decrypted before restore' >> "$GITHUB_STEP_SUMMARY"
