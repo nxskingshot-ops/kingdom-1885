@@ -38,8 +38,8 @@ jobs:
         run: |
           set -euo pipefail
           sudo apt-get update -qq
-          sudo apt-get install -y -qq postgresql-client-17 awscli openssl
-          pg_restore --version
+          sudo apt-get install -y -qq awscli openssl
+          docker pull supabase/postgres:17.6.1.173
       - name: Inspect verified private archive TOC only
         shell: bash
         run: |
@@ -57,7 +57,8 @@ jobs:
           test "$actual" = "$expected" || { echo "::error::Archive checksum mismatch"; exit 1; }
           openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in "$dir/archive.enc" -out "$dir/database.dump" -pass env:BACKUP_PASSPHRASE
           test -s "$dir/database.dump"
-          python3 scripts/phalanx-restore-toc-inventory.py "$dir/database.dump"
+          docker run --rm --network none --mount "type=bind,src=$dir,dst=/backup,readonly" supabase/postgres:17.6.1.173 pg_restore --list /backup/database.dump > "$dir/toc.txt" 2> "$dir/pg_restore.err" || { echo "::error::Cannot read backup archive TOC"; exit 1; }
+          python3 scripts/phalanx-restore-toc-inventory.py --toc-file "$dir/toc.txt"
           echo '### Encrypted PostgreSQL backup: TOC inventory only (no restore)' >> "$GITHUB_STEP_SUMMARY"
           echo '- Checksum verified; archive decrypted only into runner temporary directory' >> "$GITHUB_STEP_SUMMARY"
           echo '- No database connection, SQL execution, production writes or artifact uploads' >> "$GITHUB_STEP_SUMMARY"
