@@ -111,7 +111,7 @@ bridge=bridge.replace('</main></html>','</main>'+export_script+'</html>',1)
 # Preserve every existing element ID and handler for the tested report workflow.
 start=bridge.index('<p><label>Allianz <select id="alliance-filter">')
 end=bridge.index('<button id="check">',start)
-controls=bridge[start:end]
+controls=bridge[start:end].replace('<button id="load-public" type="button">Veröffentlichte Outposts laden</button> ', '', 1)
 bridge=bridge[:start]+bridge[end:]
 bridge=bridge.replace('<button id="load-public" type="button">Veröffentlichte Outposts laden</button> ', '', 1)
 bridge=bridge.replace('<label for="source">', '<details id="expert-tools"><summary>Expertenwerkzeuge</summary><label for="source">', 1)
