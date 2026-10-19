@@ -80,6 +80,34 @@ jobs:
           status=$?
           set -e
           if [ "$status" -ne 0 ]; then
+            # Print only fixed error categories, NEVER restore SQL, table names or data.
+            # Raw stderr stays on the ephemeral runner and is deleted in cleanup.
+            python3 - "$dir/restore.stderr" <<'PY'
+          import re
+          import sys
+          from pathlib import Path
+          lines = Path(sys.argv[1]).read_text(errors="replace").splitlines()
+          rules = [
+              ("MISSING_ROLE", r"role .* does not exist"),
+              ("MISSING_EXTENSION", r"extension .* (is not available|does not exist|could not open)"),
+              ("EXTENSION_PRIVILEGE", r"(permission denied|must be owner).*extension"),
+              ("MISSING_SCHEMA", r"schema .* does not exist"),
+              ("MISSING_RELATION", r"(relation|type|function) .* does not exist"),
+              ("MISSING_TABLESPACE", r"tablespace .* does not exist"),
+              ("PERMISSION_DENIED", r"permission denied|must be owner"),
+              ("UNSUPPORTED_CONFIGURATION", r"unrecognized configuration parameter"),
+              ("DUPLICATE_OBJECT", r"already exists|duplicate key"),
+              ("ARCHIVE_INPUT_ERROR", r"could not read from input file|unsupported version|unexpected end of file"),
+              ("SQL_ERROR_OTHER", r"ERROR:"),
+          ]
+          matches = [name for name, pattern in rules if re.search(pattern, "\n".join(lines), flags=re.I)]
+          category = matches[0] if matches else "UNKNOWN_RESTORE_ERROR"
+          print("::error::Isolated pg_restore failure category: " + category)
+          print("Secondary error categories: " + (", ".join(matches[1:5]) if len(matches) > 1 else "none"))
+          with open(__import__("os").environ["GITHUB_STEP_SUMMARY"], "a") as f:
+              f.write("- Sanitized failure category: " + category + "\n")
+              f.write("- Raw restore SQL/logs intentionally not uploaded or displayed.\n")
+          PY
             {
               echo "### PHALANX database restore: NOT VERIFIED"
               echo '- The encrypted backup passed checksum, decryption and archive-list checks.'
