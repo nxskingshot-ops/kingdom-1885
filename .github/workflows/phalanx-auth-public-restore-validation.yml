@@ -129,10 +129,17 @@ jobs:
           # Disclose only the missing TYPE namespace, never its identifier or SQL.
           # A TYPE failure can be in an excluded extension schema or an auth/public dependency.
           missing_type_namespace = 'UNKNOWN'
-          m = re.search(r'type\s+(?:(?:"([A-Za-z_][A-Za-z_0-9]*)"|([A-Za-z_][A-Za-z_0-9]*))\.)?(?:"[A-Za-z_][A-Za-z_0-9]*"|[A-Za-z_][A-Za-z_0-9]*)\s+does not exist', raw, re.I)
-          if m:
-              namespace = (m.group(1) or m.group(2) or '').lower()
+          # PostgreSQL may quote either component or the entire qualified type.
+          # Parse locally, but emit ONLY an allowlisted namespace and shape.
+          type_match = re.search(r'type\s+((?:"[^"]+"|[A-Za-z_][\w$]*)(?:\.(?:"[^"]+"|[A-Za-z_][\w$]*))?)\s+does not exist', raw, re.I)
+          if type_match:
+              identifier = type_match.group(1).replace('"', '')
+              parts = identifier.split('.')
+              namespace = parts[0].lower() if len(parts) == 2 else ''
               missing_type_namespace = namespace.upper() if namespace in ('extensions', 'auth', 'public', 'storage', 'graphql_public') else 'OTHER_OR_UNQUALIFIED'
+              print('Sanitized missing type reference shape: ' + ('QUALIFIED' if len(parts) == 2 else 'UNQUALIFIED'))
+          else:
+              print('Sanitized missing type reference shape: UNRECOGNIZED')
           if primary == 'SCHEMA_OR_OBJECT_MISSING' and phase == 'TYPE':
               print('Sanitized missing type namespace: ' + missing_type_namespace)
           with open(__import__('os').environ['GITHUB_STEP_SUMMARY'], 'a') as f:
