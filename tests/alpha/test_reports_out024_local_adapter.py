@@ -29,6 +29,14 @@ class ReportsContract(unittest.TestCase):
                       "copy.disabled=true", "report=''", "result.textContent=''"):
             self.assertIn(token, self.html, token)
 
+    def test_real_newlines_in_report_and_chunks(self):
+        # Guard against accidentally encoding a literal backslash-n in JS.
+        self.assertIn("report.split('\\n')", self.html)
+        self.assertIn("current+=(current?'\\n':'')+line", self.html)
+        self.assertIn("].join('\\n')", self.html)
+        self.assertNotIn("report.split('\\\\n')", self.html)
+        self.assertNotIn("current+=(current?'\\\\n':'')+line", self.html)
+
     def test_explicit_provenance(self):
         self.assertIn('manuell geprüfter JSON-Import', self.html)
         self.assertIn('Keine Kartensynchronisierung bestätigt.', self.html)
