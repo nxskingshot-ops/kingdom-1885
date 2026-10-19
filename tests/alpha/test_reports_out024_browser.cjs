@@ -49,10 +49,13 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
     const outpostLink=page.getByRole('link',{name:/^Outpost Map/});
     assert.equal(await reportLink.getAttribute('href'),'./phalanx-reports-out024-local-adapter-20261019.html');
     assert.equal(await outpostLink.getAttribute('href'),'./PHX-OUT-024-MAP2-FROZEN-20261018.html');
+    await reportLink.evaluate(el=>el.closest('details').open=true);
     await reportLink.click();
     await page.waitForURL(/phalanx-reports-out024-local-adapter-20261019\.html$/);
     await page.goBack({waitUntil:'load'});
-    await page.getByRole('link',{name:/^Outpost Map/}).click();
+    const mapLink=page.getByRole('link',{name:/^Outpost Map/});
+    await mapLink.evaluate(el=>el.closest('details').open=true);
+    await mapLink.click();
     await page.waitForURL(/PHX-OUT-024-MAP2-FROZEN-20261018\.html$/);
     // Functional report gate: valid manual data produces a deterministic local summary.
     await page.goto('http://127.0.0.1:8765/phalanx-reports-out024-local-adapter-20261019.html',{waitUntil:'load'});
