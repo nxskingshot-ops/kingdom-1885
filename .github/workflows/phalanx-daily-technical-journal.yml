@@ -1,0 +1,71 @@
+name: PHALANX Daily Technical Journal
+on:
+  schedule:
+    - cron: '23 5 * * *'
+  workflow_dispatch:
+    inputs:
+      date_utc:
+        description: 'Optional YYYY-MM-DD (UTC); default previous UTC day'
+        required: false
+        type: string
+      dry_run:
+        description: 'Test without committing (recommended for manual verification)'
+        required: true
+        default: true
+        type: boolean
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: phalanx-technical-journal
+  cancel-in-progress: false
+jobs:
+  journal:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - name: Checkout dedicated journal branch only
+        uses: actions/checkout@v4
+        with:
+          ref: work/phalanx-development-journal-20261019
+          fetch-depth: 1
+          persist-credentials: true
+      - name: Gather GitHub commit and workflow facts (no Supabase access)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          REPORT_DATE: ${{ inputs.date_utc }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -n "$REPORT_DATE" ]; then
+            python3 scripts/phalanx-daily-journal.py "$REPORT_DATE"
+          else
+            python3 scripts/phalanx-daily-journal.py
+          fi
+      - name: Check report scope and save only to journal branch
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+          EVENT_NAME: ${{ github.event_name }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git branch --show-current)" = 'work/phalanx-development-journal-20261019'
+          git add -- docs/journal/daily/
+          git diff --cached --name-only | grep -vE '^docs/journal/daily/[0-9]{4}-[0-9]{2}-[0-9]{2}\.md$' && {
+            echo '::error::Unexpected staged path'; exit 1;
+          } || true
+          if git diff --cached --quiet; then
+            echo 'Journal already up to date' >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          if [ "$EVENT_NAME" != "schedule" ] && [ "$DRY_RUN" != "false" ]; then
+            echo 'Manual dry-run: report generated and checked, but NOT committed.' >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'docs(journal): automatic daily technical evidence'
+          git push origin HEAD:refs/heads/work/phalanx-development-journal-20261019
+          echo 'Daily evidence saved on journal branch; no application code changed.' >> "$GITHUB_STEP_SUMMARY"
