@@ -73,7 +73,7 @@ jobs:
           # Supabase-managed roles/extensions may not exist in vanilla PostgreSQL.
           # Never silently downgrade failure to a successful full restore.
           set +e
-          sudo -u postgres /usr/lib/postgresql/18/bin/pg_restore --verbose --no-owner --no-acl --exit-on-error --dbname=phalanx_restore_drill "$dir/backup.dump" > "$dir/restore.stdout" 2> "$dir/restore.stderr"
+          sudo -u postgres /usr/lib/postgresql/18/bin/pg_restore --verbose --no-owner --no-acl --exit-on-error --dbname=phalanx_restore_drill < "$dir/backup.dump" > "$dir/restore.stdout" 2> "$dir/restore.stderr"
           status=$?
           set -e
           if [ "$status" -ne 0 ]; then
