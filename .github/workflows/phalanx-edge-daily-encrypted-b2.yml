@@ -40,9 +40,10 @@ jobs:
           unzip -q "$RUNNER_TEMP/aws.zip" -d "$RUNNER_TEMP"
           sudo "$RUNNER_TEMP/aws/install" --update
           curl -fsSL https://github.com/supabase/cli/releases/download/v2.101.0/supabase_linux_amd64.tar.gz -o "$RUNNER_TEMP/supabase.tar.gz"
-          tar -xzf "$RUNNER_TEMP/supabase.tar.gz" -C "$RUNNER_TEMP" supabase
-          chmod +x "$RUNNER_TEMP/supabase"
-          echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
+          mkdir -p "$RUNNER_TEMP/bin"
+          tar -xzf "$RUNNER_TEMP/supabase.tar.gz" -C "$RUNNER_TEMP/bin" supabase
+          chmod +x "$RUNNER_TEMP/bin/supabase"
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
       - name: Download exactly the 26 inventoried functions into temporary private workspace
         shell: bash
         run: |
