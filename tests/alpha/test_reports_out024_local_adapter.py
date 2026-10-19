@@ -67,6 +67,19 @@ class ReportsContract(unittest.TestCase):
         self.assertIn("await navigator.clipboard.writeText(approved);window.location.assign(", bridge)
         self.assertIn("Zwischenablage nicht verfügbar.", bridge)
 
+    def test_public_loader_build_is_isolated_and_fail_closed(self):
+        builder = (ROOT / "tests/alpha/build_out024_public_loader.py").read_text(encoding="utf-8")
+        workflow = (ROOT / ".github/workflows/phalanx-reports-out024-isolated-preview-20261019.yml").read_text(encoding="utf-8")
+        self.assertIn("verified=eq.true", builder)
+        self.assertIn("published=eq.true", builder)
+        self.assertIn("sb_publishable_", builder)
+        self.assertIn("Fail closed: expected exactly one frozen map public read request", builder)
+        self.assertIn("Fail closed: import bridge markup changed", builder)
+        self.assertIn("source.dispatchEvent(new Event('input',{bubbles:true}))", builder)
+        self.assertIn("document.getElementById('check').click()", builder)
+        self.assertIn("python3 tests/alpha/build_out024_public_loader.py dist/reports-out024/phalanx-out024-public-json-bridge-20261019.html", workflow)
+        self.assertNotIn("cp preview/phalanx-out024-public-json-bridge-20261019.html dist/reports-out024/", workflow)
+
     def test_explicit_provenance(self):
         self.assertIn('manuell geprüfter JSON-Import', self.html)
         self.assertIn('Keine Kartensynchronisierung bestätigt.', self.html)
