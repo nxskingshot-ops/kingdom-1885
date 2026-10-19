@@ -42,4 +42,11 @@ assert.equal(frame.src,'./PHX-OUT-024-MAP2-FROZEN-20261018.html');
 frame.contentWindow.location.pathname='/PHX-OUT-024-MAP2-FROZEN-20261018.html';hooks.load();
 assert.match(status.textContent,/OUT-024 geladen/);
 assert.equal(back.disabled,false);
+// Fail-closed regression: missing Reports route must not report a successful link.
+links.length=0;
+link('Outpost Map NOT LINKED');
+frame.contentWindow.location.pathname='/PHALANX_RC5_ALPHA_DERIVED_20261017.html';
+let rejected=false;
+try { hooks.load(); } catch(e) { rejected=true; }
+assert(rejected || /Navigationsfehler/.test(status.textContent),'missing Reports route must fail closed');
 console.log('PASS: isolated router initialization, Reports click, adapter load, back, OUT-024 click and map load');
