@@ -5,7 +5,8 @@ const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/st
 const html=fs.readFileSync('preview/phalanx-reports-out024-local-adapter-20261019.html','utf8');
 const match=html.match(/<script>([\s\S]*?)<\/script>/);
 assert(match,'inline adapter script missing');
-const elements=Object.fromEntries(['source','status','result','copy','generate'].map(id=>[id,{value:'',textContent:'',disabled:id==='copy',handlers:{},addEventListener(name,fn){this.handlers[name]=fn}}]));
+const elements=Object.fromEntries(['source','status','result','copy','generate','channel','parts','copy-part','next-part','part-preview'].map(id=>[id,{value:'',textContent:'',disabled:id==='copy',handlers:{},addEventListener(name,fn){this.handlers[name]=fn}}]));
+elements.channel.value='2000';
 const ctx={window:{PhalanxOut024Normalize:require('../../preview/phalanx-out024-report-normalizer-20261019.js')},document:{getElementById:id=>elements[id]},navigator:{clipboard:{writeText:async()=>{}}}};
 vm.runInNewContext(match[1],ctx,{timeout:1000});
 function generate(input){elements.source.value=input;elements.generate.handlers.click();return{status:elements.status.textContent,report:elements.result.textContent,disabled:elements.copy.disabled}}
