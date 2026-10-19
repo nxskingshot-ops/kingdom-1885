@@ -90,11 +90,14 @@ document.getElementById('export-copy').addEventListener('click',async()=>{
 });
 document.getElementById('export-txt').addEventListener('click',()=>{
  const value=getText();if(!value){status.textContent='Bitte zuerst Outposts laden.';return}
- const blob=new Blob([value],{type:'text/plain;charset=utf-8'});
- const link=document.createElement('a'),url=URL.createObjectURL(blob);
- link.href=url;link.download='phalanx-out024-report.txt';document.body.appendChild(link);link.click();link.remove();
- setTimeout(()=>URL.revokeObjectURL(url),3000);
- status.textContent='TXT-Download gestartet.';
+ try{
+  const blob=new Blob([value],{type:'text/plain;charset=utf-8'});
+  const link=document.createElement('a'),url=URL.createObjectURL(blob);
+  link.href=url;link.download='phalanx-out024-report.txt';link.textContent='Datei speichern';
+  document.body.appendChild(link);link.click();
+  setTimeout(()=>{URL.revokeObjectURL(url);link.remove()},60000);
+  status.textContent='Download angefordert. Falls dein Browser nichts speichert, nutze „Bericht kopieren“.';
+ }catch(e){status.textContent='Download nicht möglich: '+e.message}
 });
 })();
 </script>"""
