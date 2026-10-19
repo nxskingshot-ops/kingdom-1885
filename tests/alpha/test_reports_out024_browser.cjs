@@ -18,13 +18,10 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
       'phalanx-reports-out024-local-adapter-20261019.html',
       'PHX-OUT-024-MAP2-FROZEN-20261018.html'
     ]);
-    const served=new Set();
+    const served=new Map();
     page.on('response',response=>{
       const name=new URL(response.url()).pathname.split('/').pop();
-      if(expectedFiles.has(name)){
-        assert.equal(response.status(),200,'Module must be served successfully: '+name);
-        served.add(name);
-      }
+      if(expectedFiles.has(name)) served.set(name,response.status());
     });
     await page.goto('http://127.0.0.1:8765/direct.html',{waitUntil:'load'});
     const frame=page.frameLocator('iframe[name="phxcontent"]');
@@ -42,7 +39,8 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
     await page.getByRole('link',{name:'OUT-024 Karte',exact:true}).click();
     await page.waitForFunction(()=>window.frames.phxcontent.location.pathname.endsWith('PHX-OUT-024-MAP2-FROZEN-20261018.html'));
     assert.match(inner.url(),/PHX-OUT-024-MAP2-FROZEN-20261018\.html$/);
-    assert.deepEqual([...served].sort(),[...expectedFiles].sort(),'Every linked module must return HTTP 200');
+    assert.deepEqual([...served.keys()].sort(),[...expectedFiles].sort(),'All three module responses must be observed');
+    for(const [name,status] of served) assert.equal(status,200,'Module must return HTTP 200: '+name);
     assert.deepEqual(errors,[],'Browser JavaScript errors');
     assert.equal(await page.locator('header a[target="phxcontent"]').count(),3,'Direct navigation must persist after module switches');
     console.log('PASS: Chromium direct navigation RC5 → Reports → RC5 → OUT-024');
