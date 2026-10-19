@@ -43,9 +43,8 @@ jobs:
         run: |
           set -euo pipefail
           # No production data. This tests extension availability, not restore compatibility.
-          docker exec -i phalanx-sb-smoke psql -U supabase_admin -d postgres -X -v ON_ERROR_STOP=1 -At <<'SQL'
-          SELECT current_setting('server_version_num')::integer >= 170000;
-          SQL
+          pg_major_ok="$(docker exec -i phalanx-sb-smoke psql -U supabase_admin -d postgres -X -v ON_ERROR_STOP=1 -At -c "SELECT current_setting('server_version_num')::integer BETWEEN 170000 AND 179999;")"
+          test "$pg_major_ok" = t || { echo "::error::Expected PostgreSQL 17"; exit 1; }
           # Fail closed if any required extension is unavailable.
           docker exec -i phalanx-sb-smoke psql -U supabase_admin -d postgres -X -v ON_ERROR_STOP=1 -At <<'SQL' > "$RUNNER_TEMP/phalanx-extension-check.txt"
           WITH required(ext) AS (
