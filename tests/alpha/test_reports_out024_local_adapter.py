@@ -67,6 +67,17 @@ class ReportsContract(unittest.TestCase):
         self.assertIn("await navigator.clipboard.writeText(approved);window.location.assign(", bridge)
         self.assertIn("Zwischenablage nicht verfügbar.", bridge)
 
+    def test_filtered_report_export_contract(self):
+        builder = (ROOT / "tests/alpha/build_out024_public_loader.py").read_text(encoding="utf-8")
+        self.assertIn('id="export-copy"', builder)
+        self.assertIn('id="export-txt"', builder)
+        self.assertIn("report.textContent.startsWith('KINGDOM #1885')", builder)
+        self.assertIn("navigator.clipboard.writeText(value)", builder)
+        self.assertIn("new Blob([value]", builder)
+        self.assertIn("URL.createObjectURL(blob)", builder)
+        self.assertIn("URL.revokeObjectURL(url)", builder)
+        self.assertIn("phalanx-out024-report.txt", builder)
+
     def test_public_loader_build_is_isolated_and_fail_closed(self):
         builder = (ROOT / "tests/alpha/build_out024_public_loader.py").read_text(encoding="utf-8")
         workflow = (ROOT / ".github/workflows/phalanx-reports-out024-isolated-preview-20261019.yml").read_text(encoding="utf-8")
