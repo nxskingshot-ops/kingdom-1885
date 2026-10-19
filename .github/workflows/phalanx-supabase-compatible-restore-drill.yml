@@ -1,0 +1,139 @@
+name: PHALANX Supabase Compatible DB Restore Drill
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: phalanx-supabase-compatible-restore
+  cancel-in-progress: false
+jobs:
+  restore:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.B2_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.B2_APPLICATION_KEY }}
+      AWS_DEFAULT_REGION: eu-central-003
+      AWS_EC2_METADATA_DISABLED: "true"
+      BACKUP_PASSPHRASE: ${{ secrets.PHALANX_BACKUP_ENCRYPTION_KEY }}
+      B2_ENDPOINT: https://s3.eu-central-003.backblazeb2.com
+      B2_BUCKET: nexus-phalanx-backup
+    steps:
+      - name: Verify isolation and required backup secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = refs/heads/main
+          for key in AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY BACKUP_PASSPHRASE; do
+            test -n "${!key}" || { echo "::error::Missing backup secret $key"; exit 1; }
+          done
+          test -z "${PGHOST:-}" && test -z "${PGPASSWORD:-}" || { echo "::error::Unexpected external PostgreSQL credentials"; exit 1; }
+          # No Supabase tokens, production DB password or production DB connection supplied.
+      - name: Start pinned Supabase PostgreSQL 17 isolated container
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker pull supabase/postgres:17.6.1.173
+          docker run -d --name phalanx-supabase-recovery --network none \
+            -e POSTGRES_PASSWORD='temporary-disposable-test-only' \
+            supabase/postgres:17.6.1.173 \
+            postgres -c config_file=/etc/postgresql/postgresql.conf >/dev/null
+          ready=0
+          for attempt in $(seq 1 45); do
+            if docker exec phalanx-supabase-recovery pg_isready -U supabase_admin >/dev/null 2>&1; then ready=1; break; fi
+            sleep 2
+          done
+          test "$ready" -eq 1 || { echo "::error::Isolated Supabase server unavailable"; exit 1; }
+          version="$(docker exec phalanx-supabase-recovery psql -U supabase_admin -d postgres -At -X -v ON_ERROR_STOP=1 -c "select current_setting('server_version_num')::integer between 170000 and 179999")"
+          test "$version" = t || { echo "::error::Unexpected PostgreSQL version"; exit 1; }
+          docker exec phalanx-supabase-recovery createdb -U supabase_admin -T template0 phalanx_restore_drill
+      - name: Download encrypted PostgreSQL archive from private B2
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          dir="$RUNNER_TEMP/phalanx-supabase-restore"
+          mkdir -p "$dir"
+          echo "PHALANX_RESTORE_DIR=$dir" >> "$GITHUB_ENV"
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq curl unzip openssl
+          curl -fsSL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o "$RUNNER_TEMP/awscli.zip"
+          unzip -q "$RUNNER_TEMP/awscli.zip" -d "$RUNNER_TEMP/aws-installer"
+          sudo "$RUNNER_TEMP/aws-installer/aws/install" --update
+          key="$(aws --endpoint-url "$B2_ENDPOINT" s3api list-objects-v2 --bucket "$B2_BUCKET" --prefix 'postgres/daily/' --query "sort_by(Contents[?ends_with(Key, '.dump.enc')], &LastModified)[-1].Key" --output text)"
+          [[ "$key" == postgres/daily/*.dump.enc ]] || { echo "::error::No encrypted daily PostgreSQL backup"; exit 1; }
+          aws --endpoint-url "$B2_ENDPOINT" s3 cp "s3://$B2_BUCKET/$key" "$dir/archive.enc" --no-progress >/dev/null
+          aws --endpoint-url "$B2_ENDPOINT" s3 cp "s3://$B2_BUCKET/$key.sha256" "$dir/archive.sha256" --no-progress >/dev/null
+          expected="$(awk 'NR==1 {print $1}' "$dir/archive.sha256")"
+          actual="$(sha256sum "$dir/archive.enc" | cut -d' ' -f1)"
+          test "$expected" = "$actual" || { echo "::error::Encrypted archive SHA256 does not match"; exit 1; }
+          openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in "$dir/archive.enc" -out "$dir/database.dump" -pass env:BACKUP_PASSPHRASE
+          test -s "$dir/database.dump"
+          # Archive remains in private runner directory; stream into network-disabled container.
+          echo 'Encrypted archive retrieved, hashed and decrypted on temporary runner.'
+      - name: Restore archive and classify errors without printing SQL or data
+        shell: bash
+        run: |
+          set -euo pipefail
+          dir="$PHALANX_RESTORE_DIR"
+          set +e
+          docker exec -i phalanx-supabase-recovery pg_restore --no-owner --no-acl --exit-on-error \
+            -U supabase_admin -d phalanx_restore_drill \
+            < "$dir/database.dump" > "$dir/restore.stdout" 2> "$dir/restore.stderr"
+          status=$?
+          set -e
+          if [ "$status" -ne 0 ]; then
+            python3 - "$dir/restore.stderr" <<'PY'
+          import re, sys
+          from pathlib import Path
+          raw = Path(sys.argv[1]).read_text(errors='replace')
+          classes = [
+              ('UNSUPPORTED_ARCHIVE_FORMAT', r'unsupported version|input file does not appear to be a valid archive'),
+              ('MISSING_EXTENSION', r'extension .* (is not available|does not exist|could not open)'),
+              ('MISSING_ROLE', r'role .* does not exist'),
+              ('EXTENSION_PRIVILEGE', r'must be (superuser|owner)|permission denied.*extension'),
+              ('MISSING_SCHEMA_OR_OBJECT', r'(schema|relation|function|type) .* does not exist'),
+              ('DUPLICATE_OBJECT', r'already exists|duplicate key'),
+              ('PERMISSION_DENIED', r'permission denied'),
+              ('OTHER_SQL_FAILURE', r'ERROR:'),
+          ]
+          matches = [k for k, p in classes if re.search(p, raw, re.I)]
+          primary = matches[0] if matches else 'OTHER_RESTORE_FAILURE'
+          print('::error::Sanitized restore failure category: ' + primary)
+          print('Additional categories: ' + (', '.join(matches[1:4]) if len(matches)>1 else 'none'))
+          with open(__import__('os').environ['GITHUB_STEP_SUMMARY'], 'a') as f:
+              f.write('### Isolated Supabase DB restore NOT VERIFIED\n')
+              f.write('- Failure category: ' + primary + '\n')
+              f.write('- No SQL, table names, passwords or database rows emitted.\n')
+          PY
+            exit 1
+          fi
+      - name: Validate restored table and RLS inventory
+        shell: bash
+        run: |
+          set -euo pipefail
+          result="$(docker exec phalanx-supabase-recovery psql -U supabase_admin -d phalanx_restore_drill -X -At -v ON_ERROR_STOP=1 -c "select count(*)::text || ':' || count(*) filter (where rowsecurity)::text from pg_tables where schemaname='public'")"
+          tables="${result%%:*}"
+          rls="${result##*:}"
+          # Source read-only baseline, 2026-10-19: 23 public tables, all RLS-enabled.
+          if [ "$tables" -ne 23 ] || [ "$rls" -ne 23 ]; then
+            echo "::error::Public schema / RLS count deviates from 2026-10-19 source baseline."
+            exit 1
+          fi
+          echo '### Isolated database restore passed PostgreSQL import and baseline checks' >> "$GITHUB_STEP_SUMMARY"
+          echo '- Supabase-compatible PostgreSQL 17.6 image; ephemeral network-disabled container' >> "$GITHUB_STEP_SUMMARY"
+          echo "- Public tables: $tables; RLS-enabled: $rls" >> "$GITHUB_STEP_SUMMARY"
+          echo '- Private encrypted B2 backup checksum verified and decrypted before restore' >> "$GITHUB_STEP_SUMMARY"
+          echo '- Scope: database logical restore smoke, NOT full Supabase disaster recovery (Auth, Storage, Edge runtime, secrets remain separate)' >> "$GITHUB_STEP_SUMMARY"
+          echo '- No production DB credentials or live database writes' >> "$GITHUB_STEP_SUMMARY"
+      - name: Remove private backup and disposable database
+        if: always()
+        shell: bash
+        run: |
+          docker rm -f phalanx-supabase-recovery >/dev/null 2>&1 || true
+          if [ -d "$RUNNER_TEMP/phalanx-supabase-restore" ]; then
+            chmod -R u+rwX "$RUNNER_TEMP/phalanx-supabase-restore" || true
+            rm -rf "$RUNNER_TEMP/phalanx-supabase-restore"
+          fi
+          rm -rf "$RUNNER_TEMP/aws-installer" "$RUNNER_TEMP/awscli.zip"
