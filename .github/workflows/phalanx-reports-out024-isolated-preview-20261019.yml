@@ -5,6 +5,13 @@ on:
     branches: [work/reports-out024-readonly-20261019]
     paths:
       - '.github/workflows/phalanx-reports-out024-isolated-preview-20261019.yml'
+      - 'tests/alpha/test_reports_out024_route_contract.py'
+      - 'tests/alpha/test_reports_out024_local_adapter.py'
+      - 'tests/alpha/test_reports_out024_runtime.cjs'
+      - 'tests/alpha/test_out024_report_normalizer.cjs'
+      - 'preview/PHALANX_RC5_OUT024_REPORTS_ISOLATED_NAV_20261019.html'
+      - 'preview/phalanx-reports-out024-local-adapter-20261019.html'
+      - 'preview/phalanx-out024-report-normalizer-20261019.js'
 permissions:
   contents: read
 concurrency:
