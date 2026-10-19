@@ -18,6 +18,8 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
     const inner=page.frame({name:'phxcontent'});
     assert.ok(inner,'Direct-navigation iframe missing');
     await frame.locator('body').waitFor();
+    assert.equal(await page.locator('header a[target="phxcontent"]').count(),3,'Exactly three isolated navigation targets expected');
+    assert.equal(await page.locator('iframe[name="phxcontent"]').count(),1,'Single content frame expected');
     assert.match(inner.url(),/PHALANX_RC5_ALPHA_DERIVED_20261017\.html$/);
     await page.getByRole('link',{name:'Report Center',exact:true}).click();
     await page.waitForFunction(()=>window.frames.phxcontent.location.pathname.endsWith('phalanx-reports-out024-local-adapter-20261019.html'));
@@ -28,6 +30,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
     await page.waitForFunction(()=>window.frames.phxcontent.location.pathname.endsWith('PHX-OUT-024-MAP2-FROZEN-20261018.html'));
     assert.match(inner.url(),/PHX-OUT-024-MAP2-FROZEN-20261018\.html$/);
     assert.deepEqual(errors,[],'Browser JavaScript errors');
+    assert.equal(await page.locator('header a[target="phxcontent"]').count(),3,'Direct navigation must persist after module switches');
     console.log('PASS: Chromium direct navigation RC5 → Reports → RC5 → OUT-024');
   } finally {if(browser)await browser.close();server.kill();}
 })().catch(e=>{console.error(e);process.exitCode=1});
