@@ -18,7 +18,7 @@ KINDS = tuple(sorted((
     "DOMAIN", "MATERIALIZED VIEW", "FOREIGN TABLE", "PROCEDURE", "OPERATOR",
     "COMMENT", "ACL", "DEFAULT ACL", "EVENT TRIGGER",
 ), key=len, reverse=True))
-ENTRY = re.compile(r"^\\d+;\\s+\\d+\\s+\\d+\\s+(.*)$")
+ENTRY = re.compile(r"^\d+;\s+\d+\s+\d+\s+(.*)$")
 
 
 def inspect(toc):
