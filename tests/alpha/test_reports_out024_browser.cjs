@@ -43,6 +43,18 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
     for(const [name,status] of served) assert.equal(status,200,'Module must return HTTP 200: '+name);
     assert.deepEqual(errors,[],'Browser JavaScript errors');
     assert.equal(await page.locator('header a[target="phxcontent"]').count(),3,'Direct navigation must persist after module switches');
+    // The separate RC5 derivative has native links; frozen source is never modified.
+    await page.goto('http://127.0.0.1:8765/rc5-integrated.html',{waitUntil:'load'});
+    const reportLink=page.getByRole('link',{name:/^Report Center/});
+    const outpostLink=page.getByRole('link',{name:/^Outpost Map/});
+    assert.equal(await reportLink.getAttribute('href'),'./phalanx-reports-out024-local-adapter-20261019.html');
+    assert.equal(await outpostLink.getAttribute('href'),'./PHX-OUT-024-MAP2-FROZEN-20261018.html');
+    await reportLink.click();
+    await page.waitForURL(/phalanx-reports-out024-local-adapter-20261019\\.html$/);
+    await page.goBack({waitUntil:'load'});
+    await page.getByRole('link',{name:/^Outpost Map/}).click();
+    await page.waitForURL(/PHX-OUT-024-MAP2-FROZEN-20261018\\.html$/);
+    console.log('PASS: native RC5 derivative routes Reports and OUT-024 without an external test bar');
     console.log('PASS: Chromium direct navigation RC5 → Reports → RC5 → OUT-024');
   } finally {if(browser)await browser.close();server.kill();}
 })().catch(e=>{console.error(e);process.exitCode=1});
