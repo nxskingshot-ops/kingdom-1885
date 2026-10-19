@@ -15,7 +15,7 @@ ALLOW = frozenset(("auth", "public", "extensions", "storage", "vault",
 # Identifiers following common schema qualification: quoted or plain tokens.
 QUALIFIED = re.compile(
     r'(?<![A-Za-z_0-9])(?:"([A-Za-z_][A-Za-z_0-9]*)"|([A-Za-z_][A-Za-z_0-9]*))'
-    r'\\s*\\.\\s*(?:"[A-Za-z_][A-Za-z_0-9]*"|[A-Za-z_][A-Za-z_0-9]*)'
+    r'\s*\.\s*(?:"[A-Za-z_][A-Za-z_0-9]*"|[A-Za-z_][A-Za-z_0-9]*)'
 )
 
 
