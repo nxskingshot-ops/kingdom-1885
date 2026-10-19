@@ -18,6 +18,16 @@ class TestLexicalReferencePreflight(unittest.TestCase):
         self.assertEqual(result["PUBLIC"], 1)
         self.assertNotIn("private_schema", result)
 
+    def test_masks_comments_literals_and_dollar_bodies(self):
+        sample = """-- storage.objects
+/* outer auth.users /* inner vault.items */ end */
+SELECT public.items, 'realtime.events', $ storage.private $,
+$func$ SELECT auth.hidden; $func$;
+"""
+        result = module.summarize(sample)
+        self.assertEqual(result["PUBLIC"], 1)
+        self.assertEqual(sum(result.values()), 1)
+
     def test_empty_input(self):
         self.assertEqual(sum(module.summarize("").values()), 0)
 
