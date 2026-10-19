@@ -69,3 +69,11 @@ Dieses Journal wird zu sinnvollen abgeschlossenen Arbeitspaketen aktualisiert. E
 | 2026-10-19 | PHX-LOG-001-F | Supabase-Kompatibilität | GitHub Actions `PHALANX Supabase PostgreSQL Compatibility Gate (Dummy Only)` #1: **Success** (33 s laut Nutzer-Screenshot). Container mit PostgreSQL 17 und sechs Extension-Namen verfügbar | CI_VERIFIED nur für Dummy-/Kompatibilitätsprüfung; echter DB-Restore OFFEN | 33 s Runner-Dauer, menschliche Zeit NICHT ERFASST |
 | 2026-10-19 | PHX-LOG-001-G | Datenbank-Restore | Neuer isolierter, manuell auszulösender Workflow `.github/workflows/phalanx-supabase-compatible-restore-drill.yml` auf `main`, Commit `014cf38c`; Backup-Download, Restore und 23-Tabellen-/23-RLS-Prüfung definiert | CODE_PRESENT; Workflow **noch nicht ausgeführt** | NICHT ERFASST |
 
+
+## Ergänzung: Auth-/Public-Abhängigkeit beim Restore, 19. Oktober 2026
+
+| Datum | ID | Bereich | Nachweis / Ergebnis | Status | Zeit |
+| --- | --- | --- | --- | --- | --- |
+| 2026-10-19 | PHX-LOG-001-H | Restore-Diagnose | `public`-Teil-Restore scheiterte mit `SCHEMA_OR_OBJECT_MISSING` bei TABLE. Read-only Supabase-Prüfung bestätigte `auth.uid()` als Default und 5 public→auth-FKs; auth intern 24 FKs | Diagnose belegt, erste SQL-Fehlursache nicht vollständig bewiesen | NICHT ERFASST |
+| 2026-10-19 | PHX-LOG-001-I | Restore-Test Auth+Public | Neues manuelles GitHub-Workflow `.github/workflows/phalanx-auth-public-restore-validation.yml`, Commit `eba93721`, isolierte Wiederherstellung und Prüfungen (23 Tabellen/RLS, 5 FKs, auth.users) | CODE_PRESENT, echter Test noch ausstehend | NICHT ERFASST |
+
