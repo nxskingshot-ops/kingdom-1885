@@ -123,6 +123,27 @@ bridge=bridge.replace('<button id="export-txt" type="button">TXT herunterladen</
 bridge=bridge.replace("const saveButton=document.getElementById('export-txt');", "const saveButton=document.getElementById('export-txt'),feedback=document.getElementById('export-feedback');", 1)
 bridge=bridge.replace("status.textContent='Tippe auf „TXT-Datei speichern“. Falls dein Browser nichts speichert, nutze „Bericht kopieren“.';", "feedback.textContent='Datei vorbereitet. Tippe auf „TXT-Datei speichern“. Alternativ Bericht kopieren.';", 1)
 bridge=bridge.replace("status.textContent='Tippe auf „TXT-Datei speichern“. Falls dein Browser das Speichern verhindert, nutze „Bericht kopieren“.';", "feedback.textContent='Datei vorbereitet. Tippe auf „TXT-Datei speichern“. Alternativ Bericht kopieren.';", 1)
+# Isolated visual polish only; no edits to frozen branding or application shell.
+style='''<style id="out024-one-tap-style">
+body{padding:14px;background:radial-gradient(ellipse at 50% 0%,#172d39 0%,#06111c 65%);font-family:system-ui,-apple-system,sans-serif}
+main{max-width:650px;padding:clamp(18px,4vw,30px);border:1px solid #9f793b;box-shadow:0 20px 70px #0009;background:linear-gradient(165deg,#122938,#081824);border-radius:20px}
+h1{font-size:clamp(23px,5vw,32px);letter-spacing:.04em;margin:0 0 12px}
+main>p{line-height:1.55;color:#d8dce1}
+#load-public{width:100%;font-weight:750;font-size:17px;padding:17px;background:linear-gradient(125deg,#785021,#b48742,#785021);color:#fff5d9;border:1px solid #e1ba75;box-sizing:border-box}
+#load-public:disabled{opacity:.6}
+#alliance-filter,#quadrant-filter{display:block;width:100%;min-height:46px;margin-top:7px;background:#071927;color:#f4e1b5;border:1px solid #a78046;border-radius:9px;padding:9px}
+main>p:has(#alliance-filter){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0}
+#one-tap-report{padding:18px;background:#061621;border:1px solid #425667;border-radius:12px;line-height:1.65;font-size:14px;overflow-x:auto}
+#export-copy,#export-txt{font-weight:650;min-height:48px}
+#export-copy{background:#b78b43;color:#07121c;border-color:#f0c77d}
+#export-feedback{color:#f0d393}
+#expert-tools{margin:24px 0 12px;padding:12px;border:1px solid #405666;border-radius:12px;background:#081c2a}
+#expert-tools summary{cursor:pointer;color:#bac8d3;font-size:14px;padding:5px}
+#expert-tools textarea{margin-top:10px}
+#status{padding:10px 0;color:#d9e6e9}
+@media(max-width:360px){main>p:has(#alliance-filter){grid-template-columns:1fr}#export-copy,#export-txt{width:100%;box-sizing:border-box}}
+</style>'''
+bridge=bridge.replace('</main></html>',style+'</main></html>',1)
 if bridge.count('id="load-public"')!=1 or bridge.count('id="expert-tools"')!=1 or bridge.count('id="one-tap-report"')!=1:
     raise SystemExit("Fail closed: One-Tap layout contract invalid")
 
