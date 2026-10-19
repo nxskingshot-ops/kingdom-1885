@@ -25,3 +25,6 @@ Library: `Dreifacher Phalanx-Appbildschirm mit Farbaugen.png` (20:07), `PHALANX:
 | Settings/profile | blue | long text and DE/EN/FR | accessibility test pending |
 
 No universal compatibility claim until tests pass. Existing freeze and production remain untouched.
+
+## User visual preference (2026-10-19)
+User chose **B** (`PHALANX: Gold, Rot und Blau.png`, Library created 2026-10-16 20:04 UTC) as preferred candidate, but explicitly said direct comparison was not possible. **Status: provisional visual preference, NOT final freeze approval.** Candidate A (`Dreifacher Phalanx-Appbildschirm mit Farbaugen.png`, 20:07 UTC) remains preserved. Do not replace frozen HOME or header art or claim pixel-perfect master from a triptych mockup. Original-image side-by-side comparison remains pending due to display/tool failures. Do not request another choice until both originals can be presented correctly.
