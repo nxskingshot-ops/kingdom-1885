@@ -48,6 +48,11 @@ class ReportsContract(unittest.TestCase):
             self.assertIn(required, bridge, required)
         self.assertIn('./phalanx-reports-out024-local-adapter-20261019.html', bridge)
 
+    def test_report_center_links_offline_bridge(self):
+        self.assertIn('./phalanx-out024-public-json-bridge-20261019.html', self.html)
+        bridge = (ROOT / "preview/phalanx-out024-public-json-bridge-20261019.html").read_text(encoding="utf-8")
+        self.assertIn('./phalanx-reports-out024-local-adapter-20261019.html', bridge)
+
     def test_explicit_provenance(self):
         self.assertIn('manuell geprüfter JSON-Import', self.html)
         self.assertIn('Keine Kartensynchronisierung bestätigt.', self.html)
