@@ -78,6 +78,20 @@ def main():
         print(label + ":")
         for key, count in sorted(values.items()):
             print("  {}: {}".format(key, count))
+    # TOC namespaces are inventory metadata, NOT a SQL dependency graph.
+    # Report counts only; names are restricted to the existing safe allowlist.
+    selected = sum(used[name] for name in ("auth", "public"))
+    external = sum(count for name, count in used.items()
+                   if name not in ("auth", "public", "OTHER_OR_NONE"))
+    unknown = used["OTHER_OR_NONE"]
+    print("Partial restore scope (TOC namespace entries, not dependency edges):")
+    print("  AUTH_OR_PUBLIC:", selected)
+    print("  OTHER_ALLOWLISTED_SCHEMAS:", external)
+    print("  UNCLASSIFIED_OR_NONE:", unknown)
+    print("  OTHER_SCHEMA_DECLARATIONS:", declared["OTHER_SCHEMA"])
+    print("  UNCLASSIFIED_OBJECT_KINDS:", types["OTHER_KIND"])
+    if external or unknown or declared["OTHER_SCHEMA"] or types["OTHER_KIND"]:
+        print("::warning::Partial auth+public archive selection cannot establish full dependency closure")
     if unparsed:
         print("::warning::Incomplete TOC classification")
     return 0
