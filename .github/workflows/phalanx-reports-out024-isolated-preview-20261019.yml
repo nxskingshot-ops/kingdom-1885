@@ -10,6 +10,7 @@ on:
       - 'tests/alpha/test_reports_out024_runtime.cjs'
       - 'tests/alpha/test_reports_out024_navigation_runtime.cjs'
       - 'tests/alpha/test_reports_out024_browser.cjs'
+      - 'tests/alpha/build_reports_out024_integrated_rc5.py'
       - 'tests/alpha/test_out024_report_normalizer.cjs'
       - 'preview/PHALANX_RC5_OUT024_REPORTS_ISOLATED_NAV_20261019.html'
       - 'preview/PHALANX_RC5_OUT024_REPORTS_DIRECT_NAV_20261019.html'
@@ -51,6 +52,7 @@ jobs:
           set -euo pipefail
           mkdir -p dist/reports-out024
           cp preview/PHALANX_RC5_ALPHA_DERIVED_20261017.html dist/reports-out024/
+          python3 tests/alpha/build_reports_out024_integrated_rc5.py dist/reports-out024/rc5-integrated.html
           cp preview/PHX-OUT-024-MAP2-FROZEN-20261018.html dist/reports-out024/
           cp preview/PHALANX_RC5_OUT024_REPORTS_ISOLATED_NAV_20261019.html dist/reports-out024/index.html
           cp preview/PHALANX_RC5_OUT024_REPORTS_DIRECT_NAV_20261019.html dist/reports-out024/direct.html
