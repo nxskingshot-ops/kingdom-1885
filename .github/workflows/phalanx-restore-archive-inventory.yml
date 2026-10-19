@@ -1,0 +1,64 @@
+name: PHALANX Backup Archive Inventory (Read Only)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: phalanx-backup-archive-inventory
+  cancel-in-progress: false
+jobs:
+  inventory:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.B2_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.B2_APPLICATION_KEY }}
+      AWS_DEFAULT_REGION: eu-central-003
+      AWS_EC2_METADATA_DISABLED: "true"
+      BACKUP_PASSPHRASE: ${{ secrets.PHALANX_BACKUP_ENCRYPTION_KEY }}
+      B2_ENDPOINT: https://s3.eu-central-003.backblazeb2.com
+      B2_BUCKET: nexus-phalanx-backup
+    steps:
+      - name: Verify read-only isolation prerequisites
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = refs/heads/main
+          test -z "${PGHOST:-}" && test -z "${PGPASSWORD:-}" || exit 1
+          for key in AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY BACKUP_PASSPHRASE; do
+            test -n "${!key}" || { echo "::error::Missing required private backup credential"; exit 1; }
+          done
+      - name: Checkout approved source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install PostgreSQL client and AWS CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-client-17 awscli openssl
+          pg_restore --version
+      - name: Inspect verified private archive TOC only
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          dir="$(mktemp -d "$RUNNER_TEMP/phalanx-toc.XXXXXX")"
+          trap 'rm -rf "$dir"' EXIT
+          key="$(aws --endpoint-url "$B2_ENDPOINT" s3api list-objects-v2 --bucket "$B2_BUCKET" --prefix 'postgres/daily/' --query "sort_by(Contents[?ends_with(Key, '.dump.enc')], &LastModified)[-1].Key" --output text)"
+          [[ "$key" == postgres/daily/*.dump.enc ]] || { echo "::error::No encrypted daily archive found"; exit 1; }
+          aws --endpoint-url "$B2_ENDPOINT" s3 cp "s3://$B2_BUCKET/$key" "$dir/archive.enc" --no-progress >/dev/null
+          aws --endpoint-url "$B2_ENDPOINT" s3 cp "s3://$B2_BUCKET/$key.sha256" "$dir/archive.sha256" --no-progress >/dev/null
+          expected="$(awk 'NR==1 {print $1}' "$dir/archive.sha256")"
+          [[ "$expected" =~ ^[a-fA-F0-9]{64}$ ]] || { echo "::error::Invalid checksum"; exit 1; }
+          actual="$(sha256sum "$dir/archive.enc" | cut -d' ' -f1)"
+          test "$actual" = "$expected" || { echo "::error::Archive checksum mismatch"; exit 1; }
+          openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in "$dir/archive.enc" -out "$dir/database.dump" -pass env:BACKUP_PASSPHRASE
+          test -s "$dir/database.dump"
+          python3 scripts/phalanx-restore-toc-inventory.py "$dir/database.dump"
+          echo '### Encrypted PostgreSQL backup: TOC inventory only (no restore)' >> "$GITHUB_STEP_SUMMARY"
+          echo '- Checksum verified; archive decrypted only into runner temporary directory' >> "$GITHUB_STEP_SUMMARY"
+          echo '- No database connection, SQL execution, production writes or artifact uploads' >> "$GITHUB_STEP_SUMMARY"
+          echo '- No object identifiers, rows or unredacted logs intentionally emitted' >> "$GITHUB_STEP_SUMMARY"
