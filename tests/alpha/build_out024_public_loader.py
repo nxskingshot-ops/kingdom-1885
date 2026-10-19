@@ -33,7 +33,25 @@ btn.addEventListener('click',async()=>{
     const rows=await response.json();
     if(!Array.isArray(rows)||rows.length===0||rows.length>1000)throw Error('Ungültige Anzahl');
     const source=document.getElementById('source');
-    source.value=JSON.stringify(rows.map(r=>({source_key:r.source_key,alliance:r.alliance,coord_x:r.coord_x,coord_y:r.coord_y})));
+    const allianceFilter=document.getElementById('alliance-filter'),quadrantFilter=document.getElementById('quadrant-filter');
+    const selected=allianceFilter.value;
+    const names=[...new Set(rows.map(r=>String(r.alliance||'').trim().toUpperCase()))].filter(Boolean).sort();
+    allianceFilter.replaceChildren(new Option('Alle',''),...names.map(n=>new Option(n,n)));
+    allianceFilter.value=names.includes(selected)?selected:'';
+    window.phalanxOutpostRows=rows;
+    const apply=()=>{
+      const a=allianceFilter.value,q=quadrantFilter.value;
+      const subset=window.phalanxOutpostRows.filter(r=>{
+        const x=Number(r.coord_x),y=Number(r.coord_y),quadrant=x<600?(y<600?'N':'W'):(y<600?'O':'S');
+        return (!a||String(r.alliance||'').trim().toUpperCase()===a)&&(!q||quadrant===q);
+      });
+      source.value=JSON.stringify(subset.map(r=>({source_key:r.source_key,alliance:String(r.alliance||'').trim().toUpperCase(),coord_x:r.coord_x,coord_y:r.coord_y})));
+      source.dispatchEvent(new Event('input',{bubbles:true}));
+      if(subset.length)document.getElementById('check').click();
+      else status.textContent='Keine Outposts für diese Filter.';
+    };
+    allianceFilter.onchange=apply;quadrantFilter.onchange=apply;
+    apply();
     source.dispatchEvent(new Event('input',{bubbles:true}));
     document.getElementById('check').click();
     if(document.getElementById('direct').disabled)throw Error('Datenprüfung fehlgeschlagen');
