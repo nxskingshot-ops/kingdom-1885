@@ -59,6 +59,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
     await page.waitForURL(/PHX-OUT-024-MAP2-FROZEN-20261018\.html$/);
     // Browser gate: explicit offline import checker -> clipboard -> Report Center.
     await page.goto('http://127.0.0.1:8765/phalanx-out024-public-json-bridge-20261019.html',{waitUntil:'load'});
+    await page.locator('#expert-tools').evaluate(el=>el.open=true);
     const bridgeSource=page.locator('#source'),bridgeCopy=page.locator('#copy');
     assert.equal(await bridgeCopy.isDisabled(),true,'Unchecked OUT-024 data must not be copied');
     await bridgeSource.fill(JSON.stringify([{source_key:'OP1',alliance:'NXS',coord_x:120,coord_y:140}]));
@@ -72,6 +73,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
     console.log('PASS: offline OUT-024 validation and explicit clipboard write');
     // Same-origin direct handoff: browser popup, schema validation and acknowledgement.
     await page.goto('http://127.0.0.1:8765/phalanx-out024-public-json-bridge-20261019.html',{waitUntil:'load'});
+    await page.locator('#expert-tools').evaluate(el=>el.open=true);
     await page.locator('#source').fill(JSON.stringify([{source_key:'DIRECT1',alliance:'MYM',coord_x:700,coord_y:700}]));
     await page.locator('#check').click();
     assert.equal(await page.locator('#direct').isEnabled(),true,'Valid rows enable direct transfer');
