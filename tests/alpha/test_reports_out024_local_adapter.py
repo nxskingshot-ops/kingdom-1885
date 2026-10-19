@@ -59,6 +59,14 @@ class ReportsContract(unittest.TestCase):
         self.assertIn("source.dispatchEvent(new Event('input',{bubbles:true}))", self.html)
         self.assertIn("Alternativ JSON manuell einfügen.", self.html)
 
+    def test_handoff_requires_explicit_clipboard_success(self):
+        bridge = (ROOT / "preview/phalanx-out024-public-json-bridge-20261019.html").read_text(encoding="utf-8")
+        self.assertIn('id="handoff" disabled', bridge)
+        self.assertIn("copy.disabled=true;handoff.disabled=true;", bridge)
+        self.assertIn("copy.disabled=false;handoff.disabled=false;", bridge)
+        self.assertIn("await navigator.clipboard.writeText(approved);window.location.assign(", bridge)
+        self.assertIn("Zwischenablage nicht verfügbar.", bridge)
+
     def test_explicit_provenance(self):
         self.assertIn('manuell geprüfter JSON-Import', self.html)
         self.assertIn('Keine Kartensynchronisierung bestätigt.', self.html)
