@@ -1,6 +1,10 @@
 name: PHALANX Reports OUT024 isolated preview
 on:
   workflow_dispatch:
+  push:
+    branches: [work/reports-out024-readonly-20261019]
+    paths:
+      - '.github/workflows/phalanx-reports-out024-isolated-preview-20261019.yml'
 permissions:
   contents: read
 concurrency:
