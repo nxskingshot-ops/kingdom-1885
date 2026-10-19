@@ -53,6 +53,12 @@ class ReportsContract(unittest.TestCase):
         bridge = (ROOT / "preview/phalanx-out024-public-json-bridge-20261019.html").read_text(encoding="utf-8")
         self.assertIn('./phalanx-reports-out024-local-adapter-20261019.html', bridge)
 
+    def test_clipboard_import_is_explicit_and_invalidates_previous_report(self):
+        self.assertIn('id="paste-json"', self.html)
+        self.assertIn("navigator.clipboard.readText()", self.html)
+        self.assertIn("source.dispatchEvent(new Event('input',{bubbles:true}))", self.html)
+        self.assertIn("Alternativ JSON manuell einfügen.", self.html)
+
     def test_explicit_provenance(self):
         self.assertIn('manuell geprüfter JSON-Import', self.html)
         self.assertIn('Keine Kartensynchronisierung bestätigt.', self.html)
