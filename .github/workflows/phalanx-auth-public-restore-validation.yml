@@ -140,6 +140,19 @@ jobs:
                   break
           print('Sanitized actual SQL missing-object kind: ' + sql_missing_kind)
           print('Sanitized SQL error lines present: ' + ('YES' if error_lines else 'NO'))
+          # Classify missing schema from SQL ERROR, not the last pg_restore TOC entry.
+          # Emit only fixed labels; never print raw schema names or SQL.
+          schema_allowlist = ('auth', 'public', 'extensions', 'storage', 'vault',
+                              'realtime', 'graphql_public', 'supabase_functions',
+                              'pgsodium', 'net', 'cron')
+          missing_schema = 'UNDETERMINED'
+          for line in error_lines:
+              match = re.search(r'\bschema\s+(?:"([^"]+)"|([A-Za-z_][A-Za-z_0-9]*))\s+does not exist\b', line, re.I)
+              if match:
+                  candidate = (match.group(1) or match.group(2)).lower()
+                  missing_schema = candidate.upper() if candidate in schema_allowlist else 'OTHER_SCHEMA'
+                  break
+          print('Sanitized actual missing schema: ' + missing_schema)
           # Disclose only the missing TYPE namespace, never its identifier or SQL.
           # A TYPE failure can be in an excluded extension schema or an auth/public dependency.
           missing_type_namespace = 'UNKNOWN'
