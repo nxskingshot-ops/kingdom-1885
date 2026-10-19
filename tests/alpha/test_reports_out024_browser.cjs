@@ -114,6 +114,16 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
     assert.equal(await copy.isDisabled(),true,'Rejected import must disable copy');
     assert.equal(await page.locator('#part-preview').innerText(),'','Rejected import must clear chunk preview');
     assert.equal(await page.locator('#copy-part').isDisabled(),true,'Rejected import must disable chunk copying');
+    // Boundary gate: reject oversized imports and never retain the previous output.
+    await source.fill(JSON.stringify(Array.from({length:1001},(_,i)=>({
+      id:'OVER'+i,alliance:'NXS',quadrant:'N'
+    }))));
+    await generate.click();
+    assert.match(await page.locator('#status').innerText(),/Import abgelehnt/);
+    assert.equal(await page.locator('#result').innerText(),'','Oversized import must not produce a report');
+    assert.equal(await page.locator('#part-preview').innerText(),'','Oversized import must not retain a chunk preview');
+    assert.equal(await copy.isDisabled(),true,'Oversized import must disable full copy');
+    assert.equal(await page.locator('#copy-part').isDisabled(),true,'Oversized import must disable chunk copy');
     console.log('PASS: manual report aggregation and fail-closed invalid import');
     console.log('PASS: native RC5 derivative routes Reports and OUT-024 without an external test bar');
     console.log('PASS: Chromium direct navigation RC5 → Reports → RC5 → OUT-024');
