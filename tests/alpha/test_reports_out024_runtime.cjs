@@ -15,4 +15,4 @@ for(const invalid of ['{',JSON.stringify([{id:'1',alliance:'NXS',quadrant:'X'}])
 r=generate(JSON.stringify([{source_key:'OP1',alliance:'NXS',coord_x:0,coord_y:0},{source_key:'OP2',alliance:'NXS',coord_x:600,coord_y:0}]));assert.match(r.report,/NXS · N: 1/);assert.match(r.report,/NXS · O: 1/);assert.equal(r.disabled,false);
 r=generate(JSON.stringify([{source_key:'OP1',alliance:'NXS',coord_x:-1,coord_y:0}]));assert.match(r.status,/Import abgelehnt/);assert.equal(r.disabled,true);
 r=generate(JSON.stringify([{source_key:'OP1',alliance:'NXS',coord_x:0,coord_y:0},{id:'OP2',alliance:'NXS',quadrant:'N'}]));assert.match(r.status,/Import abgelehnt/);assert.equal(r.disabled,true);
-console.log('PASS: 9 runtime cases (valid aggregation, malformed JSON, invalid quadrant, duplicate ID, missing ID, >1000 rows)');
+console.log('PASS: 9 runtime cases (manual aggregation, invalid JSON/quadrant/IDs/size, OUT-024 quadrants, invalid coordinates, mixed schema)');
