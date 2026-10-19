@@ -39,7 +39,7 @@ class ReportsContract(unittest.TestCase):
 
     def test_offline_import_bridge_safety(self):
         bridge = (ROOT / "preview/phalanx-out024-public-json-bridge-20261019.html").read_text(encoding="utf-8")
-        for forbidden in (r'\\bfetch\\s*\\(', r'XMLHttpRequest', r'WebSocket',
+        for forbidden in (r'\bfetch\s*\(', r'XMLHttpRequest', r'WebSocket',
                           r'localStorage', r'sessionStorage', r'supabase', r'indexedDB'):
             self.assertIsNone(re.search(forbidden, bridge, re.I), forbidden)
         for required in ('JSON.parse(source.value)', 'rows.length>1000',
