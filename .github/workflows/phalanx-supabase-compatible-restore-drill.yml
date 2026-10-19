@@ -89,22 +89,39 @@ jobs:
           from pathlib import Path
           raw = Path(sys.argv[1]).read_text(errors='replace')
           classes = [
-              ('UNSUPPORTED_ARCHIVE_FORMAT', r'unsupported version|input file does not appear to be a valid archive'),
-              ('MISSING_EXTENSION', r'extension .* (is not available|does not exist|could not open)'),
-              ('MISSING_ROLE', r'role .* does not exist'),
-              ('EXTENSION_PRIVILEGE', r'must be (superuser|owner)|permission denied.*extension'),
-              ('MISSING_SCHEMA_OR_OBJECT', r'(schema|relation|function|type) .* does not exist'),
-              ('DUPLICATE_OBJECT', r'already exists|duplicate key'),
-              ('PERMISSION_DENIED', r'permission denied'),
-              ('OTHER_SQL_FAILURE', r'ERROR:'),
+              ('EXTENSION_PRELOAD_REQUIRED', r'must be loaded (?:via|by) shared_preload_libraries'),
+              ('EXTENSION_NOT_INSTALLED', r'extension .* (?:is not available|does not exist|could not open)'),
+              ('UNRECOGNIZED_CONFIGURATION', r'unrecognized configuration parameter|invalid value for parameter'),
+              ('SUPERUSER_REQUIRED', r'must be superuser|superuser privileges|requires superuser'),
+              ('INSUFFICIENT_PRIVILEGE', r'permission denied|must be owner|must be member of role'),
+              ('ROLE_MISSING', r'role .* does not exist'),
+              ('SCHEMA_OR_OBJECT_MISSING', r'(?:schema|relation|function|type|operator|sequence) .* does not exist'),
+              ('OBJECT_ALREADY_EXISTS', r'already exists|duplicate (?:object|key)'),
+              ('COLLATION_MISMATCH', r'collation .* (?:does not exist|mismatch)|locale .* (?:does not exist|unsupported)'),
+              ('INVALID_SQL_OR_INPUT', r'invalid input syntax|invalid byte sequence|syntax error at or near'),
+              ('ARCHIVE_FORMAT', r'unsupported version|not appear to be a valid archive|unexpected end of file'),
+              ('CONNECTION_ERROR', r'connection to server .* failed|server closed the connection'),
+              ('OTHER_SQL_ERROR', r'ERROR:'),
           ]
           matches = [k for k, p in classes if re.search(p, raw, re.I)]
           primary = matches[0] if matches else 'OTHER_RESTORE_FAILURE'
+          # Never output pg_restore SQL text, names, details or parameters.
+          # Only report a tightly allowlisted pg_restore object category.
+          kinds = ('TABLE DATA','ROW SECURITY','FK CONSTRAINT','MATERIALIZED VIEW',
+                   'SCHEMA','EXTENSION','TABLE','FUNCTION','TYPE','SEQUENCE',
+                   'INDEX','TRIGGER','POLICY','VIEW','CONSTRAINT','DEFAULT')
+          phases = re.findall(r'^pg_restore:\\s+(?:creating|processing)\\s+([^\\n]*)', raw, re.M | re.I)
+          phase = 'UNDETERMINED'
+          if phases:
+              for kind in kinds:
+                  if re.search(r'\\b' + re.escape(kind) + r'\\b', phases[-1], re.I):
+                      phase = kind.replace(' ','_')
+                      break
           print('::error::Sanitized restore failure category: ' + primary)
-          print('Additional categories: ' + (', '.join(matches[1:4]) if len(matches)>1 else 'none'))
+          print('Sanitized restore object type: ' + phase)
           with open(__import__('os').environ['GITHUB_STEP_SUMMARY'], 'a') as f:
               f.write('### Isolated Supabase DB restore NOT VERIFIED\n')
-              f.write('- Failure category: ' + primary + '\n')
+              f.write('- Failure category: ' + primary + '\n')\n              f.write('- Object type: ' + phase + '\n')
               f.write('- No SQL, table names, passwords or database rows emitted.\n')
           PY
             exit 1
