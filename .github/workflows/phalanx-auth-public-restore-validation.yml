@@ -129,7 +129,7 @@ jobs:
           # Disclose only the missing TYPE namespace, never its identifier or SQL.
           # A TYPE failure can be in an excluded extension schema or an auth/public dependency.
           missing_type_namespace = 'UNKNOWN'
-          m = re.search(r'type\\s+(?:(?:"([A-Za-z_][A-Za-z_0-9]*)"|([A-Za-z_][A-Za-z_0-9]*))\\.)?(?:"[A-Za-z_][A-Za-z_0-9]*"|[A-Za-z_][A-Za-z_0-9]*)\\s+does not exist', raw, re.I)
+          m = re.search(r'type\s+(?:(?:"([A-Za-z_][A-Za-z_0-9]*)"|([A-Za-z_][A-Za-z_0-9]*))\.)?(?:"[A-Za-z_][A-Za-z_0-9]*"|[A-Za-z_][A-Za-z_0-9]*)\s+does not exist', raw, re.I)
           if m:
               namespace = (m.group(1) or m.group(2) or '').lower()
               missing_type_namespace = namespace.upper() if namespace in ('extensions', 'auth', 'public', 'storage', 'graphql_public') else 'OTHER_OR_UNQUALIFIED'
