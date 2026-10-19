@@ -8,6 +8,7 @@ on:
       - 'tests/alpha/test_reports_out024_route_contract.py'
       - 'tests/alpha/test_reports_out024_local_adapter.py'
       - 'tests/alpha/test_reports_out024_runtime.cjs'
+      - 'tests/alpha/test_reports_out024_navigation_runtime.cjs'
       - 'tests/alpha/test_out024_report_normalizer.cjs'
       - 'preview/PHALANX_RC5_OUT024_REPORTS_ISOLATED_NAV_20261019.html'
       - 'preview/phalanx-reports-out024-local-adapter-20261019.html'
@@ -32,6 +33,7 @@ jobs:
           set -euo pipefail
           node tests/alpha/test_out024_report_normalizer.cjs
           node tests/alpha/test_reports_out024_runtime.cjs
+          node tests/alpha/test_reports_out024_navigation_runtime.cjs
           python3 tests/alpha/test_reports_out024_local_adapter.py
           python3 tests/alpha/test_reports_out024_route_contract.py
           test -s preview/PHALANX_RC5_ALPHA_DERIVED_20261017.html
