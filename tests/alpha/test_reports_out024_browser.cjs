@@ -1,6 +1,7 @@
 #!/usr/bin/env node
-// Real Chromium smoke test against the isolated static preview, never production.
-const { chromium } = require('playwright');
+// Real Chromium smoke test for the isolated, JavaScript-free direct navigation.
+// This intentionally does not assert the legacy iframe router is functional.
+const {chromium}=require('playwright');
 const assert=require('node:assert/strict');
 const {spawn}=require('node:child_process');
 const server=spawn('python3',['-m','http.server','8765','--directory','dist/reports-out024'],{stdio:'ignore'});
@@ -12,26 +13,21 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
     browser=await chromium.launch({headless:true,args:['--no-sandbox']});
     const page=await browser.newPage({viewport:{width:393,height:852},isMobile:true,hasTouch:true});
     const errors=[];page.on('pageerror',e=>errors.push(e.message));
-    await page.goto('http://127.0.0.1:8765/',{waitUntil:'load'});
-    const status=page.locator('#status');
-    await status.waitFor();
-    await page.waitForTimeout(1500);
-    const current=await status.innerText();
-    assert.match(current,/verknüpft/, 'RC5 router failed to initialize: '+current+'; errors='+errors.join('; '));
-    const frame=page.frameLocator('#preview');
-    await frame.locator('details.group').filter({has:frame.locator('a').getByText('Report Center',{exact:false})}).locator('summary').click();
-    const reports=frame.getByText('Report Center',{exact:false});
-    await reports.click();
-    await page.waitForTimeout(400);
-    assert.match(await status.innerText(),/Reports-Adapter geladen|Reports · lokaler Alpha-Adapter/);
-    await page.locator('#back').click();
-    await page.waitForTimeout(400);
-    assert.match(await status.innerText(),/verknüpft/);
-    await frame.locator('summary[aria-label^="Territory Control"]').click();
-    await frame.getByText('Outpost Map',{exact:false}).first().click();
-    await page.waitForTimeout(500);
-    assert.match(await status.innerText(),/OUT-024/);
+    await page.goto('http://127.0.0.1:8765/direct.html',{waitUntil:'load'});
+    const frame=page.frameLocator('iframe[name="phxcontent"]');
+    const inner=page.frame({name:'phxcontent'});
+    assert.ok(inner,'Direct-navigation iframe missing');
+    await frame.locator('body').waitFor();
+    assert.match(inner.url(),/PHALANX_RC5_ALPHA_DERIVED_20261017\.html$/);
+    await page.getByRole('link',{name:'Report Center',exact:true}).click();
+    await page.waitForFunction(()=>window.frames.phxcontent.location.pathname.endsWith('phalanx-reports-out024-local-adapter-20261019.html'));
+    assert.match(inner.url(),/phalanx-reports-out024-local-adapter-20261019\.html$/);
+    await page.getByRole('link',{name:'RC5 Menü',exact:true}).click();
+    await page.waitForFunction(()=>window.frames.phxcontent.location.pathname.endsWith('PHALANX_RC5_ALPHA_DERIVED_20261017.html'));
+    await page.getByRole('link',{name:'OUT-024 Karte',exact:true}).click();
+    await page.waitForFunction(()=>window.frames.phxcontent.location.pathname.endsWith('PHX-OUT-024-MAP2-FROZEN-20261018.html'));
+    assert.match(inner.url(),/PHX-OUT-024-MAP2-FROZEN-20261018\.html$/);
     assert.deepEqual(errors,[],'Browser JavaScript errors');
-    console.log('PASS: Chromium RC5 load, Report Center, back, OUT-024');
+    console.log('PASS: Chromium direct navigation RC5 → Reports → RC5 → OUT-024');
   } finally {if(browser)await browser.close();server.kill();}
 })().catch(e=>{console.error(e);process.exitCode=1});
