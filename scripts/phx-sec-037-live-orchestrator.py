@@ -11,9 +11,7 @@ import importlib.util
 import json
 import os
 import pathlib
-import re
 import tempfile
-from datetime import datetime, timezone
 
 ROOT=pathlib.Path(__file__).resolve().parent
 
@@ -39,6 +37,8 @@ def run(source_root, inventory_path, scan_receipt_path, object_key):
         raise RuntimeError("independent AES-256 recovery key required")
     inventory=json.loads(pathlib.Path(inventory_path).read_text())
     receipt=json.loads(pathlib.Path(scan_receipt_path).read_text())
+    # Receipt is only a consistency check, not an authorization or trusted scan proof.
+    # The live runner MUST generate it after executing a pinned scanner in the same job.
     if receipt.get("result")!="PASS" or receipt.get("functions")!=26 or receipt.get("scanner") not in ("gitleaks","trufflehog"):
         raise RuntimeError("approved secret scanner receipt required")
     if receipt.get("inventory_sha256")!=hashlib.sha256(pathlib.Path(inventory_path).read_bytes()).hexdigest():
@@ -46,6 +46,8 @@ def run(source_root, inventory_path, scan_receipt_path, object_key):
     raw=archive.create_archive(source_root,inventory)
     if receipt.get("archive_sha256")!=hashlib.sha256(raw).hexdigest():
         raise RuntimeError("secret scan receipt does not match archive")
+    if os.environ.get("PHX037_SCANNER_EXECUTED_IN_THIS_JOB") != "YES":
+        raise RuntimeError("scanner execution not attested by live runner")
     ciphertext=crypto.encrypt_bytes(raw,key)
     digest=hashlib.sha256(ciphertext).hexdigest()
     with tempfile.TemporaryDirectory(prefix="phx037-") as tmp:
