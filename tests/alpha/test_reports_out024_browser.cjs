@@ -73,6 +73,18 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
     assert.match(await page.locator('#parts').innerText(),/Teil 1 von 1/);
     assert.equal(await page.locator('#copy-part').isEnabled(),true,'Manual chunk copy available');
     assert.equal(await page.locator('#next-part').isDisabled(),true,'No second chunk for short report');
+    // Verify a long but valid report is split into copy-safe chunks.
+    await source.fill(JSON.stringify(Array.from({length:80},(_,i)=>({
+      id:'T'+i,alliance:'ALLIANCE_'+String(i).padStart(3,'0'),quadrant:'N'
+    }))));
+    await generate.click();
+    assert.match(await page.locator('#parts').innerText(),/Teil 1 von [2-9]/,'Long alliance report must split');
+    assert.equal(await page.locator('#next-part').isEnabled(),true,'Next part available');
+    const firstPart=await page.locator('#parts').innerText();
+    await page.locator('#next-part').click();
+    assert.notEqual(await page.locator('#parts').innerText(),firstPart,'Next part must advance');
+    await page.locator('#channel').selectOption('2000');
+    assert.match(await page.locator('#parts').innerText(),/Teil 1 von/,'Switching channel recalculates chunks');
     await source.fill('[{"id":"X","alliance":"NXS","quadrant":"N"},{"id":"X","alliance":"FRA","quadrant":"S"}]');
     await generate.click();
     assert.match(await page.locator('#status').innerText(),/Import abgelehnt/);
