@@ -11,6 +11,7 @@ on:
       - 'tests/alpha/test_reports_out024_navigation_runtime.cjs'
       - 'tests/alpha/test_reports_out024_browser.cjs'
       - 'tests/alpha/build_reports_out024_integrated_rc5.py'
+      - 'tests/alpha/build_out024_public_loader.py'
       - 'tests/alpha/test_out024_report_normalizer.cjs'
       - 'preview/PHALANX_RC5_OUT024_REPORTS_ISOLATED_NAV_20261019.html'
       - 'preview/PHALANX_RC5_OUT024_REPORTS_DIRECT_NAV_20261019.html'
@@ -60,7 +61,7 @@ jobs:
           cp preview/PHALANX_RC5_OUT024_REPORTS_DIRECT_NAV_20261019.html dist/reports-out024/direct.html
           cp preview/phalanx-reports-out024-local-adapter-20261019.html dist/reports-out024/
           cp preview/phalanx-out024-report-normalizer-20261019.js dist/reports-out024/
-          cp preview/phalanx-out024-public-json-bridge-20261019.html dist/reports-out024/
+          python3 tests/alpha/build_out024_public_loader.py dist/reports-out024/phalanx-out024-public-json-bridge-20261019.html
           printf 'User-agent: *\\nDisallow: /\\n' > dist/reports-out024/robots.txt
       - name: Chromium end-to-end navigation gate (local isolated files)
         shell: bash
