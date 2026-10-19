@@ -61,3 +61,11 @@ Automatische Laufzeit (separat):
 ## Pflege
 
 Dieses Journal wird zu sinnvollen abgeschlossenen Arbeitspaketen aktualisiert. Es ersetzt weder das Feature-Register noch den Design-FREEZE-Index oder die Recovery-Dokumentation. Die jeweilige Originalquelle bleibt maßgeblich. Bei künftigen Arbeiten nur mit nachvollziehbaren Zeitangaben echte Summen bilden.
+
+## Ergänzung: Restore-Kompatibilität, 19. Oktober 2026
+
+| Datum | ID | Bereich | Nachweis / Ergebnis | Status | Zeit |
+| --- | --- | --- | --- | --- | --- |
+| 2026-10-19 | PHX-LOG-001-F | Supabase-Kompatibilität | GitHub Actions `PHALANX Supabase PostgreSQL Compatibility Gate (Dummy Only)` #1: **Success** (33 s laut Nutzer-Screenshot). Container mit PostgreSQL 17 und sechs Extension-Namen verfügbar | CI_VERIFIED nur für Dummy-/Kompatibilitätsprüfung; echter DB-Restore OFFEN | 33 s Runner-Dauer, menschliche Zeit NICHT ERFASST |
+| 2026-10-19 | PHX-LOG-001-G | Datenbank-Restore | Neuer isolierter, manuell auszulösender Workflow `.github/workflows/phalanx-supabase-compatible-restore-drill.yml` auf `main`, Commit `014cf38c`; Backup-Download, Restore und 23-Tabellen-/23-RLS-Prüfung definiert | CODE_PRESENT; Workflow **noch nicht ausgeführt** | NICHT ERFASST |
+
