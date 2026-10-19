@@ -88,6 +88,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
     const firstPart=await page.locator('#parts').innerText();
     await page.locator('#next-part').click();
     assert.notEqual(await page.locator('#parts').innerText(),firstPart,'Next part must advance');
+    assert.equal(await page.locator('#copy-part').innerText(),'Teil 2 kopieren','Copy label must follow selected chunk');
     await page.locator('#channel').selectOption('2000');
     assert.match(await page.locator('#parts').innerText(),/Teil 1 von/,'Switching channel recalculates chunks');
     await source.fill('[{"id":"X","alliance":"NXS","quadrant":"N"},{"id":"X","alliance":"FRA","quadrant":"S"}]');
