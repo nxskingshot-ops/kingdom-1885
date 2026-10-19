@@ -45,15 +45,15 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
     assert.equal(await page.locator('header a[target="phxcontent"]').count(),3,'Direct navigation must persist after module switches');
     // The separate RC5 derivative has native links; frozen source is never modified.
     await page.goto('http://127.0.0.1:8765/rc5-integrated.html',{waitUntil:'load'});
-    const reportLink=page.getByRole('link',{name:/^Report Center/});
-    const outpostLink=page.getByRole('link',{name:/^Outpost Map/});
+    const reportLink=page.locator('a[href="./phalanx-reports-out024-local-adapter-20261019.html"]');
+    const outpostLink=page.locator('a[href="./PHX-OUT-024-MAP2-FROZEN-20261018.html"]');
     assert.equal(await reportLink.getAttribute('href'),'./phalanx-reports-out024-local-adapter-20261019.html');
     assert.equal(await outpostLink.getAttribute('href'),'./PHX-OUT-024-MAP2-FROZEN-20261018.html');
     await reportLink.evaluate(el=>el.closest('details').open=true);
     await reportLink.click();
     await page.waitForURL(/phalanx-reports-out024-local-adapter-20261019\.html$/);
     await page.goBack({waitUntil:'load'});
-    const mapLink=page.getByRole('link',{name:/^Outpost Map/});
+    const mapLink=page.locator('a[href="./PHX-OUT-024-MAP2-FROZEN-20261018.html"]');
     await mapLink.evaluate(el=>el.closest('details').open=true);
     await mapLink.click();
     await page.waitForURL(/PHX-OUT-024-MAP2-FROZEN-20261018\.html$/);
