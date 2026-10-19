@@ -38,7 +38,11 @@ jobs:
         run: |
           set -euo pipefail
           sudo apt-get update -qq
-          sudo apt-get install -y -qq awscli openssl
+          sudo apt-get install -y -qq curl unzip openssl
+          curl -fsSL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o "$RUNNER_TEMP/awscli.zip"
+          unzip -q "$RUNNER_TEMP/awscli.zip" -d "$RUNNER_TEMP/aws-installer"
+          sudo "$RUNNER_TEMP/aws-installer/aws/install" --update
+          aws --version
           docker pull supabase/postgres:17.6.1.173
       - name: Inspect verified private archive TOC only
         shell: bash
