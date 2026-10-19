@@ -66,7 +66,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
     assert.equal(await bridgeCopy.isEnabled(),true,'Valid OUT-024 data can be copied');
     await page.context().grantPermissions(['clipboard-read','clipboard-write'],{origin:'http://127.0.0.1:8765'});
     await bridgeCopy.click();
-    assert.match(await page.locator('#status').innerText(),/kopiert/);
+    await page.locator('#status').getByText(/kopiert/).waitFor({timeout:5000});
     await page.getByRole('link',{name:'Report Center öffnen'}).click();
     await page.waitForURL(/phalanx-reports-out024-local-adapter-20261019\\.html$/);
     await page.locator('#paste-json').click();
