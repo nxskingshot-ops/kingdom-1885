@@ -57,6 +57,26 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
     await mapLink.evaluate(el=>el.closest('details').open=true);
     await mapLink.click();
     await page.waitForURL(/PHX-OUT-024-MAP2-FROZEN-20261018\.html$/);
+    // Browser gate: explicit offline import checker -> clipboard -> Report Center.
+    await page.goto('http://127.0.0.1:8765/phalanx-out024-public-json-bridge-20261019.html',{waitUntil:'load'});
+    const bridgeSource=page.locator('#source'),bridgeCopy=page.locator('#copy');
+    assert.equal(await bridgeCopy.isDisabled(),true,'Unchecked OUT-024 data must not be copied');
+    await bridgeSource.fill(JSON.stringify([{source_key:'OP1',alliance:'NXS',coord_x:120,coord_y:140}]));
+    await page.locator('#check').click();
+    assert.equal(await bridgeCopy.isEnabled(),true,'Valid OUT-024 data can be copied');
+    await page.context().grantPermissions(['clipboard-read','clipboard-write'],{origin:'http://127.0.0.1:8765'});
+    await bridgeCopy.click();
+    assert.match(await page.locator('#status').innerText(),/kopiert/);
+    await page.getByRole('link',{name:'Report Center öffnen'}).click();
+    await page.waitForURL(/phalanx-reports-out024-local-adapter-20261019\\.html$/);
+    await page.locator('#paste-json').click();
+    assert.match(await page.locator('#source').inputValue(),/OP1/,'Report Center must receive clipboard JSON');
+    await page.locator('#generate').click();
+    assert.match(await page.locator('#result').innerText(),/Einträge: 1/,'Imported OUT-024 data must generate a report');
+    assert.match(await page.locator('#result').innerText(),/NXS · N: 1/);
+    await page.locator('#source').fill('[]');
+    assert.equal(await page.locator('#copy').isDisabled(),true,'Edited import must invalidate previous report');
+    console.log('PASS: offline OUT-024 JSON validation and explicit clipboard handoff');
     // Functional report gate: valid manual data produces a deterministic local summary.
     await page.goto('http://127.0.0.1:8765/phalanx-reports-out024-local-adapter-20261019.html',{waitUntil:'load'});
     const source=page.locator('#source'),generate=page.locator('#generate'),copy=page.locator('#copy');
