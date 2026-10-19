@@ -24,6 +24,8 @@ class RouteContract(unittest.TestCase):
         self.assertIn("querySelectorAll('.submenu a')",NAV)
         self.assertIn("Report Center|Reports & History", NAV)
         self.assertIn("reportsEntry.length!==1",NAV)
+        self.assertIn('src="about:blank"',NAV)
+        self.assertLess(NAV.index("frame.addEventListener(\'load\'"), NAV.rindex("frame.src=rc5;"))
 
     def test_back_navigation(self):
         self.assertIn("back.addEventListener('click',showRc5)",NAV)
