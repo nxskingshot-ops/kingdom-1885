@@ -25,6 +25,8 @@ def archive_synthetic(root, key):
     root = Path(root)
     if not root.is_dir():
         raise ValueError('missing fixture directory')
+    if root.is_symlink():
+        raise ValueError('symlink root prohibited')
     buffer = io.BytesIO()
     with tarfile.open(fileobj=buffer, mode='w') as tar:
         for path in sorted(root.rglob('*')):
@@ -32,5 +34,7 @@ def archive_synthetic(root, key):
                 raise ValueError('symlink prohibited')
             if path.is_file():
                 tar.add(path, arcname=path.relative_to(root).as_posix(), recursive=False)
+    if not buffer.getvalue() or not any(p.is_file() for p in root.rglob('*')):
+        raise ValueError('empty archive prohibited')
     encrypted = encrypt_bytes(buffer.getvalue(), key)
     return encrypted, hashlib.sha256(encrypted).hexdigest()
