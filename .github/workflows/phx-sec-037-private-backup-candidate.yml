@@ -1,0 +1,43 @@
+name: PHX-SEC-037 Private Edge Function Backup (isolated candidate)
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_private_backup:
+        description: 'Type PRIVATE-ENCRYPTED-26 to acknowledge controlled backup'
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: phx-sec-037-private-backup
+  cancel-in-progress: false
+jobs:
+  backup:
+    if: ${{ github.ref_name == 'audit/edge-function-backup-hardening-20261019' && inputs.confirm_private_backup == 'PRIVATE-ENCRYPTED-26' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      PROJECT_REF: hcjrdofkdkasznywvcxo
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.B2_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.B2_APPLICATION_KEY }}
+      AWS_DEFAULT_REGION: eu-central-003
+      AWS_EC2_METADATA_DISABLED: 'true'
+      B2_ENDPOINT: https://s3.eu-central-003.backblazeb2.com
+      B2_BUCKET: nexus-phalanx-backup
+      EDGE_RECOVERY_KEY: ${{ secrets.PHALANX_EDGE_RECOVERY_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Require independent recovery key and existing credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          for v in SUPABASE_ACCESS_TOKEN AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY EDGE_RECOVERY_KEY; do
+            if [[ -z "${!v}" ]]; then echo "::error::Missing prerequisite: $v"; exit 1; fi
+          done
+          echo "::error::PHX-SEC-037 live runner intentionally held until scoped B2 permission, zero-cost and secret-scanner gates are independently verified."
+          exit 1
+      # Deliberate fail-closed stub. No source download, upload, deployment or Git push.
+      # Replace only after independent review of an end-to-end implementation.
