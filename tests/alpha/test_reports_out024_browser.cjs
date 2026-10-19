@@ -78,6 +78,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
     assert.equal(await copy.isDisabled(),true,'Editing input must disable full report copy');
     assert.equal(await page.locator('#copy-part').isDisabled(),true,'Editing input must disable chunk copy');
     assert.equal(await page.locator('#next-part').isDisabled(),true,'Editing input must disable navigation');
+    assert.equal(await page.locator('#part-preview').innerText(),'','Editing source must erase stale chunk preview');
     // Verify a long but valid report is split into copy-safe chunks.
     await source.fill(JSON.stringify(Array.from({length:80},(_,i)=>({
       id:'T'+i,alliance:'ALLIANCE_'+String(i).padStart(3,'0'),quadrant:'N'
@@ -111,6 +112,8 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
     assert.match(await page.locator('#status').innerText(),/Import abgelehnt/);
     assert.equal(await page.locator('#result').innerText(),'','Rejected import must clear stale report');
     assert.equal(await copy.isDisabled(),true,'Rejected import must disable copy');
+    assert.equal(await page.locator('#part-preview').innerText(),'','Rejected import must clear chunk preview');
+    assert.equal(await page.locator('#copy-part').isDisabled(),true,'Rejected import must disable chunk copying');
     console.log('PASS: manual report aggregation and fail-closed invalid import');
     console.log('PASS: native RC5 derivative routes Reports and OUT-024 without an external test bar');
     console.log('PASS: Chromium direct navigation RC5 → Reports → RC5 → OUT-024');
