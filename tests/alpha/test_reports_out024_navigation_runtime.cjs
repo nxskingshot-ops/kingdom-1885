@@ -17,7 +17,7 @@ const doc={querySelectorAll(s){if(s==='a[data-pending]')return links.filter(x=>'
 const frame={src:'',contentDocument:doc,contentWindow:{location:{pathname:'/PHALANX_RC5_ALPHA_DERIVED_20261017.html'}},addEventListener(type,fn){hooks[type]=fn}};
 const back={disabled:true,addEventListener(type,fn){hooks['back:'+type]=fn}};
 const status={textContent:'RC5 lädt …'};
-vm.runInNewContext(script[1],{document:{getElementById(id){return {preview:frame,back,status}[id]}},console:{error(...args){throw Error('Router error '+args.join(' '))}}},{timeout:1000});
+vm.runInNewContext(script[1],{document:{getElementById(id){return {preview:frame,back,status}[id]}},setInterval(fn){hooks.probe=fn;return 1},clearInterval(){},console:{error(...args){throw Error('Router error '+args.join(' '))}}},{timeout:1000});
 assert.equal(typeof hooks.load,'function');
 assert.equal(frame.src,'./PHALANX_RC5_ALPHA_DERIVED_20261017.html');
 hooks.load();
