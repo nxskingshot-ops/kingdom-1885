@@ -43,8 +43,12 @@ btn.addEventListener('click',async()=>{
 });
 })();
 </script>""".replace("URL_VALUE",json.dumps(url)).replace("KEY_VALUE",json.dumps(public_key))
+if bridge.count('<button id="check">') != 1 or bridge.count('</main></html>') != 1:
+    raise SystemExit("Fail closed: import bridge markup changed")
 bridge=bridge.replace('<button id="check">',button+' <button id="check">',1)
 bridge=bridge.replace('</main></html>','</main>'+script+'</html>',1)
+if bridge.count('id="load-public"') != 1 or bridge.count('published=eq.true') != 1:
+    raise SystemExit("Fail closed: generated loader contract invalid")
 out.parent.mkdir(parents=True,exist_ok=True)
 out.write_text(bridge,encoding='utf-8')
 assert "load-public" in bridge and "published=eq.true" in bridge
