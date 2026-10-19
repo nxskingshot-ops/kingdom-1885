@@ -88,6 +88,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
     const firstPart=await page.locator('#parts').innerText();
     const firstPreview=await page.locator('#part-preview').innerText();
     assert.ok(firstPreview.length>0&&firstPreview.length<=512,'Preview must show bounded chat text');
+    assert.ok(firstPreview.includes(String.fromCharCode(10)),'Preview must preserve actual line breaks');
     await page.locator('#next-part').click();
     assert.notEqual(await page.locator('#parts').innerText(),firstPart,'Next part must advance');
     assert.equal(await page.locator('#copy-part').innerText(),'Teil 2 kopieren','Copy label must follow selected chunk');
