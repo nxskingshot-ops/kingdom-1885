@@ -16,6 +16,7 @@ jobs:
       BACKUP_PASSPHRASE: ${{ secrets.PHALANX_BACKUP_ENCRYPTION_KEY }}
       B2_ENDPOINT: https://s3.eu-central-003.backblazeb2.com
       B2_BUCKET: nexus-phalanx-backup
+      PGPORT: '55432'  # dedicated local test cluster; no external database host
     steps:
       - name: Verify isolated read-only scope
         shell: bash
@@ -40,7 +41,9 @@ jobs:
           unzip -q "$RUNNER_TEMP/awscli.zip" -d "$RUNNER_TEMP/aws-install"
           sudo "$RUNNER_TEMP/aws-install/aws/install" --update
           /usr/lib/postgresql/18/bin/pg_restore --version
-          sudo pg_ctlcluster 17 main start || sudo pg_ctlcluster 17 main status
+          # Create a dedicated ephemeral cluster; GitHub runner may not have 17/main.
+          sudo pg_createcluster 17 phalanxdrill -p 55432 --start
+          sudo pg_ctlcluster 17 phalanxdrill status
           sudo -u postgres psql -X -v ON_ERROR_STOP=1 -d postgres -Atc "select version()" >/dev/null
       - name: Retrieve and validate latest encrypted backup
         shell: bash
