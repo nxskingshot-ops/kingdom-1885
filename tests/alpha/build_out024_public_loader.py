@@ -45,6 +45,8 @@ btn.addEventListener('click',async()=>{
 </script>""".replace("URL_VALUE",json.dumps(url)).replace("KEY_VALUE",json.dumps(public_key))
 if bridge.count('<button id="check">') != 1 or bridge.count('</main></html>') != 1:
     raise SystemExit("Fail closed: import bridge markup changed")
+filters = '<p><label>Allianz <select id="alliance-filter"><option value="">Alle</option></select></label> <label>Quadrant <select id="quadrant-filter"><option value="">Alle</option><option value="N">Nord</option><option value="O">Ost</option><option value="S">Süd</option><option value="W">West</option></select></label></p>'
+bridge=bridge.replace('<button id="check">',filters+'<button id="check">',1)
 bridge=bridge.replace('<button id="check">',button+' <button id="check">',1)
 bridge=bridge.replace('</main></html>','</main>'+script+'</html>',1)
 if bridge.count('id="load-public"') != 1 or bridge.count('published=eq.true') != 1:
