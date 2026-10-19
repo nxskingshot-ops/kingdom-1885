@@ -39,7 +39,7 @@ jobs:
           curl -fsSL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o "$RUNNER_TEMP/aws.zip"
           unzip -q "$RUNNER_TEMP/aws.zip" -d "$RUNNER_TEMP"
           sudo "$RUNNER_TEMP/aws/install" --update
-          curl -fsSL https://github.com/supabase/cli/releases/download/v2.54.11/supabase_linux_amd64.tar.gz -o "$RUNNER_TEMP/supabase.tar.gz"
+          curl -fsSL https://github.com/supabase/cli/releases/download/v2.101.0/supabase_linux_amd64.tar.gz -o "$RUNNER_TEMP/supabase.tar.gz"
           tar -xzf "$RUNNER_TEMP/supabase.tar.gz" -C "$RUNNER_TEMP" supabase
           chmod +x "$RUNNER_TEMP/supabase"
           echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
@@ -55,7 +55,7 @@ jobs:
           jq -r '.functions[].slug' inventory.json > expected-slugs.txt
           while IFS= read -r slug; do
             [[ "$slug" =~ ^[a-z0-9][a-z0-9-]*$ ]] || exit 1
-            supabase functions download "$slug" --project-ref "$PROJECT_REF"
+            supabase functions download "$slug" --project-ref "$PROJECT_REF" --use-api
             test -d "supabase/functions/$slug" || { echo "::error::Missing source directory: $slug"; exit 1; }
             find "supabase/functions/$slug" -type f -size +0c | grep -q . || { echo "::error::Empty source: $slug"; exit 1; }
             echo "Retrieved: $slug"
