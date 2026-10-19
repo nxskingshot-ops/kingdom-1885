@@ -50,10 +50,10 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
     assert.equal(await reportLink.getAttribute('href'),'./phalanx-reports-out024-local-adapter-20261019.html');
     assert.equal(await outpostLink.getAttribute('href'),'./PHX-OUT-024-MAP2-FROZEN-20261018.html');
     await reportLink.click();
-    await page.waitForURL(/phalanx-reports-out024-local-adapter-20261019\\.html$/);
+    await page.waitForURL(/phalanx-reports-out024-local-adapter-20261019\.html$/);
     await page.goBack({waitUntil:'load'});
     await page.getByRole('link',{name:/^Outpost Map/}).click();
-    await page.waitForURL(/PHX-OUT-024-MAP2-FROZEN-20261018\\.html$/);
+    await page.waitForURL(/PHX-OUT-024-MAP2-FROZEN-20261018\.html$/);
     console.log('PASS: native RC5 derivative routes Reports and OUT-024 without an external test bar');
     console.log('PASS: Chromium direct navigation RC5 → Reports → RC5 → OUT-024');
   } finally {if(browser)await browser.close();server.kill();}
