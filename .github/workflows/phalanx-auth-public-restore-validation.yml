@@ -51,6 +51,9 @@ jobs:
           # Only independent extension prerequisites for application schemas.
           # Do not try to recreate Supabase platform internals or write to production.
           docker exec -i phalanx-supabase-recovery psql -U supabase_admin -d phalanx_restore_drill -X -q -v ON_ERROR_STOP=1 <<'SQL' > /dev/null
+          -- pg_restore --schema=auth does not necessarily recreate the schema itself.
+          -- Bootstrap only the namespace, never users, identities, grants or platform internals.
+          CREATE SCHEMA IF NOT EXISTS auth;
           CREATE SCHEMA IF NOT EXISTS extensions;
           CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA extensions;
           CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA extensions;
