@@ -107,6 +107,25 @@ saveButton.addEventListener('click',()=>{
 })();
 </script>"""
 bridge=bridge.replace('</main></html>','</main>'+export_script+'</html>',1)
+# One-Tap layout: place user controls before a collapsed developer-only panel.
+# Preserve every existing element ID and handler for the tested report workflow.
+start=bridge.index('<p><label>Allianz <select id="alliance-filter">')
+end=bridge.index('<button id="check">',start)
+controls=bridge[start:end]
+bridge=bridge[:start]+bridge[end:]
+bridge=bridge.replace('<button id="load-public" type="button">Veröffentlichte Outposts laden</button> ', '', 1)
+bridge=bridge.replace('<label for="source">', '<details id="expert-tools"><summary>Expertenwerkzeuge</summary><label for="source">', 1)
+bridge=bridge.replace('<p id="status" role="status">', '</details><p id="status" role="status">', 1)
+bridge=bridge.replace('<h1>⚔ OUT-024 · geprüfter Datenimport</h1>', '<h1>⚔ OUT-024 · Outpost Reports</h1>', 1)
+bridge=bridge.replace('<details id="expert-tools">', '<button id="load-public" type="button">Outposts laden</button>'+controls+'<details id="expert-tools">', 1)
+bridge=bridge.replace('Lokaler, schreibgeschützter Test: Füge einen JSON-Export mit verifizierten OUT-024-Daten ein. Keine Netzwerkanfragen, kein Speichern, keine Änderungen an der Karte.', 'Veröffentlichte Outposts laden, filtern und den Bericht kopieren. Die Karte bleibt unverändert.', 1)
+bridge=bridge.replace('<button id="export-txt" type="button">TXT herunterladen</button>', '<button id="export-txt" type="button">TXT vorbereiten</button><p id="export-feedback" role="status"></p>', 1)
+bridge=bridge.replace("const saveButton=document.getElementById('export-txt');", "const saveButton=document.getElementById('export-txt'),feedback=document.getElementById('export-feedback');", 1)
+bridge=bridge.replace("status.textContent='Tippe auf „TXT-Datei speichern“. Falls dein Browser nichts speichert, nutze „Bericht kopieren“.';", "feedback.textContent='Datei vorbereitet. Tippe auf „TXT-Datei speichern“. Alternativ Bericht kopieren.';", 1)
+bridge=bridge.replace("status.textContent='Tippe auf „TXT-Datei speichern“. Falls dein Browser das Speichern verhindert, nutze „Bericht kopieren“.';", "feedback.textContent='Datei vorbereitet. Tippe auf „TXT-Datei speichern“. Alternativ Bericht kopieren.';", 1)
+if bridge.count('id="load-public"')!=1 or bridge.count('id="expert-tools"')!=1 or bridge.count('id="one-tap-report"')!=1:
+    raise SystemExit("Fail closed: One-Tap layout contract invalid")
+
 
 if bridge.count('id="load-public"') != 1 or bridge.count('published=eq.true') != 1:
     raise SystemExit("Fail closed: generated loader contract invalid")
