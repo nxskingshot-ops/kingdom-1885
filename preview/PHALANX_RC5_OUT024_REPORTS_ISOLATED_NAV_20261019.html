@@ -57,7 +57,8 @@
         event.stopImmediatePropagation();
         showMap();
       },true);
-      const reportsEntry=Array.from(doc.querySelectorAll('a[data-pending]')).filter(a=>/Reports/i.test(a.textContent));
+      const reportsEntry=Array.from(doc.querySelectorAll('.submenu a')).filter(a=>/Reports\s*&\s*History/i.test(a.textContent));
+      if(reportsEntry.length!==1)throw new Error('Expected exactly one Reports & History entry; found '+reportsEntry.length);
       if(reportsEntry.length===1){const a=reportsEntry[0];a.removeAttribute('aria-disabled');a.removeAttribute('data-pending');a.href=reports;a.title='Isolierter Reports-Prototyp · keine Live-Daten';a.addEventListener('click',event=>{event.preventDefault();event.stopImmediatePropagation();showReports();},true);const b=a.querySelector('.status');if(b){b.textContent='ALPHA TEST';b.classList.remove('unlinked');b.classList.add('linked')}}
       status.textContent='RC5 bereit · OUT-024 und Reports-Test verknüpft';
     } catch(err){
