@@ -36,6 +36,9 @@ jobs:
       - name: Verify TOC parser with synthetic fixtures
         shell: bash
         run: python3 -m unittest discover -s tests -p 'test_phalanx_restore_toc_inventory.py' -v
+      - name: Verify schema-reference preflight with synthetic fixtures
+        shell: bash
+        run: python3 -m unittest discover -s tests -p 'test_phalanx_restore_sql_reference_preflight.py' -v
       - name: Install PostgreSQL client and AWS CLI
         shell: bash
         run: |
@@ -66,6 +69,10 @@ jobs:
           test -s "$dir/database.dump"
           docker run --rm --network none --mount "type=bind,src=$dir,dst=/backup,readonly" supabase/postgres:17.6.1.173 pg_restore --list /backup/database.dump > "$dir/toc.txt" 2> "$dir/pg_restore.err" || { echo "::error::Cannot read backup archive TOC"; exit 1; }
           python3 scripts/phalanx-restore-toc-inventory.py --toc-file "$dir/toc.txt"
+          # Generate schema-only SQL only inside this temporary workspace;
+          # never print it, upload it, or execute it.
+          docker run --rm --network none --mount "type=bind,src=$dir,dst=/backup,readonly" supabase/postgres:17.6.1.173 pg_restore --schema-only -f /dev/stdout /backup/database.dump > "$dir/schema.sql" 2> "$dir/schema.err" || { echo "::error::Cannot extract private schema metadata"; exit 1; }
+          python3 scripts/phalanx-restore-sql-reference-preflight.py --schema-sql "$dir/schema.sql"
           echo '### Encrypted PostgreSQL backup: TOC inventory only (no restore)' >> "$GITHUB_STEP_SUMMARY"
           echo '- Checksum verified; archive decrypted only into runner temporary directory' >> "$GITHUB_STEP_SUMMARY"
           echo '- No database connection, SQL execution, production writes or artifact uploads' >> "$GITHUB_STEP_SUMMARY"
