@@ -76,9 +76,30 @@ if bridge.count('<button id="check">') != 1 or bridge.count('</main></html>') !=
     raise SystemExit("Fail closed: import bridge markup changed")
 filters = '<p><label>Allianz <select id="alliance-filter"><option value="">Alle</option></select></label> <label>Quadrant <select id="quadrant-filter"><option value="">Alle</option><option value="N">Nord</option><option value="O">Ost</option><option value="S">Süd</option><option value="W">West</option></select></label></p>'
 bridge=bridge.replace('<button id="check">',filters+'<button id="check">',1)
-bridge=bridge.replace('<button id="check">','<h2>Outpost-Bericht</h2><pre id="one-tap-report" style="white-space:pre-wrap;overflow-wrap:anywhere">Noch kein Bericht erstellt.</pre><button id="check">',1)
+bridge=bridge.replace('<button id="check">','<h2>Outpost-Bericht</h2><pre id="one-tap-report" style="white-space:pre-wrap;overflow-wrap:anywhere">Noch kein Bericht erstellt.</pre><button id="export-copy" type="button">Bericht kopieren</button> <button id="export-txt" type="button">TXT herunterladen</button><button id="check">',1)
 bridge=bridge.replace('<button id="check">',button+' <button id="check">',1)
 bridge=bridge.replace('</main></html>','</main>'+script+'</html>',1)
+export_script = """<script>
+(()=>{
+const report=document.getElementById('one-tap-report'),status=document.getElementById('status');
+const getText=()=>report.textContent.startsWith('KINGDOM #1885')?report.textContent:'';
+document.getElementById('export-copy').addEventListener('click',async()=>{
+ const value=getText();if(!value){status.textContent='Bitte zuerst Outposts laden.';return}
+ try{await navigator.clipboard.writeText(value);status.textContent='Gefilterter Bericht kopiert.'}
+ catch{status.textContent='Kopieren nicht verfügbar.'}
+});
+document.getElementById('export-txt').addEventListener('click',()=>{
+ const value=getText();if(!value){status.textContent='Bitte zuerst Outposts laden.';return}
+ const blob=new Blob([value],{type:'text/plain;charset=utf-8'});
+ const link=document.createElement('a'),url=URL.createObjectURL(blob);
+ link.href=url;link.download='phalanx-out024-report.txt';document.body.appendChild(link);link.click();link.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),3000);
+ status.textContent='TXT-Download gestartet.';
+});
+})();
+</script>"""
+bridge=bridge.replace('</main></html>','</main>'+export_script+'</html>',1)
+
 if bridge.count('id="load-public"') != 1 or bridge.count('published=eq.true') != 1:
     raise SystemExit("Fail closed: generated loader contract invalid")
 out.parent.mkdir(parents=True,exist_ok=True)
