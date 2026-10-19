@@ -77,6 +77,22 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
     await page.locator('#source').fill('[]');
     assert.equal(await page.locator('#copy').isDisabled(),true,'Edited import must invalidate previous report');
     console.log('PASS: offline OUT-024 JSON validation and explicit clipboard handoff');
+    // Same-origin direct handoff: browser popup, schema validation and acknowledgement.
+    await page.goto('http://127.0.0.1:8765/phalanx-out024-public-json-bridge-20261019.html',{waitUntil:'load'});
+    await page.locator('#source').fill(JSON.stringify([{source_key:'DIRECT1',alliance:'MYM',coord_x:700,coord_y:700}]));
+    await page.locator('#check').click();
+    assert.equal(await page.locator('#direct').isEnabled(),true,'Valid rows enable direct transfer');
+    const popupPromise=page.waitForEvent('popup');
+    await page.locator('#direct').click();
+    const directPage=await popupPromise;
+    await directPage.waitForLoadState('load');
+    await directPage.waitForFunction(()=>document.querySelector('#source').value.includes('DIRECT1'));
+    assert.match(await directPage.locator('#status').innerText(),/direkt übernommen/);
+    await directPage.locator('#generate').click();
+    assert.match(await directPage.locator('#result').innerText(),/MYM · S: 1/);
+    await page.waitForFunction(()=>document.querySelector('#status').textContent.includes('bestätigt'));
+    await directPage.close();
+    console.log('PASS: same-origin direct OUT-024 handoff and report generation');
     // Functional report gate: valid manual data produces a deterministic local summary.
     await page.goto('http://127.0.0.1:8765/phalanx-reports-out024-local-adapter-20261019.html',{waitUntil:'load'});
     const source=page.locator('#source'),generate=page.locator('#generate'),copy=page.locator('#copy');
