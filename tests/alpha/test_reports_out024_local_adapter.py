@@ -37,6 +37,17 @@ class ReportsContract(unittest.TestCase):
         self.assertNotIn("report.split('\\\\n')", self.html)
         self.assertNotIn("current+=(current?'\\\\n':'')+line", self.html)
 
+    def test_offline_import_bridge_safety(self):
+        bridge = (ROOT / "preview/phalanx-out024-public-json-bridge-20261019.html").read_text(encoding="utf-8")
+        for forbidden in (r'\\bfetch\\s*\\(', r'XMLHttpRequest', r'WebSocket',
+                          r'localStorage', r'sessionStorage', r'supabase', r'indexedDB'):
+            self.assertIsNone(re.search(forbidden, bridge, re.I), forbidden)
+        for required in ('JSON.parse(source.value)', 'rows.length>1000',
+                         'ids.has(id)', 'Number.isFinite(x)', 'Number.isFinite(y)',
+                         "copy.disabled=true", "approved=''"):
+            self.assertIn(required, bridge, required)
+        self.assertIn('./phalanx-reports-out024-local-adapter-20261019.html', bridge)
+
     def test_explicit_provenance(self):
         self.assertIn('manuell geprüfter JSON-Import', self.html)
         self.assertIn('Keine Kartensynchronisierung bestätigt.', self.html)
