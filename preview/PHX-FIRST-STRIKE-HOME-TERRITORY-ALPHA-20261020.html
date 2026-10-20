@@ -14,9 +14,9 @@ back.addEventListener('click',openHome);
 function wireHome(){
 const doc=frame.contentDocument;
 if(!doc)throw Error('HOME nicht zugreifbar');
-const main=doc.querySelector('main.content');
+const main=doc.getElementById('phalanx-home');
 if(!main)throw Error('HOME noch nicht initialisiert');
-const buttons=Array.from(main.querySelectorAll('button.ph-tile'));
+const buttons=Array.from(main.querySelectorAll('.ph-tile'));
 const candidates=buttons.filter(b=>/Outpost Map|Territory/i.test(b.textContent));
 if(candidates.length!==1)throw Error('Erwartet genau eine Outpost-Kachel; gefunden: '+candidates.length);
 const target=candidates[0];
