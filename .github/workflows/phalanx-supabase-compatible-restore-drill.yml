@@ -38,7 +38,7 @@ jobs:
           docker run -d --name phalanx-supabase-recovery --network none \
             -e POSTGRES_PASSWORD='temporary-disposable-test-only' \
             supabase/postgres:17.6.1.173 \
-            postgres -c config_file=/etc/postgresql/postgresql.conf >/dev/null
+            postgres -c config_file=/etc/postgresql/postgresql.conf -c cron.database_name=phalanx_restore_drill >/dev/null
           ready=0
           for attempt in $(seq 1 45); do
             if docker exec phalanx-supabase-recovery pg_isready -U supabase_admin >/dev/null 2>&1; then ready=1; break; fi
@@ -48,6 +48,22 @@ jobs:
           version="$(docker exec phalanx-supabase-recovery psql -U supabase_admin -d postgres -At -X -v ON_ERROR_STOP=1 -c "select current_setting('server_version_num')::integer between 170000 and 179999")"
           test "$version" = t || { echo "::error::Unexpected PostgreSQL version"; exit 1; }
           docker exec phalanx-supabase-recovery createdb -U supabase_admin -T template0 phalanx_restore_drill
+      - name: Preflight pg_cron in disposable restore database
+        shell: bash
+        run: |
+          set -euo pipefail
+          # pg_cron must target the same disposable database as the restore.
+          # Suppress raw server output; never disclose extension SQL or identifiers.
+          dir="$(mktemp -d "$RUNNER_TEMP/phalanx-cron-preflight.XXXXXX")"
+          trap 'rm -rf "$dir"' EXIT
+          if ! docker exec phalanx-supabase-recovery psql -U supabase_admin -d phalanx_restore_drill -X -v ON_ERROR_STOP=1 \
+            -c 'CREATE EXTENSION IF NOT EXISTS pg_cron;' > "$dir/out" 2> "$dir/err"; then
+            echo "::error::Disposable pg_cron preflight failed; full restore not attempted."
+            exit 1
+          fi
+          count="$(docker exec phalanx-supabase-recovery psql -U supabase_admin -d phalanx_restore_drill -X -At -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM pg_extension WHERE extname='pg_cron';")"
+          test "$count" = 1 || { echo "::error::Disposable pg_cron extension missing"; exit 1; }
+          echo 'Isolated pg_cron installation verified in disposable restore database.'
       - name: Download encrypted PostgreSQL archive from private B2
         shell: bash
         run: |
