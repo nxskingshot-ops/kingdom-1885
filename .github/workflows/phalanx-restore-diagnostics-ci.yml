@@ -1,0 +1,68 @@
+name: PHALANX Restore Diagnostics CI
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/phalanx-supabase-compatible-restore-drill.yml'
+      - '.github/workflows/phalanx-restore-diagnostics-ci.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  static-diagnostics:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Validate workflow YAML and synthetic diagnostics
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install --disable-pip-version-check --quiet PyYAML
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          import yaml
+
+          workflow = Path(".github/workflows/phalanx-supabase-compatible-restore-drill.yml")
+          raw = workflow.read_text(encoding="utf-8")
+          doc = yaml.safe_load(raw)
+          assert isinstance(doc, dict) and "jobs" in doc
+          assert doc["permissions"]["contents"] == "read"
+          job = doc["jobs"]["restore"]
+          assert job["if"] == "github.ref == 'refs/heads/main'"
+          steps = job["steps"]
+          restore = next(s for s in steps if s["name"].startswith("Restore archive"))
+          script = restore["run"]
+          assert "pg_restore --verbose --no-owner --no-acl --exit-on-error" in script
+          assert '2> "$dir/restore.stderr"' in script
+          assert 'print(raw)' not in script and 'print(lines)' not in script
+          assert 'No SQL, table names, passwords or database rows emitted.' in script
+          assert "--network none" in raw
+          assert "secrets.PHALANX_BACKUP_ENCRYPTION_KEY" in raw
+          assert "docker rm -f phalanx-supabase-recovery" in raw
+          kinds = ('TABLE DATA','ROW SECURITY','FK CONSTRAINT','MATERIALIZED VIEW',
+                   'SCHEMA','EXTENSION','TABLE','FUNCTION','TYPE','SEQUENCE',
+                   'INDEX','TRIGGER','POLICY','VIEW','CONSTRAINT','DEFAULT')
+          def phase_from_log(raw):
+              phases = re.findall(r'^pg_restore:\s+(?:creating|processing)\s+([^\n]*)', raw, re.M | re.I)
+              phase = 'UNDETERMINED'
+              for entry in reversed(phases):
+                  for kind in kinds:
+                      if re.search(r'\b' + re.escape(kind) + r'\b', entry, re.I):
+                          phase = kind.replace(' ','_')
+                          break
+                  if phase != 'UNDETERMINED':
+                      break
+              return phase
+          fixtures = [
+              ("pg_restore: creating TABLE public.example\nERROR: example", "TABLE"),
+              ("pg_restore: processing data for TABLE DATA example\nERROR: example", "TABLE_DATA"),
+              ("pg_restore: creating TABLE example\npg_restore: creating unclassified\nERROR: example", "TABLE"),
+              ("ERROR: example", "UNDETERMINED"),
+          ]
+          for sample, expected in fixtures:
+              assert phase_from_log(sample) == expected
+          print("PASS: workflow isolation, no log emission, 4 synthetic diagnostic cases")
+          PY
