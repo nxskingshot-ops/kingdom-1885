@@ -1,46 +1,36 @@
-name: PHALANX Edge Function source backup
+name: PHALANX Edge Function backup safety gate
+# Safe replacement: no deployed source download, no commit, no upload.
+# This is NOT a completed backup. Release requires a separately reviewed encrypted exporter.
 on:
   workflow_dispatch:
 permissions:
-  contents: write
+  contents: read
 jobs:
-  backup:
+  inventory-safety-gate:
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
-    env:
-      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-      PROJECT_REF: hcjrdofkdkasznywvcxo
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-      - name: Check credential
-        run: test -n "$SUPABASE_ACCESS_TOKEN"
-      - name: Install Supabase CLI
-        run: npm install --global supabase
-      - name: Download deployed functions
+      - name: Validate recorded inventory and fail closed
+        shell: bash
         run: |
           set -euo pipefail
-          rm -rf recovery/supabase/functions
-          mkdir -p recovery/supabase/functions
-          tmp="$(mktemp -d)"
-          cd "$tmp"
-          supabase init
-          supabase link --project-ref "$PROJECT_REF"
-          supabase functions download
-          cd "$GITHUB_WORKSPACE"
-          cp -a "$tmp/supabase/functions/." recovery/supabase/functions/
-      - name: Guard against private keys
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path("data/phalanx-edge-functions-backup-inventory.json")
+          data = json.loads(path.read_text(encoding="utf-8"))
+          funcs = data["functions"]
+          slugs = [f["slug"] for f in funcs]
+          assert data["count"] == len(funcs) == 26, "Expected 26 inventory entries"
+          assert len(set(slugs)) == 26, "Duplicate function slug"
+          assert all(f["status"] == "ACTIVE" and isinstance(f["version"], int) and len(f["ezbr_sha256"]) == 64 for f in funcs), "Invalid function metadata"
+          assert data["source_parity"] == "NOT_VERIFIED", "Unexpected source-parity assertion"
+          print("Recorded inventory schema valid: 26 entries.")
+          print("This validates historical metadata only, NOT live source parity or recovery.")
+          PY
+      - name: Block unsafe export pending encrypted offsite implementation
+        shell: bash
         run: |
-          set -euo pipefail
-          if grep -RIl 'PRIVATE KEY-----' recovery/supabase/functions | grep -q .; then
-            echo "::error::Possible private key found; refusing to commit."
-            exit 1
-          fi
-      - name: Commit snapshot if changed
-        run: |
-          set -euo pipefail
-          git add recovery/supabase/functions
-          if git diff --cached --quiet; then exit 0; fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "Backup deployed Supabase Edge Function sources"
-          git push
+          echo "::error::BACKUP BLOCKED: encrypted private offsite export, secret scanning and isolated restore validation are not implemented in this workflow."
+          exit 1
