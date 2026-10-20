@@ -47,7 +47,7 @@ jobs:
             docker exec -i phalanx-extension-smoke psql -U supabase_admin -d phalanx_extension_dummy -X -v ON_ERROR_STOP=1 \
               -c "CREATE EXTENSION IF NOT EXISTS \"$ext\";" > "$dir/install.out" 2> "$dir/install.err" || status=$?
             if [ "$status" -ne 0 ]; then
-              echo "::error::One or more dummy extension installations failed (details withheld)"
+              echo "::error::Dummy installation failed for allowlisted extension: $ext (server details withheld)"
               exit 1
             fi
           done
