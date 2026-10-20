@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>PHALANX FIRST STRIKE · HOME → Territory</title>
+<style>:root{color-scheme:dark}*{box-sizing:border-box}html,body{height:100%;margin:0;background:#061018;color:#e9d39b;font:13px system-ui,sans-serif}.shell{height:100dvh;display:flex;flex-direction:column}.bar{min-height:46px;display:flex;align-items:center;gap:12px;padding:6px 12px;border-bottom:1px solid #8a6f39}.bar button{background:#152631;border:1px solid #9d8145;color:#f4dfa6;border-radius:6px;min-height:36px;padding:6px 12px}.bar button[hidden]{display:none}.bar strong{flex:1}.stage{flex:1;min-height:0}.stage iframe{display:block;width:100%;height:100%;border:0}</style></head><body>
+<div class="shell"><nav class="bar" aria-label="Isolierte Alpha-Navigation"><button id="back" hidden type="button">← HOME</button><strong id="label">HOME</strong><small id="status">Lädt …</small></nav><main class="stage"><iframe id="screen" src="about:blank" title="PHALANX FIRST STRIKE HOME"></iframe></main></div>
+<script>
+(()=>{'use strict';
+const home='./NEXUS_PHALANX_HOME_FROZEN_2026-10-11.html';
+const territory='./PHX-FIRST-STRIKE-TERRITORY-ALPHA-20261020.html';
+const frame=document.getElementById('screen'),back=document.getElementById('back'),label=document.getElementById('label'),status=document.getElementById('status');
+let mode='home',bound=null;
+function openTerritory(){mode='territory';label.textContent='Territory Control';back.hidden=false;status.textContent='RC5 / OUT-024 / Reports';frame.src=territory}
+function openHome(){mode='home';label.textContent='HOME';back.hidden=true;status.textContent='Original lädt …';frame.src=home}
+back.addEventListener('click',openHome);
+function wireHome(){
+const doc=frame.contentDocument;
+if(!doc)throw Error('HOME nicht zugreifbar');
+const main=doc.getElementById('phalanx-home');
+if(!main)throw Error('HOME noch nicht initialisiert');
+const buttons=Array.from(main.querySelectorAll('button.ph-tile'));
+const candidates=buttons.filter(b=>/Outpost Map|Territory/i.test(b.textContent));
+if(candidates.length!==1)throw Error('Erwartet genau eine Outpost-Kachel; gefunden: '+candidates.length);
+const target=candidates[0];
+if(target!==bound){bound=target;target.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();openTerritory()},true)}
+status.textContent='HOME → Territory verbunden';
+}
+frame.addEventListener('load',()=>{if(mode!=='home')return;try{wireHome()}catch(err){status.textContent='HOME-Verbindung wartet';console.warn('PHALANX HOME alpha',err)}});
+const watcher=setInterval(()=>{if(mode!=='home'||status.textContent.includes('verbunden'))return;try{wireHome()}catch(_){ }},400);
+window.addEventListener('pagehide',()=>clearInterval(watcher));
+openHome();
+})();
+</script></body></html>
