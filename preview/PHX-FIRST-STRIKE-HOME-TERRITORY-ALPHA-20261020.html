@@ -24,7 +24,7 @@ if(target!==bound){bound=target;target.addEventListener('click',e=>{e.preventDef
 status.textContent='HOME → Territory verbunden';
 }
 frame.addEventListener('load',()=>{if(mode!=='home')return;try{wireHome()}catch(err){status.textContent='HOME-Verbindung wartet';console.warn('PHALANX HOME alpha',err)}});
-const watcher=setInterval(()=>{if(mode!=='home'||status.textContent.includes('verbunden'))return;try{wireHome()}catch(_){ }},400);
+let attempts=0;const watcher=setInterval(()=>{if(mode!=='home'||status.textContent.includes('verbunden'))return;if(++attempts>25){status.textContent='HOME-Kachel nicht gefunden';clearInterval(watcher);return}try{wireHome()}catch(_){ }},400);
 window.addEventListener('pagehide',()=>clearInterval(watcher));
 openHome();
 })();
