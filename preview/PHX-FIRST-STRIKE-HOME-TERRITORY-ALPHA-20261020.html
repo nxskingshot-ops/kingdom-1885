@@ -17,7 +17,7 @@ if(!doc)throw Error('HOME nicht zugreifbar');
 const main=doc.getElementById('phalanx-home');
 if(!main)throw Error('HOME noch nicht initialisiert');
 const buttons=Array.from(main.querySelectorAll('.ph-tile'));
-const candidates=buttons.filter(b=>/Outpost Map|Territory/i.test(b.textContent));
+const candidates=buttons.filter(b=>/Outpost Map|Außenpostenkarte|Carte des avant-postes/i.test(b.textContent));
 if(candidates.length!==1)throw Error('Erwartet genau eine Outpost-Kachel; gefunden: '+candidates.length);
 const target=candidates[0];
 if(target!==bound){bound=target;target.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();openTerritory()},true)}
