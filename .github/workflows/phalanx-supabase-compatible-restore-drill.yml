@@ -78,7 +78,7 @@ jobs:
           set -euo pipefail
           dir="$PHALANX_RESTORE_DIR"
           set +e
-          docker exec -i phalanx-supabase-recovery pg_restore --no-owner --no-acl --exit-on-error \
+          docker exec -i phalanx-supabase-recovery pg_restore --verbose --no-owner --no-acl --exit-on-error \
             -U supabase_admin -d phalanx_restore_drill \
             < "$dir/database.dump" > "$dir/restore.stdout" 2> "$dir/restore.stderr"
           status=$?
@@ -113,9 +113,12 @@ jobs:
           phases = re.findall(r'^pg_restore:\s+(?:creating|processing)\s+([^\n]*)', raw, re.M | re.I)
           phase = 'UNDETERMINED'
           if phases:
-              for kind in kinds:
-                  if re.search(r'\b' + re.escape(kind) + r'\b', phases[-1], re.I):
-                      phase = kind.replace(' ','_')
+              for entry in reversed(phases):
+                  for kind in kinds:
+                      if re.search(r'\b' + re.escape(kind) + r'\b', entry, re.I):
+                          phase = kind.replace(' ','_')
+                          break
+                  if phase != 'UNDETERMINED':
                       break
           print('::error::Sanitized restore failure category: ' + primary)
           print('Sanitized restore object type: ' + phase)
