@@ -20,7 +20,8 @@ if(doc!==bound){bound=doc;doc.addEventListener('click',e=>{
   const tile=e.target.closest?.('button.ph-tile');
   if(!tile||!main.contains(tile))return;
   const label=tile.querySelector('strong')?.textContent||'';
-  if(!/Outpost Map|Außenposten|Avant.poste/i.test(label))return;
+  const known=['Outpost Map','Außenposten','Avant-poste'];
+  if(!known.some(name=>label.toLocaleLowerCase().includes(name.toLocaleLowerCase())))return;
   e.preventDefault();e.stopImmediatePropagation();openTerritory();
 },true)}
 status.textContent='HOME → Territory verbunden';
