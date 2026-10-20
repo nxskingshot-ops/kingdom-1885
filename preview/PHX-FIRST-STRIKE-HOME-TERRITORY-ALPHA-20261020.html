@@ -14,7 +14,7 @@ back.addEventListener('click',openHome);
 function wireHome(){
 const doc=frame.contentDocument;
 if(!doc)throw Error('HOME nicht zugreifbar');
-const main=doc.getElementById('phalanx-home');
+const main=doc.querySelector('main.content');
 if(!main)throw Error('HOME noch nicht initialisiert');
 const buttons=Array.from(main.querySelectorAll('button.ph-tile'));
 const candidates=buttons.filter(b=>/Outpost Map|Territory/i.test(b.textContent));
