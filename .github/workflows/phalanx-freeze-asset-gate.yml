@@ -1,0 +1,13 @@
+name: PHALANX Freeze Asset Gate
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify-freezes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate frozen assets (fail closed)
+        run: python3 scripts/check_freeze_assets.py --manifest docs/design/freeze-assets.json
