@@ -1,0 +1,5 @@
+{
+  "schema_version": 1,
+  "description": "FAIL-CLOSED. Populate only with exact approved binary asset paths and independently computed SHA-256. Do not guess hashes.",
+  "assets": []
+}
