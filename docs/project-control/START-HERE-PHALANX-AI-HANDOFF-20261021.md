@@ -65,3 +65,6 @@ D. Before release: end-to-end registration/approval, granular RLS, PYLON IX tool
 - Arbeitsregel und vorläufiges Negativregister: `docs/project-control/PHX-VERSION-HYGIENE-NEGATIVE-REGISTER-20261021.md` (isolierter Branch `work/phx-version-hygiene-20261021`).
 - Vor jeder Integration kanonische Version und bekannte Sackgassen abgleichen; überholte Zwischenlösungen nicht wieder aktivieren. Originale, FREEZEs und Wiederherstellungsstände schützen.
 - Einträge sind zunächst dokumentierte Prüfvermerke, keine bestätigte Löschung, Implementierung oder Freigabe. Kein Merge/Deployment erfolgt.
+
+## 7. Version hygiene and retirement gate (2026-10-21)
+Before building or integrating, read `docs/project-control/PHX-VERSION-HYGIENE-REGISTER-20261021.md` on this governance work branch. It classifies active candidates, frozen originals, superseded/defective/unknown sources and required verification gates. Never route to an older preview simply because it exists; never delete frozen originals or backups as a shortcut. Update this register when sources change. This is a documented policy, not a production deployment.
