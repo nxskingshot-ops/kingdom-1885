@@ -5,4 +5,6 @@ assert.equal(validateOutposts([valid]).length,1);
 assert.throws(()=>validateOutposts([valid,valid]),/Duplicate ID/);
 assert.throws(()=>validateOutposts([{...valid,coord_x:1200}]),/Invalid coord_x/);
 assert.throws(()=>validateOutposts([{...valid,coord_y:-1}]),/Invalid coord_y/);
+assert.throws(()=>validateOutposts([{...valid,alliance:123}]),/Invalid alliance/);
+assert.throws(()=>validateOutposts([{...valid,id:null}]),/Invalid id/);
 console.log('PASS Outpost Atlas contract');
