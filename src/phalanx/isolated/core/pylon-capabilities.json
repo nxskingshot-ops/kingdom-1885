@@ -13,7 +13,7 @@
       "id": "PHX-OUT-024",
       "version": "Alpha24",
       "route": "#outpost-map",
-      "source": "modules/outpost/map-alpha24.html",
+      "source": "../../../preview/PHX-OUT-024-MAP2-FROZEN-20261018.html",
       "status": "IMPLEMENTED",
       "evidence": "frozen original SHA256 1a87afde964f8eacc730f8a2cd52d7067ebe06b40cc7fc1388c16ee59e3a043d; browser verification pending",
       "capabilities": [
