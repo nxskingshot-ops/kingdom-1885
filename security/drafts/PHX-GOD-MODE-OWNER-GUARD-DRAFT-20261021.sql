@@ -1,0 +1,41 @@
+-- PHALANX GOD MODE guard: ISOLATED MIGRATION DRAFT ONLY
+-- DO NOT APPLY to production without owner identity bootstrap, security review and tests.
+-- This guard is intentionally not deployed.
+--
+-- Requires a dedicated private schema protected from normal app roles.
+-- The single owner identity is provisioned out-of-band by a privileged operator
+-- only after owner verification. No client-supplied player ID or email is trusted.
+--
+-- BEGIN;
+-- CREATE SCHEMA IF NOT EXISTS phx_security;
+-- REVOKE ALL ON SCHEMA phx_security FROM PUBLIC, anon, authenticated;
+-- CREATE TABLE phx_security.owner_identity (
+--   singleton boolean PRIMARY KEY DEFAULT true CHECK (singleton),
+--   user_id uuid NOT NULL UNIQUE REFERENCES auth.users(id) ON DELETE RESTRICT,
+--   created_at timestamptz NOT NULL DEFAULT now()
+-- );
+-- REVOKE ALL ON phx_security.owner_identity FROM PUBLIC, anon, authenticated;
+-- The table remains empty until a separately authorized secure bootstrap.
+--
+-- CREATE FUNCTION phx_security.prevent_owner_membership_mutation()
+-- RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER
+-- SET search_path = pg_catalog, phx_security AS $$
+-- BEGIN
+--   IF EXISTS (SELECT 1 FROM phx_security.owner_identity o
+--              WHERE o.user_id = OLD.user_id) THEN
+--     RAISE EXCEPTION 'protected owner membership cannot be altered by normal admin paths'
+--       USING ERRCODE = '42501';
+--   END IF;
+--   RETURN OLD;
+-- END;
+-- $$;
+-- REVOKE ALL ON FUNCTION phx_security.prevent_owner_membership_mutation() FROM PUBLIC;
+-- CREATE TRIGGER phx_guard_owner_membership
+--   BEFORE UPDATE OR DELETE ON public.nxs_memberships
+--   FOR EACH ROW EXECUTE FUNCTION phx_security.prevent_owner_membership_mutation();
+-- COMMIT;
+--
+-- CAUTION: This draft does not yet cover auth.users bans/deletes, other tables,
+-- service-role/admin privileges, global lock, owner transfer, migrations,
+-- backups, CI/deployment or PYLON tools. Never claim full protection from it.
+-- Review the actual existing schema, grants and all mutation paths before use.
