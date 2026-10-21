@@ -1,0 +1,8 @@
+import assert from 'node:assert/strict';
+import {validateOutposts} from '../core/data-contract.js';
+const valid={id:'1',source_key:'1885:1',alliance:'NXS',structure_type:'Outpost',coord_x:500,coord_y:600,level:1};
+assert.equal(validateOutposts([valid]).length,1);
+assert.throws(()=>validateOutposts([valid,valid]),/Duplicate ID/);
+assert.throws(()=>validateOutposts([{...valid,coord_x:1200}]),/Invalid coord_x/);
+assert.throws(()=>validateOutposts([{...valid,coord_y:-1}]),/Invalid coord_y/);
+console.log('PASS Outpost Atlas contract');
