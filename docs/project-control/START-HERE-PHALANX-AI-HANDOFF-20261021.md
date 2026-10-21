@@ -60,3 +60,8 @@ D. Before release: end-to-end registration/approval, granular RLS, PYLON IX tool
 - No merging into main, production deploy, RLS/auth changes or extra spending without explicit authorization.
 - Update this entry-point document (or versioned successor with discoverable link) at each major milestone; link to immutable GitHub commit and record what changed.
 - A future ChatGPT session does not automatically ingest this file: explicitly point it at this GitHub path and have it read before work.
+
+## 7. Versionshygiene / verworfene Wege (2026-10-21)
+- Arbeitsregel und vorläufiges Negativregister: `docs/project-control/PHX-VERSION-HYGIENE-NEGATIVE-REGISTER-20261021.md` (isolierter Branch `work/phx-version-hygiene-20261021`).
+- Vor jeder Integration kanonische Version und bekannte Sackgassen abgleichen; überholte Zwischenlösungen nicht wieder aktivieren. Originale, FREEZEs und Wiederherstellungsstände schützen.
+- Einträge sind zunächst dokumentierte Prüfvermerke, keine bestätigte Löschung, Implementierung oder Freigabe. Kein Merge/Deployment erfolgt.
