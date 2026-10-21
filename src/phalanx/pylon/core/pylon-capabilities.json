@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "1.0.0",
+  "foundation": "PHX-PYLON-FOUNDATION-V1",
+  "modules": [
+    {
+      "id": "PHX-TERRITORY",
+      "version": "INT002",
+      "route": "#territory",
+      "status": "IMPLEMENTED",
+      "capabilities": []
+    },
+    {
+      "id": "PHX-OUT-024",
+      "version": "Alpha24",
+      "route": "#outpost-map",
+      "source": "modules/outpost/map-alpha24.html",
+      "status": "IMPLEMENTED",
+      "capabilities": [
+        {
+          "id": "PHX-OUT-024.OPEN",
+          "operation": "navigate",
+          "access": "read",
+          "runtimeAvailable": false
+        }
+      ]
+    },
+    {
+      "id": "PHX-REPORTS",
+      "version": "pending-source-verification",
+      "route": "#reports",
+      "status": "DOCUMENTED",
+      "capabilities": []
+    },
+    {
+      "id": "PHX-WAR-ROOM",
+      "version": "pending",
+      "route": "#war-room",
+      "status": "PLANNED",
+      "capabilities": []
+    }
+  ]
+}
