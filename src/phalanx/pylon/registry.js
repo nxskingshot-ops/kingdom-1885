@@ -1,4 +1,4 @@
-export async function loadRegistry(url = './pylon/core/pylon-capabilities.json') {
+export async function loadRegistry(url = './src/phalanx/pylon/core/pylon-capabilities.json') {
   const response = await fetch(url, {cache: 'no-store'});
   if (!response.ok) throw new Error('PYLON registry unavailable');
   const data = await response.json();
