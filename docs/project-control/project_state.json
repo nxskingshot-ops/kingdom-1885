@@ -1,0 +1,53 @@
+{
+  "project": "NEXUS PHALANX 1.0 — FIRST STRIKE",
+  "as_of": "2026-10-21",
+  "authority_order": [
+    "latest explicit user decision",
+    "user-confirmed Android screenshot and behavior",
+    "verified original FREEZE asset",
+    "actual source code and version",
+    "dated project handoff",
+    "older recollection"
+  ],
+  "current_navigation": {
+    "status": "confirmed by user 2026-10-21",
+    "epic_navigation_v2": "retired; must not be integrated",
+    "home_visible_categories": [
+      "Home",
+      "Krieg",
+      "Allianz",
+      "Werkzeuge",
+      "Guides",
+      "Statistiken",
+      "Info"
+    ],
+    "territory_entry_label": "AUSSENPOSTEN",
+    "territory_path": "HOME → AUSSENPOSTEN → Territory Control",
+    "war_room": "planned; current HOME access and final behavior must be verified against source, not assumed"
+  },
+  "protected_assets": {
+    "home": "PHX-HOME-VISUAL-FREEZE-20261020-01",
+    "pylon": "PHX-PYLON-IX-VISUAL-FREEZE-20261020-01; neon-blue IX",
+    "header": "HOME gold eyes; modules red; functions blue",
+    "territory": "approved current fortress scene; do not substitute older artwork"
+  },
+  "confirmed": {
+    "home_to_territory": "confirmed by user screenshots 2026-10-21",
+    "map_and_reports": "previously tested; do not ask user to repeat without relevant code change",
+    "pylon_navigation": "implemented in A039-R5/R6; Android end-to-end not independently confirmed"
+  },
+  "open": {
+    "war_room": "integration",
+    "pylon_functions": "four action areas not functional",
+    "android_release_test": "not completed",
+    "map_source_alpha": "Alpha24 versus embedded Alpha19 unresolved"
+  },
+  "baseline": "PHX_A039_R6_ORIGINAL_HOME_TERRITORY_INTEGRATED_ANDROID_20261021.html; contains retired Epic Navigation V2 and is NOT clean release candidate",
+  "rules": [
+    "No GO-loop or repeated Map/Reports test without a change",
+    "No substitute FREEZE art",
+    "Do not claim integration based only on static checks",
+    "No production merge/deploy/grants/costs without approval",
+    "Every build must pass project_guard.py before it can be presented as aligned"
+  ]
+}
