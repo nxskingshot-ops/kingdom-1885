@@ -1,3 +1,4 @@
+
 (function(){
  const map=document.querySelector('.map'),svg=document.getElementById('svg');if(!map||!svg)return;
  function fit(){if(map.classList.contains('expanded')){svg.style.removeProperty('height');return;}
