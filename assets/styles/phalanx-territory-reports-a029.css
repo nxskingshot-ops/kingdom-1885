@@ -1,0 +1,31 @@
+/* PHALANX A029 — isolated Territory polish. Opt-in: add class "phx-a029" to the reports root.
+   Does not modify HOME, data fetching, filters, export or original epic artwork. */
+.phx-a029{--phx-ink:#07111d;--phx-panel:#132334;--phx-gold:#d9b879;--phx-line:rgba(217,184,121,.43);--phx-text:#eee8dd;color:var(--phx-text);background:radial-gradient(ellipse at 50% 0%,#293b48 0%,#101c2b 55%,#08111e 100%);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100%;overflow-wrap:anywhere}
+.phx-a029,.phx-a029 *{box-sizing:border-box}
+.phx-a029 h1,.phx-a029 h2,.phx-a029 h3{font-family:Georgia,"Times New Roman",serif;color:var(--phx-gold);line-height:1.12}
+.phx-a029 h1{font-size:clamp(2rem,7vw,3.3rem);margin:.5em 0}
+.phx-a029 h2{font-size:clamp(1.4rem,5vw,2.1rem)}
+.phx-a029 p{line-height:1.55}
+.phx-a029 .phx-report-content{width:min(100%,920px);margin-inline:auto;padding:clamp(14px,4vw,30px)}
+.phx-a029 .phx-report-panel{background:linear-gradient(155deg,rgba(32,49,64,.97),rgba(10,22,37,.98));border:1px solid var(--phx-line);border-radius:16px;padding:clamp(15px,3.8vw,26px);box-shadow:0 14px 35px #0005;margin-block:16px}
+.phx-a029 .phx-report-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.phx-a029 .phx-report-stat{text-align:center;background:#142337;border:1px solid var(--phx-line);border-radius:12px;padding:14px 6px;min-width:0}
+.phx-a029 .phx-report-stat strong{display:block;color:var(--phx-gold);font:700 clamp(1.4rem,5vw,2.6rem) Georgia,serif}
+.phx-a029 .phx-report-stat span{font-size:clamp(.72rem,2.8vw,.96rem)}
+.phx-a029 button,.phx-a029 select,.phx-a029 input{min-height:44px;max-width:100%;font:inherit}
+.phx-a029 button,.phx-a029 select{background:#13283c;border:1px solid var(--phx-line);border-radius:10px;color:var(--phx-text);padding:10px 14px}
+.phx-a029 button:focus-visible,.phx-a029 select:focus-visible,.phx-a029 input:focus-visible,.phx-a029 a:focus-visible{outline:3px solid #8bd4ff;outline-offset:3px}
+.phx-a029 button:not(:disabled){cursor:pointer}
+.phx-a029 .phx-report-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.phx-a029 .phx-report-filters label{display:grid;gap:6px}
+.phx-a029 .phx-report-filters select{width:100%}
+.phx-a029 .phx-report-table-scroll{overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch}
+.phx-a029 table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+.phx-a029 th,.phx-a029 td{padding:10px 8px;border-bottom:1px solid #61738866;text-align:left}
+.phx-a029 th{color:var(--phx-gold)}
+.phx-a029 details{background:#0d1c2d;border:1px solid var(--phx-line);border-radius:12px;padding:14px;margin-block:12px}
+.phx-a029 summary{cursor:pointer;line-height:1.4}
+.phx-a029 .phx-report-actions{display:flex;flex-wrap:wrap;gap:10px}
+.phx-a029 .phx-report-actions>*{flex:1 1 180px}
+@media(max-width:380px){.phx-a029 .phx-report-filters{grid-template-columns:1fr}.phx-a029 .phx-report-stat{padding:10px 4px}}
+@media(prefers-reduced-motion:reduce){.phx-a029 *{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
