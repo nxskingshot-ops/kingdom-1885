@@ -1,0 +1,2 @@
+/* PHX A039-R8 isolated navigation adapter. Include after original R8 scripts. */
+(()=>{'use strict';const routes=Object.freeze({home:'home',map:'map',report:'report'});function openExisting(target){const route=routes[target];if(!route||typeof window.phxNavigate!=='function')return false;window.phxNavigate(route);return true;}Object.defineProperty(window,'phxNavigationCapabilities',{value:Object.freeze({routes:Object.freeze(Object.keys(routes)),openExisting}),configurable:false,writable:false});})();
