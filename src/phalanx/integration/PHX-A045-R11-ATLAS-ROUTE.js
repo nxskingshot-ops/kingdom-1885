@@ -19,6 +19,9 @@ let active=false,loaded=false;
 function rollback(){active=false;frame.style.display='none';status.style.display='none';original.forEach(el=>el.hidden=false)}
 function activate(){
  if(active)return;
+ // Fail closed: preserve the known map until a separately validated Atlas
+ // runtime AND authorized provider are explicitly declared ready.
+ if(window.PHX_ATLAS_CORE_V2_READY!==true)return;
  active=true;original.forEach(el=>el.hidden=true);
  frame.style.display='block';status.style.display='block';
  status.textContent='Outpost Atlas CORE V2 lädt. Daten nur über autorisierten Anbieter.';
