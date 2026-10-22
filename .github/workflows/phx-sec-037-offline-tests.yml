@@ -1,0 +1,22 @@
+name: PHX-SEC-037 Offline Security Tests
+on:
+  pull_request:
+    paths:
+      - 'scripts/phx-sec-037-*.py'
+      - 'tests/test_phx_sec_037_*.py'
+      - '.github/workflows/phx-sec-037-offline-tests.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  synthetic-preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install fixture-only encryption dependency
+        run: python3 -m pip install --user cryptography==46.0.3
+      - name: Run offline synthetic security tests
+        run: python3 -m unittest discover -s tests -p 'test_phx_sec_037_*.py' -v
