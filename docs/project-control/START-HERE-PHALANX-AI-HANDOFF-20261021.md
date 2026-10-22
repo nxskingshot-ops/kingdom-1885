@@ -60,3 +60,6 @@ D. Before release: end-to-end registration/approval, granular RLS, PYLON IX tool
 - No merging into main, production deploy, RLS/auth changes or extra spending without explicit authorization.
 - Update this entry-point document (or versioned successor with discoverable link) at each major milestone; link to immutable GitHub commit and record what changed.
 - A future ChatGPT session does not automatically ingest this file: explicitly point it at this GitHub path and have it read before work.
+
+## 7. Mandatory workflow / source gate (2026-10-22)
+Before every development change, consult [PHX-A041 Mandatory Source Gate](https://github.com/nxskingshot-ops/kingdom-1885/blob/961000090cade29aa5f686b3fd70b1b4128f031e/docs/project-control/PHX-A041-MANDATORY-SOURCE-GATE-20261022.md) and [PHX-A040 Legacy Cleanup](https://github.com/nxskingshot-ops/kingdom-1885/blob/e07dc2f3ba0dc7f90648cb6c7065a52c8cac16ef/docs/project-control/PHX-A040-WORKFLOW-AND-LEGACY-CLEANUP-20261022.md). Both are currently on the isolated work branch, not main. Verify the latest actual implementation across relevant branches and Library; reuse before rebuilding, classify retired routes, test targeted regressions, preserve originals, and record evidence. These documents are workflow guidance, not proof of integration or CI enforcement. No production action is authorized by these links.
