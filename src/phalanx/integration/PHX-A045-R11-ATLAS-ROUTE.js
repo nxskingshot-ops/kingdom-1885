@@ -36,6 +36,7 @@ window.addEventListener('message',event=>{
 });
 frame.addEventListener('load',()=>{loaded=true});
 frame.addEventListener('error',()=>{ready=false;rollback()});
+window.addEventListener('phx-outpost-provider-changed',()=>{ready=false;rollback();if(frame.getAttribute('src'))frame.src=frame.src;sync()});
 new MutationObserver(sync).observe(map,{attributes:true,attributeFilter:['class']});
 new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['data-view']});
 window.phxAtlasIntegration=Object.freeze({version:'PHX-OUT-024 CORE V2',rollback,status:()=>({active,loaded,ready})});
