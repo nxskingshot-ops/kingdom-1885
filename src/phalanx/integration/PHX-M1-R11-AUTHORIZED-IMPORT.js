@@ -10,7 +10,7 @@ const title=document.createElement('strong');title.textContent='Outpost-Datenque
 const input=document.createElement('input');input.type='file';input.accept='.json,application/json';input.setAttribute('aria-label','Autorisierte Outpost-JSON-Datei auswählen');
 const info=document.createElement('p');info.setAttribute('role','status');info.textContent='Keine Daten geladen. Bestehende Karte bleibt erhalten.';
 wrap.append(title,input,info);map.prepend(wrap);
-let verified=null;
+let verified=null,importGeneration=0;
 const text=x=>typeof x==='string'&&x.length>0&&x.length<=128;
 function validate(rows){
  if(!Array.isArray(rows)||rows.length>10000)throw Error('Erwartet: Liste mit höchstens 10.000 Einträgen');
@@ -24,15 +24,18 @@ function validate(rows){
  });
 }
 input.addEventListener('change',async()=>{
+ const generation=++importGeneration;
  verified=null;delete window.PHALANX_OUTPOST_DATA_PROVIDER;
  window.dispatchEvent(new Event('phx-outpost-provider-changed'));
  const f=input.files?.[0];if(!f)return;
  try{
  if(f.size>2*1024*1024)throw Error('Datei größer als 2 MB');
- const parsed=JSON.parse(await f.text());const rows=validate(Array.isArray(parsed)?parsed:parsed?.rows);
+ const parsed=JSON.parse(await f.text());
+ if(generation!==importGeneration)return;
+ const rows=validate(Array.isArray(parsed)?parsed:parsed?.rows);
  verified=Object.freeze(rows);window.PHALANX_OUTPOST_DATA_PROVIDER=async()=>({rows:verified});
  info.textContent=rows.length+' geprüfte Einträge aus lokaler Datei. Keine Serverübertragung.';
  window.dispatchEvent(new Event('phx-outpost-provider-changed'));
- }catch(e){info.textContent='Import abgewiesen: '+e.message;}
+ }catch(e){if(generation===importGeneration)info.textContent='Import abgewiesen: '+e.message;}
 });
 })();
