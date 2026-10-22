@@ -10,7 +10,7 @@ function harness(){
  const listeners=new Map(), events=[];
  const element=()=>({style:{},children:[],append(...v){this.children.push(...v)},prepend(v){this.children.unshift(v)},setAttribute(){},addEventListener(k,cb){listeners.set(k,cb)},textContent:'',files:[]});
  const map=element(),input=element(),elements=[];
- const document={getElementById:id=>id==='map'?map:null,createElement:()=>{const e=elements.length===1?input:element();elements.push(e);return e}};
+ const document={getElementById:id=>id==='map'?map:null,createElement:()=>{const e=elements.length===2?input:element();elements.push(e);return e}};
  const window={dispatchEvent:e=>events.push(e.type)};
  vm.runInNewContext(script,{document,window,Event:class{constructor(type){this.type=type}}});
  return {window,input,events,async choose(file){input.files=file?[file]:[];await listeners.get('change')()},row};
