@@ -1,0 +1,224 @@
+
+*{box-sizing:border-box}body{margin:0;background:#081625 url("assets/image-b82a95f2cba1bb85.jpg") center top / cover fixed;color:#eee5d3;font:14px system-ui}main{max-width:580px;margin:auto;padding:12px}h1{font:700 20px Georgia;color:#eccb89;margin:4px 0}small{color:#abc0ca}input,select,button{font:inherit;color:#fff;background:#182f44;border:1px solid #7b806f;border-radius:8px;padding:9px}input{width:100%;margin:12px 0 8px}select{width:100%}.filters{display:grid;grid-template-columns:1fr 1fr;gap:7px}.top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:10px 0}.legend{display:flex;gap:11px;flex-wrap:wrap;font-size:11px;margin:9px 0}.legend i{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--c);margin-right:4px}.map{border:2px solid #bd9759;border-radius:12px;background:linear-gradient(#0b2334b5,#0b2334d9),url("assets/image-b82a95f2cba1bb85.jpg") center / cover;position:relative;overflow:hidden;box-shadow:0 0 0 2px #111c27,0 6px 24px #0009}svg{width:100%;height:auto;display:block;touch-action:none}.tools{position:absolute;right:5px;top:5px;display:flex;flex-direction:column;gap:4px}.tools button{padding:6px 10px}#detail{position:fixed;z-index:20;bottom:12px;left:50%;transform:translateX(-50%);width:min(calc(100% - 24px),560px);padding:16px;background:#14283cf5;border:1px solid #e7bc77;border-radius:14px;box-shadow:0 5px 45px #000c;max-height:42vh;overflow:auto}#detail[hidden]{display:none}#rows{max-height:220px;overflow:auto}.item{display:block;width:100%;text-align:left;margin:3px 0}#status{font-size:12px;color:#d0c2a6}footer{font-size:11px;color:#9db3bb;margin-top:12px}
+
+/* PHALANX Alpha 3 isolated UI audit: original 1536×576 artwork reused verbatim from approved Alpha12 */
+body{background-color:#03111e} main{padding-top:0!important}
+.ph-header{width:100%;max-width:960px;margin:0 auto;border-bottom:1px solid #c49b4b;background:#03111e;line-height:0;box-shadow:0 3px 20px #0009}
+.ph-header img{width:100%;height:auto;aspect-ratio:8/3;object-fit:cover;display:block}
+.ph-context{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 0 8px;border-bottom:1px solid #8c6e3e;margin-bottom:8px}
+.ph-context-title{font:700 16px Georgia,serif;letter-spacing:.6px;color:#f2d480}
+.ph-context small{font-size:10px!important;color:#aabac8}
+.ph-context-badge{font-size:9px;color:#f3d28c;border:1px solid #ae8846;border-radius:5px;padding:3px 5px;margin-left:auto}
+#status{display:block;margin-bottom:6px;font-size:11px!important}
+#q{margin:6px 0!important;padding:9px!important;min-height:40px}
+.filters{gap:6px!important;margin:6px 0!important}
+.filters select{padding:9px 6px!important;min-height:40px;font-size:12px!important}
+.top{margin:5px 0!important;align-items:center}
+.top button{padding:6px 8px;font-size:11px}
+.legend{padding:5px 0!important;gap:6px!important;font-size:10px!important}
+.map{margin-top:5px!important}
+@media(max-width:420px){.ph-context-title{font-size:14px}.ph-context small{font-size:9px!important}.legend{font-size:9px!important}}
+
+/* ALPHA 8: mobile density only, approved PHALANX artwork unchanged */
+main{padding:0 10px 20px!important}
+.ph-context{margin-bottom:3px!important;padding:5px 1px!important;gap:5px!important}
+.ph-context-title{font-size:14px!important;line-height:1.2}
+.ph-context small{font-size:9px!important;white-space:nowrap}
+#status{margin:3px 0!important;line-height:1.15;font-size:10px!important}
+#q{height:37px!important;min-height:37px!important;margin:4px 0!important;padding:7px 11px!important;font-size:13px!important}
+.filters{margin:4px 0!important;gap:4px!important}
+.filters select{height:36px;min-height:36px!important;padding:5px 7px!important;font-size:12px!important;border-radius:7px!important}
+.top{margin:2px 0!important;min-height:28px}.top button{font-size:10px!important;padding:5px 8px!important}
+.legend{margin:3px 0!important;padding:3px 0!important;gap:3px 10px!important;font-size:10px!important;line-height:1.2!important}
+.map{margin-top:4px!important;border-radius:12px}
+.tools button{min-width:37px;min-height:37px;padding:5px 9px}
+.map.expanded{position:fixed!important;z-index:50;inset:7px!important;border:2px solid #ddbb73;border-radius:12px;background-color:#0d2233!important;display:flex;align-items:center;justify-content:center}
+.map.expanded svg{width:100%;height:100%;max-height:100%;object-fit:contain}
+.map.expanded .tools{z-index:51}
+#expandMap{font-size:18px;line-height:1}
+@media (max-width:390px){.ph-context-title{font-size:13px!important}.ph-context small{font-size:8px!important}.legend{font-size:9px!important}}
+
+/* ALPHA 8 – exact freeze intent, 4 compact visible controls without horizontal scrolling */
+:root{--ph-gold:#eac17b}
+.ph-freeze-filters{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:5px!important;overflow:visible!important;padding:0!important;margin:7px 0 5px!important;width:100%!important}
+.ph-pill{position:relative;display:flex;align-items:center;justify-content:center;height:39px;min-width:0;border:1px solid #d0a363;border-radius:21px;background:linear-gradient(180deg,#15334c,#071a2c);box-shadow:inset 0 1px 0 #ffdb9a25,0 0 7px #c49b4b22;overflow:hidden}
+.ph-pill-label{font:600 clamp(10px,2.65vw,13px) system-ui,sans-serif;color:#f4e2c1;white-space:nowrap;text-align:center;pointer-events:none;letter-spacing:-.12px}
+.ph-pill select{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;min-height:0!important;padding:0!important;margin:0!important;opacity:0!important;z-index:2!important;cursor:pointer;border:0!important}
+.ph-pill:focus-within{outline:2px solid #fff0ba;outline-offset:2px}
+.ph-pill.active{border-color:#ffe19e;box-shadow:0 0 10px #ecb95a83,0 0 3px #fff1bd,inset 0 0 14px #dda44b22;background:linear-gradient(180deg,#44381f,#12263a)}
+.ph-pill.active .ph-pill-label{color:#ffe5a5}
+#q{border:1px solid #e3b46e!important;border-radius:13px!important;box-shadow:0 0 7px #e3b46e33,inset 0 1px 2px #ffe29c22!important}
+.top{margin:2px 0!important}.top button{border-radius:20px!important;border-color:#b88f57!important}
+.legend{margin:2px 0 4px!important;padding:4px 0!important;border-top:1px solid #bc945d45;border-bottom:1px solid #bc945d45}
+.map{border:2px solid #e6ba6b!important;box-shadow:0 0 12px #e4b86672,inset 0 0 15px #c5a26244!important}
+.tools button{border:1px solid #deb16b!important;border-radius:10px;background:linear-gradient(160deg,#18354c,#091b2c)!important;box-shadow:0 0 5px #dbaa6559}
+.ph-context-title{text-shadow:0 0 8px #d8a65a51}
+@media(min-width:600px){.ph-freeze-filters{gap:10px!important}.ph-pill{height:43px}}
+@media(max-width:360px){.ph-pill{height:37px}.ph-pill-label{font-size:10px}}
+
+/* ALPHA 8: intentionally user-approved alternative to chips: calm, compact 2x2 panels.
+   Overrides Alpha 7 filter styles only. Original header, map logic, source and artwork unchanged. */
+.ph-freeze-filters{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ grid-template-rows:repeat(2,39px)!important;gap:7px!important;
+ margin:8px 0 6px!important;overflow:visible!important;
+}
+.ph-pill{
+ display:flex!important;justify-content:flex-start!important;align-items:center!important;
+ height:39px!important;min-height:39px!important;min-width:0!important;
+ border:1px solid #c5a06a!important;border-radius:10px!important;
+ background:linear-gradient(180deg,#193449f5,#11283bf8)!important;
+ box-shadow:inset 0 1px 0 #f5dca31f,0 1px 4px #0007!important;
+ padding:0 30px 0 12px!important;overflow:hidden!important;
+}
+.ph-pill-label{
+ font:500 clamp(12px,3.2vw,14px) system-ui,sans-serif!important;
+ white-space:nowrap!important;text-overflow:ellipsis!important;
+ overflow:hidden!important;line-height:1.2!important;
+ letter-spacing:0!important;text-align:left!important;
+}
+.ph-pill::after{content:'⌄';position:absolute;right:12px;top:7px;
+ color:#e6bb79;font:600 19px system-ui;pointer-events:none}
+.ph-pill.active{
+ border-color:#f2c982!important;box-shadow:0 0 8px #e4b45870,inset 0 0 12px #f5d89416!important;
+ background:linear-gradient(180deg,#314259,#152a3f)!important;
+}
+.ph-pill select{position:absolute!important;inset:0!important;width:100%!important;
+ height:100%!important;opacity:0!important;z-index:3!important;cursor:pointer}
+@media(max-width:360px){.ph-pill{padding-left:9px!important}.ph-pill-label{font-size:12px!important}}
+
+#noMatches{display:block;margin:2px 0 5px;padding:6px 9px;background:#172a3bbd;border:1px solid #8a7651;border-radius:7px;color:#e8dbc4;font-size:12px;line-height:1.3}
+#noMatches[hidden]{display:none!important}
+
+/* ALPHA 11 — compact filter layout; preserved Alpha10 frozen artwork and logic */
+.ph-freeze-filters{
+  grid-template-rows:repeat(2,32px)!important;
+  gap:5px!important;
+  margin:5px 0 3px!important;
+}
+.ph-pill{
+  height:32px!important;
+  min-height:32px!important;
+  padding:0 27px 0 10px!important;
+}
+.ph-pill-label{
+  font-size:clamp(11px,3vw,13px)!important;
+  line-height:1.1!important;
+}
+.ph-pill::after{
+  top:3px!important;
+  right:10px!important;
+}
+#q{margin:6px 0 5px!important;min-height:39px!important}
+.top{margin:1px 0!important}
+#activeFilters{margin:3px 0!important}
+#noMatches{margin:2px 0 4px!important;padding:5px 8px!important}
+.legend{margin:2px 0 3px!important}
+@media(max-width:360px){
+ .ph-pill{padding-left:8px!important}
+ .ph-pill-label{font-size:11px!important}
+}
+
+
+/* ALPHA 12 — visible redesign of the filter area only */
+.ph-freeze-filters{
+ display:grid!important;
+ grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ grid-template-rows:31px!important;
+ column-gap:5px!important;
+ row-gap:0!important;
+ margin:4px 0 5px!important;
+}
+.ph-freeze-filters .ph-pill{
+ height:31px!important;min-height:31px!important;
+ border-radius:17px!important;
+ padding:0 14px 0 6px!important;
+ justify-content:center!important;
+ background:linear-gradient(180deg,#17364c,#0a2032)!important;
+}
+.ph-freeze-filters .ph-pill-label{
+ font:600 clamp(10px,2.65vw,12px)/1 system-ui,sans-serif!important;
+ white-space:nowrap!important;
+ text-align:center!important;
+}
+.ph-freeze-filters .ph-pill::after{
+ content:"⌄"!important;top:5px!important;right:5px!important;
+ font-size:14px!important;
+}
+#q{
+ min-height:37px!important;height:37px!important;
+ margin:4px 0 4px!important;
+ padding:7px 12px!important;
+}
+.top{min-height:25px!important;margin:3px 0!important}
+.top button{padding:3px 8px!important;font-size:10px!important}
+.legend{margin:2px 0 3px!important;padding:3px 0!important}
+#activeFilters{margin:3px 0!important}
+#noMatches{margin:3px 0!important;padding:5px 8px!important}
+@media(max-width:360px){
+ .ph-freeze-filters{column-gap:3px!important}
+ .ph-freeze-filters .ph-pill{padding-left:3px!important;padding-right:12px!important}
+ .ph-freeze-filters .ph-pill-label{font-size:9px!important}
+}
+
+
+/* ALPHA 18: approved map backdrop; Alpha 12 map mechanics unchanged */
+.map{
+ background-image:linear-gradient(180deg,rgba(4,16,29,.18),rgba(4,14,26,.12)),url("assets/image-117d0614cb0aa2fc.jpg")!important;
+ background-size:cover!important;
+ background-position:center center!important;
+ background-repeat:no-repeat!important;
+ background-color:#061a2b!important;
+ position:relative!important;
+ overflow:hidden!important;
+}
+.map svg{position:relative;z-index:1;}
+.map .tools{z-index:2;}
+
+
+/* Alpha18: fit map to the visible mobile viewport, original artwork preserved */
+.map svg{width:100%!important;display:block;object-fit:contain;object-position:center center}
+
+/* Alpha 22: selection ergonomics only; frozen map artwork untouched */
+#detail{padding:11px 13px!important;max-height:32dvh!important;border-color:#e5be79!important;box-shadow:0 9px 36px #000b!important}
+#detail strong{display:block;color:#f1d394;font:700 16px Georgia,serif;margin-bottom:5px}
+#detail p{margin:5px 0 9px;line-height:1.4;font-size:12px;color:#eee0c7}
+#detail button{font-size:12px;padding:7px 11px;margin-right:6px;border-color:#c99e5d}
+
+/* ALPHA 23: Detail sheet only. Approved artwork, legend, map and markers untouched. */
+#detail{position:fixed!important;left:50%!important;bottom:max(10px,env(safe-area-inset-bottom))!important;transform:translateX(-50%)!important;width:min(calc(100% - 20px),560px)!important;z-index:30!important;padding:9px 12px!important;border:1.5px solid #dbb36f!important;border-radius:14px!important;max-height:42dvh!important;overflow:auto!important;background:#11283deF!important;box-shadow:0 5px 22px #000a!important;box-sizing:border-box!important}
+#detail[hidden]{display:none!important}
+#detail .ph-detail-head{display:flex;gap:8px;align-items:center;justify-content:space-between}
+#detail .ph-detail-head strong{font:700 16px Georgia,serif;color:#f3d18c;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#detail .ph-detail-head .ph-detail-actions{display:flex;gap:5px;flex-shrink:0}
+#detail .ph-detail-head button{min-height:32px;min-width:32px;padding:3px 8px;font-size:13px;line-height:1.1;border-radius:9px}
+#detail .ph-detail-summary{margin:4px 0 0;font-size:11px;color:#e8dac1;line-height:1.3;overflow-wrap:anywhere}
+#detail .ph-detail-extra[hidden]{display:none!important}
+#detail .ph-detail-extra{padding-top:6px}
+#detail .ph-detail-extra p{font-size:12px;line-height:1.4;margin:1px 0 7px}
+#detail .ph-detail-extra button{padding:6px 10px;font-size:12px}
+@media(max-width:370px){#detail .ph-detail-head strong{font-size:14px}#detail .ph-detail-summary{font-size:10px}}
+
+
+.ph-alliance-strong{font-weight:800;color:#f1e0bb;letter-spacing:.15px}
+.ph-list-alliance{font-weight:750;color:#f1e0bb}
+.ph-detail-summary{line-height:1.35}
+
+
+/* ALPHA 23 — fullscreen and compact detail behavior; frozen visual language retained */
+body.ph-map-open{overflow:hidden!important}
+.map.expanded{position:fixed!important;inset:0!important;z-index:100!important;margin:0!important;border-radius:0!important;display:flex!important;align-items:center!important;justify-content:center!important}
+.map.expanded svg{width:min(100vw,calc(100dvh * 340 / 380))!important;height:min(100dvh,calc(100vw * 380 / 340))!important;max-height:100dvh!important;object-fit:contain!important}
+.map.expanded .tools{z-index:102!important;right:8px!important;top:8px!important}
+body.ph-map-open #detail{visibility:hidden!important;pointer-events:none!important}
+#detail{padding:9px 11px!important;max-height:35vh!important}
+#detail .ph-detail-extra[hidden]{display:none!important}
+#detail .ph-detail-summary{margin:4px 0!important}
+
+/* ALPHA 32: selected-filter presentation only. Frozen selectors and map unchanged. */
+#activeFilters[hidden]{display:none!important}
+#activeFilters:not([hidden]){display:flex!important;align-items:center!important;flex-wrap:wrap!important;gap:5px!important;padding:3px 0 1px!important;margin:3px 0 4px!important;border:0!important;background:transparent!important;max-width:100%!important}
+#activeFilters .active-title{font:600 11px/1.25 system-ui,sans-serif!important;color:#dfbc72!important;letter-spacing:.01em!important;margin:0 3px 0 0!important;white-space:nowrap!important}
+#activeFilters .active-filter-chip{appearance:none!important;display:inline-flex!important;align-items:center!important;gap:6px!important;flex:0 1 auto!important;width:auto!important;max-width:100%!important;min-width:0!important;min-height:27px!important;height:auto!important;margin:0!important;padding:4px 9px!important;border:1px solid rgba(213,169,76,.76)!important;border-radius:999px!important;background:linear-gradient(180deg,#112d41,#092030)!important;box-shadow:none!important;color:#f4db9d!important;font:600 11px/1.25 system-ui,sans-serif!important;text-align:left!important;white-space:normal!important;overflow-wrap:anywhere!important;cursor:pointer!important}
+#activeFilters .active-filter-chip .ph-chip-x{font-size:14px!important;line-height:1!important;color:#dfbd7e!important;flex:none!important}
+#activeFilters .active-filter-chip:focus-visible{outline:2px solid #f0ce80!important;outline-offset:2px!important}
