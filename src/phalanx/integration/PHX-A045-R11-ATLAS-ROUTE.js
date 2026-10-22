@@ -21,13 +21,13 @@ function activate(){
  if(active)return;
  // Fail closed: preserve the known map until a separately validated Atlas
  // runtime AND authorized provider are explicitly declared ready.
- if(window.PHX_ATLAS_CORE_V2_READY!==true)return;
+ if(window.PHX_ATLAS_CORE_V2_READY!==true ||\n    typeof window.PHALANX_OUTPOST_DATA_PROVIDER!=='function')return;
  active=true;original.forEach(el=>el.hidden=true);
  frame.style.display='block';status.style.display='block';
  status.textContent='Outpost Atlas CORE V2 lädt. Daten nur über autorisierten Anbieter.';
  if(!frame.getAttribute('src'))frame.src='src/phalanx/outpost-atlas/index.html';
 }
-frame.addEventListener('load',()=>{loaded=true;if(active)status.textContent='Atlas-Modul geladen. Autorisierter Datenanbieter erforderlich.'});
+frame.addEventListener('load',()=>{loaded=true;if(active)status.textContent='Atlas-Modul geladen. Datenstatus wird im Atlas angezeigt.'});
 frame.addEventListener('error',()=>{if(active){status.textContent='Atlas konnte nicht geladen werden. Vorherige Karte wird wiederhergestellt.';rollback()}});
 function sync(){if(document.body.dataset.view==='map'&&!map.classList.contains('hidden'))activate();else if(active)rollback()}
 new MutationObserver(sync).observe(map,{attributes:true,attributeFilter:['class']});
