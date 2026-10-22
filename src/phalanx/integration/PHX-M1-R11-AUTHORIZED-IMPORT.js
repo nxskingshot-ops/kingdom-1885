@@ -30,8 +30,9 @@ input.addEventListener('change',async()=>{
  const f=input.files?.[0];if(!f)return;
  try{
  if(f.size>2*1024*1024)throw Error('Datei größer als 2 MB');
- const parsed=JSON.parse(await f.text());
+ const raw=await f.text();
  if(generation!==importGeneration)return;
+ const parsed=JSON.parse(raw);
  const rows=validate(Array.isArray(parsed)?parsed:parsed?.rows);
  verified=Object.freeze(rows);window.PHALANX_OUTPOST_DATA_PROVIDER=async()=>({rows:verified});
  info.textContent=rows.length+' geprüfte Einträge aus lokaler Datei. Keine Serverübertragung.';
