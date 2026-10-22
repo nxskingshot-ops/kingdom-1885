@@ -1,0 +1,16 @@
+{
+  "id": "PHX-OUT-024",
+  "name": "Outpost Atlas",
+  "slug": "outpost-atlas",
+  "technical_version": "CORE V2",
+  "source": "PHX-OUT-024 Alpha24",
+  "source_sha256": "1a87afde964f8eacc730f8a2cd52d7067ebe06b40cc7fc1388c16ee59e3a043d",
+  "assets": {
+    "assets/image-b82a95f2cba1bb85.jpg": 149829,
+    "assets/image-117d0614cb0aa2fc.jpg": 220775,
+    "assets/image-fd776b6be275a07b.jpg": 286307
+  },
+  "data_adapter": "window.PHALANX_OUTPOST_DATA_PROVIDER; no network calls by default",
+  "status": "isolated implementation; repository browser and device verification pending",
+  "source_reference": "PHX-OUT-024 Alpha24 frozen; not modified"
+}
