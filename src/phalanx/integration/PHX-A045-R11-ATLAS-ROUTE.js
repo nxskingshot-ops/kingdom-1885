@@ -5,7 +5,7 @@
 (()=>{'use strict';
 const map=document.getElementById('map');
 if(!map||typeof window.phxNavigate!=='function')return;
-const original=[...map.children];
+const original=[...map.querySelectorAll('iframe')];
 const frame=document.createElement('iframe');
 frame.id='phx-atlas-core-v2';frame.title='Outpost Atlas CORE V2';
 frame.setAttribute('sandbox','allow-scripts allow-same-origin');
@@ -13,7 +13,8 @@ frame.setAttribute('referrerpolicy','no-referrer');
 frame.style.cssText='display:none;width:100%;height:80vh;min-height:550px;border:0;background:#101820';
 const status=document.createElement('p');status.setAttribute('role','status');
 status.style.cssText='display:none;color:#d9b66a;padding:8px 12px';
-map.prepend(status);map.prepend(frame);
+const context=map.querySelector('.context');
+if(context){context.after(frame);frame.after(status)}else{map.prepend(status);map.prepend(frame)}
 let active=false,loaded=false;
 function rollback(){active=false;frame.style.display='none';status.style.display='none';original.forEach(el=>el.hidden=false)}
 function activate(){
