@@ -201,3 +201,38 @@ Quellen `data/phalanx-calculation-database-v1-2026-10-12.json`, `data/phalanx-co
 - Weitere historische JSONs: `phalanx-combat-verification-audit-v1`, `phalanx-mechanics-audit`, `phalanx-rally-mechanics-source-audit`, `phalanx-robust-optimizer-policy-v1`, `phalanx-sensitivity-2026-10-12`; ihre Namen und Inhalte teilweise gelesen. Originale nicht überschreiben.
 - Keine belastbare Gesamtzahl aller früheren Simulationsläufe oder deren Ingame-Treffergenauigkeit; insbesondere keine Tausenderzahl als historische Tatsache behaupten. Die **jetzt ausgeführten 200.000 Trials** sind reproduzierbare neue Modellläufe, nicht historische Spielkämpfe.
 - Fachliche Freigabe: **BLOCKED** bis Ingame-Quellen, Hero-/Skill-Level, Timing/Stacking, Battle Reports und Sensitivität gegen reale Ergebnisse validiert sind. PYLON darf diese Daten nur als Annahmen/relative Modelle verwenden.
+
+
+## Audit-Nachtrag A04 — Original-Verification-Audit und Robust Optimizer Policy (29.10.2026)
+**Direkt im historischen Original-ZIP geprüft:** `data/phalanx-combat-verification-audit-v1-2026-10-12.json` und `data/phalanx-robust-optimizer-policy-v1-2026-10-12.json`. Der Quellenstatus aus 12.10. ist historisch, **nicht als heute live neu verifizierte Kingshot-Mechanik missverstehen**.
+
+### Historisch dokumentierte Community-Regeln (noch keine neue offizielle Verifikation)
+- Rally Leader stellt Combat Stats; Joiner-Stats/Gear ersetzen nicht die Leader-Stats.
+- Vier Joiner-Skill-Slots; erster Expedition-Skill des ersten Helden; Priorität laut historischer Communityquelle Skill-Level, dann Beitrittsreihenfolge.
+- Gleiche `effect_op` additiv, verschiedene `effect_op` multiplikativ in bestimmten dokumentierten Buff-Familien. **Nicht global für sämtliche Skill-Familien verallgemeinern**.
+- Historisch als offiziell geprüft notiert: Cassia Mastery in allen Expedition-Kämpfen; Quelle https://centurygames.helpshift.com/hc/en/140-kingshot/faq/8865-battle-master-in-which-scenarios-does-cassia-s-mastery-skill-take-effect/ — Originalquelle vor Verwendung neu prüfen.
+
+### Pet-Buff-Maxima laut historischem Community-Audit, nicht aktuell verifiziert
+- Giant Rhino: Squad Attack +10 %, Dauer 2 h.
+- Alpha Black Panther: Troop Lethality +10 %, Dauer 2 h.
+- Mighty Bison: Squad Capacity +15.000, Dauer 2 h.
+- Great Moose: Rally Capacity +150.000, Dauer 2 h.
+Die tatsächliche Aktivierung, Berechtigung, Dauer und Snapshot-Einrechnung sind vor Anwendung zu validieren.
+
+### Explizite offene Konflikte und Regressionen
+1. **Valora Expertise:** Zwei Communityquellen widersprechen sich bei Level 4–10, obwohl Maximalwert 30 % Bear Hunt Damage Points übereinstimmend genannt wird; keine ungeprüften Zwischenwerte interpolieren. Bear-Punkte ≠ automatisch Raw Damage.
+2. **Alpha25 Snapshot-Schalter:** Unterdrückt alle aktiven Boni pauschal, obwohl manche nicht im Snapshot enthalten sein können; pro Effekt `includedInSnapshot` erforderlich.
+3. **Alpha25 Pet/Master Stacking:** Angriffswerte werden in einem Pool summiert und mit Lethality multipliziert — nur provisorischer Offensivindex, nicht validierter Schaden.
+4. **Pet-Aktivierung:** Die Preview bietet Prozentfelder ohne belegte Aktivierungs-, Zeit- und Eligibility-Prüfung.
+5. **Alpha25 Scope:** Relative Offensive, kein defensiver Simulator oder bestätigte absolute Schadensformel.
+**Historisches Release Gate:** Alpha25 nicht produktiv freigeben, bis die fünf Punkte geklärt sind.
+
+### Robust Optimizer Policy — ausdrücklich konservativ
+- Szenarien getrennt rechnen: gleiche Effect-Gruppen additiv; unabhängige Gruppen multiplikativ; unabhängige Chance-Procs; eingeschränktes Stacking; Buff im Snapshot enthalten vs. nicht enthalten.
+- Für jede Aufstellung relativen Modell-Score, Worst Case, Sensitivität und mögliche Rangumkehr bei Annahmewechseln dokumentieren.
+- `robustness = fraction of explicitly enumerated scenarios in which candidate beats baseline` ist **keine empirische Siegwahrscheinlichkeit**.
+- Erwartungswert nur dann mit Wahrscheinlichkeitsgewichten, wenn diese empirisch begründet sind; keine erfundenen Szenariogewichte.
+- Kosten-/ROI-Ziele für F2P/Low/Mid getrennt von Whale-Maximum bewerten; marginale Unterschiede unter Unsicherheit markieren.
+- **Produktivstatus BLOCKED**, bis ausführbare Regressionstests und repräsentative Ingame-Beobachtungen vorliegen.
+- Historische Folgeaufgabe: deterministische Szenarioenumeration und robuste Rangfolge mit Gegenprüfungen implementieren.
+- Quellen im Original-Audit: kingshotwin.com/guides/gameplay/rallies/, kingshothandbook.com/guides/joiner-rules-guide, kingshot.wiki/guides/lethality-attack-defense-health-what-they-actually-do, kingshotguide.org/data-center/kingshot-pets-database, kingshotmastery.com/masters/valora, kingshotdata.com/masters/valora. **Hier nur Originalreferenzen konserviert, nicht live erneut bestätigt.**
