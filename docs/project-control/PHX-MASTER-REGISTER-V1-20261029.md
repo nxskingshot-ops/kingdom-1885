@@ -92,3 +92,58 @@ Dieses Dokument enthält keine API-Keys, Tokens, privaten Spielerdatensätze ode
 
 ### Prüfprotokoll
 Nur Dokumentation auf Governance-Branch. Keine Änderung an Supabase, Edge Functions, RLS, produktiven GitHub-Branches, Cloudflare/Vercel oder Secrets. Diese Inventur ist ein **fortschreibbarer Mehrquellenabgleich**, keine Aussage, dass sämtliche Chats und Speicherorte lückenlos exportiert oder geprüft wurden.
+
+
+## Audit-Nachtrag A02 — ORIGINAL-Ideendatenbank und Formel-/Mechanikenregister (29.10.2026)
+**Wiedergefundene Dateien:** `PHALANX_IDEEN_DATENBANK_ORIGINAL_20261021.md` ist eine Originalkopie des `NEXUS-IDEAS-TODO.md` (angelegt 28.09.2026). `PHALANX_MECHANIKEN_UND_IDEEN_AUDIT_20261029.md` dokumentiert eine historische lokale ZIP-Sicherung mit 645 Einträgen und mehrere Berechnungs-JSONs. Beide Quellen in der Projektumgebung gelesen; **die erwähnten ZIP-Originalbytes und alle JSON-Inhalte sind in diesem Arbeitsschritt nicht einzeln neu verifiziert**. Historische Berichte sind von aktuellen technischen Nachweisen zu trennen.
+
+### Original-Ideenboard: einzeln erfasste Bestandspunkte
+- PHX-IDEA-001 Android-PWA Fullscreen/Startziel Outpost Map, Statusleisten und Geräteverhalten — Test offen.
+- PHX-IDEA-002 Vollständiger Rollen- und Navigations-E2E-Test (Kingdom, Member, Outpost Manager, R4/R5/Admin; Editor, Scouting Demo/Live, Save, Logout) — Test offen.
+- PHX-IDEA-003 Scouting-Board mobil ohne horizontales Scrollen; versteckte Spalten im Profil zugänglich — Gerätetest offen.
+- PHX-IDEA-004 Transfer-Einladung 170M **nur Planungsbeispiel**, offizielle Cap/Königreichsklasse/Special-Invite-Regeln abwarten; Admin-Override nur berechtigt — offen.
+- PHX-IDEA-005 Geschütztes Scouting: Member lesen, R4/R5/Admin editieren laut historischem Codevermerk; Real-Account-Gerätetest offen.
+- PHX-IDEA-006 Automatische GitHub-Backups: historische erfolgreiche Scheduled Runs am 29.09., 03.10. und 04.10. dokumentiert; aktuellen Zustand erneut prüfen.
+- PHX-IDEA-007 Supabase-Rollback: historischer Snapshot für 14 Anwendungstabellen und dokumentierte Restore-Anleitung 04.10.; externe Disaster-Recovery/PITR weiterhin gesondert prüfen.
+- PHX-IDEA-008 Spieler-Snapshot-Rhythmus ungefähr alle drei Tage; während KvK Prep gegebenenfalls dichter — Vorschlag, nicht implementierter Automatismus.
+- PHX-IDEA-009 KvK-Matchmaking-Warnschwellen anhand historischer Snapshots/KvK-Zyklen kalibrieren; **keine offizielle Matchmaking-Formel behaupten**.
+- PHX-IDEA-010 UI-Terminologie: **Opponent Intelligence** = Gegneranalyse; **Battle Readiness** = eigene Einsatzbereitschaft.
+- PHX-IDEA-011 FaQuAI-Wappenvarianten mit Eddy/Robot optional, genehmigtes Original erhalten — Grafikidee.
+- PHX-IDEA-012 Onboarding / Tester-Anleitung, Demo- vs. Echtdaten klar unterscheiden — offen.
+- PHX-IDEA-013 Mobile Hide-Keyboard-Funktion über alle editierbaren Tabs prüfen — offen.
+- PHX-IDEA-014 Allianzchat-Berichte: historische Implementierung mit 74er-Kartenbasis und Kingshot/Discord-Ausgabe; `docs/ALLIANCE_CHAT_REPORT_STANDARD.md` referenziert; aktueller Stand separat prüfen.
+- PHX-IDEA-015 App-Shell mit Outpost Map/Editor, KvK Prep, Demo- und Live-Scouting, fünf KvK-KPI-Kacheln, PWA-Manifest: historische Code-Implementierungsvermerke, keine aktuelle Browserprüfung.
+- PHX-IDEA-016 Historische Sicherungsbranches `stable-nexus-v13-2026-09-28` und `backup/nexus-initial-2026-09-28`: Existenz/Commits aktuell erneut prüfen.
+
+### Berechnungs- und Simulationsbibliothek — historische Dateien
+`data/phalanx-calculation-database-v1-2026-10-12.json`, `data/phalanx-combat-formulas-v1-2026-10-12.json`, `data/phalanx-rally-mechanics-source-audit-2026-10-12.json`, `data/phalanx-robust-optimizer-policy-v1-2026-10-12.json`, `data/phalanx-database-qualification-audit-v1-2026-10-12.json`. Historische Datenbank-Qualifikation: 15/15 Strukturchecks, aber `PARTIAL_PASS_RELEASE_BLOCKED`; 28 Hero-Roster-Matches, 0/28 vollständig im Spiel verifizierte Skillsätze; 4 von mindestens 11 Pets; 4 Master-Einträge ohne vollständige Level-Tabellen; Joiner-Skillzeilen nicht voll verifiziert. **Nicht als aktuell vollständige oder produktionsreife Wissensdatenbank ausgeben.**
+
+### Mechaniken: nach Evidenzklasse
+**Mathematisch exakt unter klaren Eingaben:**
+- Inventar pro Truppenklasse/-tier: `assigned + reserve = available`; simultane Zuteilung ganzzahlig, `assigned <= available`, kein Double Booking.
+- Truppenanteil `100 * class_count / total` für `total > 0`.
+- Relative Änderung `100 * (new - old) / old` für `old != 0`; sonst undefiniert statt 0.
+
+**Community-Modelle / Hypothesen, nicht offizielle Kingshot-Formeln:**
+- `effective_attack = baseAttack*(1+attackPct/100)*baseLethality*(1+lethalityPct/100)/100`
+- `effective_defense = baseDefense*(1+defensePct/100)*baseHealth*(1+healthPct/100)/100`
+- `army_factor = sqrt(troopTypeCount*min(totalOwnTroops,totalEnemyTroops))`
+- Gear-Interpolation `base+(enhancementLevel/100)*(max-base)`; Mastery `enhancedStat*(1+0.1*masteryLevel)`.
+- Zeitproxy `baseTime/(1+speedPct/100)`; Formation-Proxy mit Typgewichten 1/3, 1, 1.47.
+- Simulationsmodell laut A02: `damage = army_factor*(att_per_troop/def_per_troop)*type_bonus*SkillMod*fatigue_factor/100`, `losses=ceil(damage)`; aus Community-/State-of-Survival-Ansatz abgeleitet, **keine offizielle Kingshot-Schadensgleichung**.
+
+**Quellenhinweise aus A02 (in diesem Nachtrag nicht live neu geprüft):**
+- Kingshot offizielles Combat FAQ: https://centurygames.helpshift.com/hc/en/140-kingshot/faq/9125-combat-faq-1783436100/ — Formation Infanterie/Kavallerie/Bogenschützen, rundenbasierte Expedition, Rally-/Joiner-Skill-Kontext.
+- KingshotSim Community: https://kingshotsim.com/damage-formula und https://kingshotsim.com/rally-and-troops — Modellannahmen, keine Spielserver-Formel.
+- Unbestätigt: 10%-Typkonter, 20%-Kavallerie-Bypass, 10%-Bogenschützen-Doppelschuss, fatigue, Skill-Stacking/effect_op, allgemeingültige Bear-Quoten.
+- Bekannte Konflikte: Yeonwoo vs. Chenko effect_op, Helga-Rolle, Joiner-Skill-Auswahl/Stacking. Primärbelege und reale anonymisierte Battle Reports vor jeder Empfehlung.
+
+### Smart March Optimizer — verbindliche Idee, nicht implementiert
+Referenz `PHALANX_IDEA_TROOP_RATIO_CALCULATOR_2026-10-13.md`: Bear 1 Lead **plus** 6 Joiner = 7 getrennte Planungen; feste Joiner-Helden und bester zulässiger Lead; Vikings zuerst Reinforcements, danach Rückzug für HQ-Welle 10/20; nur Bogenschützen als eigene verbleibende Burgtruppen; stärkste Defense-Helden in der Burg; exakte Inventarrechnung, Rollen-/Timing-Konflikte prüfen. Drei Strategien nach **belegter Eventzielgröße** vergleichen, niemals erfundene Schadens-/Punktzahlen optimieren.
+
+### Weitere Recherche und Umsetzungsgates
+1. Original-Ideenboard und alle Datenbank-JSONs bytegenau gegen Backup und Live-GitHub abgleichen; eindeutige IDs, Herkunft, Historie und Status vergeben, Originale nicht überschreiben.
+2. Offizielle Kingshot-Patchnotes und FAQ je Mechanik/Version, danach Communityquellen und anonymisierte Kampfberichte; jede Formel mit Quelle, Datum, Annahmen, Test und Konfidenz.
+3. Helden/Skills, Pets, Masters, Forschung, Charms, Gear, Eventpunkte und Rally-Skill-Stacking gezielt nachqualifizieren.
+4. PYLON/True Power dürfen nur geprüfte Regeln als Fakten ausgeben; ungeprüfte Modelle ausdrücklich als Hypothese kennzeichnen.
+5. Keine Implementierung allein aufgrund eines Ideen-Eintrags; geschützte Daten/Rollen und bestehende FREEZEs bleiben verbindlich.
