@@ -338,3 +338,18 @@ Die Dateinamen beziehen sich auf `data/*.json` im genannten ZIP; ein Eintrag im 
 - **PHX-IDEA-017 True-Gold-Rechner:** vorhandene TC/TG-Interpretation als feste Anzeige-/Inputregel nutzen, aber **nicht** mit echten Ressourcenkosten verwechseln; Kosten, Voraussetzungen, Mengen und Upgrade-Reihenfolge sind separat zu recherchieren und zu validieren.
 
 **Release-/Quellenstatus:** `SOURCE_AUDITED / RUNTIME_UNVERIFIED`. Sicherheits- und Versionsabweichungen vor isolierter Integration prüfen. Keine produktiven Änderungen, kein Merge, keine Kosten.
+
+
+## Audit-Nachtrag A11 — acht von acht Originaldateien bytegenau GitHub-Branch-paritätisch (29.10.2026)
+**Prüfmethode:** Aus `kingdom-1885-main (1).zip` und `kingdom-1885-work-phx-version-hygiene-20261021 (2).zip` je vier Pfade entpackt; lokal Git-Blob-SHA-1 nach Git-Objektformat (`blob <Bytezahl>\\0<Originalbytes>`) berechnet und mit den **aktuell live** per GitHub-Connector abgefragten Blob-SHAs auf `main` beziehungsweise `governance/phalanx-project-control-20261021` verglichen. **8/8 exakt identisch.** Vollständiger Auditbericht als Gesprächsartefakt `PHX_A11_REMOTE_PARITY_20261029.md`.
+
+| Pfad | main-Blob-SHA1 | Governance-Blob-SHA1 | Bewertung |
+|---|---|---|---|
+| `.github/workflows/phalanx-edge-functions-backup.yml` | `038b909a1048c94661f8b8f2806c48cac88e9c82` | `058bdc9f60b243840bbd527d00ee7435e35f8c70` | Jeweiliges Archiv passt exakt; **unterschiedliche Sicherheitslogik** |
+| `preview/outpost-report-v11.html` | `d7d6b94e4df8fed4c4029cd6aa8ec3c4b22de584` | `0f6eb192adfab5ea07397c06af4ba531c789fa89` | Jeweiliges Archiv passt; unterschiedliche Fassungen |
+| `preview/phalanx-ranking-integration-rc-20261015.html` | `f13f0737745c861bf728b63edb099582bf7470bc` | `76c0f457c212bbd7c86d23b0265228108cd2d932` | Jeweiliges Archiv passt; unterschiedliche Fassungen |
+| `data/phalanx-combat-formulas-v1-2026-10-12.json` | `f7194adebef467ea2a7f311bde13e37d11e7d884` | `f7194adebef467ea2a7f311bde13e37d11e7d884` | **Gleicher Inhalt** auf beiden Branches und in beiden Archiven |
+
+**Sicherheitsrisiko auf aktuellem `main` direkt bestätigt:** Workflow ist per `workflow_dispatch` startbar, besitzt `contents: write`, lädt mit Supabase-Token deployte Edge-Function-Quellen, prüft nur auf die Zeichenfolge `PRIVATE KEY-----` und pusht Quellen nach `recovery/supabase/functions` in das Repository. Ein solcher Einzelstring-Guard ist kein allgemeiner Geheimnisschutz. Die Governance-Fassung enthält dagegen einen blockierenden `SECURITY HOLD`; **die Sperre ist nicht auf `main` bestätigt**. Workflow **nicht ausgeführt**, keine Quellen heruntergeladen, keine Änderungen vorgenommen. Vor produktiver Nutzung ist eine gesondert autorisierte Sicherheitskorrektur notwendig.
+
+**Prüfgrenzen:** 8 Dateipaarungen, nicht sämtliche Dateien; keine Prüfung letzter produktiver Deployments, laufender CI-Workflows, Datenbanken oder Remote-Backups. Ergebnisstatus `CRITICAL_FILES_PARITY_VERIFIED / MAIN_WORKFLOW_SECURITY_RISK / DEPLOY_UNVERIFIED`.
