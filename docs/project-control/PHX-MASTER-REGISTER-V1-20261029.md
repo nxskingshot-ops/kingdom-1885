@@ -321,3 +321,20 @@ Die Dateinamen beziehen sich auf `data/*.json` im genannten ZIP; ein Eintrag im 
 **Live-Branch-Vergleich `main...governance/phalanx-project-control-20261021`:** Status `diverged`; Governance **297 Commits voraus**, **30 Commits hinter main**; Vergleich nennt **117 geänderte Dateien**. Diese Zahlen beschreiben Git-Historie, nicht 117 produktive Feature-Änderungen. **Folge:** Governance-Branch nicht als Ersatz für aktuelles `main` deployen oder mergen; vor jedem Integrationspaket die 30 Main-Commits und betroffenen Dateien prüfen. Weder letzter funktionierender Deploy noch Vercel/Cloudflare-Laufzeitstand sind hiermit verifiziert.
 
 **Gates:** (1) Main-vs-Branch-Differenzen nach Risiko priorisieren, (2) SHA-256-Lokal-/Remote-Parität für kritische Assets/Code belegen, (3) aktuelles Deployment ermitteln, (4) getrennte Testvorschau ohne Kosten, (5) E2E mit 74 echten Outposts und Exporten. Bis dahin `DOCUMENTED_NOT_RELEASE_VERIFIED`. Keine produktive Änderung.
+
+
+## Audit-Nachtrag A10 — Branch-Differenzrisiken und verbindliche True-Gold-Logik (29.10.2026)
+**Live-GitHub-Vergleich aktualisiert:** `main...governance/phalanx-project-control-20261021` = `diverged`, 298 Commits ahead, 30 behind, 117 Dateidifferenzen (114 added, 3 modified). Die drei als modified ausgewiesenen Pfade sind `.github/workflows/phalanx-edge-functions-backup.yml`, `preview/outpost-report-v11.html` und `preview/phalanx-ranking-integration-rc-20261015.html`. 114 added sind **nicht** 114 neu produktiv geschaltete Funktionen. Governance und main nicht blind zusammenführen.
+
+**Hochrisiko-Differenz Backup-Workflow:** Auf Governance ist `.github/workflows/phalanx-edge-functions-backup.yml` als `SECURITY HOLD` ausgestaltet; manuell ausführbarer Job verweigert explizit einen Export vertraulicher Edge-Function-Quellen in das öffentliche Repo, ohne Supabase-Zugriff oder Git-Push. Vor jeder Änderung am Workflow die Main-Fassung separat sicherheitsprüfen. Die Existenz dieser Governance-Sperre belegt **nicht**, dass sie bereits auf main oder produktiv wirksam ist. Nie versehentlich deaktivieren.
+
+**Sicherheitsbefund Auth/RLS:** `docs/project-control/PHX-ACCESS-CONTROL-V1-IMPLEMENTATION-SECURITY-20261021.md` dokumentiert RLS-Policies, die historisch Antragsfreigaben an Rollen `r4,r5,admin` koppeln. Der Produkt-FREEZE verlangt dagegen separate explizite Berechtigung `access_requests.approve`; Ingame-Rang allein darf keine PHALANX-Genehmigung erteilen. Eine neue permissive RLS-Policy ohne Rückbau alter OR-verknüpfter Policies würde die Lücke nicht schließen. **Dokumentierter Migrationsblocker; keine DB-Änderung freigegeben.**
+
+**True-Gold-Originalregel aus `docs/project-control/PHX-TC-TRUEGOLD-INTERPRETATION-20261021.md`:**
+- `town_center_level` bezeichnet **nur** das Schloss/Town Center, nicht die Ausbaustufen aller Gebäude.
+- TG1–TG5 mit je `0/5` bis `5/5`; für Kingdom #1885 keine Stufen über TG5 ohne aktuellen Beleg annehmen. Keine globale feste Obergrenze daraus ableiten.
+- Vom Projektverantwortlichen korrigierte Abbildung: `TC 40 = TG3 0/5`, `TC 45 = TG4 0/5`, `TC 50 = TG5 0/5`, `TC 51 = TG5 1/5`, ... `TC 55 = TG5 5/5`. Unter TC40 und über TC55 nicht still extrapolieren.
+- Numerischen Roh-TC, Anzeige und Capture-Zeitpunkt gemeinsam aufbewahren. Fremde Gebäudestufen nicht aus TC ableiten. Rankingdaten nur bei verifizierter UID, Kingdom und Erfassungszeit; `town_center`-Board nicht mit `personal_power`-Scores verwechseln.
+- **PHX-IDEA-017 True-Gold-Rechner:** vorhandene TC/TG-Interpretation als feste Anzeige-/Inputregel nutzen, aber **nicht** mit echten Ressourcenkosten verwechseln; Kosten, Voraussetzungen, Mengen und Upgrade-Reihenfolge sind separat zu recherchieren und zu validieren.
+
+**Release-/Quellenstatus:** `SOURCE_AUDITED / RUNTIME_UNVERIFIED`. Sicherheits- und Versionsabweichungen vor isolierter Integration prüfen. Keine produktiven Änderungen, kein Merge, keine Kosten.
