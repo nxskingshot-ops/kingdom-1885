@@ -50,3 +50,45 @@ Status strikt unterscheiden: GEPLANT, FREEZE, DOKUMENTIERT, IMPLEMENTIERT, TECHN
 
 ## Datenschutz und Änderungsregister
 Dieses Dokument enthält keine API-Keys, Tokens, privaten Spielerdatensätze oder Backup-Passwörter. Am 29.10.2026 ausschließlich lesende Supabase- und GitHub-Prüfung; diese Registerdatei ist die einzige beabsichtigte GitHub-Änderung, auf dem Governance-Branch, kein Merge oder Deployment.
+
+
+## Audit-Nachtrag A01 — Mehrquellenabgleich 29.10.2026
+**Geprüfte Quellen:** 01_START_HERE, 02_DESIGN_FREEZES, 03_FEATURE_REGISTER, 04_SECURITY_GOD_MODE, 05_ROADMAP_RELEASE (Projektuploads); PHALANX_PRUEFREGISTER_2026-10-29.md; PHALANX_FIRST_STRIKE_ARBEITSLISTE_2026-10-29.md (Projektdateisuche); Governance-Handoff auf GitHub; GitHub-Branch-Suche; Supabase read-only Abfragen und Function-Quelltext; wiedergefundene Chatkontexte. Nicht jede historische Datei oder jede Chatnachricht war vollständig einzeln verfügbar. Kein Vollständigkeitsnachweis aller jemals erzeugten Artefakte.
+
+### Nachinventarisierte Funktionen und Historie
+| ID | Bereich | Wiedergefundener Beleg / Statusgrenze |
+|---|---|---|
+| PHX-011 | Outpost Reports V7–V9 | frühere Chatprotokolle: V7 Textsplit >480 Zeichen, Signatur/Status/UTC; V8 Kingshot Compact / Discord Detailed; V9 Default-Reset; dokumentierte 11–13 Tests. HISTORISCH, nicht aktueller R11-Nachweis. |
+| PHX-012 | Outpost Map Alpha19/20 | historische HTML-Artefaktnamen und Nutzer-FREEZEs: NXS grün, OoO rosa, MYM violett, FRA korallrot; Auswahlmarker, Detailpanel, Kombifilter, Akademie-Ringe; keine automatische Rückkehr zu alten Alphas. |
+| PHX-013 | Outpost Map Daten | 74 in public_outposts_verified_20261002, aber 68 in public_outposts; MISMATCH. Prüfen, welche Tabelle der tatsächliche aktuelle Atlas verwendet, bevor man von 74 Live-OP spricht. |
+| PHX-014 | R11 + Atlas CORE V2 | Projekt-Prüfregister dokumentiert lokales ZIP PHX_R11_ATLAS_CORE_V2_LOCAL_BUILD_20261029.zip (24 Einträge) und Wiederherstellungspaket; Quelle/Ausführung nicht hier vollständig erneut geprüft; Vercel-Deployment-ID/URL fehlt. |
+| PHX-015 | Android-Navigation / Export | Prüfregister führt Nutzerbestätigung 29.10. für HOME→Territory Control→Outpost/Reports→zurück und JSON/CSV auf früherem Teststand; nicht als Test des neuen R11-Atlas-Builds umetikettieren. |
+| PHX-016 | Intelligence Timeline | Nutzerentscheidung 16.10.: erster erfasster Stand unveränderliche Baseline, datierte Entwicklung, Rankingbewegungen, fehlende Werte niemals als Null. FREEZE/KONZEPT; Implementierung offen. |
+| PHX-017 | True Power ursprüngliche Methodik | Chat 29.09.: Gesamtkampfkraft minus Truppenstärke als Ausgangsvergleich, Mystic Trials als Zusatzindikator. Bestehende V6 liefert Daten, keinen nachgewiesenen final gewichteten True-Power-Score. |
+| PHX-018 | KvK / Opponent Intelligence | Historische Teilimplementierungen, Top-40, Power-Analyse, KvK Force, Battle/Monte-Carlo-Frameworks in Chat dokumentiert; tatsächliche aktuelle Codeversion/Integration offen. |
+| PHX-019 | Hero-/Rally-Optimierung | Historische Helden-/Skill-/Rally-Planung, Berechnungs- und Simulationsideen; spielmechanische Formeln und Live-Funktion nicht neu validiert. |
+| PHX-020 | Mehrsprachigkeit | DE/EN/FR als bindende Zielvorgabe, appweit persistente Sprache; historische isolierte Sprachtests, vollständige aktuelle Integration offen. |
+| PHX-021 | Backups | Frühere Berichte: verschlüsselte DB, 26 Edge Functions, 3 Restore-Tests, Drive-ZIP; B2-Bucket/Backup-Automatisierung historisch besprochen. Aktuelle Backup-Jobs, Wiederherstellbarkeit, Speicherziele und Originalartefakte NICHT erneut geprüft. Keine Secrets dokumentieren. |
+| PHX-022 | Sicherheitsmodell | GOD MODE getrennt von Kingshot-Konto; genau ein geschützter Eigentümer; kein normaler Admin-Override; Eigentümerwechsel nur autorisierter Verkauf. SQL Guard Entwurf, echte Postgres-Tests offen. |
+| PHX-023 | Registration / Access | E-Mail + Passwort + Kingshot-ID, E-Mail-Bestätigung, PENDING_APPROVAL; aktuelles altes Schema/Formular weicht laut Handoff ab. Rollen/RLS vor Release prüfen. |
+| PHX-024 | Release-Strategie | FIRST STRIKE V1 lokal für NEXUS #1885 und kostenfrei, Entwicklungsziel ca. 300 Nutzer; V2 optional kingdomübergreifend mit Datentrennung; V3 mögliche Vermarktung nur nach Freigabe. Historische Strategie, keine aktuelle Kosten-/Skalierungsgarantie. |
+| PHX-025 | Designvarianten / HOME | Historische HTML-Varianten und freigegebenes Referenzbild, aber kein nachgewiesenes kanonisches Binärasset; Epic Navigation V2 RETIRED, nicht neu einbauen. |
+| PHX-026 | PYLON Intelligence | M01-PYLON-Konzept vollständig im Hauptregister; zusätzliche Timeline, True-Power-Daten und sechs Trial-Modelle als mögliche gemeinsame Datenbasis; nur verifizierte API-Felder verwenden. |
+
+### Geprüfte Projektartefakte in der ChatGPT-Projektdateisuche
+- PHALANX_PRUEFREGISTER_2026-10-29.md: Nutzerbestätigung früherer Android-Navigation, lokale Integration und Regressionen getrennt.
+- PHALANX_FIRST_STRIKE_ARBEITSLISTE_2026-10-29.md: 26 offene Arbeitspakete und Hash des dokumentierten A039-R11-Originals: 32cbfc36af7d0405044f7ac73afac6ebd80273c9d70451c4c76bd2d3dc3d975b.
+- PHX_M1_B016_SHA256_MANIFEST_20261022.json: Asset-/Dateimanifest, noch nicht vollständig mit allen ZIP-Bytes neu abgeglichen.
+- build_r11_atlas_pylon_preview.py und assemble_core_v2.py: isolierte Build-Skripte auffindbar; Ausführung nicht erneut nachgewiesen.
+- phalanx-master-integration-test.html: historische Testdatei auffindbar; nicht als aktuelles Deployment behandeln.
+
+### Wichtige Konflikte / offene Gates
+1. 74 verifizierte Outposts vs. 68 in public_outposts; Quelle und tatsächliche Laufzeitdaten klären.
+2. Android-Erfolg auf früherem Stand vs. R11/Atlas neuer Build ohne zugeordnete URL/Build-ID; gezielte Regression, nicht alles erneut testen.
+3. True-Power-V6 verwendet Trial-Snapshot 29.09.; MightPulse-Polling hat 16 Boards, deren gespeicherte Quellzeit hinter der Schreibzeit liegen kann; Aktualität nicht gleichsetzen.
+4. `mystic_trial` als ein Board vs. sechs individuelle Trial-Prüfungen in manuell erfassten Beobachtungen; API-/Feldverfügbarkeit separat belegen.
+5. GOD MODE / neue Registrierung: FREEZE ≠ sichere produktive Umsetzung.
+6. R11/Atlas, kanonische HOME-Grafik, letzte funktionierende Deployment-Identität und externe Backups noch nicht vollständig verifiziert.
+
+### Prüfprotokoll
+Nur Dokumentation auf Governance-Branch. Keine Änderung an Supabase, Edge Functions, RLS, produktiven GitHub-Branches, Cloudflare/Vercel oder Secrets. Diese Inventur ist ein **fortschreibbarer Mehrquellenabgleich**, keine Aussage, dass sämtliche Chats und Speicherorte lückenlos exportiert oder geprüft wurden.
