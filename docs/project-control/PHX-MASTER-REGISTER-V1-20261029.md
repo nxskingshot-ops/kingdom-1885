@@ -363,3 +363,13 @@ Die Dateinamen beziehen sich auf `data/*.json` im genannten ZIP; ein Eintrag im 
 3. `.github/workflows/phalanx-edge-functions-backup.yml`: auf `main` bestätigter schreibender Quellcode-Backup-Workflow vs. blockierende Governance-Sicherheitssperre (A11). **Sicherheitspriorität kritisch**; ohne Freigabe keine produktive Korrektur.
 
 **Entscheidung:** `SOURCE_DIFF_REVIEWED / NAVIGATION_REGRESSION_POSSIBLE / RUNTIME_UNVERIFIED`. Kein automatisch angenommener „letzter funktionierender Stand“; keine Freigabe für Merge/Deploy. Nächster Beweisschritt: Existenz/Abhängigkeiten der beiden HTML-Ziele im Zielpaket und danach isolierter Browser-E2E-Test.
+
+
+## Audit-Nachtrag A13 — R11/Atlas CORE V2 lokale Testausführung (29.10.2026)
+**Tatsächlich lokal durchgeführt:** `PHX_R11_ATLAS_CORE_V2_LOCAL_BUILD_20261029.zip` entpackt, `node --test tests/*.test.mjs` im Unterverzeichnis `outpost-atlas` mit Node v22.16.0 ausgeführt. **2 PASS, 1 FAIL**. Datenvertrag und Modul-/DOM-Integration PASS; `source-integrity.test.mjs` FAIL wegen `outpost-atlas/index.html`. Erwartete SHA256 `113caa4e10ea8cb6ad5c89c57f94f26ef2405a1ba00e9a505c1bdf59169ccc0c`, tatsächliche SHA256 `2a8ebd0a1efa95ad01f68acd4f7cb2c26c96c76644cdc38a7419628ab51b2add`. **Sechs weitere der sieben Integritäts-Dateien stimmen exakt mit ihrer eingefrorenen SHA256 überein**: `map-core.js`, `map-layout.js`, `map.css`, drei originale JPEG-Assets. **Integritätstest nicht manipuliert, Manifest nicht umgeschrieben.**
+
+**Paketabhängigkeiten:** 24 ZIP-Einträge, Root `index.html` (R11 Territory Control), `outpost-atlas/index.html`, `map-core.js`, `map-layout.js`, `map.css`, `core/provider.js`, `core/data-contract.js`, `atlas-export-isolated.js`, drei lokale JPEGs und Testdateien sind vorhanden. Root `index.html` enthält `./outpost-atlas/index.html` als iframe-Ziel; dieser Pfad ist im Paket vorhanden. Das ist **nicht** identisch mit dem älteren `preview/outpost-report-v11.html`-Pfadproblem aus A12; die Pakete nicht vermischen.
+
+**Datenstand:** `outpost-atlas/outposts-verified-20261002.fixture.json` enthält **74 Zeilen**; `fixture-provider-isolated.js` lädt diese historische Fixture ausdrücklich über `fetch`. Keine Live-Kingshot-/Supabase-Quelle und keine produktive Berechtigungsprüfung dadurch nachgewiesen. `PREVIEW_NOTES.md` warnt ausdrücklich vor fehlendem Browser-Regressionstest und nicht aktiviertem PYLON-Backend.
+
+**Freigabestatus:** `LOCAL_STATIC_TESTS_2_OF_3 / SOURCE_INTEGRITY_BLOCKED / BROWSER_E2E_NOT_RUN / LIVE_DATA_NOT_VERIFIED`. Vor isoliertem Deployment Ursache der abweichenden `index.html`-Prüfsumme gegen freigegebene Alpha24-Quelle aufklären; nicht blind Referenzhash überschreiben. Keine produktive Änderung.
