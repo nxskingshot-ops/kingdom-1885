@@ -236,3 +236,20 @@ Die tatsächliche Aktivierung, Berechtigung, Dauer und Snapshot-Einrechnung sind
 - **Produktivstatus BLOCKED**, bis ausführbare Regressionstests und repräsentative Ingame-Beobachtungen vorliegen.
 - Historische Folgeaufgabe: deterministische Szenarioenumeration und robuste Rangfolge mit Gegenprüfungen implementieren.
 - Quellen im Original-Audit: kingshotwin.com/guides/gameplay/rallies/, kingshothandbook.com/guides/joiner-rules-guide, kingshot.wiki/guides/lethality-attack-defense-health-what-they-actually-do, kingshotguide.org/data-center/kingshot-pets-database, kingshotmastery.com/masters/valora, kingshotdata.com/masters/valora. **Hier nur Originalreferenzen konserviert, nicht live erneut bestätigt.**
+
+
+## Audit-Nachtrag A05 — Vier visuell belegte Frakinator-/Optimizer-Ausgaben (29.10.2026)
+**Quelle:** vier vom Projektverantwortlichen im Chat bereitgestellte Screenshots am 29.10.2026. Sichtbar sind ternäre Heatmaps mit Beschriftung `Average damage over 50 sims`, Marker `Best` und Lead-/Joiner-Konfiguration. **Werkzeugname nicht aus den Bildern beweisbar** (Frakinator oder anderer Formation Optimizer); Zuordnung vorerst `unverified_tool_origin`. Die Heatmap-Achsen zeigen Infanterie, Kavallerie und Bogenschützen. Verhältnis-Reihenfolge hier **Infanterie/Kavallerie/Bogenschützen**. Bilder selbst sind Chat-Originalbelege, nicht durch dieses Markdown als Binärdateien ins Repository übertragen.
+
+| Fall | Sichtbare Quelle | Lead-Helden | Attack factors | Truppensplit (I/K/B) | Joiner | Squad | Valora | Best I/K/B | Farbskala mittlerer Schaden / 50 Sims |
+|---|---|---|---|---|---|---:|---:|---|---|
+| A | nykro, 17.10.2026 21:07 | Amadeus/Petra/Saul | 29.66/37.26/35.86 | 1,800/27,000/61,200 | Chenko/Amane/Yeonwoo/None | 90,000 | 27% | **2/30/68** | ca. 2.8M–27.6M |
+| B | An Mórrígan, 17.10.2026 14:53 | Zoe/Petra/Marlin | 43.28/45.53/44.29 | 3,000/29,000/68,000 | Chenko/Chenko/Amane/Amane | 100,000 | 18% | **3/29/68** | ca. 3.2M–31.5M |
+| C | Screenshot ohne erkennbare Autor-/Zeitzeile | Zoe/Petra/Marlin | 77.85/91.71/93.90 | 3,192/44,687/111,719 | Chenko/Yeonwoo/Amane/Hilde | 159,598 | 30% | **2/28/70** | ca. 6.9M–69.1M |
+| D | Screenshot ohne erkennbare Autor-/Zeitzeile | Zoe/Petra/Marlin | 77.85/91.71/93.90 | 3,100/41,850/110,050 | Chenko/Chenko/Amane/Amane | 155,000 | 24% | **2/27/71** | ca. 9.7M–96.9M |
+
+**Wichtige Präzisierung:** Die Legende `Average damage over 50 sims` belegt **50 Simulationen je visualisiertem Modellpunkt laut Bildbeschriftung**, nicht die Anzahl aller Rasterpunkte, die Gesamtzahl aller Läufe oder die reale Trefferquote. Die Legenden-Minima/-Maxima sind abgelesene Skalenwerte, **nicht** die separat ausgewiesenen exakten Best-Point-Damage-Werte. Die `Troop split`-Zahlen sind die vom Tool ausgegebenen Einheiten, die `Best`-Werte ihre gerundeten Prozentanteile.
+
+**Befund:** Die vier sichtbaren Modell-Optima liegen eng beieinander (I 2–3 %, K 27–30 %, B 68–71 %). Das ist eine **interessante modellinterne Konsistenz**, aber kein Beleg für eine allgemeingültige Kingshot-Formation: Helden, Skill-Stacking, Valora-Punktebuff, Event, Gegner, Truppentiers, Modellformel, Rasterauflösung und reale Kampfberichte sind nicht vollständig offengelegt. Die höheren Schadensskalen in C/D sind wegen anderer Stats, Kapazitäten, Joiner und Boni **nicht kausal miteinander vergleichbar**.
+
+**Nächster Prüfschritt:** tatsächlichen Tool-/Quellcode und Eingabedatensatz identifizieren, Seed/Simulationsumfang/Parameter nachstellen, Best-Point-Damage numerisch reproduzieren und mit realen Bear-Reports gegenprüfen. **Keine globale 2/28/70-Empfehlung** ohne diesen Nachweis. Quelle weiterhin als vom Nutzer gelieferter externer Ergebnisbeleg klassifizieren.
