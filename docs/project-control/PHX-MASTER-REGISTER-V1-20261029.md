@@ -293,3 +293,23 @@ Die Dateinamen beziehen sich auf `data/*.json` im genannten ZIP; ein Eintrag im 
 - **Technische Freigabe:** aktuelle Source-to-Live-Code-Parität, R11-Atlas-E2E, produktionsnahe Restore-Nachweise und aktuelles Deployment bleiben offen.
 - **Nicht behaupten:** alle historischen Chats, sämtliche Backups, alle externen Webseiten oder alle jemals berechneten Simulationsergebnisse seien lückenlos abgeglichen.
 - **Nächster Gate:** deduplizierter, versionierter Einzeldatei-/Ergebnisindex mit SHA256 und Nachweisstatus; danach zielgerichtete Validierung und gesonderte Integrationsfreigabe.
+
+
+## Audit-Nachtrag A08 — SHA-256-Datei- und Archivindex (29.10.2026)
+**Neu tatsächlich berechnet:** neun lokal gemountete ZIP-Archive aus `/mnt/data`; alle ZIPs vollständig geöffnet, pro Archiv SHA-256 über die ZIP-Bytes und pro enthaltenem regulären Dateieintrag SHA-256 über die dekomprimierten Bytes berechnet. Vollständiger maschinenlesbarer Index: `PHX_A08_SHA256_FILE_INDEX_20261029.json` als lokales Gesprächsartefakt (263.287 Bytes; **noch nicht als Datei ins GitHub-Repo übertragen**). Umfang: **1.110 Dateivorkommen, 632 unterschiedliche Inhalts-SHA-256, 464 Hash-Gruppen mit mindestens zwei Vorkommen**. Verzeichniseinträge sind aus der Dateizählung ausgeschlossen. Diese Zahlen sind **keine Aussage über 632 Features**.
+
+| Archiv | reguläre Dateien | Archiv-SHA-256 (Präfix) |
+|---|---:|---|
+| `PHALANX_M00_BACKUP_MIT_GATE_REGEL_20261029.zip` | 3 | `0598d0bd5e71` |
+| `PHALANX_M00_MIT_M01_PYLON_FOUNDATION_20261029.zip` | 4 | `9beddc5fd26f` |
+| `PHALANX_M00_MIT_PYLON_CONNECTOR_REGEL_20261029.zip` | 2 | `05d8a3448637` |
+| `PHALANX_M00_PYLON_V2_ERGAENZUNG_20261029.zip` | 3 | `639b02087980` |
+| `PHALANX_WIEDERHERSTELLUNGSPAKET_2026-10-29.zip` | 5 | `7559384c07c4` |
+| `PHALANX_WIEDERHERSTELLUNGSPAKET_MIT_PRUEFREGISTER_2026-10-29.zip` | 6 | `5c99402a3f55` |
+| `PHX_R11_ATLAS_CORE_V2_LOCAL_BUILD_20261029.zip` | 24 | `6b881b9730e5` |
+| `kingdom-1885-main (1).zip` | 461 | `0c0e20b916f9` |
+| `kingdom-1885-work-phx-version-hygiene-20261021 (2).zip` | 602 | `bd8b7ac4073e` |
+
+**Quellen-Differenz zwischen den zwei historischen Repository-ZIPs (vergleichbare relative Dateipfade):** 15 nur im Main-Archiv, 156 nur im Hygiene-Archiv, drei gleiche relative Pfade mit unterschiedlichem Inhalt. Die beiden ZIPs sind **nicht austauschbar**; kein Restore darf eines ungeprüft durch das andere ersetzen.
+
+**Abgrenzung:** Dieser Audit bestätigt lokale Dateiintegrität und Duplikate. Er beweist **nicht**, dass Remote-GitHub, Google-Drive-Backups, Supabase-Daten, Vercel/Cloudflare-Deployments oder alle älteren Chats denselben Stand haben. Kein Merge/Deploy/Produktivzugriff. Nächster Gate: kanonische Zuordnung je Datei/Version, aktuelle Remote-Parität und Ergebnis-/Formelvalidierung.
