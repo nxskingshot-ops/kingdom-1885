@@ -147,3 +147,57 @@ Referenz `PHALANX_IDEA_TROOP_RATIO_CALCULATOR_2026-10-13.md`: Bear 1 Lead **plus
 3. Helden/Skills, Pets, Masters, Forschung, Charms, Gear, Eventpunkte und Rally-Skill-Stacking gezielt nachqualifizieren.
 4. PYLON/True Power dürfen nur geprüfte Regeln als Fakten ausgeben; ungeprüfte Modelle ausdrücklich als Hypothese kennzeichnen.
 5. Keine Implementierung allein aufgrund eines Ideen-Eintrags; geschützte Daten/Rollen und bestehende FREEZEs bleiben verbindlich.
+
+
+## Audit-Nachtrag A03 — Berechnungen, Simulationen, Annahmen und Ergebnisse (29.10.2026)
+**Originalquelle bytegenau geöffnet:** lokales Archiv `PHALANX_BACKUP_2026-10-29/kingdom-1885-work-phx-version-hygiene-20261021 (2).zip`, historischer Stand 21.10.2026. Die unten genannten Dateien sind daraus direkt gelesen, nicht nur aus Chat-Zusammenfassungen erschlossen. **Nicht behaupten, dass damit sämtliche jemals ausgeführten Simulationsläufe oder Ergebnisse rekonstruiert sind.**
+
+### A03-01 Monte Carlo V2 — reproduzierbare Laufzeitprüfung
+Quellen: `src/phalanx-monte-carlo-v2.js`, `tests/phalanx-monte-carlo-v2.test.js`, `.github/workflows/phalanx-monte-carlo-v2.yml`; in isoliertem lokalen Verzeichnis aus dem ZIP extrahiert. Node v22.16.0: Testdatei erfolgreich, Ausgabe `11 Monte Carlo assertions passed` (zusätzlich nach dieser Ausgabe weitere Assertions ohne Fehler). Kein Produktivcode verändert.
+
+**Modell:** seeded linear congruential RNG (Default Seed 1885); pro Trial 1–1000 Runden, 1–1.000.000 Trials, 1–20 Skills, individuelle Wahrscheinlichkeit, abstrakter Bonus, Cooldown. Abhängigkeit `independent` (separate Zufallsziehungen) oder `shared` (gemeinsame Zufallsziehung pro Runde). Ergebnisse mean, SD, SE, p05, Median, p95, meanTriggers. Score = Summe ausgelöster abstrakter Skill-Boni; **keine Kingshot-Schadens- oder Siegformel**.
+
+**Neu reproduziert am 29.10.2026:** je 100.000 Trials, 1 Runde, 4 Skills mit `chance=0.4, bonus=1, cooldown=0`, Seed 1885:
+| Modus | Mittel | SD | SE | p05 | Median | p95 | mittlere Trigger |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| independent | 1.59841 | 0.9836948063 | 0.0031107161 | 0 | 2 | 3 | 1.59841 |
+| shared | 1.60108 | 1.9598119383 | 0.0061974695 | 0 | 0 | 4 | 1.60108 |
+Interpretation: bei gleichem Erwartungswert erhöht gemeinsame Auslösung die Streuung; dies belegt **nur die Modellarithmetik**.
+
+**Analytische Kontrollwerte bei 4 unabhängigen Bernoulli-Skills p=0.4:** `E[X]=4*0.4=1.6`; `Var[X]=4*0.4*0.6=0.96`, SD=sqrt(0.96)≈0.9798; `P(any)=1-0.6^4=0.8704`; `P(all)=0.4^4=0.0256`. Bei vollständig gemeinsamer Auslösung `E[X]=1.6`, `Var[X]=16*0.4*0.6=3.84`, SD≈1.9596; `P(any)=P(all)=0.4`. Die Annahme der Unabhängigkeit ist für Kingshot nicht belegt.
+
+### A03-02 Sensitivitätsmodell V3 — archivierte Testergebnisse
+Quelle `data/phalanx-combat-sensitivity-v3-2026-10-12.json`: `MATHEMATICALLY_TESTED_NOT_GAME_CALIBRATED`; historisch 12 vorherige + 6 neue = 18 bestandene, 0 fehlgeschlagene Tests laut JSON (nicht alle 18 erneut unabhängig ausgeführt).
+- Vier hypothetische Joiner-Boni zu je +25 %: alle in einer additiven Gruppe Faktor **2.0**; zwei Gruppen zu je zwei Faktor **2.25**; vier unabhängige multiplikative Gruppen Faktor **2.44140625**. Die unterschiedliche Gruppierung ändert das theoretische Optimum; reale `effect_op`-IDs ungeprüft.
+- Unabhängige Proc-Skills p=0.4, n=4: mindestens einer **87.04 %**, alle vier **2.56 %**, erwartete Auslösungen **1.6** je Runde; kein Ingame-Beleg.
+- Hypothetischer Pet-Proxy bei +10 Prozentpunkten Angriff und Lethality: Ausgang ATK/LET 50/50 → **13.7778 %**; 200/150 → **7.4667 %**; 500/400 → **3.7 %**; 1000/1000 → **1.8264 %**. Nur bei der Modellannahme, dass die beiden Boni in den angezeigten Prozentpunkten additiv eingehen und nicht bereits im Snapshot stecken.
+- Historischer Freigabestatus `BLOCKED`.
+
+### A03-03 Combat Qualification V2 — archivierte Szenariorechnung
+Quelle `data/phalanx-combat-qualification-v2-2026-10-12.json`, Urteil `qualified_relative_comparison_only`. Bei vier Joiner-Boni à 25 % und genau zwei angenommene Gruppen:
+- Gruppe A/B = 0/4 → Faktor 2.0000, Referenz 0 %
+- 1/3 → Faktor 2.1875, gegenüber Referenz +9.38 % (gerundet)
+- 2/2 → Faktor 2.2500, +12.5 %
+- 3/1 → Faktor 2.1875, +9.38 %
+- 4/0 → Faktor 2.0000, Referenz 0 %
+Hypothetische Pet-Fälle laut Datei: ATK/LET 200/150 → Grundfaktor 7.5, Aktivfaktor 8.06, +7.4667 %; 50/50 → 2.25/2.56, +13.7778 %; 500/400 → 30/31.11, +3.7 %. **Kein nachgewiesener Kampfschaden**.
+
+### A03-04 Versionierte Formelsammlung — Original-Definitionen
+Quellen `data/phalanx-calculation-database-v1-2026-10-12.json`, `data/phalanx-combat-formulas-v1-2026-10-12.json`, `data/phalanx-combat-modifier-engine-v1-2026-10-12.json`.
+- `attack_lethality = (1+ATK_pct/100)*(1+LET_pct/100)`.
+- `formation_damage_proxy = leaderFactor*SUM((1+ATK_i/100)*(1+LET_i/100)*sqrt(fraction_i*rallyCapacity)*troopWeight_i)`; Gewichte Infanterie 1/3, Kavallerie 1, Bogenschützen 1.47. Nur relative Community-Näherung.
+- `effectiveAttack = baseAttack*(1+attackPct/100)*baseLethality*(1+lethalityPct/100)/100`.
+- `effectiveDefense = baseDefense*(1+defensePct/100)*baseHealth*(1+healthPct/100)/100`.
+- `armyFactor = sqrt(troopTypeCount*min(totalOwnTroops,totalEnemyTroops))`.
+- `skillMultiplier = product(1+sum(same_effect_op_bonus_pct)/100)` über hypothetisch unabhängige Gruppen.
+- Gear `enhanced = base+(level/100)*(max-base)`; `final=enhanced*(1+0.1*masteryLevel)`; `weightedGearScore=finalStat*strategicWeight` (Spielerpriorität, kein Spielbonus).
+- `xp_upgrade_roi=statGain*strategicWeight*masteryMultiplier/xpCost`; `normalized_resource_roi=valueGain/(resourcesUsed/resourcesAvailable*100)` (je Ressource getrennt).
+- `speedSeconds=baseSeconds/(1+speedPct/100)`; `rss_cost=baseCost*(1-min(90,costDownPct)/100)`, Truegold ausgenommen. Grenzen und Mechanik vor Anwendung verifizieren.
+- Gear-Referenzwerte im JSON: epic base .09, +.0021/Level bis 80; mythic .15, +.0035/Level bis 100; red ab Level 100 base .5, +.005/Level bis 200; Mastery +.1/Level bis 20, Schmiedehammer-Kosten pro Zielstufe `10*level`, Summe 0→10 550, 0→20 2100, Mythic Gear 10→20 55. **Historische Community-Parameter, keine aktuelle Kingshot-Bestätigung.**
+- Combat modifier engine unterscheidet `snapshot` (nur noch nicht enthaltene Modifikatoren ergänzen) von `reconstruct` (Basis plus jeden Effekt genau einmal). Doppelzählung vermeiden; pro Effekt Quelle, Modus, Akteur, Timing, Dauer, Stacking-Gruppe, Confidence dokumentieren.
+
+### A03-05 Nicht nachgewiesene Ergebnisse und vollständige Historie
+- Die Datei `phalanx-monte-carlo-lab-alpha31-2026-10-12.html` und die Team-/Battle-/Joiner-Optimizer-Previews liegen im historischen ZIP. Existenz ist nachgewiesen, **deren sämtliche gespeicherten Szenarien und Testläufe wurden nicht einzeln rekonstruiert**.
+- Weitere historische JSONs: `phalanx-combat-verification-audit-v1`, `phalanx-mechanics-audit`, `phalanx-rally-mechanics-source-audit`, `phalanx-robust-optimizer-policy-v1`, `phalanx-sensitivity-2026-10-12`; ihre Namen und Inhalte teilweise gelesen. Originale nicht überschreiben.
+- Keine belastbare Gesamtzahl aller früheren Simulationsläufe oder deren Ingame-Treffergenauigkeit; insbesondere keine Tausenderzahl als historische Tatsache behaupten. Die **jetzt ausgeführten 200.000 Trials** sind reproduzierbare neue Modellläufe, nicht historische Spielkämpfe.
+- Fachliche Freigabe: **BLOCKED** bis Ingame-Quellen, Hero-/Skill-Level, Timing/Stacking, Battle Reports und Sensitivität gegen reale Ergebnisse validiert sind. PYLON darf diese Daten nur als Annahmen/relative Modelle verwenden.
