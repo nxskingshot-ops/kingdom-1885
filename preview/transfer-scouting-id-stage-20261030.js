@@ -320,7 +320,7 @@ setInterval(()=>{if(!$('private').hidden&&$('modal').hidden&&!document.hidden)lo
 
 /* PHX ID STAGE: additive read-only feature; original LIVE V5 logic above remains unchanged. */
 const phxIdForm=$('phxIdForm'),phxIdStatus=$('phxIdStatus'),phxIdResult=$('phxIdResult');
-const phxBridgeUrl=''; // Intentionally empty until an authenticated, rate-limited bridge is deployed.
+const phxBridgeUrl=URL+'/functions/v1/phalanx-transfer-id-bridge-stage-20261030'; // Staging only; browser CORS requires verified deployment.
 function phxField(label,value){const cell=document.createElement('div');cell.className='detail';const key=document.createElement('span');key.textContent=label;const val=document.createElement('b');val.textContent=value===null||value===undefined||value===''?'Nicht verfügbar':String(value);cell.append(key,val);phxIdResult.append(cell);}
 phxIdForm.addEventListener('submit',async e=>{
  e.preventDefault();phxIdResult.replaceChildren();
@@ -335,7 +335,7 @@ phxIdForm.addEventListener('submit',async e=>{
   const endpoint=new URL(phxBridgeUrl);if(endpoint.protocol!=='https:')throw Error('HTTPS erforderlich.');
   endpoint.searchParams.set('governorId',id);
   const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),100000);
-  let response;try{response=await fetch(endpoint,{headers:{Authorization:'Bearer '+session.access_token},signal:controller.signal,cache:'no-store'});}finally{clearTimeout(timeout);}
+  let response;try{response=await fetch(endpoint,{headers:{Authorization:'Bearer '+session.access_token,apikey:KEY},signal:controller.signal,cache:'no-store'});}finally{clearTimeout(timeout);}
   if(!response.ok)throw Error(response.status===403?'Keine Berechtigung.':'Abfrage nicht verfügbar ('+response.status+').');
   const payload=await response.json();if(payload.ok!==true||String(payload.governorId)!==id)throw Error('Spieleridentität nicht bestätigt.');const p=payload.player||{};
   phxField('Governor-ID',id);phxField('Spielername',p.name||p.playerName||p.player_name);
