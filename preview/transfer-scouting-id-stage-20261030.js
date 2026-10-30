@@ -1,3 +1,4 @@
+import { candidateFromLookup, duplicateLookupFilter } from './transfer-id-candidate-20261030.js';
 import { formatPlayerNumber, formatPlayerUtc, formatPlayerSection, playerLookupError } from './transfer-id-display-20261030.js';
 const SUPABASE_URL='https://hcjrdofkdkasznywvcxo.supabase.co';
 const KEY='sb_publishable_hkqBaMme70g2f3wcxvaTKg_FczqkpCh';
@@ -32,7 +33,7 @@ $('kingdomNotes').innerHTML=[...kds].sort((a,b)=>b[1]-a[1]).slice(0,5).map(([kd,
  renderExternalIntel();
 }
 async function load(){const {data,error}=await db.from('transfer_candidates').select('*').order('updated_at',{ascending:false}).limit(1000);
-if(error){$('count').textContent='Access or database error: '+error.message;return;}players=data||[];chosen=new Set([...chosen].filter(id=>players.some(p=>p.candidate_id===id)));if(!players.some(p=>p.candidate_id===active))active=players[0]?.candidate_id||null;render();if(dossierOpen)renderDossier();}
+if(error){$('count').textContent='Access or database error: '+error.message;return false;}players=data||[];chosen=new Set([...chosen].filter(id=>players.some(p=>p.candidate_id===id)));if(!players.some(p=>p.candidate_id===active))active=players[0]?.candidate_id||null;render();if(dossierOpen)renderDossier();return true;}
 async function check(){try{const {data:{user},error}=await db.auth.getUser();if(error||!user){showLogin();return;}
 const {data:membership,error:merror}=await db.from('nxs_memberships').select('role,active,expires_at').eq('user_id',user.id).maybeSingle();
 if(merror||!membership?.active||!['member','r4','r5','admin'].includes(membership.role)||(membership.expires_at&&Date.parse(membership.expires_at)<=Date.now())){showLogin('Approved NXS membership required.');return;}
@@ -61,7 +62,7 @@ function openEditor(p){
  $('candidateForm').elements.namedItem('trial_source').value=p?.metadata?.mystic_trial_source??'';
  $('modal').hidden=false;
 }
-$('newCandidate').onclick=()=>openEditor(null);
+$('newCandidate').onclick=()=>{showWorkspace('phxIdPanel');$('phxGovernorId').focus();};
 $('editCandidate').onclick=()=>openEditor(players.find(p=>p.candidate_id===active));
 function closeEditor(){$('modal').hidden=true}
 $('cancelEdit').onclick=closeEditor;$('closeEdit').onclick=closeEditor;
@@ -206,7 +207,7 @@ function renderDossier(){
  const root=$('dossierContent');root.replaceChildren();
  const m=p.metadata||{},t=m.mystic_trials||{},labels={coliseum:'Heroes & Hero Gear',forest:'Pets',crystal:'Governor Charms',knowledge:'Research',molten:'Governor Gear',radiant:'Mixed · Radiant Spire'};
  if(dossierTab==='identity')root.append(dossierGrid('Identity & Power',[
-  ['Player name',p.player_name],['Player ID',m.player_id],['Kingdom',p.kingdom],['Alliance',p.alliance],['Castle / Truegold',p.castle_level],
+  ['Player name',p.player_name],['Player ID',m.governor_id||m.player_id],['Kingdom',p.kingdom],['Alliance',p.alliance],['Castle / Truegold',p.castle_level],
   ['Total Power',p.power_m==null?null:fmt(p.power_m)+'M'],['Previous name',m.previous_name],['Previous kingdom',m.previous_kingdom],
   ['Updated on',p.updated_at?new Date(p.updated_at).toLocaleDateString('en-GB'):'Unknown']]));
  if(dossierTab==='development'){
@@ -315,7 +316,6 @@ $('returnToFictionalDossier').onclick=()=>{
  openFictionalDossier();
 };
 
-check();
 setInterval(()=>{if(!$('private').hidden&&$('modal').hidden&&!document.hidden)load()},20000);
 
 
@@ -324,7 +324,7 @@ const phxIdForm=$('phxIdForm'),phxIdStatus=$('phxIdStatus'),phxIdResult=$('phxId
 const phxBridgeUrl=SUPABASE_URL+'/functions/v1/phalanx-transfer-id-bridge-stage-20261030'; // Staging only; browser CORS requires verified deployment.
 function phxField(label,value){const cell=document.createElement('div');cell.className='detail';const key=document.createElement('span');key.textContent=label;const val=document.createElement('b');val.textContent=value===null||value===undefined||value===''?'Nicht verfügbar':String(value);cell.append(key,val);phxIdResult.append(cell);}
 phxIdForm.addEventListener('submit',async e=>{
- e.preventDefault();phxIdResult.replaceChildren();
+ e.preventDefault();if(phxIdForm.querySelector('button').disabled)return;phxIdResult.replaceChildren();clearLookupCandidate();
  if($('private').hidden){phxIdStatus.textContent='Anmeldung erforderlich.';return;}
  const id=$('phxGovernorId').value.trim();
  if(!/^[1-9][0-9]{0,15}$/.test(id)){phxIdStatus.textContent='Bitte gültige Governor-ID eingeben.';return;}
@@ -345,6 +345,7 @@ phxIdForm.addEventListener('submit',async e=>{
   const arena=payload.arenaSquad;phxField('Arena-Verteidigungsteam',formatPlayerSection(arena?.status));if(Array.isArray(arena?.heroes))arena.heroes.forEach((hero,i)=>phxField('Arena-Held '+(i+1),[hero.name,hero.level==null?null:'Level '+hero.level,(hero.stars??hero.star)==null?null:(hero.stars??hero.star)+' Sterne'].filter(Boolean).join(' · ')||'Unbekannt'));
   const ranks=payload.ranks;phxField('Ranglisten',formatPlayerSection(ranks?.status));if(ranks?.values)for(const [key,label] of [['power_rank','Power-Rang'],['kills_rank','Kills-Rang'],['migrant_rank','Transfer-Rang'],['mystic_trial','Mystic Trial']])phxField(label,formatPlayerNumber(ranks.values[key]));
   phxIdStatus.textContent='Schreibgeschützte Abfrage abgeschlossen. Keine Kandidatendaten verändert.';
+  offerLookupCandidate(payload,id);
  }catch(error){phxIdStatus.textContent=error.name==='AbortError'?'Die Abfrage hat zu lange gedauert. Bitte später erneut versuchen.':error instanceof TypeError?'Die Verbindung ist unterbrochen. Bitte die Internetverbindung prüfen.':error.message;}
  finally{button.disabled=false;}
 });
@@ -382,3 +383,35 @@ showWorkspace('scoutingBoard');
 const advanced=document.createElement('details');advanced.className='advanced-fields';const summary=document.createElement('summary');summary.textContent='Weitere Details · Rolle, Kontakt & Entwicklung';advanced.append(summary);
 for(const label of [...$('candidateForm').querySelectorAll('.form-grid>label')]){if(!['player_name','kingdom'].includes(label.querySelector('[name]')?.name))advanced.append(label);}
 advanced.append($('candidateForm').querySelector('fieldset'));$('candidateForm').insertBefore(advanced,$('candidateForm').querySelector('label:has(textarea)'));
+
+/* ID-first candidate onboarding. Lookup stays read-only; the explicit button is the write action. */
+let lookupCandidate=null,lookupSaving=false;
+function clearLookupCandidate(){lookupCandidate=null;$('workspaceNotice').textContent='';$('phxAdoptCandidate').hidden=true;$('phxAdoptStatus').textContent='';}
+function offerLookupCandidate(payload,id){
+ if($('phxGovernorId').value.trim()!==id)return;
+ try{lookupCandidate=candidateFromLookup(payload,id);$('phxAdoptCandidate').hidden=!canEdit;
+ $('phxAdoptStatus').textContent=canEdit?'Daten prüfen und anschließend als Kandidaten übernehmen.':'Nur Lesen: Zum Übernehmen ist eine Recruiter-Berechtigung erforderlich.';
+ }catch(error){clearLookupCandidate();$('phxAdoptStatus').textContent=error.message;}
+}
+$('phxGovernorId').addEventListener('input',clearLookupCandidate);
+$('phxAdoptCandidate').onclick=async()=>{
+ if(lookupSaving)return;
+ const draft=lookupCandidate,id=draft?.metadata.governor_id;
+ if(!canEdit||$('private').hidden||!draft||$('phxGovernorId').value.trim()!==id){clearLookupCandidate();return;}
+ lookupSaving=true;$('phxAdoptCandidate').disabled=true;$('phxGovernorId').disabled=true;phxIdForm.querySelector('button').disabled=true;
+ $('phxAdoptStatus').textContent='Vorhandene Kandidaten werden geprüft …';
+ try{
+  const {data:duplicates,error:readError}=await db.from('transfer_candidates').select('candidate_id,player_name').or(duplicateLookupFilter(id)).limit(1);
+  if(readError)throw Error('Vorhandene Kandidaten konnten nicht geprüft werden. Es wurde nichts gespeichert.');
+  if(duplicates?.length){$('phxAdoptStatus').textContent='Dieser Spieler ist bereits als Kandidat erfasst. Bestehende Daten bleiben unverändert.';return;}
+  const {data:saved,error}=await db.from('transfer_candidates').insert({...draft,updated_at:new Date().toISOString()}).select('candidate_id').maybeSingle();
+  if(error){if(error.code==='23505')throw Error('Dieser Spieler wurde bereits erfasst. Es wurde kein zweiter Eintrag angelegt.');throw Error('Übernahme fehlgeschlagen: '+error.message);}
+  if(!saved?.candidate_id)throw Error('Speichern nicht bestätigt. Vor erneutem Versuch die Kandidatenliste aktualisieren.');
+  active=saved.candidate_id;clearLookupCandidate();
+  const loaded=await load();$('workspaceNotice').textContent=loaded?'Kandidat übernommen. Die Daten wurden gespeichert.':'Kandidat gespeichert. Die Liste konnte noch nicht neu geladen werden; bitte aktualisieren.';
+  showWorkspace('scoutingBoard');
+ }catch(error){$('phxAdoptStatus').textContent=error.message||'Speichern nicht bestätigt. Bitte Liste aktualisieren, bevor du es erneut versuchst.';}
+ finally{lookupSaving=false;$('phxAdoptCandidate').disabled=false;$('phxGovernorId').disabled=false;phxIdForm.querySelector('button').disabled=false;}
+};
+
+check();
