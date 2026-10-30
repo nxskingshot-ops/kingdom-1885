@@ -9,8 +9,8 @@ create table if not exists phx_internal.transfer_id_quota (
 );
 revoke all on schema phx_internal from public, anon, authenticated;
 revoke all on phx_internal.transfer_id_quota from public, anon, authenticated;
--- Function runs as invoker (service_role). No SECURITY DEFINER.
-create or replace function phx_internal.take_transfer_id_quota(p_user uuid)
+-- RPC in exposed public schema, but EXECUTE only for service_role. Invoker security, no privilege escalation.
+create or replace function public.phx_take_transfer_id_quota(p_user uuid)
 returns boolean language plpgsql security invoker set search_path = pg_catalog, phx_internal as $$
 declare v_start timestamptz := date_trunc('hour', now()); v_used integer;
 begin
@@ -22,8 +22,12 @@ begin
   returning used into v_used;
   return v_used is not null;
 end; $$;
-revoke all on function phx_internal.take_transfer_id_quota(uuid) from public, anon, authenticated;
+revoke all on function public.phx_take_transfer_id_quota(uuid) from public, anon, authenticated;
 grant usage on schema phx_internal to service_role;
 grant select,insert,update on phx_internal.transfer_id_quota to service_role;
-grant execute on function phx_internal.take_transfer_id_quota(uuid) to service_role;
--- TODO: retention cleanup and explicit rollback plan before any deployment.
+grant execute on function public.phx_take_transfer_id_quota(uuid) to service_role;
+-- Explicitly deny default PUBLIC execution and authenticated/anon; server uses service_role only.
+-- Retention: old windows may be deleted after 48h via separately approved maintenance.
+-- Rollback: disable bridge first; preserve quota data; only after explicit approval
+-- drop function public.phx_take_transfer_id_quota(uuid) and then private objects.
+-- Preflight: verify public schema is exposed to PostgREST and service_role can invoke RPC.
