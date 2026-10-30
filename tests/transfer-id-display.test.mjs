@@ -1,0 +1,20 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {formatPlayerNumber,formatPlayerUtc,formatPlayerSection,playerLookupError} from '../preview/transfer-id-display-20261030.js';
+test('power and rank formatting preserves zero, groups whole numbers, rejects unknowns',()=>{
+ assert.equal(formatPlayerNumber(232228946),'232.228.946');assert.equal(formatPlayerNumber('1561'),'1.561');assert.equal(formatPlayerNumber(0),'0');
+ for(const x of [null,undefined,'',NaN,Infinity,-1,{},'unknown'])assert.equal(formatPlayerNumber(x),'Nicht verfügbar');
+});
+test('provider Unix seconds, milliseconds and ISO are displayed in explicit UTC',()=>{
+ const expected='30.10.2026 · 20:32:04 UTC';
+ for(const value of [1793392324.6892564,'1793392324.6892564',1793392324689,'2026-10-30T20:32:04.689Z','2026-10-30T21:32:04.689+01:00'])assert.equal(formatPlayerUtc(value),expected);
+});
+test('missing or invalid source dates never display a fabricated capture date',()=>{
+ for(const value of [null,undefined,'','not a date','2026-10-30T20:32:04',{},-1,Infinity,1e30])assert.equal(formatPlayerUtc(value),'Nicht verfügbar');
+});
+test('known section states translated and unknown states remain unconfirmed',()=>{
+ assert.equal(formatPlayerSection('available'),'Vorhanden');assert.equal(formatPlayerSection('empty'),'Keine Einträge');assert.equal(formatPlayerSection('missing'),'Nicht verfügbar');assert.equal(formatPlayerSection('new-provider-state'),'Nicht bestätigt');
+});
+test('not found, access, quota and upstream errors have distinct explanations',()=>{
+ const statuses=[401,403,404,429,502,503,504];assert.equal(new Set(statuses.map(playerLookupError)).size,statuses.length);assert.match(playerLookupError(404),/kein Spieler/);assert.match(playerLookupError(429),/kontingent/);assert.match(playerLookupError(500),/500/);
+});

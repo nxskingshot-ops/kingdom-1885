@@ -1,3 +1,4 @@
+import { formatPlayerNumber, formatPlayerUtc, formatPlayerSection, playerLookupError } from './transfer-id-display-20261030.js';
 const SUPABASE_URL='https://hcjrdofkdkasznywvcxo.supabase.co';
 const KEY='sb_publishable_hkqBaMme70g2f3wcxvaTKg_FczqkpCh';
 const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2');
@@ -328,7 +329,7 @@ phxIdForm.addEventListener('submit',async e=>{
  const id=$('phxGovernorId').value.trim();
  if(!/^[1-9][0-9]{0,15}$/.test(id)){phxIdStatus.textContent='Bitte gültige Governor-ID eingeben.';return;}
  if(!phxBridgeUrl){phxIdStatus.textContent='Server-Vermittler noch nicht bereitgestellt. Keine unsichere Direktverbindung.';return;}
- const button=phxIdForm.querySelector('button');button.disabled=true;
+ const button=phxIdForm.querySelector('button');button.disabled=true;phxIdStatus.textContent='Spieler wird geprüft …';
  try{
   const {data:{session},error}=await db.auth.getSession();
   if(error||!session?.access_token)throw Error('Bitte erneut anmelden.');
@@ -336,14 +337,17 @@ phxIdForm.addEventListener('submit',async e=>{
   endpoint.searchParams.set('governorId',id);
   const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),100000);
   let response;try{response=await fetch(endpoint,{headers:{Authorization:'Bearer '+session.access_token,apikey:KEY},signal:controller.signal,cache:'no-store'});}finally{clearTimeout(timeout);}
-  if(!response.ok)throw Error(response.status===403?'Keine Berechtigung.':'Abfrage nicht verfügbar ('+response.status+').');
+  if(!response.ok)throw Error(playerLookupError(response.status));
   const payload=await response.json();if(payload.ok!==true||String(payload.governorId)!==id)throw Error('Spieleridentität nicht bestätigt.');const p=payload.player||{};
   phxField('Governor-ID',id);phxField('Spielername',p.name||p.playerName||p.player_name);
   phxField('Königreich',p.kingdom);phxField('Allianz',p.alliance);
-  phxField('Gesamtstärke',p.power);phxField('Datenstand UTC',payload.source?.cachedAt);phxField('Abfrage UTC',payload.checkedAtUtc);
-  const arena=payload.arenaSquad;phxField('Arena-Verteidigungsteam',arena?.status||'Nicht bestätigt');if(Array.isArray(arena?.heroes))arena.heroes.forEach((hero,i)=>phxField('Arena-Held '+(i+1),[hero.name,hero.level==null?null:'Level '+hero.level,(hero.stars??hero.star)==null?null:(hero.stars??hero.star)+' Sterne'].filter(Boolean).join(' · ')||'Unbekannt'));
-  const ranks=payload.ranks;phxField('Ranglisten',ranks?.status||'Nicht bestätigt');if(ranks?.values)for(const [key,label] of [['power_rank','Power-Rang'],['kills_rank','Kills-Rang'],['migrant_rank','Transfer-Rang'],['mystic_trial','Mystic Trial']])phxField(label,ranks.values[key]);
+  phxField('Gesamtstärke',formatPlayerNumber(p.power));phxField('Datenstand UTC',formatPlayerUtc(payload.source?.cachedAt));phxField('Abfrage UTC',formatPlayerUtc(payload.checkedAtUtc));
+  const arena=payload.arenaSquad;phxField('Arena-Verteidigungsteam',formatPlayerSection(arena?.status));if(Array.isArray(arena?.heroes))arena.heroes.forEach((hero,i)=>phxField('Arena-Held '+(i+1),[hero.name,hero.level==null?null:'Level '+hero.level,(hero.stars??hero.star)==null?null:(hero.stars??hero.star)+' Sterne'].filter(Boolean).join(' · ')||'Unbekannt'));
+  const ranks=payload.ranks;phxField('Ranglisten',formatPlayerSection(ranks?.status));if(ranks?.values)for(const [key,label] of [['power_rank','Power-Rang'],['kills_rank','Kills-Rang'],['migrant_rank','Transfer-Rang'],['mystic_trial','Mystic Trial']])phxField(label,formatPlayerNumber(ranks.values[key]));
   phxIdStatus.textContent='Schreibgeschützte Abfrage abgeschlossen. Keine Kandidatendaten verändert.';
- }catch(error){phxIdStatus.textContent=error.name==='AbortError'?'Zeitüberschreitung.':error.message;}
+ }catch(error){phxIdStatus.textContent=error.name==='AbortError'?'Die Abfrage hat zu lange gedauert. Bitte später erneut versuchen.':error instanceof TypeError?'Die Verbindung ist unterbrochen. Bitte die Internetverbindung prüfen.':error.message;}
  finally{button.disabled=false;}
 });
+
+// Native section links; existing dossiers keep their own Back navigation.
+document.querySelectorAll('.workspace-nav a').forEach(link=>link.addEventListener('click',()=>{document.querySelectorAll('.workspace-nav a').forEach(item=>{item.classList.toggle('active',item===link);if(item===link)item.setAttribute('aria-current','location');else item.removeAttribute('aria-current');});if(['#scoutingBoard','#externalIntelPanel'].includes(link.hash)){if(dossierOpen)closeDossier();if(demoDossierOpen)closeFictionalDossier();}}));
