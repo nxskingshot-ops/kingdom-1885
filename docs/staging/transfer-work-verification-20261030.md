@@ -141,3 +141,10 @@ Nächster Schritt: tatsächliche V5-Quelle (Referenz-Site appgprj_6ae48f48190881
 - Remaining gap: original browser-local JSON import/backup/restore stays in original V5 Site and is explicitly linked from tools; it is not silently mapped onto protected cloud records. Full local/cloud feature convergence is NOT complete. No claim of full V5 parity or design acceptance.
 - Existing user Android evidence already confirms login/recovery and two real cross-kingdom ID queries with arena and rankings. No new authenticated agent session; no new live candidate CRUD test.
 - Deployment target remains only `phalanx-r11-atlas-preview` (`prj_XRX2lvA6YQ4YtT9GG53vy5dt2Kt5`); Vercel labels this isolated test project's alias slot `production`. Actual PHALANX production/main untouched. Internal fixture files excluded from deployment.
+
+### Deployment result — workspace correction
+- Source commit: `1bb16415f3510e89c24bc382de203e1278b0c819`.
+- Isolated test deployment: `dpl_DMxhGC28XzJekbxPSRkyUMcG3WmN`, READY, alias assigned without error. Immutable URL: https://phalanx-r11-atlas-preview-geljurnsh-matze4428-6040.vercel.app .
+- Browser opened existing authorized HTTPS alias share link successfully; existing login gate visible, module URL confirms `build=phx-v5-workspace-4`. Browser error sample contained extension metadata errors only; not an authenticated application-flow proof.
+- UI fixture files were excluded from the 14-file deployment. No new sharing access or protection changes. Existing share expiry remains unchanged.
+- Body design is awaiting user review; full original local import/backup integration and new authenticated candidate-write tests remain open.
