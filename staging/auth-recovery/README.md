@@ -20,3 +20,7 @@ BESTANDEN: Seite im Browser über genehmigten zeitlich begrenzten Alias-Testzuga
 BLOCKIERT: vorhandene Supabase-Anbindung besitzt keine Auth-Konfigurationsoperation. Browser-Dashboard verlangt separate Anmeldung; sichere browserAuth-Anmeldeauswahl resultierte in declined. Keine Wiederholung, keine Umgehung; frischer Seitenzustand bleibt Dashboard-Sign-in.
 NICHT GETESTET: Redirect-Allowlist, Mailversand/-zustellung, Recovery-Session, Passwortänderung, anschließender App-Login. KEINE E-MAIL VERSENDET, KEIN PASSWORT GEÄNDERT, KEINE AUTH-KONFIGURATION GEÄNDERT.
 Nächster Schritt erst nach vom Nutzer erneut gewähltem Dashboardzugang: exakt Callback-URL lesen/gegebenenfalls autorisiert ergänzen; dann Rücksetzmail an die bekannte Konto-Adresse anfordern. Neues Passwort ausschließlich vom Nutzer selbst eingeben und absenden lassen. Die Mail nicht vor verifiziertem Callback anfordern.
+
+
+### Erneuter vom Nutzer beauftragter Anmeldeversuch
+Nach erneutem Go sichere Supabase-Anmeldeauswahl wieder geöffnet. Ergebnis erneut declined, kein Dashboardzugriff. Kein weiterer automatischer Anmeldeversuch. Callback-Konfiguration unverifiziert; keine E-Mail angefordert, kein Passwort geändert. Bestehende Freigabe bleibt erhalten; Blocker ist die fehlende tatsächliche Dashboard-Anmeldung, keine fehlende Genehmigung.
