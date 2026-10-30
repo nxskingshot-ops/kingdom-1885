@@ -326,7 +326,7 @@ phxIdForm.addEventListener('submit',async e=>{
  e.preventDefault();phxIdResult.replaceChildren();
  if($('private').hidden){phxIdStatus.textContent='Anmeldung erforderlich.';return;}
  const id=$('phxGovernorId').value.trim();
- if(!/^[0-9]{1,16}$/.test(id)||!BigInt(id)){phxIdStatus.textContent='Bitte gültige Governor-ID eingeben.';return;}
+ if(!/^[1-9][0-9]{0,15}$/.test(id)){phxIdStatus.textContent='Bitte gültige Governor-ID eingeben.';return;}
  if(!phxBridgeUrl){phxIdStatus.textContent='Server-Vermittler noch nicht bereitgestellt. Keine unsichere Direktverbindung.';return;}
  const button=phxIdForm.querySelector('button');button.disabled=true;
  try{
@@ -334,15 +334,15 @@ phxIdForm.addEventListener('submit',async e=>{
   if(error||!session?.access_token)throw Error('Bitte erneut anmelden.');
   const endpoint=new URL(phxBridgeUrl);if(endpoint.protocol!=='https:')throw Error('HTTPS erforderlich.');
   endpoint.searchParams.set('governorId',id);
-  const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),12000);
+  const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),100000);
   let response;try{response=await fetch(endpoint,{headers:{Authorization:'Bearer '+session.access_token},signal:controller.signal,cache:'no-store'});}finally{clearTimeout(timeout);}
   if(!response.ok)throw Error(response.status===403?'Keine Berechtigung.':'Abfrage nicht verfügbar ('+response.status+').');
-  const payload=await response.json();const p=payload.player||payload.base||payload;
+  const payload=await response.json();if(payload.ok!==true||String(payload.governorId)!==id)throw Error('Spieleridentität nicht bestätigt.');const p=payload.player||{};
   phxField('Governor-ID',id);phxField('Spielername',p.name||p.playerName||p.player_name);
   phxField('Königreich',p.kingdom);phxField('Allianz',p.alliance);
-  phxField('Gesamtstärke',p.power);phxField('Datenstand UTC',payload.cachedAt);
-  const arena=payload.arenaSquad;phxField('Arena-Verteidigungsteam',arena?.status||'Nicht bestätigt');
-  const ranks=payload.ranks;phxField('Ranglisten',ranks?.status||'Nicht bestätigt');
+  phxField('Gesamtstärke',p.power);phxField('Datenstand UTC',payload.source?.cachedAt);phxField('Abfrage UTC',payload.checkedAtUtc);
+  const arena=payload.arenaSquad;phxField('Arena-Verteidigungsteam',arena?.status||'Nicht bestätigt');if(Array.isArray(arena?.heroes))arena.heroes.forEach((hero,i)=>phxField('Arena-Held '+(i+1),[hero.name,hero.level==null?null:'Level '+hero.level,hero.stars==null?null:hero.stars+' Sterne'].filter(Boolean).join(' · ')||'Unbekannt'));
+  const ranks=payload.ranks;phxField('Ranglisten',ranks?.status||'Nicht bestätigt');if(ranks?.values)for(const [key,label] of [['power_rank','Power-Rang'],['kills_rank','Kills-Rang'],['migrant_rank','Transfer-Rang'],['mystic_trial','Mystic Trial']])phxField(label,ranks.values[key]);
   phxIdStatus.textContent='Schreibgeschützte Abfrage abgeschlossen. Keine Kandidatendaten verändert.';
  }catch(error){phxIdStatus.textContent=error.name==='AbortError'?'Zeitüberschreitung.':error.message;}
  finally{button.disabled=false;}
