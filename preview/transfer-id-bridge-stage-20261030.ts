@@ -1,13 +1,18 @@
 // PHALANX isolated read-only ID bridge. No database writes.
 // Deploy only after rate limiting and authorized browser tests are prepared.
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.0';
-const json=(body,status=200)=>new Response(JSON.stringify(body),{status,headers:{'content-type':'application/json','cache-control':'no-store','vary':'Origin'}});
+const allowedOrigins=new Set(['https://phalanx-r11-atlas-preview.vercel.app']);
+const corsHeaders=(origin)=>origin&&allowedOrigins.has(origin)?{'access-control-allow-origin':origin,'access-control-allow-methods':'GET, OPTIONS','access-control-allow-headers':'authorization, apikey, content-type','access-control-max-age':'600'}:{};
+const json=(body,status=200,origin=null)=>new Response(JSON.stringify(body),{status,headers:{'content-type':'application/json','cache-control':'no-store','vary':'Origin',...corsHeaders(origin)}});
 Deno.serve(async req=>{
- if(req.method!=='GET')return json({ok:false,error:'method_not_allowed'},405);
+ const origin=req.headers.get('origin');
+ if(origin&&!allowedOrigins.has(origin))return json({ok:false,error:'origin_forbidden'},403);
+ if(req.method==='OPTIONS')return new Response(null,{status:204,headers:{...corsHeaders(origin),'vary':'Origin'}});
+ if(req.method!=='GET')return json({ok:false,error:'method_not_allowed'},405,origin);
  const auth=req.headers.get('authorization')||'';
  if(!/^Bearer\s+[^\s]+$/i.test(auth))return json({ok:false,error:'unauthorized'},401);
  const url=new URL(req.url),id=url.searchParams.get('governorId');
- const origin=req.headers.get('origin');if(origin)return json({ok:false,error:'browser_origin_not_enabled'},403);
+
  if(url.searchParams.size!==1||!/^[1-9][0-9]{0,15}$/.test(id||''))return json({ok:false,error:'invalid_governor_id'},400);
  const supabaseUrl=Deno.env.get('SUPABASE_URL'),anon=Deno.env.get('SUPABASE_ANON_KEY'),service=Deno.env.get('SUPABASE_SERVICE_ROLE_KEY'),key=Deno.env.get('MIGHTPULSE_API_KEY');
  if(!supabaseUrl||!anon||!service||!key)return json({ok:false,error:'configuration_unavailable'},503);
