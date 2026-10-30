@@ -18,6 +18,9 @@ Deno.serve(async req=>{
  const {data:membership,error:membershipError}=await admin.from('nxs_memberships').select('role,active,expires_at').eq('user_id',user.id).maybeSingle();
  if(membershipError)return json({ok:false,error:'authorization_unavailable'},503);
  if(!membership||membership.active!==true||!['member','r4','r5','admin'].includes(String(membership.role).toLowerCase())||(membership.expires_at&&Date.parse(membership.expires_at)<=Date.now()))return json({ok:false,error:'forbidden'},403);
+ const {data:quotaGranted,error:quotaError}=await admin.rpc('phx_take_transfer_id_quota',{p_user:user.id});
+ if(quotaError)return json({ok:false,error:'rate_limit_unavailable'},503);
+ if(quotaGranted!==true)return json({ok:false,error:'rate_limit_exceeded'},429);
  // Browser-origin requests remain blocked until a persistent shared rate limiter is installed.
  // This is a server-only staging implementation, not a public browser endpoint.
  try{
