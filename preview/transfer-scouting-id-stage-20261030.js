@@ -1,7 +1,7 @@
-const URL='https://hcjrdofkdkasznywvcxo.supabase.co';
+const SUPABASE_URL='https://hcjrdofkdkasznywvcxo.supabase.co';
 const KEY='sb_publishable_hkqBaMme70g2f3wcxvaTKg_FczqkpCh';
 const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2');
-const db=createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true}});
+const db=createClient(SUPABASE_URL,KEY,{auth:{persistSession:true,autoRefreshToken:true}});
 const $=id=>document.getElementById(id);
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=x=>x==null?'–':Number(x).toLocaleString('en-US',{maximumFractionDigits:1});
@@ -161,7 +161,7 @@ $('loadInternal').onclick=async()=>{
  try{
   const {data:{session},error}=await db.auth.getSession();
   if(error||!session?.access_token)throw Error('Sign in with your approved NEXUS account first.');
-  const response=await fetch(URL+'/functions/v1/nexus-true-power',{method:'GET',
+  const response=await fetch(SUPABASE_URL+'/functions/v1/nexus-true-power',{method:'GET',
     headers:{apikey:KEY,Authorization:'Bearer '+session.access_token},cache:'no-store'});
   const data=await response.json();
   if(!response.ok)throw Error(data.error||'Protected intelligence unavailable.');
@@ -320,7 +320,7 @@ setInterval(()=>{if(!$('private').hidden&&$('modal').hidden&&!document.hidden)lo
 
 /* PHX ID STAGE: additive read-only feature; original LIVE V5 logic above remains unchanged. */
 const phxIdForm=$('phxIdForm'),phxIdStatus=$('phxIdStatus'),phxIdResult=$('phxIdResult');
-const phxBridgeUrl=URL+'/functions/v1/phalanx-transfer-id-bridge-stage-20261030'; // Staging only; browser CORS requires verified deployment.
+const phxBridgeUrl=SUPABASE_URL+'/functions/v1/phalanx-transfer-id-bridge-stage-20261030'; // Staging only; browser CORS requires verified deployment.
 function phxField(label,value){const cell=document.createElement('div');cell.className='detail';const key=document.createElement('span');key.textContent=label;const val=document.createElement('b');val.textContent=value===null||value===undefined||value===''?'Nicht verfügbar':String(value);cell.append(key,val);phxIdResult.append(cell);}
 phxIdForm.addEventListener('submit',async e=>{
  e.preventDefault();phxIdResult.replaceChildren();
@@ -341,7 +341,7 @@ phxIdForm.addEventListener('submit',async e=>{
   phxField('Governor-ID',id);phxField('Spielername',p.name||p.playerName||p.player_name);
   phxField('Königreich',p.kingdom);phxField('Allianz',p.alliance);
   phxField('Gesamtstärke',p.power);phxField('Datenstand UTC',payload.source?.cachedAt);phxField('Abfrage UTC',payload.checkedAtUtc);
-  const arena=payload.arenaSquad;phxField('Arena-Verteidigungsteam',arena?.status||'Nicht bestätigt');if(Array.isArray(arena?.heroes))arena.heroes.forEach((hero,i)=>phxField('Arena-Held '+(i+1),[hero.name,hero.level==null?null:'Level '+hero.level,hero.stars==null?null:hero.stars+' Sterne'].filter(Boolean).join(' · ')||'Unbekannt'));
+  const arena=payload.arenaSquad;phxField('Arena-Verteidigungsteam',arena?.status||'Nicht bestätigt');if(Array.isArray(arena?.heroes))arena.heroes.forEach((hero,i)=>phxField('Arena-Held '+(i+1),[hero.name,hero.level==null?null:'Level '+hero.level,(hero.stars??hero.star)==null?null:(hero.stars??hero.star)+' Sterne'].filter(Boolean).join(' · ')||'Unbekannt'));
   const ranks=payload.ranks;phxField('Ranglisten',ranks?.status||'Nicht bestätigt');if(ranks?.values)for(const [key,label] of [['power_rank','Power-Rang'],['kills_rank','Kills-Rang'],['migrant_rank','Transfer-Rang'],['mystic_trial','Mystic Trial']])phxField(label,ranks.values[key]);
   phxIdStatus.textContent='Schreibgeschützte Abfrage abgeschlossen. Keine Kandidatendaten verändert.';
  }catch(error){phxIdStatus.textContent=error.name==='AbortError'?'Zeitüberschreitung.':error.message;}

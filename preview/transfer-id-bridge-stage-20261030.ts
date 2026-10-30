@@ -1,7 +1,7 @@
 // PHALANX isolated read-only ID bridge. No database writes.
 // Deploy only after rate limiting and authorized browser tests are prepared.
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.0';
-const allowedOrigins=new Set(['https://phalanx-r11-atlas-preview.vercel.app']);
+const allowedOrigins=new Set(['https://phalanx-r11-atlas-preview.vercel.app','https://phalanx-r11-atlas-preview-hwmocd03j-matze4428-6040.vercel.app']);
 const corsHeaders=(origin)=>origin&&allowedOrigins.has(origin)?{'access-control-allow-origin':origin,'access-control-allow-methods':'GET, OPTIONS','access-control-allow-headers':'authorization, apikey, content-type','access-control-max-age':'600'}:{};
 const json=(body,status=200,origin=null)=>new Response(JSON.stringify(body),{status,headers:{'content-type':'application/json','cache-control':'no-store','vary':'Origin',...corsHeaders(origin)}});
 Deno.serve(async req=>{
@@ -27,8 +27,7 @@ Deno.serve(async req=>{
  const {data:quotaGranted,error:quotaError}=await admin.rpc('phx_take_transfer_id_quota',{p_user:user.id});
  if(quotaError)return reply({ok:false,error:'rate_limit_unavailable'},503);
  if(quotaGranted!==true)return reply({ok:false,error:'rate_limit_exceeded'},429);
- // Browser-origin requests remain blocked until a persistent shared rate limiter is installed.
- // This is a server-only staging implementation, not a public browser endpoint.
+ // Authenticated staging browser requests use the existing shared quota RPC.
  try{
   const upstream=await fetch('https://api.mightpulse.com/v1/players/'+id+'?include=base,heroes,ranks',{headers:{'X-Api-Key':key},redirect:'error',signal:AbortSignal.timeout(95000)});
   if(!upstream.ok)return reply({ok:false,error:'upstream_unavailable'},upstream.status===404?404:502);

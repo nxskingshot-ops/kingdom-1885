@@ -63,3 +63,7 @@ D. Before release: end-to-end registration/approval, granular RLS, PYLON IX tool
 
 ## 7. Mandatory workflow / source gate (2026-10-22)
 Before every development change, consult [PHX-A041 Mandatory Source Gate](https://github.com/nxskingshot-ops/kingdom-1885/blob/961000090cade29aa5f686b3fd70b1b4128f031e/docs/project-control/PHX-A041-MANDATORY-SOURCE-GATE-20261022.md) and [PHX-A040 Legacy Cleanup](https://github.com/nxskingshot-ops/kingdom-1885/blob/e07dc2f3ba0dc7f90648cb6c7065a52c8cac16ef/docs/project-control/PHX-A040-WORKFLOW-AND-LEGACY-CLEANUP-20261022.md). Both are currently on the isolated work branch, not main. Verify the latest actual implementation across relevant branches and Library; reuse before rebuilding, classify retired routes, test targeted regressions, preserve originals, and record evidence. These documents are workflow guidance, not proof of integration or CI enforcement. No production action is authorized by these links.
+
+
+## Transfer Scouting Stage — 30.10.2026 Work-Nachtrag
+Aktiver Stage-Branch: stage/transfer-id-lookup-20261030. Siehe docs/staging/transfer-work-verification-20261030.md. Stage-Bridge V2 deployed, CORS live negativ/Preflight geprüft; 9 lokale simulierte Prüfungen bestanden. Browser blockiert. Vercel hat angefordertes Preview im bislang leeren isolierten Projekt als production markiert; keine Gesamtfreigabe. PHALANX-Parent-Hülle, echte Anmeldung, Profile/Arena/Ranks, Candidate-CRUD und Navigation weiterhin offen. Keine Produktions-App ersetzt, kein Merge, keine Datenbankmigration.
