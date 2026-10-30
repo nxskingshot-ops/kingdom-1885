@@ -91,3 +91,34 @@ Quelle: vom Nutzer bereitgestellte Screenshots, keine zusätzliche authentifizie
 Quelle: Nutzer-Screenshot 47728.png. Sichtbare Governor-ID 227802999, erwartete Identität グッチ, Kingdom1555/TYZ; erfolgreiche schreibgeschützte Antwort, fünf Arena-Helden einschließlich unterschiedlicher Sternwerte, Ranglistenwerte sichtbar. Keine erneute API-Abfrage durch Agent. Keine geschützten Profil-/Rangwerte in diesem öffentlichen Register dupliziert.
 BESTANDEN / GERÄTEGETESTET (Nutzernachweise): erfolgreiche Android-Anmeldung und direkte ID-Abfragen für zwei unterschiedliche Governor-IDs aus Kingdom1885 und Kingdom1555; Arena-Basis- und Rangfeld-Darstellung. Damit ist eine funktionierende kingdomübergreifende Browseranbindung für diese zwei IDs nachgewiesen. Keine Garantie für jede beliebige ID, keine unabhängige Verifikation aller Anbieterwerte. Keine weiteren identischen positiven ID-Tests erforderlich.
 OFFEN bleiben: lesbare UTC-/Zahlenformatierung, Statusübersetzung, kanonische PHALANX-Parent-Hülle, Kandidatenverwaltung/Export/Vergleich/Navigation und relevante Fehlerfälle. Weiterhin kein Gesamt-Fertigstatus und keine Freigabe der produktiven PHALANX-App.
+
+
+## Anzeige und Transfer-Gestaltung — 30.10.2026
+Code-Commit: 9b493401faf334b677ec6c0c25803c412b4071e1, ausschließlich Stage-Branch.
+Deployment: dpl_2r2mp9fsia4QvJAXfzGLrYrgo4k9 READY im bestehenden isolierten Projekt phalanx-r11-atlas-preview. Vercel target=production bezeichnet weiterhin nur dessen bekannten Testprojekt-Slot. Kein Merge oder Deployment der produktiven PHALANX-App.
+
+### Quellennachweis / Bestandsschutz
+- V4-/V5-Originalberichte aus Library gelesen; aktueller Transfer-Referenz-Site-ID über list_sites bestätigt: appgprj_6ae48f4819088191a4dbcd688aef551f.
+- Site-Quelle read-only geklont: Source-Head exakt 55f372ddf58fed03e1aa8563c8cba74a943673b4, passende veröffentlichte Version6. Kein Push, keine Änderung oder Veröffentlichung dieser Referenz-Site; git status sauber.
+- Original artwork assets/phalanx-approved-reference.png SHA256 c42c044984b96999f960135c587260d8db5d910b57a7afd02330bb58612e184a bytegenau verifiziert.
+- Originaler Transfer-Header und Icon-Medaillons wiederverwendet; CSS aus phalanx-original.css übernommen, ausschließlich Bild-URL auf die bestehende öffentliche Referenz-Site gesetzt. Keine Bildgenerierung und kein neuer HOME-FREEZE. Externe Grafikabhängigkeit bleibt: https://phalanx-transfer-an.abuzzshark25.chatgpt.site/assets/phalanx-approved-reference.png . Das Paket ist daher nicht als offline/selbstenthaltend zu bezeichnen.
+- Alte beige Stage-Dateien vor Änderung lokal nach recovery/before-display-polish/ gesichert. Vorheriger Git-Head c7abceaa6e56fb6dbadc0245c75a01772fa4f71e und Vercel-Deployment dpl_DSJAHtD6pL61ZHYNrYiFMPAN7v9n bleiben Rückweg. Keine Wiederherstellung/Rollback ausgeführt.
+- Automatischer Quellvergleich: gesamter bestehender JS-Block vor dem ID-Panel (Auth, Membership, Candidate-CRUD, Dossiers, Vergleich) bytegleich, abgesehen von neuem Display-Import. Alle bisherigen DOM-IDs erhalten, keine doppelten IDs.
+- Backend/Bridge/Quota/RLS/Rollen unverändert; keine Profilabfragen oder Kandidaten-Schreibtests dieser Runde. Die zwei Android-Nachweise vorheriger Runde bleiben referenziert, sind kein Android-Nachweis der neuen Gestaltung.
+
+### Implementiert
+- Anzeigeformat für ganze Zahlen mit deutschen Tausenderpunkten, ohne Governor-IDs oder gespeicherte Rohdaten umzuschreiben.
+- Numerische Unixsekunden/Unixmillisekunden und ISO-Zeitwerte werden als DD.MM.YYYY · HH:MM:SS UTC angezeigt; unbekannte/ungültige Zeitwerte bleiben ausdrücklich Nicht verfügbar. Quelle und Abfragezeit bleiben getrennte Felder.
+- verfügbare/fehlende/leere/unbekannte Abschnittsstatus verständlich dargestellt.
+- Distinkte Fehlermeldungen für 401/403/404/429/502/503/504, sichtbarer Ladestatus, Freigabe des Buttons im Fehlerfall erhalten.
+- Dunkle Blau-/Gold-Gestaltung mit vorhandenem Originalmotiv und drei nativen Bereichslinks Spieler-ID / Kandidaten / Vergleich. Bestehende Dossiers öffnen/schließen weiterhin mit bisherigen Funktionen; Bereichslinks zu Board/Vergleich schließen offene Dossiers.
+- Mobile Kandidatenkarten gemäß vorhandener Transfer-Optik; optionale Felder weiterhin im Profil. Link zur bereits vorhandenen Passwort-Wiederherstellung ergänzt.
+- Korrigierter Hinweis: Kandidateneditor speichert echte geschützte Scouting-Datensätze. ID-Lesen bleibt schreibgeschützt; keine falsche Behauptung einer insgesamt schreibgeschützten App.
+
+### Ergebnisse
+BESTANDEN: JavaScript-Syntax; 18 lokale Prüfungen (5 Displayfunktionen, 4 tatsächlicher ID-UI-Handler mit synthetischer Session/Antwort, 9 vorhandene Bridge-/Sicherheitsprüfungen); Bestandsschutz- und DOM-ID-Prüfung.
+BESTANDEN: Browser lokale Login-/Header-Darstellung, optische Inspektion, kein seitlicher Überlauf bei 390px Portrait (390/390), 844px Landscape-iframe (829/829 mit Scrollbar) und Desktop (1348/1348). Nur ausgeloggter Bereich, keine simulierte Voll-App als Live-Nachweis.
+BESTANDEN: neuer HTTPS-Stand im Browser geöffnet, Originalheader, Passwort-vergessen-Link und Login sichtbar. Browserlogs der Runde nur Browserextension-Metadatenfehler, keine beobachteten eigenen Scriptfehler. Neuer Vercel-Stand READY.
+NICHT GETESTET: private neue Gestaltung am echten Android-Gerät, erneuter echter ID-Abruf auf neuem Build, Candidate-CRUD/Laden/Speichern/CSV/Vergleich und private Navigation im Browser. Handlerfälle lokal geprüft, Live-Erfolgsnachweise stammen von den beiden früheren Nutzer-Screenshots.
+NICHT GETESTET: produktiver Restore, Kosten-/Rechnungsprüfung. Keine kostenpflichtigen Ressourcen/Abos bestellt. Kein Datenbankbackup in dieser Runde nötig/erstellt; keine Datenbankänderung.
+OFFEN: Gesamtfunktionstest Kandidaten/Navigation, visuelle Nutzerabnahme der Stage-Gestaltung, vollständiger Unified-Header-/Modul-Integrationsnachweis. Kein Gesamt-Fertigstatus, kein neuer Design-FREEZE.
