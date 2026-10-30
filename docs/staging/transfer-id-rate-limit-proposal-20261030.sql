@@ -14,6 +14,7 @@ create or replace function public.phx_take_transfer_id_quota(p_user uuid)
 returns boolean language plpgsql security invoker set search_path = pg_catalog, phx_internal as $$
 declare v_start timestamptz := date_trunc('hour', now()); v_used integer;
 begin
+  if p_user is null then return false; end if;
   insert into phx_internal.transfer_id_quota(user_id,window_start,used)
   values (p_user,v_start,1)
   on conflict (user_id,window_start) do update
@@ -22,11 +23,12 @@ begin
   returning used into v_used;
   return v_used is not null;
 end; $$;
-revoke all on function public.phx_take_transfer_id_quota(uuid) from public, anon, authenticated;
+revoke all on function public.phx_take_transfer_id_quota(uuid) from PUBLIC, anon, authenticated;
 grant usage on schema phx_internal to service_role;
 grant select,insert,update on phx_internal.transfer_id_quota to service_role;
 grant execute on function public.phx_take_transfer_id_quota(uuid) to service_role;
--- Explicitly deny default PUBLIC execution and authenticated/anon; server uses service_role only.
+-- PostgreSQL PUBLIC is the implicit grant role: revoke must target PUBLIC.
+-- Important: public schema RPC is still privileged; verify actual grants before deployment.
 -- Retention: old windows may be deleted after 48h via separately approved maintenance.
 -- Rollback: disable bridge first; preserve quota data; only after explicit approval
 -- drop function public.phx_take_transfer_id_quota(uuid) and then private objects.
