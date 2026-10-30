@@ -164,3 +164,8 @@ User reported Android screenshot 47730: Add Candidate still required manual name
 - Read-only Supabase inspection confirmed existing text candidate_id PK, JSONB metadata and r4 INSERT/UPDATE/member SELECT policies. No schema, RLS, auth, database data or Edge Function changed by the agent.
 - BACKUP ERSTELLT: local pre-edit HTML/JS copies plus prior stage commit `81be4bcd2bd5026b103cbab737fc95e6f4f8c336`; previous deployment `dpl_DMxhGC28XzJekbxPSRkyUMcG3WmN`. Copy hashes: HTML `789e320cc90f928cbb11c0138b35e1dea4ca07edcbb435003ad725ce1ce5d15b`, JS `100746844b2772aa07943e52af500cd3d1c238ad7723629d72d3c8098bae55e5`. WIEDERHERSTELLUNG NICHT GETESTET.
 - Header markup preserved byte-identically. Remaining original local V5 import/backup/cloud convergence and complete design acceptance still open. No main merge, production PHALANX change, extra cost, protection or rights change.
+
+### Deployment result — ID onboarding
+- Source commit `e49fa01ce7eb51babba0b405c518f1d01d729657`, isolated test deployment `dpl_B3eD14NwAfBA4x8DHyTL9F6BD2aK`, READY with alias assigned and no alias error. Immutable URL: https://phalanx-r11-atlas-preview-h2srbbsnd-matze4428-6040.vercel.app .
+- Existing authorized HTTPS alias/share link opened successfully in browser; module DOM confirms `build=phx-id-onboarding-5`. Login still required. Error sample: extension metadata error only. No new authenticated live save test.
+- 15-file deployment includes new candidate mapping helper, all prior recovery/demo dependencies and corrected CSS; excludes synthetic fixture, test mocks and credentials. Test project/SSO/share duration unchanged. Vercel target label is `production` for this isolated test-project alias slot only.
