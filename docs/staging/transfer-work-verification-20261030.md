@@ -69,3 +69,10 @@ Diese Hinweise sind keine neu nachgewiesene Ausnutzbarkeit und keine Freigabe f�
 
 ## Nächster konkreter Schritt
 Explizite Freigabe für einen höchstens 23 Stunden gültigen Vercel-Testlink ausschließlich dieses isolierten Testprojekts trotz dessen production-Kennzeichnung einholen; App-Login bleibt vorgeschrieben. Danach Browserprüfung fortsetzen, ohne echte Testkandidaten in Produktion zu schreiben. Vollständige kanonische PHALANX-Parent-Hülle anhand der neuesten freigegebenen Originalquelle verifizieren und isoliert integrieren; keinen Ersatzheader erfinden. Positive Auth-/ID-/Arena-/Ranking- und Navigationsprüfungen nachholen. Bis dahin keinen Queen-An-fertigen Testlink behaupten.
+
+
+## Fortsetzung nach ausdrücklichem Go — 30.10.2026
+Die vorherige Freigabefrage bezog sich konkret auf einen maximal 23 Stunden gültigen Vercel-Testlink trotz production-Kennzeichnung im isolierten Testprojekt. Nutzer antwortete Go. Neuer Alias-Testlink mit TTL 82800 Sekunden erstellt; Ablauf laut Vercel 31.10.2026 19:50:53 MEZ. Linktoken bewusst nicht im öffentlichen Register gespeichert.
+BESTANDEN: Genehmigter Link im Cloud-Browser geöffnet; tatsächliche Seite NXS Live Transfer Scouting / Member access sichtbar. Frühere Auto-review-Browserblockade ist für diesen genehmigten Aufruf aufgehoben.
+FEHLGESCHLAGEN: Anmeldung über browserAuth sicher angefordert und abgeschickt; frischer sichtbarer Seitenzustand meldet Invalid login credentials. Keine Credential-Werte ausgelesen oder gespeichert. Kein automatischer Wiederholungsversuch, kein Auth-Reset, keine Rechteänderung.
+NICHT GETESTET bleiben erfolgreiche App-Anmeldung, reale ID-Abfragen, Arena/Ranks, Candidate-Laden/Speichern, Vergleich/Export und private Navigation. Design-Hülle weiterhin offen. Keine weiteren Deployments, keine Kandidaten-Schreibtests oder Datenänderungen in dieser Fortsetzung. Nächster Schritt: Nutzer kann die Anmeldung im bereitgestellten Browser korrigieren; erst nach sichtbarem Login-Erfolg geschützte Browserprüfungen fortsetzen.
