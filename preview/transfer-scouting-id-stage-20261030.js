@@ -246,9 +246,9 @@ function renderDossier(){
 function openDossier(){
  if(!players.some(p=>p.candidate_id===active))return;
  dossierOpen=true;dossierTab='identity';$('scoutingBoard').hidden=true;$('candidateDossier').hidden=false;
- renderDossier();$('candidateDossier').scrollIntoView({block:'start',behavior:'auto'});
+ renderDossier();syncWorkspace();$('candidateDossier').scrollIntoView({block:'start',behavior:'auto'});
 }
-function closeDossier(){dossierOpen=false;$('candidateDossier').hidden=true;$('scoutingBoard').hidden=false}
+function closeDossier(){dossierOpen=false;$('candidateDossier').hidden=true;$('scoutingBoard').hidden=false;syncWorkspace()}
 $('openDossier').onclick=openDossier;
 $('backToBoard').onclick=()=>{closeDossier();$('openDossier').focus()};
 document.querySelectorAll('[data-dossier-tab]').forEach(b=>b.onclick=()=>{dossierTab=b.dataset.dossierTab;renderDossier()});
@@ -350,4 +350,35 @@ phxIdForm.addEventListener('submit',async e=>{
 });
 
 // Native section links; existing dossiers keep their own Back navigation.
-document.querySelectorAll('.workspace-nav a').forEach(link=>link.addEventListener('click',()=>{document.querySelectorAll('.workspace-nav a').forEach(item=>{item.classList.toggle('active',item===link);if(item===link)item.setAttribute('aria-current','location');else item.removeAttribute('aria-current');});if(['#scoutingBoard','#externalIntelPanel'].includes(link.hash)){if(dossierOpen)closeDossier();if(demoDossierOpen)closeFictionalDossier();}}));
+/* V5 progressive workspace adapted to protected cloud IDs. Source: 55f372d. */
+let workspaceView='scoutingBoard',profileOpen=false;
+function syncWorkspace(){
+ const total=players.length, candidateView=workspaceView==='scoutingBoard';
+ $('private').classList.toggle('is-empty',!total);
+ $('candidate-empty').hidden=!!total;
+ $('workspaceStats').hidden=!candidateView||!total||dossierOpen||demoDossierOpen;
+ $('candidate-profile').hidden=!candidateView||!profileOpen||!players.some(p=>p.candidate_id===active);
+ $('scoutingBoard').classList.toggle('profile-open',!$('candidate-profile').hidden);
+ $('compare').disabled=chosen.size<2;$('compare').hidden=total<2;$('csv').hidden=!total;
+ $('addFirstCandidate').hidden=!canEdit;$('readOnlyNotice').hidden=canEdit;
+}
+function showWorkspace(view){
+ if(dossierOpen)closeDossier();if(demoDossierOpen)closeFictionalDossier();
+ workspaceView=view;
+ for(const id of ['scoutingBoard','phxIdPanel','workspace-tools'])$(id).hidden=id!==view;
+ document.querySelector('main').dataset.workspaceView=view;
+ document.querySelectorAll('.workspace-nav [data-view]').forEach(el=>{const on=el.dataset.view===view;el.classList.toggle('active',on);if(on)el.setAttribute('aria-current','page');else el.removeAttribute('aria-current');});
+ syncWorkspace();
+}
+document.querySelectorAll('[data-view]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();showWorkspace(el.dataset.view);}));
+$('addFirstCandidate').onclick=()=>$('newCandidate').click();
+$('toolsCsv').onclick=()=>$('csv').click();
+$('closeProfile').onclick=()=>{profileOpen=false;syncWorkspace();};
+$('rows').addEventListener('click',e=>{if(e.target.closest('tr[data-id]')&&!e.target.closest('input,button')){profileOpen=true;syncWorkspace();}});
+$('rows').addEventListener('change',syncWorkspace);
+$('compareDemoDossier').addEventListener('click',()=>{showWorkspace('workspace-tools');$('externalIntelPanel').scrollIntoView({block:'start'});});
+new MutationObserver(syncWorkspace).observe($('rows'),{childList:true});
+showWorkspace('scoutingBoard');
+const advanced=document.createElement('details');advanced.className='advanced-fields';const summary=document.createElement('summary');summary.textContent='Weitere Details · Rolle, Kontakt & Entwicklung';advanced.append(summary);
+for(const label of [...$('candidateForm').querySelectorAll('.form-grid>label')]){if(!['player_name','kingdom'].includes(label.querySelector('[name]')?.name))advanced.append(label);}
+advanced.append($('candidateForm').querySelector('fieldset'));$('candidateForm').insertBefore(advanced,$('candidateForm').querySelector('label:has(textarea)'));
