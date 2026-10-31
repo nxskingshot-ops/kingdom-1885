@@ -291,3 +291,59 @@ BESTANDEN AUTHENTICATED LIVE:
 BESTANDEN LOCAL: 42 targeted tests (including preservation of newer sources, 24-board fallback join, supplemental board projection, negative auth/quota/origin paths, no automatic candidate write, identity/kingdom rejection, metadata/CSV/dossier/navigation regressions); accepted header markup and stylesheet byte equality, syntax/diff checks. New Stage source parity verified: ID bridge v4 / intelligence v3, verify_jwt=true. Original production backend functions, memberships, roles, GOD MODE, schema, RLS, main and FREEZEs not changed.
 BACKUP CREATED / INTEGRITY VERIFIED / SOURCE RESTORE TESTED: complete-rankings-runtime.bundle, git bundle verify, isolated clone complete-rankings-restore, full fsck; restored HEAD exactly 87e1ecb636567338f213a000c6fbc6769cd0bae1. Prior live runtime d6544a4 and intermediate b602a43/87e1ecb sources remain in Git; prior Stage bridge versions are recoverable from earlier committed files. Deployment rollback and DB restore NOT TESTED; no DB migration or candidate data write required.
 NICHT GETESTET / OPEN: actual Android on this final runtime, actual save/reload of a newly intended real candidate, full real roles/RLS matrix, real multi-candidate comparison, live provider lookup of a genuinely Top-100-unlisted player (synthetic path passed), supplemental provider-outage recovery end-to-end, actual Vercel/Edge rollback and DB restore. Exact game stage labels remain unconverted because provider trial scores are raw values with no verified decoding contract. Full kingdom census is unavailable through Top-100 boards; manual Kingshot Player ID path supports other resolvable #1885 players individually, subject to provider availability/coverage. No entire-app release or Android/design approval claimed.
+
+
+## PHX-TRANSFER-SNAPSHOT-INTEGRATION — verified continuation 2026-10-31
+
+Status: IMPLEMENTIERT / TECHNISCH GETESTET / ISOLIERT BEREITGESTELLT. No complete release or Android approval.
+
+### Source gate and changes
+Initial remote HEAD 881da77ce108afb89911ec199721d492fea8aee1; initial READY deployment dpl_2AVKwfK66n3xHreN3nuFRFZJ5Yrv. Canonical handoff, master register, verification, five attached project sources and A041 at 961000090cade29aa5f686b3fd70b1b4128f031e read. A041 was absent at current Stage path; immutable canonical source read instead. Canonical handoff retires Epic Navigation V2; older attached inventory does not supersede that. No navigation FREEZE changed.
+
+Runtime source commit 3ff9b98e8f587097ee33e41be01593ce123886f2 (tree df82f55a5e1dbcc59fc2c525848722255d5f4173). Preceding integration commit 0241c7211f81507d060bc4e341e6d6ebcf0a8ea7. Local commits 8363424/fbc8ffe have identical source trees; shell push lacked credentials, so GitHub connector committed the same trees and updated only Stage with expected-head guards. Never treat the local SHA as remote HEAD.
+
+Fallback bridge phalanx-transfer-id-snapshot-fallback-stage-20261031 V2 source was read and saved, SHA256 2f2197ee2cbf8118cd7f893c085c1db5c88a5ed2592c7c063d3b68fdf43a1a0f. V3 differs only by addition of the exact previously blocked origin https://phalanx-r11-atlas-preview-g7995somu-matze4428-6040.vercel.app . V3 ACTIVE, verify_jwt=true, re-read source byte-equal. Existing JWT, membership and quota logic retained. Original Stage and production bridges unchanged. New immutable deployment origins are not automatically allowlisted; use the stable test alias.
+
+Ranking rows now visibly distinguish Saved snapshot from Provider data and retain per-entry UTC source times. Comparison shows source times on both sides. Final visual inspection found inherited cream table backgrounds with near-white text; one scoped CSS correction sets navy alternating rows and light text. Browser computed colors #e4edf1 on #0b2031 confirmed; calculated text contrast 13.98:1 and 12.11:1 for alternate rows. Header and original reference stylesheet preserved.
+
+Original recovery files found at staging/auth-recovery/password-recovery.html and .js, shipped unchanged at root. No replacement recovery UI or Auth configuration change.
+
+### Deployment
+Only existing isolated project prj_XRX2lvA6YQ4YtT9GG53vy5dt2Kt5 / phalanx-r11-atlas-preview.
+Final dpl_64C9Sc1rkLgDQQxrDAcbRqMoe2VB READY, aliasError=null.
+Stable tested URL: https://phalanx-r11-atlas-preview.vercel.app/
+Immutable: https://phalanx-r11-atlas-preview-17el4vkiw-matze4428-6040.vercel.app/
+Vercel production target applies only to this authorized isolated test alias. No main merge, productive PHALANX release, schema/RLS/role changes or plan purchase.
+Intermediate dpl_8geQe4GDWPrFqC3RhZ4GwKDiZwcz was replaced only after new browser evidence of unreadable comparison colors. Eleven application/recovery deployed file IDs checked against submitted bytes. No full-app release claim.
+
+### Verification
+| Check | Result | Evidence / limit |
+|---|---|---|
+| Login and session reload | BESTANDEN | Secure browser credential flow; actual shortlist after async hydration and reload |
+| Player ID / correct identity | BESTANDEN | 227802999 resolves グッチ, #1555, TYZ |
+| Provider data / rankings / Arena | BESTANDEN | 24 individual categories and five heroes; power 411282754; player capture 2026-10-31 10:45:29 UTC; supplemental boards 01:11:17 UTC |
+| Per-entry source age | BESTANDEN | Displayed separately; request time never substituted for capture time |
+| Snapshot fallback | BESTANDEN locally; NICHT GETESTET in live outage | Four focused VM groups cover outage, exact UID/governor/kingdom join, provenance, no live overwrite, foreign origin/JWT/role rejection; actual provider did not fail during browser test |
+| Live CORS | BESTANDEN | Exact old immutable origin OPTIONS 204 + exact ACAO; foreign origin 403; missing Authorization gateway 401 |
+| #1885 list and individual comparison | BESTANDEN | 278 available player options, 24 metric rows, FaQu; list based on Top-100 union, not census |
+| Direct internal ID | BESTANDEN | Known second ID 290591005 from original verification resolves KomaR #1885; 232705075 power, capture 10:49:07 UTC. Does not prove truly unlisted-player live coverage |
+| Existing dossier / navigation | BESTANDEN | Saved グッチ dossier, Development, back, Candidates and Tools; transient refresh retains saved 410.7M |
+| CSV | BESTANDEN | Actual browser download parsed: header + one candidate, 12 columns, グッチ retained |
+| Candidate read / reload / integrity | BESTANDEN | Existing single record reloads; before/after read-only DB fingerprint fac74063041a32834ba0f185c6f8ef0d unchanged over tested operations |
+| New candidate save / edit | BESTANDEN synthetic; NICHT GETESTET live | No intended new real candidate supplied; no test data inserted into real shortlist |
+| Roles / membership / quota negatives | BESTANDEN local; NICHT GETESTET complete live matrix | Existing RLS insert/update requires r4, select member; read-only policy audit. No other users' sessions impersonated |
+| Password recovery page / back | BESTANDEN | Original deployed page opens and returns to app |
+| Recovery email / reset | NICHT GETESTET | No unsolicited mail, credential reset or Auth setting changes |
+| Mobile Android | NICHT GETESTET | Prior Android screenshot is historical visual evidence, not this runtime's complete device test |
+| Regressions | BESTANDEN local | 47/47 Node tests, original header/source stylesheet equality, DOM, saved evidence, duplicate/no-auto-write, comparison, CSV, negative access, fallback and freshness |
+| Browser errors | No app error in inspected tail | Extension metadata errors present; not a globally clean console claim |
+| Full kingdom / multi-candidate | NICHT GETESTET / unavailable census | Only one actual saved record; Top-100 union cannot prove all kingdom residents |
+
+Saved snapshots now 3488 rows: 218 per each of 16 boards (14 player, 2 alliance). This is distinct from 24 available provider categories. Alliance boards remain excluded from individual rankings. Trial raw scores have no verified stage decoder and remain scores.
+
+### Backups / recovery / next step
+BACKUP ERSTELLT: before-change full-history Git bundle and final-runtime full-history Git bundle, original live fallback V2 source, test log and this register evidence in PHX_TRANSFER_VERIFIED_RECOVERY_20261031.zip.
+INTEGRITÄT GEPRÜFT: git bundle verify, full fsck in separate clones; restored initial HEAD 881da77ce108afb89911ec199721d492fea8aee1 and final-runtime HEAD 3ff9b98e8f587097ee33e41be01593ce123886f2. Local final tree equals remote runtime tree. ZIP and file SHA256 manifest checked when packaging.
+WIEDERHERSTELLUNG GETESTET: isolated source checkout only. DB restore, real Edge rollback and Vercel rollback NICHT GETESTET.
+No database export, candidate write, destructive operation, permission change, paid resource or main merge performed. No new claim about historical encrypted production backups.
+Remaining gates: real Android use, an intentionally chosen new real candidate save/reload, authorized accounts for full live roles matrix, provider-outage fallback end-to-end, recovery email/reset, true unlisted-player live lookup and multi-candidate live comparison. Existing protected shortlist must not receive synthetic tests.

@@ -83,3 +83,7 @@ Active integration PHX-TRANSFER-FULL-RANKINGS in existing Stage sources. See lat
 
 #### Verified transfer rankings handoff
 Use runtime 87e1ecb636567338f213a000c6fbc6769cd0bae1 / READY dpl_9DtX1SBbLT2yn5UCRTHcM9W86hPK; latest verification section supersedes initial 14-board audit. Mighty Pulse documented bulk read now exposes 24 individual ranking categories and 278 available #1885 UIDs; per-ID KomaR and FaQu comparison plus candidate ranking/Arena dossier live tested. Preserve transient refresh/no candidate overwrite and per-source freshness ordering. Next: user Android review; intended real save/reload, full RLS/roles and multi-candidate gates remain open. No need to redo original source search or rebuild UI.
+
+
+### Transfer snapshot integration — 2026-10-31
+Current verified runtime 3ff9b98e8f587097ee33e41be01593ce123886f2; READY isolated deployment dpl_64C9Sc1rkLgDQQxrDAcbRqMoe2VB at https://phalanx-r11-atlas-preview.vercel.app/ . Fallback bridge V3 exact CORS correction, source provenance labels, readable comparison rows, original recovery files restored to deployment. Authenticated player lookup, 24 categories/five Arena heroes, 278 available #1885 players, FaQu and KomaR comparisons, CSV and unchanged shortlist verified. 47 local tests pass. Read latest PHX-TRANSFER-SNAPSHOT-INTEGRATION verification section for backups and remaining real save/roles/Android/recovery/outage gates. Not a complete release.
