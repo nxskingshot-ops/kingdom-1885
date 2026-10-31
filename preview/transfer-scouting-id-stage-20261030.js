@@ -136,7 +136,15 @@ function renderExternalIntel(){
  const wrap=document.createElement('div');wrap.className='scroll';const table=document.createElement('table');
  const thead=document.createElement('thead'),tr=document.createElement('tr');for(const label of ['Metric',candidate.player_name,internal.player_name]){const th=document.createElement('th');th.textContent=label;tr.append(th);}thead.append(tr);table.append(thead);
  const body=document.createElement('tbody');
- for(const [label,a,b] of rows){const tr=document.createElement('tr');for(const value of [label,a?'Value: '+formatPlayerNumber(a.value)+' · KD rank: '+formatPlayerNumber(a.kingdom_rank)+rankingSourceText(a):'Not available from source',b?'Value: '+formatPlayerNumber(b.value)+' · KD rank: '+formatPlayerNumber(b.kingdom_rank)+rankingSourceText(b):'Not listed in available board']){const td=document.createElement('td');td.textContent=value;tr.append(td);}body.append(tr);}table.append(body);wrap.append(table);box.append(wrap);
+ table.className='ranking-comparison';
+ for(const [label,a,b] of rows){
+  const tr=document.createElement('tr'),metric=document.createElement('th');metric.scope='row';metric.textContent=label;tr.append(metric);
+  for(const [entry,name,missing] of [[a,candidate.player_name,'Not available from source'],[b,internal.player_name,'Not listed in available board']]){
+   const td=document.createElement('td');td.dataset.player=name;renderRankingEvidence(td,entry,missing);tr.append(td);
+  }
+  body.append(tr);
+ }
+ table.append(body);wrap.append(table);box.append(wrap);
  note('Each rank belongs to its own kingdom. Missing Top-100 entries do not mean zero. Scores are not Mystic Trial stages and do not predict battle outcomes.');
  note('Player list coverage: latest available Top-100 player boards, not a complete kingdom census. An unlisted #1885 player can be compared by Kingshot Player ID.');
 }
@@ -234,7 +242,7 @@ function renderDossierSection(){
   ['Saved Total Power',p.power_m==null?null:fmt(p.power_m)+'M'],['Latest fetched Total Power',currentEvidence.has(id)?formatPlayerNumber(evidence?.player?.power):'Open or refresh player evidence'],['Previous name',m.previous_name],['Previous kingdom',m.previous_kingdom],
   ['Updated on',p.updated_at?new Date(p.updated_at).toLocaleDateString('en-GB'):'Unknown']]));
  if(dossierTab==='development'){
-  root.append(dossierGrid('Mighty Pulse Rankings',playerRankingRows(evidence?.ranks?.values)));
+  const rankings=document.createElement('section'),rankingHeading=document.createElement('h3'),rankingGrid=document.createElement('div');rankingHeading.textContent='Player Rankings';rankingGrid.className='dossier-list';appendRankingEntries(rankingGrid,evidence?.ranks?.values,'dossier-cell');rankings.append(rankingHeading,rankingGrid);root.append(rankings);
   root.append(dossierGrid('Arena Squad',(evidence?.arena_squad?.heroes||[]).map((h,i)=>['Hero '+(i+1),[h.name,h.level==null?null:'Level '+h.level,(h.stars??h.star)==null?null:(h.stars??h.star)+' stars'].filter(Boolean).join(' · ')])));
 
   root.append(dossierGrid('Recorded Mystic Trial Stages',Object.entries(labels).map(([key,label])=>[label,stageIndex(t[key])===null?'Not recorded':t[key]])));
@@ -304,6 +312,26 @@ setInterval(()=>{if(!$('private').hidden&&$('modal').hidden&&!document.hidden)lo
 /* PHX ID STAGE: additive read-only feature; original LIVE V5 logic above remains unchanged. */
 const phxIdForm=$('phxIdForm'),phxIdStatus=$('phxIdStatus'),phxIdResult=$('phxIdResult');
 const phxBridgeUrl=SUPABASE_URL+'/functions/v1/phalanx-transfer-id-snapshot-fallback-stage-20261031'; // Staging only; browser CORS requires verified deployment.
+// One compact read-only renderer for lookup, dossier and comparison. Values stay exact.
+function renderRankingEvidence(target,entry,missing='Not available from source'){
+ target.className=(target.className||'')+' ranking-evidence';
+ if(!entry){const unknown=document.createElement('span');unknown.className='ranking-missing';unknown.textContent=missing;target.append(unknown);return;}
+ const value=document.createElement('strong'),rank=document.createElement('small'),details=document.createElement('details'),summary=document.createElement('summary'),source=document.createElement('p');
+ value.className='ranking-value';value.textContent=formatPlayerNumber(entry.value);
+ rank.className='ranking-rank';rank.textContent='Kingdom rank: '+formatPlayerNumber(entry.kingdom_rank);
+ details.className='ranking-source';summary.textContent=entry.source==='saved_snapshot'?'Saved snapshot':'Source & time';source.textContent=rankingSourceText(entry).replace(/^ · /,'');details.append(summary,source);target.append(value,rank,details);
+}
+function appendRankingEntries(target,values,cellClass){
+ const v=values||{},map=playerRankingMap(v);let count=0;
+ const append=(label,entry,missing)=>{const cell=document.createElement('div'),caption=document.createElement('span');cell.className=cellClass;caption.className='ranking-label';caption.textContent=label;cell.append(caption);renderRankingEvidence(cell,entry,missing);target.append(cell);count++;};
+ for(const [key,entry] of Object.entries(map))append(rankingLabels[key]||entry.name,entry);
+ for(const board of Array.isArray(v.boards)?v.boards:[])if(board.status==='not_listed'&&!map[canonicalRankingName(board.name)]){
+  const cell=document.createElement('div'),caption=document.createElement('span'),unknown=document.createElement('span'),details=document.createElement('details'),summary=document.createElement('summary'),source=document.createElement('p');
+  cell.className=cellClass+' ranking-evidence';caption.className='ranking-label';caption.textContent=rankingLabels[board.name]||board.name;unknown.className='ranking-missing';unknown.textContent='Not listed in available Top 100';details.className='ranking-source';summary.textContent=board.source==='saved_snapshot'?'Saved snapshot':'Source & time';source.textContent=rankingSourceText(board).replace(/^ · /,'');details.append(summary,source);cell.append(caption,unknown,details);target.append(cell);count++;
+ }
+ if(!count)append('Rankings',null,'Not available from this source');
+ if(v.board_status==='unavailable'){const note=document.createElement('p');note.className='ranking-status';note.textContent='Additional kingdom boards unavailable; available player standings remain displayed.';target.append(note);}
+}
 function phxField(label,value){const cell=document.createElement('div');cell.className='detail';const key=document.createElement('span');key.textContent=label;const val=document.createElement('b');val.textContent=value===null||value===undefined||value===''?'Not available':String(value);cell.append(key,val);phxIdResult.append(cell);return cell;}
 function phxGroup(label){const heading=document.createElement('h4');heading.className='result-heading';heading.textContent=label;phxIdResult.append(heading);}
 phxIdForm.addEventListener('submit',async e=>{
@@ -326,8 +354,8 @@ phxIdForm.addEventListener('submit',async e=>{
   phxField('Kingdom',p.kingdom);phxField('Alliance',p.alliance);
   phxField('Total Power',formatPlayerNumber(p.power));
   phxGroup('Arena Squad');const arena=payload.arenaSquad;phxField('Arena Squad',formatPlayerSection(arena?.status));if(Array.isArray(arena?.heroes))arena.heroes.forEach((hero,i)=>phxField('Arena hero '+(i+1),[hero.name,hero.level==null?null:'Level '+hero.level,(hero.stars??hero.star)==null?null:(hero.stars??hero.star)+' stars'].filter(Boolean).join(' · ')||'Unknown'));
-  phxGroup('Rankings');const ranks=payload.ranks;phxField('Rankings',formatPlayerSection(ranks?.status));for(const [label,value] of playerRankingRows(ranks?.values))phxField(label,value);
-  phxGroup('Sources & Time');phxField('Data source','Kingshot player data via protected Stage Bridge');phxField('Source captured (UTC)',formatPlayerUtc(payload.source?.cachedAt));phxField('Lookup time (UTC)',formatPlayerUtc(payload.checkedAtUtc));
+  phxGroup('Rankings');const ranks=payload.ranks;appendRankingEntries(phxIdResult,ranks?.values,'detail');
+  const provenance=document.createElement('details'),provenanceSummary=document.createElement('summary');provenance.className='lookup-provenance';provenanceSummary.textContent='Sources & lookup time';provenance.append(provenanceSummary);phxIdResult.append(provenance);provenance.append(phxField('Data source','Kingshot player data'),phxField('Source captured (UTC)',formatPlayerUtc(payload.source?.cachedAt)),phxField('Lookup time (UTC)',formatPlayerUtc(payload.checkedAtUtc)));
   phxIdStatus.textContent='Player data loaded. Review the details before adding this player to Candidates.';
   offerLookupCandidate(payload,id);
  }catch(error){phxIdStatus.textContent=error.name==='AbortError'?'The lookup timed out. Please try again later.':error instanceof TypeError?'Connection interrupted. Check your internet connection.':error.message;}

@@ -50,7 +50,7 @@ test('three task views, candidate comparison, four smart dossier groups and back
  for(const box of $('rows').querySelectorAll('input'))box.click();await tick();assert.equal($('compare').disabled,false);$('compare').click();assert.match($('comparison').textContent,/Synthetic Sentinel/);assert.match($('comparison').textContent,/Synthetic Vanguard/);
  $('rows').querySelector('button').click();assert.equal($('candidateDossier').hidden,false);
  await tick();await tick();
- const groups={identity:['Identity & Power','NEXUS Intelligence'],development:['Mighty Pulse Rankings','Arena Squad','Recorded Mystic Trial Stages'],recruitment:['Recruitment','Notes'],history:['Development History','Evidence & Sources']};
+ const groups={identity:['Identity & Power','NEXUS Intelligence'],development:['Player Rankings','Arena Squad','Recorded Mystic Trial Stages'],recruitment:['Recruitment','Notes'],history:['Development History','Evidence & Sources']};
  for(const [name,headings] of Object.entries(groups)){
   const tab=w.document.querySelector('[data-dossier-tab="'+name+'"]');
   assert.equal(tab.hidden,false,name+' should be visible');tab.click();
@@ -92,4 +92,13 @@ test('lookup leaderboards persist through explicit adoption and display in dossi
 test('unlisted #1885 ID can be selected for one-to-one rankings comparison; wrong kingdom rejected without writes',async()=>{
  const x=await setup({lookupKingdom:1885}),{$}=x;$('internalPlayerId').value='888';await $('internalIdForm').onsubmit({preventDefault(){}});await tick();await tick();assert.equal($('internalGovernor').disabled,false);assert.match($('externalIntelResult').textContent,/12,500/);assert.match($('externalIntelResult').textContent,/Synthetic Pathfinder/);assert.equal(x.writes(),0);x.dom.window.close();
  const y=await setup();y.$('internalPlayerId').value='888';await y.$('internalIdForm').onsubmit({preventDefault(){}});assert.match(y.$('externalIntelResult').textContent,/not in Kingdom/);assert.equal(y.writes(),0);y.dom.window.close();
+});
+
+test('compact rankings keep exact values, both comparison players and closed source details',async()=>{
+ const x=await setup();x.$('phxGovernorId').value='123456';await x.submit();
+ const card=x.$('phxIdResult').querySelector('.ranking-evidence');assert.ok(card);assert.ok(card.querySelector('.ranking-value'));assert.ok(card.querySelector('details'));assert.equal(card.querySelector('details').open,false);assert.match(card.querySelector('details').textContent,/Source.*Not available/);
+ x.run("active='QA-2'");await x.run("loadCandidateEvidence(players[1])");await x.$('loadInternal').onclick();
+ const table=x.$('externalIntelResult').querySelector('.ranking-comparison');assert.ok(table);
+ const row=[...table.querySelectorAll('tbody tr')].find(r=>r.querySelector('th').textContent==='Pet Power');assert.equal(row.querySelectorAll('td[data-player]').length,2);assert.equal(row.querySelectorAll('.ranking-value').length,2);assert.equal(row.querySelectorAll('details[open]').length,0);assert.match(row.textContent,/12,500/);assert.match(row.textContent,/900/);
+ row.querySelector('details').open=true;assert.equal(row.querySelector('details').open,true);assert.equal(x.writes(),0);x.dom.window.close();
 });
