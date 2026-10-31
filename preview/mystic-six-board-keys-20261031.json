@@ -1,0 +1,13 @@
+{
+  "kingdom": 1885,
+  "boards": [
+    "coliseum",
+    "forest_of_life",
+    "crystal_cave",
+    "knowledge_nexus",
+    "molten_fort",
+    "radiant_spire"
+  ],
+  "status": "api_verified_in_isolated_preview",
+  "productionIntegrated": false
+}
