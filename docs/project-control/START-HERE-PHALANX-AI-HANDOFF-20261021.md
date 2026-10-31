@@ -71,3 +71,5 @@ Aktiver Stage-Branch: stage/transfer-id-lookup-20261030. Siehe docs/staging/tran
 
 ## Isolated Transfer continuation — 2026-10-31
 Read `docs/staging/transfer-work-verification-20261030.md`, section PHX-TRANSFER-WORLD-EN, before continuing Transfer work. Active branch `stage/transfer-id-lookup-20261030`; existing isolated Vercel test project only. English UI and removal of fictional runtime integrated; accepted header preserved. Local DOM tests are distinct from live Auth/RLS and Android tests. Remaining tests and local/cloud JSON convergence are explicitly open. No global release or freeze change.
+
+Transfer latest checked integration: code `16663c123d6e267db67e2b0547997b774f3057f0`, isolated Vercel deployment `dpl_Ft6EpEZvecVTcYL3MFrs7j3wL7Gg`, read-only JWT Stage intelligence copy V1 explicitly approved and live comparison verified. Internal data is dated 2026-09-29. Preserve original nexus-true-power V6, frozen header and real candidates. Consult latest section of `docs/staging/transfer-work-verification-20261030.md` for tests, historical-data limitation, recovery and remaining Android/save/RLS/design gates.
