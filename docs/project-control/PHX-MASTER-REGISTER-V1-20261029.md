@@ -405,3 +405,7 @@ Runtime 87e1ecb636567338f213a000c6fbc6769cd0bae1; READY dpl_9DtX1SBbLT2yn5UCRTHc
 
 ## Transfer Stage — snapshot integration 2026-10-31
 Runtime 3ff9b98e8f587097ee33e41be01593ce123886f2 / isolated READY dpl_64C9Sc1rkLgDQQxrDAcbRqMoe2VB; Fallback Stage V3 verify_jwt=true exact CORS fix. Provenance and comparison contrast corrected, original recovery assets deployed. 47/47 local tests; live login, lookup, 24 categories/5 Arena heroes, 278-player Top-100 union and FaQu/KomaR comparison, CSV, unchanged existing candidate. No full kingdom claim. Real new-candidate save, full roles/RLS, Android, actual provider outage, recovery email/reset and runtime rollback remain open. Source backup/checkout restore proven, not DB restore. Full evidence: docs/staging/transfer-work-verification-20261030.md, latest PHX-TRANSFER-SNAPSHOT-INTEGRATION.
+
+
+## Transfer compact mobile — 2026-10-31
+31286c231062c1d31099d8447e966578ac262743 / dpl_48vq8JPsURGU8ygAuxyDX6FNAKD8, isolated test only. Compact read-only evidence renderer and per-metric two-player mobile layout, collapsible source/time details, 48/48 local tests, authenticated lookup and FaQu comparison, identical candidate fingerprint. Previous Android screenshots showed overflow/excess density; new Android device gate remains open. Details: latest PHX-TRANSFER-COMPACT-MOBILE section in docs/staging/transfer-work-verification-20261030.md. Existing release gates retained.

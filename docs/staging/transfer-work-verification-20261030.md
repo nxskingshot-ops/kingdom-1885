@@ -350,3 +350,28 @@ Remaining gates: real Android use, an intentionally chosen new real candidate sa
 
 
 Recovery archive persisted successfully: Library libfile_11265d98a0948191b0321ff02e5c8a20, PHX_TRANSFER_VERIFIED_RECOVERY_20261031.zip, 13303037 bytes, SHA256 d661ad8345b148c563db90450941c6be1e57997823f0ab149e116cfb5b2874a8. ZIP CRC and all manifest SHA256 values verified before upload. No browser session, credentials, screenshots or candidate CSV included.
+
+
+## PHX-TRANSFER-COMPACT-MOBILE — 2026-10-31
+
+User Android evidence (47828–47831) confirms real ranking lookup and the 278-player FaQu selection, but shows excessive repeated provenance text and the comparison counterparty offscreen. Previous mobile usability: FEHLGESCHLAGEN, not a completed Android gate. User explicitly requests much more compact views.
+
+Source gate: remote HEAD 81943fe4cb9ff58be27d6b244e2233af1d0ba6b8 and READY dpl_64C9Sc1rkLgDQQxrDAcbRqMoe2VB rechecked. Existing A041/canonical FREEZEs applied; isolated worktree from exact HEAD. No new app, no changed frozen header/reference stylesheet, backend, quotas, membership, Auth, database, main or navigation hierarchy.
+
+Runtime 31286c231062c1d31099d8447e966578ac262743; existing test project READY dpl_48vq8JPsURGU8ygAuxyDX6FNAKD8, aliasError=null, stable URL https://phalanx-r11-atlas-preview.vercel.app/ . All eleven deployment file content IDs equal local submitted bytes. Vercel production label only for authorized isolated test alias.
+
+Changes: lookup, dossier and one-to-one comparison share a compact read-only ranking renderer. Exact value and kingdom rank remain visible. Native Source & time disclosures preserve per-entry UTC time and provider/saved-snapshot distinction, closed initially. Missing remains unknown, never invented zero. Lookup Sources & lookup time is grouped in a closed disclosure. Removed redundant Rankings Available tile and product-brand heading. At <=760px the comparison becomes per-metric cards with both named players in two equal columns; no 580px minimum-width table. Lookup remains two columns at phone widths. Layout density/spacing reduced; original PHALANX header and motifs unchanged.
+
+| Check | Result | Scope |
+|---|---|---|
+| Local regression suite | BESTANDEN | 48/48, including both named counterpart cells, exact retained values, source disclosure toggling/default closed, missing-source dates, no writes, 24-board logic, roles/quotas, CSV/dossier/navigation and accepted header/style equality |
+| Syntax / whitespace | BESTANDEN | node --check and git diff --check |
+| Authenticated lookup | BESTANDEN | 227802999 resolves グッチ #1555, 24 rankings, five Arena heroes; compact values displayed |
+| Source controls | BESTANDEN | Browser expanded first source to 2026-10-31 10:45:29 UTC, then closed it; field timestamp retained |
+| Existing dossier | BESTANDEN | Development shows Player Rankings and compact values; stored 410.7M remains separate from transient evidence |
+| Kingdom comparison | BESTANDEN | 278 options, グッチ ↔ FaQu; actual first values 411282754 and 185958086, two named cells, source details initially closed |
+| Data integrity | BESTANDEN | One existing candidate; before/after fingerprint fac74063041a32834ba0f185c6f8ef0d identical |
+| Final Android / narrow-screen rendering | NICHT GETESTET on physical device | New responsive CSS/DOM implemented; current cloud browser is desktop and has no advertised viewport-resize API. User screenshot of new runtime still needed to close device gate. Desktop visual proof captured. |
+| Other prior release gates | NICHT GETESTET / unchanged | Live new-candidate save, full roles matrix, actual source outage, recovery reset and runtime rollback not repeated or claimed |
+
+BACKUP ERSTELLT: local full-history mobile-before.bundle at 81943fe and mobile-runtime.bundle at 31286c231062c1d31099d8447e966578ac262743; remote Git preserves both states. INTEGRITÄT GEPRÜFT: bundle verify and deployed-byte parity. WIEDERHERSTELLUNG GETESTET: before-change bundle fetched into separate empty repository, checkout 81943fe and full fsck pass. Deployment rollback/DB restore NICHT GETESTET. Existing persistent PHX_TRANSFER_VERIFIED_RECOVERY_20261031.zip remains the prior runtime recovery artifact; it is not mislabeled as the compact runtime package. No new user records, costs/plan purchases or permission changes.
