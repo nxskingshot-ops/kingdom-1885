@@ -80,3 +80,6 @@ Transfer task names now My Candidates / Find a Player / Tools, explicitly approv
 
 ### Transfer rankings continuation — 2026-10-31
 Active integration PHX-TRANSFER-FULL-RANKINGS in existing Stage sources. See latest verification report and Master Register. User requires full available provider leaderboard values/ranks, dossier Arena/rankings and individual #1885 comparison beyond old September trial roster. Source bridge was dropping leaderboards. Current saved provider boards cover 249 UIDs, captured 2026-10-30 00:29 UTC; never label this a full census or polling time as source time. No automatic candidate overwrite. Stage deployment/live verification recorded separately; prior save/RLS/Android gates remain open.
+
+#### Verified transfer rankings handoff
+Use runtime 87e1ecb636567338f213a000c6fbc6769cd0bae1 / READY dpl_9DtX1SBbLT2yn5UCRTHcM9W86hPK; latest verification section supersedes initial 14-board audit. Mighty Pulse documented bulk read now exposes 24 individual ranking categories and 278 available #1885 UIDs; per-ID KomaR and FaQu comparison plus candidate ranking/Arena dossier live tested. Preserve transient refresh/no candidate overwrite and per-source freshness ordering. Next: user Android review; intended real save/reload, full RLS/roles and multi-candidate gates remain open. No need to redo original source search or rebuild UI.
