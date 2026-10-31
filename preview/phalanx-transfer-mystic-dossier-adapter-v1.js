@@ -13,6 +13,7 @@ export function buildMysticBalanceView(profile){
  return {governorId:profile.governorId,complete:profile.complete,meanRank:profile.meanRank,rankSpread:profile.rankSpread,entries,disclaimer:"Rank positions compare players within each trial; no proven Mystic total formula or combat strength inference."};
 }
 export async function fetchMysticBalance(db,candidate){
+ if(String(candidate?.kingdom??"")!=="1885")return {status:"unsupported_kingdom",message:"Mystic live source is limited to Kingdom #1885; no cross-kingdom inference."};
  const id=getGovernorId(candidate);
  if(!id)return {status:"missing_governor_id",message:"Verified player ID required; no automatic name matching."};
  if(!db?.auth?.getUser||!db?.functions?.invoke)throw Error("Authenticated Supabase client required");
