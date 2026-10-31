@@ -18,7 +18,7 @@ export async function fetchMysticBalance(db,candidate){
  if(!db?.auth?.getUser||!db?.functions?.invoke)throw Error("Authenticated Supabase client required");
  const {data:{user}={},error:authError}=await db.auth.getUser();
  if(authError||!user)return {status:"unauthorized"};
- const {data,error}=await db.functions.invoke(FUNCTION,{method:"GET",headers:{"x-phalanx-source":"transfer-scouting"},/* query supported by supabase-js */ query:{governor_id:id}});
+ const {data,error}=await db.functions.invoke(FUNCTION+"?governor_id="+encodeURIComponent(id),{method:"GET",headers:{"x-phalanx-source":"transfer-scouting"}});
  if(error)return {status:"unavailable",message:"Mystic rankings temporarily unavailable"};
  if(String(data?.governor_id)!==id)return {status:"id_mismatch",message:"Provider returned a different player; results suppressed."};
  return {status:"ok",view:buildMysticBalanceView(analyzeMysticProfile(data,id))};
