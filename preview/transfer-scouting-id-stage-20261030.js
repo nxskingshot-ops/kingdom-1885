@@ -142,7 +142,7 @@ $('loadInternal').onclick=async()=>{
  try{
   const {data:{session},error}=await db.auth.getSession();
   if(error||!session?.access_token)throw Error('Sign in with your approved NEXUS account first.');
-  const response=await fetch(SUPABASE_URL+'/functions/v1/nexus-true-power',{method:'GET',
+  const response=await fetch(SUPABASE_URL+'/functions/v1/phalanx-transfer-intelligence-stage-20261031',{method:'GET',
     headers:{apikey:KEY,Authorization:'Bearer '+session.access_token},cache:'no-store'});
   const data=await response.json();
   if(!response.ok)throw Error(data.error||'Protected intelligence unavailable.');
