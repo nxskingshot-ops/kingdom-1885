@@ -48,3 +48,35 @@ export function playerRankingRows(values) {
  return rows.length?rows:[['Rankings','Not available from this source']];
 }
 export function rankingSourceText(entry){return ' · '+(entry?.source==='saved_snapshot'?'Saved snapshot':'Provider data')+' · Source: '+formatPlayerUtc(entry?.captured_at);}
+
+// Reuse PHX-TC-TRUEGOLD-INTERPRETATION-20261021; do not extrapolate TG tiers.
+export function formatCastle(value){
+ if(value===null||value===undefined||value==='')return 'Not available';
+ if(typeof value==='string'&&!/^\d+$/.test(value))return value;
+ const raw=Number(value);if(!Number.isSafeInteger(raw)||raw<1)return 'Not available';
+ if(raw>=40&&raw<=55){const tier=raw>=50?5:raw>=45?4:3,base=tier===5?50:tier===4?45:40;return 'TG'+tier+' '+(raw-base)+'/5';}
+ return 'TC '+raw;
+}
+export function compactPower(value){
+ if(value===null||value===undefined||value==='')return 'Not available';
+ const n=Number(value);if(!Number.isFinite(n)||n<0)return 'Not available';
+ return n>=1e6?(n/1e6).toLocaleString('en-US',{maximumFractionDigits:2})+' M':formatPlayerNumber(n);
+}
+export function playerSummaryMetrics(values,profile={}){
+ const v=values||{},map=playerRankingMap(v);
+ const number=x=>!['number','string'].includes(typeof x)||String(x).trim()===''?null:Number.isFinite(Number(x))&&Number(x)>=0?Number(x):null;
+ const profileEntry=number(profile.power)===null?null:{value:profile.power,captured_at:profile.captured_at,source:profile.source};
+ let power=number(map.personal_power?.value)!==null?map.personal_power:profileEntry;
+ if(profileEntry&&formatPlayerUtc(profileEntry.captured_at)!=='Not available'&&(formatPlayerUtc(power?.captured_at)==='Not available'||formatPlayerUtc(profileEntry.captured_at)>formatPlayerUtc(power.captured_at)))power=profileEntry;
+ const metric=(key,label,entry,castle=false)=>({key,label,value:number(entry?.value),rank:entry?.kingdom_rank??null,text:castle?formatCastle(entry?.value):compactPower(entry?.value),captured_at:entry?.captured_at,details:entry?('Exact value: '+formatPlayerNumber(entry.value)+rankingSourceText(entry)):'No verified value available.'});
+ const totals=[power,...(Array.isArray(v.leaderboards)?v.leaderboards:[]).filter(e=>canonicalRankingName(e?.name)==='personal_power')].filter(Boolean);
+ const troops=[map.troop_power,...(Array.isArray(v.leaderboards)?v.leaderboards:[]).filter(e=>canonicalRankingName(e?.name)==='troop_power')].filter(Boolean);
+ const pairs=[];
+ for(const total of totals)for(const troop of troops){const time=formatPlayerUtc(total.captured_at);if(time!=='Not available'&&time===formatPlayerUtc(troop.captured_at)&&number(total.value)!==null&&number(troop.value)!==null&&number(total.value)>=number(troop.value))pairs.push({total,troop,time});}
+ pairs.sort((a,b)=>b.time.localeCompare(a.time));
+ const pair=pairs[0],truePower=metric('true_power','True Power',pair?{value:Number(pair.total.value)-Number(pair.troop.value),captured_at:pair.total.captured_at}:null);
+ truePower.calculated=Boolean(pair);truePower.details=pair?'Calculated: '+formatPlayerNumber(pair.total.value)+' minus '+formatPlayerNumber(pair.troop.value)+'. Matched source: '+pair.time+'. Non-troop power, not a battle prediction.':'Requires measured Total Power and Troop Power from the same source capture.';
+ const castle=metric('castle','Castle / Truegold',map.town_center,true);
+ if(castle.value===null&&profile.castle_level){castle.text=formatCastle(profile.castle_level);castle.details='Saved castle: '+profile.castle_level+'. Current source value unavailable.';}
+ return [metric('power','Power',power),truePower,metric('master_power','Master Power',map.master_power),metric('pet_power','Pet Power',map.pet_power),metric('hero_total','Hero Power',map.hero_total),castle];
+}

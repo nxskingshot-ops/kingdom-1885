@@ -1,5 +1,5 @@
 import { candidateFromLookup, duplicateLookupFilter } from './transfer-id-candidate-20261030.js';
-import { formatPlayerNumber, formatPlayerUtc, formatPlayerSection, playerLookupError, playerRankingRows, rankingLabels, canonicalRankingName, playerRankingMap, rankingSourceText } from './transfer-id-display-20261030.js';
+import { formatPlayerNumber, formatPlayerUtc, formatPlayerSection, playerLookupError, playerRankingRows, rankingLabels, canonicalRankingName, playerRankingMap, rankingSourceText, playerSummaryMetrics, formatCastle, compactPower } from './transfer-id-display-20261030.js';
 const SUPABASE_URL='https://hcjrdofkdkasznywvcxo.supabase.co';
 const KEY='sb_publishable_hkqBaMme70g2f3wcxvaTKg_FczqkpCh';
 const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2');
@@ -25,7 +25,7 @@ $('rows').querySelectorAll('tr[data-id]').forEach(row=>row.onclick=()=>{active=r
 $('rows').querySelectorAll('button[data-dossier]').forEach(btn=>btn.onclick=e=>{e.stopPropagation();active=btn.dataset.dossier;openDossier()});
 $('rows').querySelectorAll('input[data-check]').forEach(box=>{box.onclick=e=>e.stopPropagation();box.onchange=()=>{if(box.checked){if(chosen.size>=3){box.checked=false;$('count').textContent='Select up to 3 candidates';return;}chosen.add(box.dataset.check)}else chosen.delete(box.dataset.check);$('compare').textContent='⚖ Compare selected ('+chosen.size+'/3)';}});
 const p=players.find(x=>x.candidate_id===active);$('profileTitle').textContent=p?p.player_name:'Candidate profile';$('editCandidate').hidden=!canEdit||!p;$('openDossier').hidden=!p;
-$('profile').innerHTML=p?'<div class="detail-grid">'+[['Kingdom',p.kingdom],['Alliance',p.alliance],['Power',p.power_m==null?'Not recorded':fmt(p.power_m)+'M'],['Castle',p.castle_level],['Contact',p.contact_status],['Invitation (170M preview)',invitationPreview(p)],['Eligibility',p.transfer_eligibility],['Recruiter',p.recruiter],['Role',p.metadata?.role]].map(([a,b])=>'<div class="detail"><span>'+esc(a)+'</span><b>'+esc(b||'–')+'</b></div>').join('')+'</div><h3>Notes</h3><div class="notes">'+esc(p.notes||'No notes recorded.')+'</div>':'<p class="empty">Select a candidate.</p>';
+$('profile').replaceChildren();if(p){renderHeadlineMetrics($('profile'),evidenceFor(p),p);const notes=document.createElement('p');notes.textContent=p.notes||'No notes recorded.';$('profile').append(notes);}
 $('needs').innerHTML=['Rally Lead','Fighter','Joiner','R4 / R5 Potential'].map(role=>'<div><b>'+esc(role)+'</b><strong>'+players.filter(p=>p.metadata?.role===role).length+' recorded</strong></div>').join('');
 const kds=new Map();for(const p of players){const kd=p.kingdom||'Unspecified';kds.set(kd,(kds.get(kd)||0)+1);}
 $('kingdomNotes').innerHTML=[...kds].sort((a,b)=>b[1]-a[1]).slice(0,5).map(([kd,n])=>'<div><b>Kingdom #'+esc(kd)+'</b><span>'+n+' candidates</span></div>').join('')||'<p class="empty">No saved kingdom records yet.</p>';
@@ -199,10 +199,12 @@ $('internalIdForm').onsubmit=async e=>{
 let dossierOpen=false,dossierTab='identity';
 const show=v=>v===null||v===undefined||v===''?'Not recorded':String(v);
 function dossierGrid(title,entries){
- const wrapper=document.createElement('section'),heading=document.createElement('h3'),grid=document.createElement('div');
- heading.textContent=title;grid.className='dossier-list';wrapper.append(heading,grid);
- for(const [label,v] of entries){const cell=document.createElement('div'),caption=document.createElement('span'),value=document.createElement('b');
-  cell.className='dossier-cell';caption.textContent=label;value.textContent=show(v);cell.append(caption,value);grid.append(cell)}
+ const wrapper=document.createElement('section'),heading=document.createElement('h3'),grid=document.createElement('div'),missing=[];
+ heading.textContent=title;grid.className='record-list';wrapper.append(heading,grid);
+ for(const [label,v] of entries){if(v==null||v===''||v==='Not recorded'||v==='Unknown'){missing.push(label);continue;}
+  const cell=document.createElement('div'),caption=document.createElement('span'),value=document.createElement('b');cell.className='record-row';caption.textContent=label;value.textContent=show(v);cell.append(caption,value);grid.append(cell);
+ }
+ if(missing.length){const details=document.createElement('details'),summary=document.createElement('summary'),text=document.createElement('p');details.className='missing-record';summary.textContent='Not recorded ('+missing.length+')';text.textContent=missing.join(', ');details.append(summary,text);wrapper.append(details);}
  return wrapper;
 }
 function dossierParagraph(text){const p=document.createElement('p');p.textContent=text;return p}
@@ -227,26 +229,25 @@ function renderDossierSection(){
  if(!dossierOpen)return;
  const p=players.find(x=>x.candidate_id===active);
  if(!p){closeDossier();return}
- $('dossierTitle').textContent=p.player_name+' · Player Intelligence Profile';
- const overview=[['KINGDOM',p.kingdom?'#'+p.kingdom:'Unknown'],['TOTAL POWER',p.power_m==null?'Unknown':fmt(p.power_m)+'M'],['CASTLE',p.castle_level||'Unknown'],['STATUS',p.contact_status||'Unknown']];
- $('dossierOverview').replaceChildren(...overview.map(([label,v])=>{const card=document.createElement('div'),cap=document.createElement('small'),val=document.createElement('strong');card.className='dossier-metric';cap.textContent=label;val.textContent=v;card.append(cap,val);return card}));
+ $('dossierTitle').textContent=p.player_name;
+ $('dossierIdentity').textContent=[p.alliance,p.kingdom?'#'+p.kingdom:null,'ID '+evidenceKey(p),p.contact_status].filter(Boolean).join(' · ');
+ const headlineEvidence=evidenceFor(p);renderHeadlineMetrics($('dossierOverview'),headlineEvidence,p);
  document.querySelectorAll('[data-dossier-tab]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.dossierTab===dossierTab)));
  const root=$('dossierContent');root.replaceChildren();
  const evidence=evidenceFor(p),id=evidenceKey(p);
- const source=document.createElement('p');source.textContent=(currentEvidence.has(id)?'Latest fetched ranking / Arena evidence':'Saved ranking / Arena evidence')+' · Source capture: '+formatPlayerUtc(evidence?.source_cached_at)+(evidencePending.has(id)?' · Refreshing…':'')+(evidenceErrors.has(id)?' · Refresh failed: '+evidenceErrors.get(id):'');root.append(source);
- if(id){const refresh=document.createElement('button');refresh.type='button';refresh.textContent='Refresh player evidence';refresh.disabled=evidencePending.has(id);refresh.onclick=()=>loadCandidateEvidence(p,true);root.append(refresh);}
+ const source=document.createElement('p');source.className='compact-source-line';source.textContent=(currentEvidence.has(id)?'Latest available data':'Saved data')+' · '+formatPlayerUtc(evidence?.source_cached_at)+(evidencePending.has(id)?' · Loading…':'')+(evidenceErrors.has(id)?' · Refresh unavailable':'');root.append(source);
+ if(id){const refresh=document.createElement('button');refresh.type='button';refresh.className='compact-refresh';refresh.textContent='↻ Refresh';refresh.disabled=evidencePending.has(id);refresh.onclick=()=>loadCandidateEvidence(p,true);root.append(refresh);}
 
  const m=p.metadata||{},t=m.mystic_trials||{},labels={coliseum:'Heroes & Hero Gear',forest:'Pets',crystal:'Governor Charms',knowledge:'Research',molten:'Governor Gear',radiant:'Mixed · Radiant Spire'};
- if(dossierTab==='identity'||dossierTab==='overview')root.append(dossierGrid('Identity & Power',[
-  ['Player name',p.player_name],['Kingshot Player ID',m.governor_id||m.player_id],['Kingdom',p.kingdom],['Alliance',p.alliance],['Castle / Truegold',p.castle_level],
-  ['Saved Total Power',p.power_m==null?null:fmt(p.power_m)+'M'],['Latest fetched Total Power',currentEvidence.has(id)?formatPlayerNumber(evidence?.player?.power):'Open or refresh player evidence'],['Previous name',m.previous_name],['Previous kingdom',m.previous_kingdom],
-  ['Updated on',p.updated_at?new Date(p.updated_at).toLocaleDateString('en-GB'):'Unknown']]));
+ if(dossierTab==='identity'||dossierTab==='overview'){
+  const details=document.createElement('details'),summary=document.createElement('summary');details.className='record-details';summary.textContent='Saved record & identity';details.append(summary,dossierGrid('Identity & Power',[
+   ['Player name',p.player_name],['Kingshot Player ID',evidenceKey(p)],['Kingdom',p.kingdom],['Alliance',p.alliance],['Saved Castle / Truegold',p.castle_level],['Saved Total Power',p.power_m==null?null:fmt(p.power_m)+'M'],['Previous name',m.previous_name],['Previous kingdom',m.previous_kingdom],['Updated on',p.updated_at?new Date(p.updated_at).toLocaleDateString('en-GB'):null]]));root.append(details);
+ }
  if(dossierTab==='development'){
   const rankings=document.createElement('section'),rankingHeading=document.createElement('h3'),rankingGrid=document.createElement('div');rankingHeading.textContent='Player Rankings';rankingGrid.className='dossier-list';appendRankingEntries(rankingGrid,evidence?.ranks?.values,'dossier-cell');rankings.append(rankingHeading,rankingGrid);root.append(rankings);
-  root.append(dossierGrid('Arena Squad',(evidence?.arena_squad?.heroes||[]).map((h,i)=>['Hero '+(i+1),[h.name,h.level==null?null:'Level '+h.level,(h.stars??h.star)==null?null:(h.stars??h.star)+' stars'].filter(Boolean).join(' · ')])));
-
-  root.append(dossierGrid('Recorded Mystic Trial Stages',Object.entries(labels).map(([key,label])=>[label,stageIndex(t[key])===null?'Not recorded':t[key]])));
-  root.append(dossierParagraph('Only recorded stages are displayed; unknown development is never estimated.'));
+  root.append(arenaList(evidence?.arena_squad?.heroes||[]));
+  const stages=Object.entries(labels).filter(([key])=>stageIndex(t[key])!==null),detail=document.createElement('details'),summary=document.createElement('summary');detail.className='record-details';summary.textContent='Recorded Mystic Trial Stages ('+stages.length+'/6)';detail.append(summary);
+  if(stages.length)detail.append(dossierGrid('Verified trial stages',stages.map(([key,label])=>[label,t[key]])));else detail.append(dossierParagraph('No manually verified trial stages recorded. Ranking scores are shown above.'));root.append(detail);
  }
  if(dossierTab==='history'){
   root.append(dossierGrid('Development History',[
@@ -268,16 +269,10 @@ function renderDossierSection(){
   const heading=document.createElement('h3');heading.textContent='Notes';root.append(heading,dossierParagraph(p.notes||'No notes recorded.'));
  }
  if(dossierTab==='intelligence'){
-  const article=document.createElement('div');article.className='dossier-report';const heading=document.createElement('h3');heading.textContent='✦ NEXUS Intelligence · Evidence-based Overview';article.append(heading);
-  const count=Object.keys(labels).filter(k=>k!=='radiant'&&stageIndex(t[k])!==null).length;
-  [
-   'Kingdom '+show(p.kingdom)+' candidate with '+(p.power_m==null?'unknown Total Power':fmt(p.power_m)+'M recorded Total Power')+' and castle '+show(p.castle_level)+'.',
-   count+' of five specialized Mystic Trials have recorded stages. '+(count<3?'The available development evidence is too incomplete for a broad assessment.':'The available stages may support comparisons with another governor.'),
-   'Recruitment status: '+show(p.contact_status)+'. Transfer eligibility: '+show(p.transfer_eligibility)+'.',
-   playerRankingRows(evidence?.ranks?.values).length+' ranking rows available in Development. Recorded ranking scores remain distinct from manually evidenced trial stages.',
-   'Undocumented strengths and battle outcomes cannot be inferred from these records.'
-  ].forEach(line=>article.append(dossierParagraph(line)));root.append(article);
+  const article=document.createElement('div');article.className='evidence-brief';const heading=document.createElement('h3');heading.textContent='Available evidence';article.append(heading,dossierParagraph(Object.keys(playerRankingMap(evidence?.ranks?.values)).length+' ranking metrics · '+(evidence?.arena_squad?.heroes||[]).length+' Arena heroes.'));
+  if(p.notes)article.append(dossierParagraph(p.notes));root.append(article);
  }
+
 }
 function renderDossier(){
  if(!dossierOpen)return;
@@ -322,16 +317,20 @@ function renderRankingEvidence(target,entry,missing='Not available from source')
  details.className='ranking-source';summary.textContent=entry.source==='saved_snapshot'?'Saved snapshot':'Source & time';source.textContent=rankingSourceText(entry).replace(/^ · /,'');details.append(summary,source);target.append(value,rank,details);
 }
 function appendRankingEntries(target,values,cellClass){
- const v=values||{},map=playerRankingMap(v);let count=0;
- const append=(label,entry,missing)=>{const cell=document.createElement('div'),caption=document.createElement('span');cell.className=cellClass;caption.className='ranking-label';caption.textContent=label;cell.append(caption);renderRankingEvidence(cell,entry,missing);target.append(cell);count++;};
+ const v=values||{},map=playerRankingMap(v),table=document.createElement('table'),head=document.createElement('thead'),header=document.createElement('tr'),body=document.createElement('tbody');table.className='ranking-list';
+ for(const label of ['Metric','Value','KD rank','']){const th=document.createElement('th');th.textContent=label;header.append(th);}head.append(header);table.append(head,body);
+ const append=(label,entry,missing,sourceEntry)=>{const row=document.createElement('tr');row.className='ranking-evidence';for(const text of [label,entry?formatPlayerNumber(entry.value):missing,entry?formatPlayerNumber(entry.kingdom_rank):'—']){const td=document.createElement('td');td.textContent=text;row.append(td);}
+  const td=document.createElement('td'),details=document.createElement('details'),summary=document.createElement('summary'),source=document.createElement('p');details.className='ranking-source';summary.textContent='ⓘ';summary.title='Source and time';source.textContent=rankingSourceText(entry||sourceEntry).replace(/^ · /,'');details.append(summary,source);td.append(details);row.append(td);body.append(row);};
  for(const [key,entry] of Object.entries(map))append(rankingLabels[key]||entry.name,entry);
- for(const board of Array.isArray(v.boards)?v.boards:[])if(board.status==='not_listed'&&!map[canonicalRankingName(board.name)]){
-  const cell=document.createElement('div'),caption=document.createElement('span'),unknown=document.createElement('span'),details=document.createElement('details'),summary=document.createElement('summary'),source=document.createElement('p');
-  cell.className=cellClass+' ranking-evidence';caption.className='ranking-label';caption.textContent=rankingLabels[board.name]||board.name;unknown.className='ranking-missing';unknown.textContent='Not listed in available Top 100';details.className='ranking-source';summary.textContent=board.source==='saved_snapshot'?'Saved snapshot':'Source & time';source.textContent=rankingSourceText(board).replace(/^ · /,'');details.append(summary,source);cell.append(caption,unknown,details);target.append(cell);count++;
- }
- if(!count)append('Rankings',null,'Not available from this source');
+ for(const board of Array.isArray(v.boards)?v.boards:[])if(board.status==='not_listed'&&!map[canonicalRankingName(board.name)])append(rankingLabels[board.name]||board.name,null,'Not listed in Top 100',board);
+ if(!body.children.length)append('Rankings',null,'Not available');target.append(table);
  if(v.board_status==='unavailable'){const note=document.createElement('p');note.className='ranking-status';note.textContent='Additional kingdom boards unavailable; available player standings remain displayed.';target.append(note);}
 }
+function renderHeadlineMetrics(target,evidence,record={}){
+ const profile={power:evidence?.player?.power??(record.power_m==null?null:Number(record.power_m)*1e6),captured_at:evidence?.player?.power!=null?evidence?.source_cached_at:record.metadata?.external_lookup?.source_cached_at,castle_level:record.castle_level},metrics=playerSummaryMetrics(evidence?.ranks?.values,profile);target.replaceChildren();target.classList.add('headline-metrics');
+ for(const metric of metrics){const item=document.createElement('div'),label=document.createElement('span'),value=document.createElement('strong'),detail=document.createElement('details'),summary=document.createElement('summary'),info=document.createElement('p');item.className='headline-metric';item.dataset.metric=metric.key;label.textContent=metric.label;value.textContent=metric.text;value.title=metric.details;detail.className='metric-info';summary.textContent='ⓘ';summary.title=metric.label+' source and calculation';info.textContent=metric.details;detail.append(summary,info);item.append(label,value,detail);target.append(item);}
+}
+function arenaList(heroes){const section=document.createElement('section'),heading=document.createElement('h3'),list=document.createElement('div');heading.textContent='Arena Squad';list.className='arena-list';section.append(heading,list);for(const [i,h] of heroes.entries()){const row=document.createElement('div'),name=document.createElement('span'),stats=document.createElement('b');row.className='arena-row';name.textContent=(i+1)+'. '+(h.name||'Unknown');stats.textContent=[h.level==null?null:'Level '+h.level,(h.stars??h.star)==null?null:(h.stars??h.star)+' stars'].filter(Boolean).join(' · ');row.append(name,stats);list.append(row);}if(!heroes.length)list.textContent='No Arena heroes available.';return section;}
 function phxField(label,value){const cell=document.createElement('div');cell.className='detail';const key=document.createElement('span');key.textContent=label;const val=document.createElement('b');val.textContent=value===null||value===undefined||value===''?'Not available':String(value);cell.append(key,val);phxIdResult.append(cell);return cell;}
 function phxGroup(label){const heading=document.createElement('h4');heading.className='result-heading';heading.textContent=label;phxIdResult.append(heading);}
 phxIdForm.addEventListener('submit',async e=>{
@@ -350,11 +349,10 @@ phxIdForm.addEventListener('submit',async e=>{
   let response;try{response=await fetch(endpoint,{headers:{Authorization:'Bearer '+session.access_token,apikey:KEY},signal:controller.signal,cache:'no-store'});}finally{clearTimeout(timeout);}
   if(!response.ok)throw Error(playerLookupError(response.status));
   const payload=await response.json();if($('phxGovernorId').value.trim()!==id){phxIdStatus.textContent='Kingshot Player ID changed. Load player data again.';return;}if(payload.ok!==true||String(payload.governorId)!==id)throw Error('Player identity could not be confirmed.');const p=payload.player||{};$('phxReview').hidden=false;
-  phxGroup('Identity & Power');phxField('Kingshot Player ID',id);phxField('Player name',p.name||p.playerName||p.player_name);
-  phxField('Kingdom',p.kingdom);phxField('Alliance',p.alliance);
-  phxField('Total Power',formatPlayerNumber(p.power));
-  phxGroup('Arena Squad');const arena=payload.arenaSquad;phxField('Arena Squad',formatPlayerSection(arena?.status));if(Array.isArray(arena?.heroes))arena.heroes.forEach((hero,i)=>phxField('Arena hero '+(i+1),[hero.name,hero.level==null?null:'Level '+hero.level,(hero.stars??hero.star)==null?null:(hero.stars??hero.star)+' stars'].filter(Boolean).join(' · ')||'Unknown'));
-  phxGroup('Rankings');const ranks=payload.ranks;appendRankingEntries(phxIdResult,ranks?.values,'detail');
+  const identity=document.createElement('div');identity.className='player-identity';identity.textContent=[p.name||p.playerName||p.player_name,p.alliance,'#'+p.kingdom].filter(Boolean).join(' · ');phxIdResult.append(identity);phxField('Kingshot Player ID',id);
+  const headline=document.createElement('div');headline.className='headline-metrics';renderHeadlineMetrics(headline,{player:p,source_cached_at:payload.source?.cachedAt,ranks:payload.ranks},{});phxIdResult.append(headline);
+  const all=document.createElement('details'),allSummary=document.createElement('summary'),allBody=document.createElement('div');all.className='complete-rankings';allSummary.textContent='All rankings ('+Object.keys(playerRankingMap(payload.ranks?.values)).length+')';all.append(allSummary,allBody);appendRankingEntries(allBody,payload.ranks?.values,'');phxIdResult.append(all);
+  const arenaDetail=document.createElement('details'),arenaSummary=document.createElement('summary');arenaDetail.className='arena-details';arenaSummary.textContent='Arena Squad ('+(payload.arenaSquad?.heroes||[]).length+') · '+formatPlayerSection(payload.arenaSquad?.status);arenaDetail.append(arenaSummary,arenaList(payload.arenaSquad?.heroes||[]));phxIdResult.append(arenaDetail);
   const provenance=document.createElement('details'),provenanceSummary=document.createElement('summary');provenance.className='lookup-provenance';provenanceSummary.textContent='Sources & lookup time';provenance.append(provenanceSummary);phxIdResult.append(provenance);provenance.append(phxField('Data source','Kingshot player data'),phxField('Source captured (UTC)',formatPlayerUtc(payload.source?.cachedAt)),phxField('Lookup time (UTC)',formatPlayerUtc(payload.checkedAtUtc)));
   phxIdStatus.textContent='Player data loaded. Review the details before adding this player to Candidates.';
   offerLookupCandidate(payload,id);

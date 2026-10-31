@@ -6,7 +6,7 @@ import vm from 'node:vm';
 import {readFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {candidateFromLookup,duplicateLookupFilter} from '../preview/transfer-id-candidate-20261030.js';
-import {formatPlayerNumber,formatPlayerUtc,formatPlayerSection,playerLookupError,playerRankingRows,rankingLabels,canonicalRankingName,playerRankingMap,rankingSourceText} from '../preview/transfer-id-display-20261030.js';
+import {formatPlayerNumber,formatPlayerUtc,formatPlayerSection,playerLookupError,playerRankingRows,rankingLabels,canonicalRankingName,playerRankingMap,rankingSourceText,playerSummaryMetrics,formatCastle,compactPower} from '../preview/transfer-id-display-20261030.js';
 const {JSDOM}=await import(process.env.PHX_JSDOM_MODULE||'jsdom');
 const html=readFileSync('preview/transfer-scouting-id-stage-20261030.html','utf8');
 const original=readFileSync('preview/transfer-scouting-id-stage-20261030.js','utf8');
@@ -28,7 +28,7 @@ async function setup(options={}){
  const payload=id=>({ok:true,governorId:id,player:{name:'Synthetic Pathfinder',kingdom:options.lookupKingdom||1555,alliance:'QA',power:232228946},source:{cachedAt:1793392324.689},checkedAtUtc:'2026-10-31T12:00:00Z',arenaSquad:{status:'available',heroes:[{name:'Synthetic Hero',level:80,star:4}]},ranks:{status:'available',values:{power_rank:9,kills_rank:6,migrant_rank:6,mystic_trial:1561,leaderboards:[{name:'pet_power',value:12500,kingdom_rank:7}]}}});
  const mockFetch=async input=>{const url=String(input);if(url.includes('phalanx-transfer-intelligence-stage-20261031'))return Response.json({observations:[{uid:'44',player_name:'Synthetic Internal',alliance_tag:'QA',rankings:{pet_power:{value:900,kingdom_rank:2}}}],power_references:[{player_name:'Synthetic Internal',power_m:100}],snapshot_date:'2026-10-31'});if(options.fetchHook)await options.fetchHook($);return Response.json(payload(new URL(url).searchParams.get('governorId')));};
  const NativeURL=URL;class TestURL extends NativeURL{static createObjectURL(value){blob=value;return 'blob:synthetic'}static revokeObjectURL(){}}
- Object.assign(ctx,{candidateFromLookup,duplicateLookupFilter,formatPlayerNumber,formatPlayerUtc,formatPlayerSection,playerLookupError,playerRankingRows,rankingLabels,canonicalRankingName,playerRankingMap,rankingSourceText,createClient:()=>db,fetch:mockFetch,URL:TestURL,Blob,AbortController,AbortSignal,setTimeout,clearTimeout,setInterval:()=>0});
+ Object.assign(ctx,{candidateFromLookup,duplicateLookupFilter,formatPlayerNumber,formatPlayerUtc,formatPlayerSection,playerLookupError,playerRankingRows,rankingLabels,canonicalRankingName,playerRankingMap,rankingSourceText,playerSummaryMetrics,formatCastle,compactPower,createClient:()=>db,fetch:mockFetch,URL:TestURL,Blob,AbortController,AbortSignal,setTimeout,clearTimeout,setInterval:()=>0});
  let source=original.replace(/^import .*?;\n/gm,'').replace("const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2');",'');
  vm.runInContext(source,ctx);await tick();await tick();
  return {dom,w,$,records:()=>records,writes:()=>writes,reads:()=>reads,blob:()=>blob,download:()=>download,run:s=>vm.runInContext(s,ctx),submit:async()=>{const ev=new w.Event('submit',{bubbles:true,cancelable:true});$('phxIdForm').dispatchEvent(ev);await tick();await tick();}};
@@ -50,7 +50,7 @@ test('three task views, candidate comparison, four smart dossier groups and back
  for(const box of $('rows').querySelectorAll('input'))box.click();await tick();assert.equal($('compare').disabled,false);$('compare').click();assert.match($('comparison').textContent,/Synthetic Sentinel/);assert.match($('comparison').textContent,/Synthetic Vanguard/);
  $('rows').querySelector('button').click();assert.equal($('candidateDossier').hidden,false);
  await tick();await tick();
- const groups={identity:['Identity & Power','NEXUS Intelligence'],development:['Player Rankings','Arena Squad','Recorded Mystic Trial Stages'],recruitment:['Recruitment','Notes'],history:['Development History','Evidence & Sources']};
+ const groups={identity:['Saved record & identity','Available evidence'],development:['Player Rankings','Arena Squad','Recorded Mystic Trial Stages'],recruitment:['Recruitment','Notes'],history:['Development History','Evidence & Sources']};
  for(const [name,headings] of Object.entries(groups)){
   const tab=w.document.querySelector('[data-dossier-tab="'+name+'"]');
   assert.equal(tab.hidden,false,name+' should be visible');tab.click();
@@ -85,7 +85,7 @@ test('changed ID during lookup cannot display or adopt stale identity',async()=>
 });
 
 test('lookup leaderboards persist through explicit adoption and display in dossier with arena evidence without further writes',async()=>{
- const x=await setup({empty:true}),{$,w}=x;$('phxGovernorId').value='123456';await x.submit();assert.match($('phxIdResult').textContent,/12,500/);assert.match($('phxIdResult').textContent,/Kingdom rank: 7/);await $('phxAdoptCandidate').onclick();
+ const x=await setup({empty:true}),{$,w}=x;$('phxGovernorId').value='123456';await x.submit();assert.match($('phxIdResult').textContent,/12,500/);assert.match($('phxIdResult').querySelector('.ranking-list').textContent,/Pet Power12,5007/);await $('phxAdoptCandidate').onclick();
  assert.equal(x.records()[0].metadata.external_lookup.ranks.values.leaderboards[0].value,'12500');
  $('openDossier').click();await tick();await tick();w.document.querySelector('[data-dossier-tab="development"]').click();assert.match($('dossierContent').textContent,/12,500/);assert.match($('dossierContent').textContent,/Synthetic Hero/);assert.equal(x.writes(),1);x.dom.window.close();
 });
@@ -96,9 +96,16 @@ test('unlisted #1885 ID can be selected for one-to-one rankings comparison; wron
 
 test('compact rankings keep exact values, both comparison players and closed source details',async()=>{
  const x=await setup();x.$('phxGovernorId').value='123456';await x.submit();
- const card=x.$('phxIdResult').querySelector('.ranking-evidence');assert.ok(card);assert.ok(card.querySelector('.ranking-value'));assert.ok(card.querySelector('details'));assert.equal(card.querySelector('details').open,false);assert.match(card.querySelector('details').textContent,/Source.*Not available/);
+ const card=x.$('phxIdResult').querySelector('.ranking-evidence');assert.ok(card);assert.equal(card.querySelectorAll('td').length,4);assert.ok(card.querySelector('details'));assert.equal(card.querySelector('details').open,false);assert.match(card.querySelector('details').textContent,/Source.*Not available/);
  x.run("active='QA-2'");await x.run("loadCandidateEvidence(players[1])");await x.$('loadInternal').onclick();
  const table=x.$('externalIntelResult').querySelector('.ranking-comparison');assert.ok(table);
  const row=[...table.querySelectorAll('tbody tr')].find(r=>r.querySelector('th').textContent==='Pet Power');assert.equal(row.querySelectorAll('td[data-player]').length,2);assert.equal(row.querySelectorAll('.ranking-value').length,2);assert.equal(row.querySelectorAll('details[open]').length,0);assert.match(row.textContent,/12,500/);assert.match(row.textContent,/900/);
  row.querySelector('details').open=true;assert.equal(row.querySelector('details').open,true);assert.equal(x.writes(),0);x.dom.window.close();
+});
+
+test('decision-first summary has six metrics, no kills, and keeps saved facts behind disclosure',async()=>{
+ const x=await setup();x.$('rows').querySelector('button').click();await tick();await tick();
+ assert.deepEqual([...x.$('dossierOverview').querySelectorAll('[data-metric]')].map(e=>e.dataset.metric),['power','true_power','master_power','pet_power','hero_total','castle']);
+ assert.equal(x.$('dossierTitle').textContent,'Synthetic Sentinel');assert.match(x.$('dossierIdentity').textContent,/1885/);
+ assert.equal(x.$('dossierContent').querySelector('.record-details').open,false);assert.equal(x.writes(),0);x.dom.window.close();
 });
