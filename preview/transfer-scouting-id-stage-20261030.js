@@ -198,7 +198,24 @@ function dossierGrid(title,entries){
  return wrapper;
 }
 function dossierParagraph(text){const p=document.createElement('p');p.textContent=text;return p}
-function renderDossier(){
+/* Smart Dossier V1: presentation-only grouping; original six evidence views remain available. */
+const dossierGroups={
+ overview:['identity','intelligence'],
+ development:['development'],
+ recruitment:['recruitment'],
+ history:['history','evidence']
+};
+let dossierSmartGroup='overview';
+function applySmartDossierNavigation(){
+ const names={identity:'Overview',development:'Development',recruitment:'Recruitment',history:'History & Evidence'};
+ document.querySelectorAll('[data-dossier-tab]').forEach(button=>{
+  const key=button.dataset.dossierTab;
+  if(key==='intelligence'||key==='evidence'){button.hidden=true;return;}
+  if(names[key])button.textContent=names[key];
+  button.setAttribute('aria-pressed',String(key===dossierSmartGroup));
+ });
+}
+function renderDossierSection(){
  if(!dossierOpen)return;
  const p=players.find(x=>x.candidate_id===active);
  if(!p){closeDossier();return}
@@ -212,7 +229,7 @@ function renderDossier(){
  if(id){const refresh=document.createElement('button');refresh.type='button';refresh.textContent='Refresh player evidence';refresh.disabled=evidencePending.has(id);refresh.onclick=()=>loadCandidateEvidence(p,true);root.append(refresh);}
 
  const m=p.metadata||{},t=m.mystic_trials||{},labels={coliseum:'Heroes & Hero Gear',forest:'Pets',crystal:'Governor Charms',knowledge:'Research',molten:'Governor Gear',radiant:'Mixed · Radiant Spire'};
- if(dossierTab==='identity')root.append(dossierGrid('Identity & Power',[
+ if(dossierTab==='identity'||dossierTab==='overview')root.append(dossierGrid('Identity & Power',[
   ['Player name',p.player_name],['Kingshot Player ID',m.governor_id||m.player_id],['Kingdom',p.kingdom],['Alliance',p.alliance],['Castle / Truegold',p.castle_level],
   ['Saved Total Power',p.power_m==null?null:fmt(p.power_m)+'M'],['Latest fetched Total Power',currentEvidence.has(id)?formatPlayerNumber(evidence?.player?.power):'Open or refresh player evidence'],['Previous name',m.previous_name],['Previous kingdom',m.previous_kingdom],
   ['Updated on',p.updated_at?new Date(p.updated_at).toLocaleDateString('en-GB'):'Unknown']]));
@@ -254,15 +271,28 @@ function renderDossier(){
   ].forEach(line=>article.append(dossierParagraph(line)));root.append(article);
  }
 }
+function renderDossier(){
+ if(!dossierOpen)return;
+ const tabs=dossierGroups[dossierSmartGroup]||['identity'];
+ const root=$('dossierContent');
+ const sections=[];
+ for(const tab of tabs){
+  dossierTab=tab;
+  renderDossierSection();
+  sections.push(...Array.from(root.childNodes));
+ }
+ root.replaceChildren(...sections);
+ applySmartDossierNavigation();
+}
 function openDossier(){
  if(!players.some(p=>p.candidate_id===active))return;
- dossierOpen=true;dossierTab='identity';$('scoutingBoard').hidden=true;$('candidateDossier').hidden=false;
+ dossierOpen=true;dossierSmartGroup='overview';dossierTab='identity';$('scoutingBoard').hidden=true;$('candidateDossier').hidden=false;
  renderDossier();loadCandidateEvidence(players.find(p=>p.candidate_id===active));syncWorkspace();$('candidateDossier').scrollIntoView({block:'start',behavior:'auto'});
 }
 function closeDossier(){dossierOpen=false;$('candidateDossier').hidden=true;$('scoutingBoard').hidden=false;syncWorkspace()}
 $('openDossier').onclick=openDossier;
 $('backToBoard').onclick=()=>{closeDossier();$('openDossier').focus()};
-document.querySelectorAll('[data-dossier-tab]').forEach(b=>b.onclick=()=>{dossierTab=b.dataset.dossierTab;renderDossier()});
+document.querySelectorAll('[data-dossier-tab]').forEach(b=>b.onclick=()=>{dossierSmartGroup=({identity:'overview',development:'development',recruitment:'recruitment',history:'history'})[b.dataset.dossierTab]||'overview';renderDossier()});
 
 
 setInterval(()=>{if(!$('private').hidden&&$('modal').hidden&&!document.hidden)load()},20000);
