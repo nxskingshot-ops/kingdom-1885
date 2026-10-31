@@ -279,7 +279,10 @@ function renderDossier(){
  for(const tab of tabs){
   dossierTab=tab;
   renderDossierSection();
-  sections.push(...Array.from(root.childNodes));
+  // Source summary and refresh belong once above the combined sections.
+  const nodes=Array.from(root.childNodes);
+  if(sections.length)nodes.splice(0,evidenceKey(players.find(x=>x.candidate_id===active))?2:1);
+  sections.push(...nodes);
  }
  root.replaceChildren(...sections);
  applySmartDossierNavigation();
