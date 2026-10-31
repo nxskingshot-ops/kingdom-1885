@@ -240,7 +240,8 @@ setInterval(()=>{if(!$('private').hidden&&$('modal').hidden&&!document.hidden)lo
 /* PHX ID STAGE: additive read-only feature; original LIVE V5 logic above remains unchanged. */
 const phxIdForm=$('phxIdForm'),phxIdStatus=$('phxIdStatus'),phxIdResult=$('phxIdResult');
 const phxBridgeUrl=SUPABASE_URL+'/functions/v1/phalanx-transfer-id-bridge-stage-20261030'; // Staging only; browser CORS requires verified deployment.
-function phxField(label,value){const cell=document.createElement('div');cell.className='detail';const key=document.createElement('span');key.textContent=label;const val=document.createElement('b');val.textContent=value===null||value===undefined||value===''?'Not available':String(value);cell.append(key,val);phxIdResult.append(cell);}
+function phxField(label,value){const cell=document.createElement('div');cell.className='detail';const key=document.createElement('span');key.textContent=label;const val=document.createElement('b');val.textContent=value===null||value===undefined||value===''?'Not available':String(value);cell.append(key,val);phxIdResult.append(cell);return cell;}
+function phxGroup(label){const heading=document.createElement('h4');heading.className='result-heading';heading.textContent=label;phxIdResult.append(heading);}
 phxIdForm.addEventListener('submit',async e=>{
  e.preventDefault();if(phxIdForm.querySelector('button').disabled)return;phxIdResult.replaceChildren();$('phxReview').hidden=true;clearLookupCandidate();
  if($('private').hidden){phxIdStatus.textContent='Sign in to continue.';return;}
@@ -257,11 +258,12 @@ phxIdForm.addEventListener('submit',async e=>{
   let response;try{response=await fetch(endpoint,{headers:{Authorization:'Bearer '+session.access_token,apikey:KEY},signal:controller.signal,cache:'no-store'});}finally{clearTimeout(timeout);}
   if(!response.ok)throw Error(playerLookupError(response.status));
   const payload=await response.json();if($('phxGovernorId').value.trim()!==id){phxIdStatus.textContent='Kingshot Player ID changed. Load player data again.';return;}if(payload.ok!==true||String(payload.governorId)!==id)throw Error('Player identity could not be confirmed.');const p=payload.player||{};$('phxReview').hidden=false;
-  phxField('Data source','Kingshot player data via protected Stage Bridge');phxField('Kingshot Player ID',id);phxField('Player name',p.name||p.playerName||p.player_name);
+  phxGroup('Identity & Power');phxField('Kingshot Player ID',id);phxField('Player name',p.name||p.playerName||p.player_name);
   phxField('Kingdom',p.kingdom);phxField('Alliance',p.alliance);
-  phxField('Total Power',formatPlayerNumber(p.power));phxField('Source captured (UTC)',formatPlayerUtc(payload.source?.cachedAt));phxField('Lookup time (UTC)',formatPlayerUtc(payload.checkedAtUtc));
-  const arena=payload.arenaSquad;phxField('Arena Squad',formatPlayerSection(arena?.status));if(Array.isArray(arena?.heroes))arena.heroes.forEach((hero,i)=>phxField('Arena hero '+(i+1),[hero.name,hero.level==null?null:'Level '+hero.level,(hero.stars??hero.star)==null?null:(hero.stars??hero.star)+' stars'].filter(Boolean).join(' · ')||'Unknown'));
-  const ranks=payload.ranks;phxField('Rankings',formatPlayerSection(ranks?.status));if(ranks?.values)for(const [key,label] of [['power_rank','Power rank'],['kills_rank','Kills rank'],['migrant_rank','Transfer rank'],['mystic_trial','Mystic Trial']])phxField(label,formatPlayerNumber(ranks.values[key]));
+  phxField('Total Power',formatPlayerNumber(p.power));
+  phxGroup('Arena Squad');const arena=payload.arenaSquad;phxField('Arena Squad',formatPlayerSection(arena?.status));if(Array.isArray(arena?.heroes))arena.heroes.forEach((hero,i)=>phxField('Arena hero '+(i+1),[hero.name,hero.level==null?null:'Level '+hero.level,(hero.stars??hero.star)==null?null:(hero.stars??hero.star)+' stars'].filter(Boolean).join(' · ')||'Unknown'));
+  phxGroup('Rankings');const ranks=payload.ranks;phxField('Rankings',formatPlayerSection(ranks?.status));if(ranks?.values)for(const [key,label] of [['power_rank','Power rank'],['kills_rank','Kills rank'],['migrant_rank','Transfer rank'],['mystic_trial','Mystic Trial']])phxField(label,formatPlayerNumber(ranks.values[key]));
+  phxGroup('Sources & Time');phxField('Data source','Kingshot player data via protected Stage Bridge');phxField('Source captured (UTC)',formatPlayerUtc(payload.source?.cachedAt));phxField('Lookup time (UTC)',formatPlayerUtc(payload.checkedAtUtc));
   phxIdStatus.textContent='Player data loaded. Review the details before adding this player to Candidates.';
   offerLookupCandidate(payload,id);
  }catch(error){phxIdStatus.textContent=error.name==='AbortError'?'The lookup timed out. Please try again later.':error instanceof TypeError?'Connection interrupted. Check your internet connection.':error.message;}
