@@ -27,8 +27,17 @@ Deno.serve(async(req:Request)=>{
 
   try{
   // Latest successful saved source for EACH player board; no old hand-entered trial roster.
-  const boards=['personal_power','kills','town_center','hero_total','troop_power','building_power','research_power','hero_no_equip','hero_equip','gov_gear','gov_charm','pet_power','mystic_trial','master_power'];
-  const results=await Promise.all(boards.map(async board=>{
+  const boards=['personal_power','kills','town_center','rebel_conquest','single_hero','hero_total','troop_power','building_power','research_power','hero_no_equip','hero_equip','gov_gear','gov_charm','pet_power','island_prosperity','migrant_score','mystic_trial','coliseum','forest_of_life','crystal_cave','knowledge_nexus','molten_fort','radiant_spire','master_power'];
+  let results=[],sourceMode='saved_snapshot';
+  const key=Deno.env.get("MIGHTPULSE_API_KEY");
+  if(key)try{
+    const res=await fetch('https://api.mightpulse.com/v1/kingdoms/1885/ranks?limit=100',{headers:{'X-Api-Key':key},redirect:'error',signal:AbortSignal.timeout(8000)});
+    if(res.ok){const raw=await res.json();if(Array.isArray(raw?.boards)){
+      results=raw.boards.filter(b=>boards.includes(b?.key)&&Array.isArray(b.rows)&&b.rows.length<=100).map(b=>({board:b.key,data:{entries:b.rows,entry_count:b.rows.length,source_captured_at:typeof b.captured_at==='number'?new Date(b.captured_at*1000).toISOString():null,created_at:null},error:null}));
+      if(results.length)sourceMode='provider_request';
+    }}
+  }catch{/* Read-only saved snapshots are the documented fallback. */}
+  if(!results.length)results=await Promise.all(boards.map(async board=>{
     const {data,error}=await client.from("phalanx_mightpulse_rank_snapshots")
       .select("board,source_captured_at,created_at,entries,entry_count").eq("board",board)
       .order("created_at",{ascending:false}).order("id",{ascending:false}).limit(1).maybeSingle();
@@ -52,9 +61,9 @@ Deno.serve(async(req:Request)=>{
   if(!sources.length)return respond({error:"No Mighty Pulse ranking snapshots available."},503);
   const observations=[...players.values()].sort((a,b)=>a.player_name.localeCompare(b.player_name));
   return respond({snapshot_date:sources.map(s=>s.captured_at).filter(Boolean).sort()[0]||null,
-    checked_at_utc:new Date().toISOString(),player_count:observations.length,observations,
+    source_mode:sourceMode,checked_at_utc:new Date().toISOString(),player_count:observations.length,observations,
     power_references:observations.filter(p=>p.power_m!=null),categories:[],sources,
-    coverage_note:"Players found across the latest 14 Top-100 player boards. This is not a complete kingdom census. Use a Kingshot Player ID to compare an unlisted player. Missing board entries are not zero; ranks are kingdom-specific.",
+    coverage_note:"Players found across the available Top-100 player boards. This is not a complete kingdom census. Use a Kingshot Player ID to compare an unlisted player. Missing board entries are not zero; ranks are kingdom-specific.",
     measurement_note:"Ranking scores are not Mystic Trial stages. Source capture time is distinct from request time."});
   }catch{return respond({error:"Mighty Pulse ranking data temporarily unavailable."},503);}
 });

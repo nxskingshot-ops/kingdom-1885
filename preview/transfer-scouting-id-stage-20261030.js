@@ -1,5 +1,5 @@
 import { candidateFromLookup, duplicateLookupFilter } from './transfer-id-candidate-20261030.js';
-import { formatPlayerNumber, formatPlayerUtc, formatPlayerSection, playerLookupError, playerRankingRows } from './transfer-id-display-20261030.js';
+import { formatPlayerNumber, formatPlayerUtc, formatPlayerSection, playerLookupError, playerRankingRows, rankingLabels, canonicalRankingName, playerRankingMap } from './transfer-id-display-20261030.js';
 const SUPABASE_URL='https://hcjrdofkdkasznywvcxo.supabase.co';
 const KEY='sb_publishable_hkqBaMme70g2f3wcxvaTKg_FczqkpCh';
 const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2');
@@ -96,13 +96,13 @@ const stageIndex=x=>{
 };
 const normal=x=>String(x??'').normalize('NFKC').trim().toLowerCase();
 const currentEvidence=new Map(),evidencePending=new Set(),evidenceErrors=new Map();
-const boardLabels={personal_power:'Total Power',kills:'Kills',town_center:'Town Center',hero_total:'Hero Total',troop_power:'Troop Power',building_power:'Building Power',research_power:'Research Power',hero_no_equip:'Heroes without Equipment',hero_equip:'Hero Equipment',gov_gear:'Governor Gear',gov_charm:'Governor Charms',pet_power:'Pet Power',mystic_trial:'Mystic Trial',master_power:'Master Power'};
+const boardLabels=rankingLabels;
 const evidenceKey=p=>String(p?.metadata?.governor_id||p?.metadata?.player_id||'');
 const evidenceFor=p=>currentEvidence.get(evidenceKey(p))||p?.metadata?.external_lookup;
 async function readPlayer(id){
  if(!/^[1-9][0-9]{0,15}$/.test(id))throw Error('Enter a valid Kingshot Player ID.');
  const {data:{session},error}=await db.auth.getSession();if(error||!session?.access_token)throw Error('Please sign in again.');
- const response=await fetch(SUPABASE_URL+'/functions/v1/phalanx-transfer-id-bridge-stage-20261030?governorId='+id,{headers:{apikey:KEY,Authorization:'Bearer '+session.access_token},cache:'no-store',signal:AbortSignal.timeout(100000)});
+ const response=await fetch(SUPABASE_URL+'/functions/v1/phalanx-transfer-id-bridge-stage-20261030?governorId='+id,{headers:{apikey:KEY,Authorization:'Bearer '+session.access_token},cache:'no-store',signal:AbortSignal.timeout(110000)});
  if(!response.ok)throw Error(playerLookupError(response.status));const payload=await response.json();
  if(!payload.ok||String(payload.governorId)!==id)throw Error('Player identity could not be confirmed.');
  return payload;
@@ -114,16 +114,7 @@ async function loadCandidateEvidence(p,force=false){
  catch(e){evidenceErrors.set(id,e.message||'Current evidence unavailable.');}
  finally{evidencePending.delete(id);renderDossier();renderExternalIntel();}
 }
-function rankingMap(values){
- const out={};
- for(const b of Array.isArray(values?.leaderboards)?values.leaderboards:[]){
-  const key=String(b.name||'').toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');
-  const aliases={power:'personal_power',total_power:'personal_power',governor_gear:'gov_gear',governor_charms:'gov_charm',hero_equipment:'hero_equip',heroes_without_equipment:'hero_no_equip'};
-  out[aliases[key]||key]={value:b.value,kingdom_rank:b.kingdom_rank};
- }
- for(const [key,field,rank] of [['personal_power','power','power_rank'],['kills','kills','kills_rank'],['mystic_trial','mystic_trial',null]])if(!out[key]&&values?.[field]!=null)out[key]={value:values[field],kingdom_rank:rank?values[rank]:null};
- return out;
-}
+const rankingMap=playerRankingMap;
 function renderExternalIntel(){
  const box=$('externalIntelResult'),candidate=players.find(p=>p.candidate_id===active);
  if(!candidate){box.textContent='Select a candidate from your board first.';return;}
@@ -134,7 +125,7 @@ function renderExternalIntel(){
  const evidence=evidenceFor(candidate),external=rankingMap(evidence?.ranks?.values),inside=internal.rankings||{};
  const header=document.createElement('strong');header.textContent=candidate.player_name+' (KD '+(candidate.kingdom||'?')+') ↔ '+internal.player_name+' (#1885)';box.replaceChildren(header);
  const note=text=>{const p=document.createElement('p');p.textContent=text;box.append(p);};
- note('Source: Mighty Pulse · #1885 ranking capture '+(internal.captured_at||internalSnapshot||'unavailable')+'. Candidate source '+(formatPlayerUtc(evidence?.source_cached_at))+'. Latest request is not proof of newly captured game data.');
+ note('Source: Mighty Pulse · #1885 ranking capture '+(internal.captured_at||formatPlayerUtc(internalSnapshot))+'. Candidate source '+(formatPlayerUtc(evidence?.source_cached_at))+'. Latest request is not proof of newly captured game data.');
  if(evidencePending.has(evidenceKey(candidate)))note('Loading current candidate rankings…');
  if(evidenceErrors.has(evidenceKey(candidate)))note('Current candidate refresh failed: '+evidenceErrors.get(evidenceKey(candidate))+'. Saved evidence remains visible.');
  if(!external.personal_power&&candidate.power_m!=null)note('Saved candidate Total Power: '+fmt(candidate.power_m)+'M (stored profile; current ranking value unavailable).');
@@ -294,7 +285,7 @@ phxIdForm.addEventListener('submit',async e=>{
   if(error||!session?.access_token)throw Error('Please sign in again.');
   const endpoint=new URL(phxBridgeUrl);if(endpoint.protocol!=='https:')throw Error('A secure HTTPS connection is required.');
   endpoint.searchParams.set('governorId',id);
-  const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),100000);
+  const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),110000);
   let response;try{response=await fetch(endpoint,{headers:{Authorization:'Bearer '+session.access_token,apikey:KEY},signal:controller.signal,cache:'no-store'});}finally{clearTimeout(timeout);}
   if(!response.ok)throw Error(playerLookupError(response.status));
   const payload=await response.json();if($('phxGovernorId').value.trim()!==id){phxIdStatus.textContent='Kingshot Player ID changed. Load player data again.';return;}if(payload.ok!==true||String(payload.governorId)!==id)throw Error('Player identity could not be confirmed.');const p=payload.player||{};$('phxReview').hidden=false;

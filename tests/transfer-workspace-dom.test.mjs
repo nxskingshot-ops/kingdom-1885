@@ -6,7 +6,7 @@ import vm from 'node:vm';
 import {readFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {candidateFromLookup,duplicateLookupFilter} from '../preview/transfer-id-candidate-20261030.js';
-import {formatPlayerNumber,formatPlayerUtc,formatPlayerSection,playerLookupError,playerRankingRows} from '../preview/transfer-id-display-20261030.js';
+import {formatPlayerNumber,formatPlayerUtc,formatPlayerSection,playerLookupError,playerRankingRows,rankingLabels,canonicalRankingName,playerRankingMap} from '../preview/transfer-id-display-20261030.js';
 const {JSDOM}=await import(process.env.PHX_JSDOM_MODULE||'jsdom');
 const html=readFileSync('preview/transfer-scouting-id-stage-20261030.html','utf8');
 const original=readFileSync('preview/transfer-scouting-id-stage-20261030.js','utf8');
@@ -28,7 +28,7 @@ async function setup(options={}){
  const payload=id=>({ok:true,governorId:id,player:{name:'Synthetic Pathfinder',kingdom:options.lookupKingdom||1555,alliance:'QA',power:232228946},source:{cachedAt:1793392324.689},checkedAtUtc:'2026-10-31T12:00:00Z',arenaSquad:{status:'available',heroes:[{name:'Synthetic Hero',level:80,star:4}]},ranks:{status:'available',values:{power_rank:9,kills_rank:6,migrant_rank:6,mystic_trial:1561,leaderboards:[{name:'pet_power',value:12500,kingdom_rank:7}]}}});
  const mockFetch=async input=>{const url=String(input);if(url.includes('phalanx-transfer-intelligence-stage-20261031'))return Response.json({observations:[{uid:'44',player_name:'Synthetic Internal',alliance_tag:'QA',rankings:{pet_power:{value:900,kingdom_rank:2}}}],power_references:[{player_name:'Synthetic Internal',power_m:100}],snapshot_date:'2026-10-31'});if(options.fetchHook)await options.fetchHook($);return Response.json(payload(new URL(url).searchParams.get('governorId')));};
  const NativeURL=URL;class TestURL extends NativeURL{static createObjectURL(value){blob=value;return 'blob:synthetic'}static revokeObjectURL(){}}
- Object.assign(ctx,{candidateFromLookup,duplicateLookupFilter,formatPlayerNumber,formatPlayerUtc,formatPlayerSection,playerLookupError,playerRankingRows,createClient:()=>db,fetch:mockFetch,URL:TestURL,Blob,AbortController,AbortSignal,setTimeout,clearTimeout,setInterval:()=>0});
+ Object.assign(ctx,{candidateFromLookup,duplicateLookupFilter,formatPlayerNumber,formatPlayerUtc,formatPlayerSection,playerLookupError,playerRankingRows,rankingLabels,canonicalRankingName,playerRankingMap,createClient:()=>db,fetch:mockFetch,URL:TestURL,Blob,AbortController,AbortSignal,setTimeout,clearTimeout,setInterval:()=>0});
  let source=original.replace(/^import .*?;\n/gm,'').replace("const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2');",'');
  vm.runInContext(source,ctx);await tick();await tick();
  return {dom,w,$,records:()=>records,writes:()=>writes,reads:()=>reads,blob:()=>blob,download:()=>download,run:s=>vm.runInContext(s,ctx),submit:async()=>{const ev=new w.Event('submit',{bubbles:true,cancelable:true});$('phxIdForm').dispatchEvent(ev);await tick();await tick();}};

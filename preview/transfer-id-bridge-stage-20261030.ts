@@ -35,8 +35,28 @@ Deno.serve(async req=>{
   if(d?.ok!==true||String(d.governor_id)!==id||String(p?.governor_id??p?.fid)!==id||String(d.uid)!==String(p?.uid)||!Number.isSafeInteger(p?.kid)||p.kid<1)return reply({ok:false,error:'identity_unverified'},502);
   const scalar=v=>typeof v==='string'?v.slice(0,200):typeof v==='number'&&Number.isFinite(v)?v:null;
   const heroes=Array.isArray(d.heroes)?d.heroes.slice(0,20).map(h=>({name:scalar(h?.name),level:scalar(h?.level),stars:scalar(h?.stars),star:scalar(h?.star)})):null;
-  const ranks=d.ranks&&typeof d.ranks==='object'&&!Array.isArray(d.ranks)?Object.fromEntries(['power','power_rank','kills','kills_rank','migrant_score','migrant_rank','mystic_trial'].map(k=>[k,scalar(d.ranks[k])])):null;
-  if(ranks)ranks.leaderboards=Array.isArray(d.ranks.leaderboards)?d.ranks.leaderboards.slice(0,100).map(b=>({name:scalar(b?.name),value:scalar(b?.value),kingdom_rank:scalar(b?.kingdom_rank)})):null;
+  let ranks=d.ranks&&typeof d.ranks==='object'&&!Array.isArray(d.ranks)?Object.fromEntries(['power','power_rank','kills','kills_rank','town_center_level','town_center_rank','migrant_score','migrant_rank','mystic_trial','mystic_rank'].map(k=>[k,scalar(d.ranks[k])])):null;
+  if(ranks)ranks.player_captured_at=scalar(d.cached_at);
+  if(ranks)ranks.leaderboards=Array.isArray(d.ranks.leaderboards)?d.ranks.leaderboards.slice(0,100).map(b=>({name:scalar(b?.name),value:scalar(b?.value),kingdom_rank:scalar(b?.kingdom_rank),captured_at:scalar(d.cached_at)})):null;
+  // One documented bulk kingdom call supplements player-only standings. No paid endpoints.
+  let boardStatus='unavailable';
+  try{
+   const res=await fetch('https://api.mightpulse.com/v1/kingdoms/'+p.kid+'/ranks?limit=100',{headers:{'X-Api-Key':key},redirect:'error',signal:AbortSignal.timeout(8000)});
+   if(res.ok){const raw=await res.json();if(Array.isArray(raw?.boards)){
+    const allowed=new Set(['personal_power','kills','town_center','rebel_conquest','single_hero','hero_total','troop_power','building_power','research_power','hero_no_equip','hero_equip','gov_gear','gov_charm','pet_power','island_prosperity','migrant_score','mystic_trial','coliseum','forest_of_life','crystal_cave','knowledge_nexus','molten_fort','radiant_spire','master_power']);
+    ranks=ranks||{};ranks.leaderboards=ranks.leaderboards||[];
+    ranks.boards=[];
+    for(const board of raw.boards){
+     if(!allowed.has(board?.key)||!Array.isArray(board.rows)||board.rows.length>100)continue;
+     const found=board.rows.find(e=>e?.kid===p.kid&&String(e.uid)===String(d.uid)&&(e.governor_id==null||String(e.governor_id)===id));
+     const captured=scalar(board.captured_at);
+     ranks.boards.push({name:board.key,captured_at:captured,status:found?'listed':'not_listed'});
+     if(found)ranks.leaderboards.push({name:board.key,value:scalar(found.score),kingdom_rank:scalar(found.rank),captured_at:captured});
+    }
+    boardStatus=ranks.boards.length?'available':'unavailable';
+   }}
+  }catch{/* Player standings remain usable if supplemental boards are unavailable. */}
+  if(ranks)ranks.board_status=boardStatus;
   return reply({ok:true,governorId:id,uid:String(d.uid),player:{name:scalar(p.nick_name),kingdom:p.kid,power:scalar(p.power),alliance:scalar(p.alliance?.abbr)},source:{cachedAt:scalar(d.cached_at),fresh:typeof d.fresh==='boolean'?d.fresh:null,ageSeconds:scalar(d.age_seconds)},arenaSquad:{status:heroes?'available':'missing',heroes},ranks:{status:ranks?'available':'missing',values:ranks},checkedAtUtc:new Date().toISOString()});
  }catch{return reply({ok:false,error:'upstream_unavailable'},502);}
 });

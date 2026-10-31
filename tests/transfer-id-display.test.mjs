@@ -18,3 +18,9 @@ test('known section states translated and unknown states remain unconfirmed',()=
 test('not found, access, quota and upstream errors have distinct explanations',()=>{
  const statuses=[401,403,404,429,502,503,504];assert.equal(new Set(statuses.map(playerLookupError)).size,statuses.length);assert.match(playerLookupError(404),/No player/);assert.match(playerLookupError(429),/quota/);assert.match(playerLookupError(500),/500/);
 });
+
+test('newer player standings are not replaced by older kingdom board captures and missing is never zero',async()=>{
+ const {playerRankingMap,playerRankingRows}=await import('../preview/transfer-id-display-20261030.js');
+ const values={power:200,power_rank:5,player_captured_at:'2026-10-31T02:00:00Z',leaderboards:[{name:'personal_power',value:100,kingdom_rank:8,captured_at:'2026-10-30T02:00:00Z'}],boards:[{name:'pet_power',status:'not_listed'}]};
+ assert.equal(playerRankingMap(values).personal_power.value,200);assert.match(playerRankingRows(values).find(x=>x[0]==='Pet Power')[1],/Not listed/);
+});
