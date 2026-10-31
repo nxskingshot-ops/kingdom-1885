@@ -1,0 +1,1 @@
+export async function probeMysticTrials(db){const {data:{session},error}=await db.auth.getSession();if(error||!session?.access_token)throw Error('Login required');const {data,error:invokeError}=await db.functions.invoke('phalanx-mystic-six-probe-stage-20261031',{method:'GET'});if(invokeError)throw invokeError;return data;}
