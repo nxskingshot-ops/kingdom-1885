@@ -6,7 +6,8 @@ export function candidateFromLookup(payload, expectedId, now=new Date().toISOStr
  const power=p.power===null||p.power===undefined||p.power===''?null:Number(p.power);
  const text=x=>typeof x==='string'||typeof x==='number'?String(x).slice(0,200):null;
  const heroes=Array.isArray(payload.arenaSquad?.heroes)?payload.arenaSquad.heroes.slice(0,5).map(h=>({name:text(h.name),level:text(h.level),star:text(h.stars??h.star)})):[];
- const values=Object.fromEntries(['power_rank','kills_rank','migrant_rank','mystic_trial'].map(k=>[k,text(payload.ranks?.values?.[k])]));
+ const values=Object.fromEntries(['power','power_rank','kills','kills_rank','migrant_score','migrant_rank','mystic_trial'].map(k=>[k,text(payload.ranks?.values?.[k])]));
+ values.leaderboards=Array.isArray(payload.ranks?.values?.leaderboards)?payload.ranks.values.leaderboards.slice(0,100).map(b=>({name:text(b.name),value:text(b.value),kingdom_rank:text(b.kingdom_rank)})):null;
  return {candidate_id:'NXS-GOV-'+id,player_name:p.name.trim(),kingdom:String(p.kingdom),alliance:text(p.alliance),power_m:power!==null&&Number.isFinite(power)&&power>=0?power/1e6:null,contact_status:'Scouted',metadata:{governor_id:id,player_id:id,source_uid:text(payload.uid),external_lookup:{checked_at_utc:text(payload.checkedAtUtc),source_cached_at:text(payload.source?.cachedAt),arena_squad:{status:text(payload.arenaSquad?.status),heroes},ranks:{status:text(payload.ranks?.status),values}}},updated_at:now};
 }
 export function duplicateLookupFilter(id) {

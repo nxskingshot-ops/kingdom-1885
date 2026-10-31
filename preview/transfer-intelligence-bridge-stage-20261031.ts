@@ -24,31 +24,37 @@ Deno.serve(async(req:Request)=>{
   if(memberError||!membership?.active||(membership.expires_at&&Date.parse(membership.expires_at)<=Date.now()))
     return respond({error:"Active NEXUS membership required."},403);
 
-  const {data:latest,error:latestError}=await client.from("mystic_trial_observations")
-    .select("snapshot_date").order("snapshot_date",{ascending:false}).limit(1).maybeSingle();
-  if(latestError||!latest?.snapshot_date)return respond({error:"No private intelligence snapshot available."},503);
-  const date=latest.snapshot_date;
 
-  const [observations,powerReferences,categoryLabels,nxsRoster]=await Promise.all([
-    client.from("mystic_trial_observations")
-      .select("snapshot_date,player_name,alliance_tag,overall_rank,overall_score,coliseum_rank,coliseum_stage,forest_rank,forest_stage,crystal_rank,crystal_stage,knowledge_rank,knowledge_stage,molten_rank,molten_stage,radiant_rank,radiant_stage")
-      .eq("snapshot_date",date).order("overall_rank",{ascending:true,nullsFirst:false}).limit(200),
-    client.from("mystic_trial_power_references")
-      .select("snapshot_date,player_name,power_m,castle,roster_player_name,source_note")
-      .eq("snapshot_date",date).limit(200),
-    client.from("mystic_trial_categories").select("trial_key,display_name,theme_label,sort_order,description").order("sort_order",{ascending:true}),
-    client.from("kvk_roster_history").select("snapshot_date,player_name,power_m,castle").eq("snapshot_date",date).limit(200)
-  ]);
-  if(observations.error||powerReferences.error||categoryLabels.error||nxsRoster.error)
-    return respond({error:"Private intelligence data temporarily unavailable."},503);
-  const visibleNames=new Set((observations.data??[]).map(p=>String(p.player_name).normalize("NFKC").trim().toLowerCase()));
-  return respond({
-    snapshot_date:date,
-    player_count:observations.data?.length??0,
-    observations:observations.data??[],
-    power_references:[...(powerReferences.data??[]),...(nxsRoster.data??[]).filter(r=>!(powerReferences.data??[]).some(p=>p.player_name.toLowerCase()===r.player_name.toLowerCase())).map(r=>({...r,source_note:"NXS private roster snapshot",roster_player_name:r.player_name}))].filter(r=>visibleNames.has(String(r.player_name).normalize("NFKC").trim().toLowerCase())),
-    categories:categoryLabels.data??[],
-    measurement_note:"Trial stage and rank are comparative progress indicators, not direct measures of troop power or non-troop power."
-  });
+  try{
+  // Latest successful saved source for EACH player board; no old hand-entered trial roster.
+  const boards=['personal_power','kills','town_center','hero_total','troop_power','building_power','research_power','hero_no_equip','hero_equip','gov_gear','gov_charm','pet_power','mystic_trial','master_power'];
+  const results=await Promise.all(boards.map(async board=>{
+    const {data,error}=await client.from("phalanx_mightpulse_rank_snapshots")
+      .select("board,source_captured_at,created_at,entries,entry_count").eq("board",board)
+      .order("created_at",{ascending:false}).order("id",{ascending:false}).limit(1).maybeSingle();
+    return {board,data,error};
+  }));
+  const players=new Map(),sources=[];
+  for(const {board,data,error} of results){
+    if(error||!data||!Array.isArray(data.entries)||data.entries.length>1000||data.entry_count!==data.entries.length)continue;
+    sources.push({board,captured_at:data.source_captured_at,saved_at:data.created_at,entry_count:data.entry_count});
+    for(const e of data.entries){
+      if(e?.kid!==1885||!e.uid||typeof e.nick_name!=="string")continue;
+      const uid=String(e.uid);let p=players.get(uid);
+      if(!p){p={uid,player_name:e.nick_name.slice(0,160),alliance_tag:typeof e.alliance_abbr==="string"?e.alliance_abbr.slice(0,32):null,governor_id:e.governor_id==null?null:String(e.governor_id),rankings:{}};players.set(uid,p);}
+      if(!p.governor_id&&e.governor_id)p.governor_id=String(e.governor_id);
+      const value=typeof e.score==="number"&&Number.isFinite(e.score)?e.score:null;
+      const rank=Number.isInteger(e.rank)&&e.rank>0?e.rank:null;
+      p.rankings[board]={value,kingdom_rank:rank,captured_at:data.source_captured_at};
+      if(board==="personal_power")p.power_m=value===null?null:value/1e6;
+    }
+  }
+  if(!sources.length)return respond({error:"No Mighty Pulse ranking snapshots available."},503);
+  const observations=[...players.values()].sort((a,b)=>a.player_name.localeCompare(b.player_name));
+  return respond({snapshot_date:sources.map(s=>s.captured_at).filter(Boolean).sort()[0]||null,
+    checked_at_utc:new Date().toISOString(),player_count:observations.length,observations,
+    power_references:observations.filter(p=>p.power_m!=null),categories:[],sources,
+    coverage_note:"Players found across the latest 14 Top-100 player boards. This is not a complete kingdom census. Use a Kingshot Player ID to compare an unlisted player. Missing board entries are not zero; ranks are kingdom-specific.",
+    measurement_note:"Ranking scores are not Mystic Trial stages. Source capture time is distinct from request time."});
+  }catch{return respond({error:"Mighty Pulse ranking data temporarily unavailable."},503);}
 });
-

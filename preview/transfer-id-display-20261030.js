@@ -24,3 +24,17 @@ export function formatPlayerSection(status) {
 export function playerLookupError(status) {
  return ({401:'Your session has expired. Please sign in again.',403:'Your account does not have permission for this lookup.',404:'No player was found for this Kingshot Player ID.',429:'The lookup quota has been reached. Please try again later.',502:'The player data source is unavailable or returned unconfirmed data.',503:'Player lookup is unavailable. Please try again later.',504:'The player data source did not respond in time.'})[status]||'Lookup unavailable ('+status+').';
 }
+
+// Provider leaderboards carry raw values AND kingdom ranks. Never treat missing ranks as zero.
+export function playerRankingRows(values) {
+ const v=values||{},rows=[];
+ for(const [key,label] of [['power','Total Power'],['kills','Kills'],['migrant_score','Transfer score'],['mystic_trial','Mystic Trial score']])
+  if(v[key]!==null&&v[key]!==undefined&&v[key]!=='')rows.push([label,formatPlayerNumber(v[key])]);
+ for(const [key,label] of [['power_rank','Power rank'],['kills_rank','Kills rank'],['migrant_rank','Transfer rank']])
+  if(v[key]!==null&&v[key]!==undefined&&v[key]!=='')rows.push([label,formatPlayerNumber(v[key])]);
+ for(const b of Array.isArray(v.leaderboards)?v.leaderboards:[]) {
+  if(typeof b?.name!=='string'||!b.name.trim())continue;
+  rows.push([b.name,'Value: '+formatPlayerNumber(b.value)+' · Kingdom rank: '+formatPlayerNumber(b.kingdom_rank)]);
+ }
+ return rows.length?rows:[['Rankings','Not available from this source']];
+}

@@ -6,7 +6,7 @@ import vm from 'node:vm';
 import {readFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {candidateFromLookup,duplicateLookupFilter} from '../preview/transfer-id-candidate-20261030.js';
-import {formatPlayerNumber,formatPlayerUtc,formatPlayerSection,playerLookupError} from '../preview/transfer-id-display-20261030.js';
+import {formatPlayerNumber,formatPlayerUtc,formatPlayerSection,playerLookupError,playerRankingRows} from '../preview/transfer-id-display-20261030.js';
 const {JSDOM}=await import(process.env.PHX_JSDOM_MODULE||'jsdom');
 const html=readFileSync('preview/transfer-scouting-id-stage-20261030.html','utf8');
 const original=readFileSync('preview/transfer-scouting-id-stage-20261030.js','utf8');
@@ -25,10 +25,10 @@ async function setup(options={}){
  else if(op==='update'){writes++;const row=records.find(x=>x[match[0]]===match[1]);Object.assign(row,data);result={data:{candidate_id:row.candidate_id}};}
  else {reads++;result={data:match?.[0]==='duplicate'?records.filter(p=>match[1].includes(p.candidate_id)||match[1].includes('eq.'+p.metadata?.governor_id)):records};}
  return Promise.resolve({...result,error:null}).then(resolve)} };return q}};
- const payload=id=>({ok:true,governorId:id,player:{name:'Synthetic Pathfinder',kingdom:1555,alliance:'QA',power:232228946},source:{cachedAt:1793392324.689},checkedAtUtc:'2026-10-31T12:00:00Z',arenaSquad:{status:'available',heroes:[{name:'Synthetic Hero',level:80,star:4}]},ranks:{status:'available',values:{power_rank:9,kills_rank:6,migrant_rank:6,mystic_trial:1561}}});
- const mockFetch=async input=>{const url=String(input);if(url.includes('phalanx-transfer-intelligence-stage-20261031'))return Response.json({observations:[{player_name:'Synthetic Internal',alliance_tag:'QA',coliseum_stage:'10-5'}],power_references:[{player_name:'Synthetic Internal',power_m:100}],snapshot_date:'2026-10-31'});if(options.fetchHook)await options.fetchHook($);return Response.json(payload(new URL(url).searchParams.get('governorId')));};
+ const payload=id=>({ok:true,governorId:id,player:{name:'Synthetic Pathfinder',kingdom:options.lookupKingdom||1555,alliance:'QA',power:232228946},source:{cachedAt:1793392324.689},checkedAtUtc:'2026-10-31T12:00:00Z',arenaSquad:{status:'available',heroes:[{name:'Synthetic Hero',level:80,star:4}]},ranks:{status:'available',values:{power_rank:9,kills_rank:6,migrant_rank:6,mystic_trial:1561,leaderboards:[{name:'pet_power',value:12500,kingdom_rank:7}]}}});
+ const mockFetch=async input=>{const url=String(input);if(url.includes('phalanx-transfer-intelligence-stage-20261031'))return Response.json({observations:[{uid:'44',player_name:'Synthetic Internal',alliance_tag:'QA',rankings:{pet_power:{value:900,kingdom_rank:2}}}],power_references:[{player_name:'Synthetic Internal',power_m:100}],snapshot_date:'2026-10-31'});if(options.fetchHook)await options.fetchHook($);return Response.json(payload(new URL(url).searchParams.get('governorId')));};
  const NativeURL=URL;class TestURL extends NativeURL{static createObjectURL(value){blob=value;return 'blob:synthetic'}static revokeObjectURL(){}}
- Object.assign(ctx,{candidateFromLookup,duplicateLookupFilter,formatPlayerNumber,formatPlayerUtc,formatPlayerSection,playerLookupError,createClient:()=>db,fetch:mockFetch,URL:TestURL,Blob,AbortController,setTimeout,clearTimeout,setInterval:()=>0});
+ Object.assign(ctx,{candidateFromLookup,duplicateLookupFilter,formatPlayerNumber,formatPlayerUtc,formatPlayerSection,playerLookupError,playerRankingRows,createClient:()=>db,fetch:mockFetch,URL:TestURL,Blob,AbortController,AbortSignal,setTimeout,clearTimeout,setInterval:()=>0});
  let source=original.replace(/^import .*?;\n/gm,'').replace("const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2');",'');
  vm.runInContext(source,ctx);await tick();await tick();
  return {dom,w,$,records:()=>records,writes:()=>writes,reads:()=>reads,blob:()=>blob,download:()=>download,run:s=>vm.runInContext(s,ctx),submit:async()=>{const ev=new w.Event('submit',{bubbles:true,cancelable:true});$('phxIdForm').dispatchEvent(ev);await tick();await tick();}};
@@ -49,7 +49,7 @@ test('three task views, candidate comparison, six dossier tabs and back navigati
  for(const id of ['phxIdPanel','workspace-tools','scoutingBoard']){w.document.querySelector(`.workspace-nav [data-view="${id}"]`).dispatchEvent(new w.MouseEvent('click',{bubbles:true,cancelable:true}));assert.equal($(id).hidden,false,id+' / '+x.run('workspaceView'));}
  for(const box of $('rows').querySelectorAll('input'))box.click();await tick();assert.equal($('compare').disabled,false);$('compare').click();assert.match($('comparison').textContent,/Synthetic Sentinel/);assert.match($('comparison').textContent,/Synthetic Vanguard/);
  $('rows').querySelector('button').click();assert.equal($('candidateDossier').hidden,false);
- for(const tab of w.document.querySelectorAll('[data-dossier-tab]')){tab.click();assert.ok($('dossierContent').textContent.trim());}
+ await tick();await tick();for(const tab of w.document.querySelectorAll('[data-dossier-tab]')){tab.click();assert.ok($('dossierContent').textContent.trim());}
  $('backToBoard').click();assert.equal($('scoutingBoard').hidden,false);assert.equal($('candidateDossier').hidden,true);assert.equal(x.writes(),0);
  x.dom.window.close();
 });
@@ -70,8 +70,18 @@ test('CSV uses native Blob and exports filtered records with escaped quotes and 
  const x=await setup();x.records()[0].notes='Quoted "evidence", retained';x.$('search').value='Sentinel';x.$('csv').click();assert.equal(x.download(),true);const csv=await x.blob().text();assert.match(csv,/Synthetic Sentinel/);assert.doesNotMatch(csv,/Synthetic Vanguard/);assert.match(csv,/Quoted ""evidence"", retained/);assert.match(csv,/candidate_id,player_name/);assert.equal(x.writes(),0);x.dom.window.close();
 });
 test('real candidate internal comparison still loads recorded intelligence after demo removal',async()=>{
- const x=await setup();await x.$('loadInternal').onclick();assert.match(x.$('externalIntelResult').textContent,/Synthetic Sentinel.*Synthetic Internal/);assert.match(x.$('externalIntelResult').textContent,/1\/5/);assert.match(x.$('externalIntelResult').textContent,/123M/);assert.equal(x.writes(),0);x.dom.window.close();
+ const x=await setup();await x.$('loadInternal').onclick();assert.match(x.$('externalIntelResult').textContent,/Synthetic Sentinel.*Synthetic Internal/);assert.match(x.$('externalIntelResult').textContent,/Pet Power/);assert.match(x.$('externalIntelResult').textContent,/900/);await tick();await tick();assert.match(x.$('externalIntelResult').textContent,/123M/);assert.equal(x.writes(),0);x.dom.window.close();
 });
 test('changed ID during lookup cannot display or adopt stale identity',async()=>{
  const x=await setup({fetchHook:async $=>{$('phxGovernorId').value='999';}});x.$('phxGovernorId').value='123456';await x.submit();assert.equal(x.$('phxReview').hidden,true);assert.equal(x.$('phxIdResult').children.length,0);assert.equal(x.$('phxAdoptCandidate').hidden,true);assert.match(x.$('phxIdStatus').textContent,/changed/);assert.equal(x.writes(),0);x.dom.window.close();
+});
+
+test('lookup leaderboards persist through explicit adoption and display in dossier with arena evidence without further writes',async()=>{
+ const x=await setup({empty:true}),{$,w}=x;$('phxGovernorId').value='123456';await x.submit();assert.match($('phxIdResult').textContent,/12,500/);assert.match($('phxIdResult').textContent,/Kingdom rank: 7/);await $('phxAdoptCandidate').onclick();
+ assert.equal(x.records()[0].metadata.external_lookup.ranks.values.leaderboards[0].value,'12500');
+ $('openDossier').click();await tick();await tick();w.document.querySelector('[data-dossier-tab="development"]').click();assert.match($('dossierContent').textContent,/12,500/);assert.match($('dossierContent').textContent,/Synthetic Hero/);assert.equal(x.writes(),1);x.dom.window.close();
+});
+test('unlisted #1885 ID can be selected for one-to-one rankings comparison; wrong kingdom rejected without writes',async()=>{
+ const x=await setup({lookupKingdom:1885}),{$}=x;$('internalPlayerId').value='888';await $('internalIdForm').onsubmit({preventDefault(){}});await tick();await tick();assert.equal($('internalGovernor').disabled,false);assert.match($('externalIntelResult').textContent,/12,500/);assert.match($('externalIntelResult').textContent,/Synthetic Pathfinder/);assert.equal(x.writes(),0);x.dom.window.close();
+ const y=await setup();y.$('internalPlayerId').value='888';await y.$('internalIdForm').onsubmit({preventDefault(){}});assert.match(y.$('externalIntelResult').textContent,/not in Kingdom/);assert.equal(y.writes(),0);y.dom.window.close();
 });

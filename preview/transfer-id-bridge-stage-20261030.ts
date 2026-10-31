@@ -35,7 +35,8 @@ Deno.serve(async req=>{
   if(d?.ok!==true||String(d.governor_id)!==id||String(p?.governor_id??p?.fid)!==id||String(d.uid)!==String(p?.uid)||!Number.isSafeInteger(p?.kid)||p.kid<1)return reply({ok:false,error:'identity_unverified'},502);
   const scalar=v=>typeof v==='string'?v.slice(0,200):typeof v==='number'&&Number.isFinite(v)?v:null;
   const heroes=Array.isArray(d.heroes)?d.heroes.slice(0,20).map(h=>({name:scalar(h?.name),level:scalar(h?.level),stars:scalar(h?.stars),star:scalar(h?.star)})):null;
-  const ranks=d.ranks&&typeof d.ranks==='object'&&!Array.isArray(d.ranks)?Object.fromEntries(['power_rank','kills_rank','migrant_rank','mystic_trial'].map(k=>[k,scalar(d.ranks[k])])):null;
+  const ranks=d.ranks&&typeof d.ranks==='object'&&!Array.isArray(d.ranks)?Object.fromEntries(['power','power_rank','kills','kills_rank','migrant_score','migrant_rank','mystic_trial'].map(k=>[k,scalar(d.ranks[k])])):null;
+  if(ranks)ranks.leaderboards=Array.isArray(d.ranks.leaderboards)?d.ranks.leaderboards.slice(0,100).map(b=>({name:scalar(b?.name),value:scalar(b?.value),kingdom_rank:scalar(b?.kingdom_rank)})):null;
   return reply({ok:true,governorId:id,uid:String(d.uid),player:{name:scalar(p.nick_name),kingdom:p.kid,power:scalar(p.power),alliance:scalar(p.alliance?.abbr)},source:{cachedAt:scalar(d.cached_at),fresh:typeof d.fresh==='boolean'?d.fresh:null,ageSeconds:scalar(d.age_seconds)},arenaSquad:{status:heroes?'available':'missing',heroes},ranks:{status:ranks?'available':'missing',values:ranks},checkedAtUtc:new Date().toISOString()});
  }catch{return reply({ok:false,error:'upstream_unavailable'},502);}
 });
