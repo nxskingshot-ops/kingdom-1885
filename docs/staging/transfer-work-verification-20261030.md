@@ -347,3 +347,6 @@ INTEGRITÄT GEPRÜFT: git bundle verify, full fsck in separate clones; restored 
 WIEDERHERSTELLUNG GETESTET: isolated source checkout only. DB restore, real Edge rollback and Vercel rollback NICHT GETESTET.
 No database export, candidate write, destructive operation, permission change, paid resource or main merge performed. No new claim about historical encrypted production backups.
 Remaining gates: real Android use, an intentionally chosen new real candidate save/reload, authorized accounts for full live roles matrix, provider-outage fallback end-to-end, recovery email/reset, true unlisted-player live lookup and multi-candidate live comparison. Existing protected shortlist must not receive synthetic tests.
+
+
+Recovery archive persisted successfully: Library libfile_11265d98a0948191b0321ff02e5c8a20, PHX_TRANSFER_VERIFIED_RECOVERY_20261031.zip, 13303037 bytes, SHA256 d661ad8345b148c563db90450941c6be1e57997823f0ab149e116cfb5b2874a8. ZIP CRC and all manifest SHA256 values verified before upload. No browser session, credentials, screenshots or candidate CSV included.
