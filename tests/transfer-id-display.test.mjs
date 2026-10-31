@@ -24,3 +24,9 @@ test('newer player standings are not replaced by older kingdom board captures an
  const values={power:200,power_rank:5,player_captured_at:'2026-10-31T02:00:00Z',leaderboards:[{name:'personal_power',value:100,kingdom_rank:8,captured_at:'2026-10-30T02:00:00Z'}],boards:[{name:'pet_power',status:'not_listed'}]};
  assert.equal(playerRankingMap(values).personal_power.value,200);assert.match(playerRankingRows(values).find(x=>x[0]==='Pet Power')[1],/Not listed/);
 });
+
+ test('saved snapshot provenance is visible and missing timestamps stay unknown',async()=>{
+ const {playerRankingRows}=await import('../preview/transfer-id-display-20261030.js');
+ const rows=playerRankingRows({leaderboards:[{name:'pet_power',value:123,kingdom_rank:4,source:'saved_snapshot',captured_at:'2026-10-30T00:00:00Z'}],boards:[{name:'kills',status:'not_listed',source:'saved_snapshot'}]});
+ assert.match(rows[0][1],/Saved snapshot.*2026-10-30/);assert.match(rows[1][1],/Saved snapshot.*Not available/);
+ });

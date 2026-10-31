@@ -1,5 +1,5 @@
 import { candidateFromLookup, duplicateLookupFilter } from './transfer-id-candidate-20261030.js';
-import { formatPlayerNumber, formatPlayerUtc, formatPlayerSection, playerLookupError, playerRankingRows, rankingLabels, canonicalRankingName, playerRankingMap } from './transfer-id-display-20261030.js';
+import { formatPlayerNumber, formatPlayerUtc, formatPlayerSection, playerLookupError, playerRankingRows, rankingLabels, canonicalRankingName, playerRankingMap, rankingSourceText } from './transfer-id-display-20261030.js';
 const SUPABASE_URL='https://hcjrdofkdkasznywvcxo.supabase.co';
 const KEY='sb_publishable_hkqBaMme70g2f3wcxvaTKg_FczqkpCh';
 const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2');
@@ -125,7 +125,7 @@ function renderExternalIntel(){
  const evidence=evidenceFor(candidate),external=rankingMap(evidence?.ranks?.values),inside=internal.rankings||{};
  const header=document.createElement('strong');header.textContent=candidate.player_name+' (KD '+(candidate.kingdom||'?')+') ↔ '+internal.player_name+' (#1885)';box.replaceChildren(header);
  const note=text=>{const p=document.createElement('p');p.textContent=text;box.append(p);};
- note('Source: Mighty Pulse · #1885 ranking capture '+(internal.captured_at||formatPlayerUtc(internalSnapshot))+'. Candidate source '+(formatPlayerUtc(evidence?.source_cached_at))+'. Latest request is not proof of newly captured game data.');
+ note('Available ranking data · #1885 capture '+(internal.captured_at||formatPlayerUtc(internalSnapshot))+'. Candidate source '+(formatPlayerUtc(evidence?.source_cached_at))+'. Latest request is not proof of newly captured game data.');
  if(evidencePending.has(evidenceKey(candidate)))note('Loading current candidate rankings…');
  if(evidenceErrors.has(evidenceKey(candidate)))note('Current candidate refresh failed: '+evidenceErrors.get(evidenceKey(candidate))+'. Saved evidence remains visible.');
  if(!external.personal_power&&candidate.power_m!=null)note('Saved candidate Total Power: '+fmt(candidate.power_m)+'M (stored profile; current ranking value unavailable).');
@@ -136,7 +136,7 @@ function renderExternalIntel(){
  const wrap=document.createElement('div');wrap.className='scroll';const table=document.createElement('table');
  const thead=document.createElement('thead'),tr=document.createElement('tr');for(const label of ['Metric',candidate.player_name,internal.player_name]){const th=document.createElement('th');th.textContent=label;tr.append(th);}thead.append(tr);table.append(thead);
  const body=document.createElement('tbody');
- for(const [label,a,b] of rows){const tr=document.createElement('tr');for(const value of [label,a?'Value: '+formatPlayerNumber(a.value)+' · KD rank: '+formatPlayerNumber(a.kingdom_rank):'Not available from source',b?'Value: '+formatPlayerNumber(b.value)+' · KD rank: '+formatPlayerNumber(b.kingdom_rank)+(b.captured_at?' · '+formatPlayerUtc(b.captured_at):''):'Not listed in available board']){const td=document.createElement('td');td.textContent=value;tr.append(td);}body.append(tr);}table.append(body);wrap.append(table);box.append(wrap);
+ for(const [label,a,b] of rows){const tr=document.createElement('tr');for(const value of [label,a?'Value: '+formatPlayerNumber(a.value)+' · KD rank: '+formatPlayerNumber(a.kingdom_rank)+rankingSourceText(a):'Not available from source',b?'Value: '+formatPlayerNumber(b.value)+' · KD rank: '+formatPlayerNumber(b.kingdom_rank)+rankingSourceText(b):'Not listed in available board']){const td=document.createElement('td');td.textContent=value;tr.append(td);}body.append(tr);}table.append(body);wrap.append(table);box.append(wrap);
  note('Each rank belongs to its own kingdom. Missing Top-100 entries do not mean zero. Scores are not Mystic Trial stages and do not predict battle outcomes.');
  note('Player list coverage: latest available Top-100 player boards, not a complete kingdom census. An unlisted #1885 player can be compared by Kingshot Player ID.');
 }

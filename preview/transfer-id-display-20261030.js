@@ -42,8 +42,9 @@ export function playerRankingMap(values){
 }
 export function playerRankingRows(values) {
  const v=values||{},map=new Map(Object.entries(playerRankingMap(v)));
- const rows=[...map].map(([key,b])=>[rankingLabels[key]||b.name,'Value: '+formatPlayerNumber(b.value)+' · Kingdom rank: '+formatPlayerNumber(b.kingdom_rank)+(b.captured_at!=null?' · Source: '+formatPlayerUtc(b.captured_at):'')]);
- for(const b of Array.isArray(v.boards)?v.boards:[])if(b.status==='not_listed'&&!map.has(canonicalRankingName(b.name)))rows.push([rankingLabels[b.name]||b.name,'Not listed in available Top 100 · Source: '+formatPlayerUtc(b.captured_at)]);
+ const rows=[...map].map(([key,b])=>[rankingLabels[key]||b.name,'Value: '+formatPlayerNumber(b.value)+' · Kingdom rank: '+formatPlayerNumber(b.kingdom_rank)+rankingSourceText(b)]);
+ for(const b of Array.isArray(v.boards)?v.boards:[])if(b.status==='not_listed'&&!map.has(canonicalRankingName(b.name)))rows.push([rankingLabels[b.name]||b.name,'Not listed in available Top 100'+rankingSourceText(b)]);
  if(v.board_status==='unavailable')rows.push(['Additional kingdom boards','Unavailable; player standings remain displayed']);
  return rows.length?rows:[['Rankings','Not available from this source']];
 }
+export function rankingSourceText(entry){return ' · '+(entry?.source==='saved_snapshot'?'Saved snapshot':'Provider data')+' · Source: '+formatPlayerUtc(entry?.captured_at);}
