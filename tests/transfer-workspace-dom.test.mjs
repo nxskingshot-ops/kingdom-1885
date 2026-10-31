@@ -44,12 +44,20 @@ test('all script DOM IDs resolve, no duplicate IDs, fictional runtime and author
  assert.doesNotMatch(original,/fictional|Astra Vale|demoDossier|Governor-ID|Gouverneur-ID|[ÄÖÜäöüß]/);
  assert.doesNotMatch(d.body.textContent,/fictional|Astra Vale|Governor-ID|Gouverneur-ID|[ÄÖÜäöüß]/i);
 });
-test('three task views, candidate comparison, six dossier tabs and back navigation work without demo dependencies',async()=>{
+test('three task views, candidate comparison, four smart dossier groups and back navigation work without demo dependencies',async()=>{
  const x=await setup(),{$,w}=x;assert.equal($('private').hidden,false);assert.equal($('rows').children.length,2);
  for(const id of ['phxIdPanel','workspace-tools','scoutingBoard']){w.document.querySelector(`.workspace-nav [data-view="${id}"]`).dispatchEvent(new w.MouseEvent('click',{bubbles:true,cancelable:true}));assert.equal($(id).hidden,false,id+' / '+x.run('workspaceView'));}
  for(const box of $('rows').querySelectorAll('input'))box.click();await tick();assert.equal($('compare').disabled,false);$('compare').click();assert.match($('comparison').textContent,/Synthetic Sentinel/);assert.match($('comparison').textContent,/Synthetic Vanguard/);
  $('rows').querySelector('button').click();assert.equal($('candidateDossier').hidden,false);
- await tick();await tick();for(const tab of w.document.querySelectorAll('[data-dossier-tab]')){tab.click();assert.ok($('dossierContent').textContent.trim());}
+ await tick();await tick();
+ const groups={identity:['Identity & Power','NEXUS Intelligence'],development:['Mighty Pulse Rankings','Arena Squad','Recorded Mystic Trial Stages'],recruitment:['Recruitment','Notes'],history:['Development History','Evidence & Sources']};
+ for(const [name,headings] of Object.entries(groups)){
+  const tab=w.document.querySelector('[data-dossier-tab="'+name+'"]');
+  assert.equal(tab.hidden,false,name+' should be visible');tab.click();
+  for(const heading of headings)assert.ok($('dossierContent').textContent.includes(heading),name+' missing '+heading);
+  assert.equal($('dossierContent').querySelectorAll('button').length,1,name+' refresh control must not repeat');
+ }
+ for(const name of ['evidence','intelligence'])assert.equal(w.document.querySelector('[data-dossier-tab="'+name+'"]').hidden,true,name+' is grouped, not removed');
  $('backToBoard').click();assert.equal($('scoutingBoard').hidden,false);assert.equal($('candidateDossier').hidden,true);assert.equal(x.writes(),0);
  x.dom.window.close();
 });
