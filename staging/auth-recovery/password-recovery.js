@@ -11,24 +11,24 @@ client.auth.onAuthStateChange(event=>{
  byId('requestForm').hidden=true;
  byId('passwordForm').hidden=false;
  history.replaceState(null,'',location.pathname);
- status('Rücksetzlink erkannt. Lege jetzt dein neues Passwort fest.');
+ status('Reset link recognized. Choose your new password.');
 });
 byId('requestForm').addEventListener('submit',async event=>{
  event.preventDefault();
  const button=event.currentTarget.querySelector('button');button.disabled=true;
- status('Wiederherstellungs-E-Mail wird angefordert …');
+ status('Requesting recovery email…');
  try{
   const {error}=await client.auth.resetPasswordForEmail(byId('recoveryEmail').value.trim(),{redirectTo:new URL('./password-recovery.html',location.href).href});
   if(error)throw error;
-  status('Anfrage angenommen. Falls ein Konto für diese Adresse besteht, prüfe dein Postfach und den Spamordner. Eine Zustellung ist damit noch nicht bestätigt.');
- }catch{status('E-Mail konnte nicht angefordert werden. Bitte später erneut versuchen.');}
+  status('Request accepted. If an account exists for this address, check your inbox and spam folder. Delivery is not yet confirmed.');
+ }catch{status('Recovery email could not be requested. Please try again later.');}
  finally{button.disabled=false;}
 });
 byId('passwordForm').addEventListener('submit',async event=>{
  event.preventDefault();
- if(!recoveryReady){clearPasswords();status('Ein gültiger Rücksetzlink ist erforderlich.');return;}
+ if(!recoveryReady){clearPasswords();status('A valid reset link is required.');return;}
  const password=byId('newPassword').value;
- if(password.length<12||password!==byId('confirmPassword').value){clearPasswords();status('Bitte mindestens zwölf Zeichen verwenden und beide Passwörter identisch eingeben.');return;}
+ if(password.length<12||password!==byId('confirmPassword').value){clearPasswords();status('Use at least twelve characters and enter the same password twice.');return;}
  const button=event.currentTarget.querySelector('button');button.disabled=true;
  try{
   const {data,error:identityError}=await client.auth.getUser();
@@ -37,7 +37,7 @@ byId('passwordForm').addEventListener('submit',async event=>{
   if(error)throw error;
   recoveryReady=false;clearPasswords();byId('passwordForm').hidden=true;
   await client.auth.signOut({scope:'local'});
-  status('Passwort geändert. Du kannst dich jetzt auf der Testseite anmelden.');
- }catch{clearPasswords();status('Passwort konnte nicht geändert werden. Der Link könnte abgelaufen sein oder das Passwort die Kontovorgaben nicht erfüllen.');}
+  status('Password changed. You can now sign in to the test site.');
+ }catch{clearPasswords();status('Password could not be changed. The link may have expired or the password may not meet the account requirements.');}
  finally{button.disabled=false;}
 });

@@ -169,3 +169,31 @@ User reported Android screenshot 47730: Add Candidate still required manual name
 - Source commit `e49fa01ce7eb51babba0b405c518f1d01d729657`, isolated test deployment `dpl_B3eD14NwAfBA4x8DHyTL9F6BD2aK`, READY with alias assigned and no alias error. Immutable URL: https://phalanx-r11-atlas-preview-h2srbbsnd-matze4428-6040.vercel.app .
 - Existing authorized HTTPS alias/share link opened successfully in browser; module DOM confirms `build=phx-id-onboarding-5`. Login still required. Error sample: extension metadata error only. No new authenticated live save test.
 - 15-file deployment includes new candidate mapping helper, all prior recovery/demo dependencies and corrected CSS; excludes synthetic fixture, test mocks and credentials. Test project/SSO/share duration unchanged. Vercel target label is `production` for this isolated test-project alias slot only.
+
+
+## Transfer milestone PHX-TRANSFER-WORLD-EN — 2026-10-31
+
+Status: IMPLEMENTED / LOCAL INTEGRATION TESTED; authenticated browser and device acceptance pending.
+
+### Source gate and recovery
+- Actual stage HEAD before edits: `2ce2e02d7e9859d4eb0f1290fd07fe903fdf941d`; Vercel alias confirmed at `dpl_B3eD14NwAfBA4x8DHyTL9F6BD2aK`, source `e49fa01ce7eb51babba0b405c518f1d01d729657`. The two later code commits were not deployed.
+- Read all five current project sources, canonical governance START-HERE, A041 at `961000090cade29aa5f686b3fd70b1b4128f031e`, stage verification log and current governance master register at `f976ef9a3d82184bb6c86b6665856e13bf0659c1`. Read V5 Library report and verified original Site remains version 6, source `55f372ddf58fed03e1aa8563c8cba74a943673b4`; no Site modification. Existing V5 workspace CSS is the integration source. Latest explicit user handoff supplies the binding body-design direction. No standalone full WORLD freeze text was resolved by the targeted Library title search; no freeze was edited or inferred from old screenshots.
+- Active files: `preview/transfer-scouting-id-stage-20261030.{html,js}`, two ID helpers, existing four workspace stylesheets, `staging/auth-recovery/password-recovery.{html,js}`. Original live/demo V5 files are frozen references and remain untouched. Retired demo runtime references removed only from the active stage module after dependency review.
+- BACKUP CREATED: complete Git bundle of the pre-edit stage branch. INTEGRITY VERIFIED: `git bundle verify` passed. SOURCE RESTORE TESTED: separate clone, explicit stage checkout, `git fsck --full`, HEAD `2ce2e02d7e9859d4eb0f1290fd07fe903fdf941d`. Initial clone could not select absent master HEAD; explicit branch checkout resolved it without changing source. This is not a database restore or Vercel rollback. Previous immutable deployment remains available.
+
+### Changes
+- Accepted header markup and entire original reference stylesheet preserved byte-for-byte against deployed source commit. Existing external reference artwork URL retained. This is not an offline/self-contained asset package.
+- Three V5 task views retained. Body integrates dark stone surfaces, timber navigation/panel rails, bronze fittings and restrained red/gold primary actions. Reworked empty state and explicit three-step lookup/review/adoption area; no new app or backend. Visual acceptance remains open.
+- Authored UI, dynamic errors/status, mobile labels and password-recovery screen translated to English. Visible identifier labels use Kingshot Player ID; technical governorId/governor_id fields unchanged. English number grouping and ISO-style explicit UTC display. Stored user text, names and metadata are not translated or rewritten.
+- Astra Vale row helpers, fictional dossier iframe, invented comparison values and demo navigation removed from the active runtime. Historical demo files retained in Git but excluded from new deployment. Real candidate comparison and internal intelligence fetch preserved.
+- Explicit adoption, insert-only duplicate check and candidate editing retain their existing database operations. Lookup does not save. Stale-ID response now fails closed if input changed during the request. No cloud candidate created, updated or deleted for testing. No migration, RLS, Auth, GOD MODE, backend, original Site, main or protection setting changes.
+
+### Verification
+BESTANDEN: 25 existing Node bridge/display/ID/adoption tests (synthetic), plus 9 full-DOM integration groups using jsdom 26.1.0: header/reference parity; DOM IDs and English/demo audit; three views/six dossier tabs/back; empty ID-to-explicit-save/reload/duplicate flow; member/logged-out/inactive/expired gates; edit metadata preservation; filtered CSV quoting/content; real-candidate internal comparison path with synthetic data; stale-ID handling. One initial DOM navigation test failed because the test intercepted all anchor clicks for CSV; fixed the harness interaction and reran all 9 successfully, no production workaround.
+Command: `PHX_JSDOM_MODULE=<installed-jsdom>/lib/api.js node --test tests/transfer-workspace-dom.test.mjs`. jsdom installed only in scratch QA dependencies; no app dependency or CDN version changed.
+BESTANDEN: module syntax and `git diff --check`. No backend source modification.
+BLOCKED: local browser server is not reachable from the separate cloud browser; file URL navigation is rejected by browser policy. No raw browser protocol, alternate upload, or browser-policy workaround used.
+NICHT GETESTET: rendered private mobile layouts, real Android save/reload, live RLS/role integration, authenticated live comparison/CSV, live password reset, database restore or Vercel rollback. DOM simulations do not replace these checks. Existing user Android evidence remains historical evidence for login and two cross-kingdom lookups only.
+
+### Outstanding work retained
+Authenticated HTTPS browser checks and responsive inspection after deployment; user Android save/reload and design acceptance; live role/RLS tests without synthetic production writes; original local JSON import/backup/restore-to-cloud convergence remains unimplemented and preserved as a documented limitation. No full V5 parity, Queen-An readiness, release or new design FREEZE claimed.

@@ -67,3 +67,7 @@ Before every development change, consult [PHX-A041 Mandatory Source Gate](https:
 
 ## Transfer Scouting Stage — 30.10.2026 Work-Nachtrag
 Aktiver Stage-Branch: stage/transfer-id-lookup-20261030. Siehe docs/staging/transfer-work-verification-20261030.md. Stage-Bridge V2 deployed, CORS live negativ/Preflight geprüft; 9 lokale simulierte Prüfungen bestanden. Browser blockiert. Vercel hat angefordertes Preview im bislang leeren isolierten Projekt als production markiert; keine Gesamtfreigabe. PHALANX-Parent-Hülle, echte Anmeldung, Profile/Arena/Ranks, Candidate-CRUD und Navigation weiterhin offen. Keine Produktions-App ersetzt, kein Merge, keine Datenbankmigration.
+
+
+## Isolated Transfer continuation — 2026-10-31
+Read `docs/staging/transfer-work-verification-20261030.md`, section PHX-TRANSFER-WORLD-EN, before continuing Transfer work. Active branch `stage/transfer-id-lookup-20261030`; existing isolated Vercel test project only. English UI and removal of fictional runtime integrated; accepted header preserved. Local DOM tests are distinct from live Auth/RLS and Android tests. Remaining tests and local/cloud JSON convergence are explicitly open. No global release or freeze change.

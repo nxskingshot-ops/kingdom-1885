@@ -37,7 +37,7 @@ function setup(options={}){
  return {$,offer:()=>context.offerLookupCandidate(payload,id),save:()=>$('phxAdoptCandidate').onclick(),state:()=>({writes,reads,refreshes,views,recorded}),release:()=>resolveInsert()};
 }
 test('lookup offers candidate but never writes; explicit save inserts only new record then reloads',async()=>{
- const x=setup();x.offer();assert.equal(x.state().writes,0);assert.equal(x.$('phxAdoptCandidate').hidden,false);await x.save();assert.equal(x.state().writes,1);assert.equal(x.state().refreshes,1);assert.equal(x.state().recorded.metadata.governor_id,id);assert.deepEqual(x.state().views,['scoutingBoard']);assert.match(x.$('workspaceNotice').textContent,/gespeichert/);
+ const x=setup();x.offer();assert.equal(x.state().writes,0);assert.equal(x.$('phxAdoptCandidate').hidden,false);await x.save();assert.equal(x.state().writes,1);assert.equal(x.state().refreshes,1);assert.equal(x.state().recorded.metadata.governor_id,id);assert.deepEqual(x.state().views,['scoutingBoard']);assert.match(x.$('workspaceNotice').textContent,/saved/);
 });
 test('member, logged-out and changed-ID flows cannot save',async()=>{for(const o of [{canEdit:false},{loggedOut:true},{changed:true}]){const x=setup(o);x.offer();if(o.changed){x.$('phxGovernorId').value='999';x.$('phxGovernorId').input();}await x.save();assert.equal(x.state().writes,0);}});
 test('legacy duplicate or failed duplicate read never inserts or updates',async()=>{for(const o of [{duplicate:true},{readError:true}]){const x=setup(o);x.offer();await x.save();assert.equal(x.state().writes,0);assert.equal(x.state().refreshes,0);assert.equal(x.$('phxAdoptCandidate').disabled,false);}});

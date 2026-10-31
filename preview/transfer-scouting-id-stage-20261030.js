@@ -23,7 +23,6 @@ const shown=filtered();$('count').textContent=shown.length+' of '+players.length
 $('rows').innerHTML=shown.map(p=>'<tr data-id="'+esc(p.candidate_id)+'" class="'+(active===p.candidate_id?'selected':'')+'"><td><input type="checkbox" data-check="'+esc(p.candidate_id)+'" '+(chosen.has(p.candidate_id)?'checked':'')+'></td><td><button type="button" class="scouting-name-button" data-dossier="'+esc(p.candidate_id)+'" aria-label="Open dossier for '+esc(p.player_name)+'">'+esc(p.player_name)+'</button></td><td>'+esc(p.kingdom||'–')+'</td><td>'+esc(p.alliance||'–')+'</td><td>'+esc(p.metadata?.role||'–')+'</td><td>'+esc(p.castle_level||'–')+'</td><td>'+fmt(p.power_m)+(p.power_m==null?'':'M')+'</td><td>'+esc(p.metadata?.fit==null?'–':p.metadata.fit+'%')+'</td><td>'+esc(invitationPreview(p))+'</td><td>'+esc(p.transfer_eligibility||'Unknown')+'</td><td>'+esc(p.contact_status||'–')+'</td></tr>').join('')||'<tr><td colspan="11" class="empty">No live candidates recorded. The protected scouting table is currently empty.</td></tr>';
 $('rows').querySelectorAll('tr[data-id]').forEach(row=>row.onclick=()=>{active=row.dataset.id;render()});
 $('rows').querySelectorAll('button[data-dossier]').forEach(btn=>btn.onclick=e=>{e.stopPropagation();active=btn.dataset.dossier;openDossier()});
- // Fictional Astra Vale is intentionally excluded from the live candidate board.
 $('rows').querySelectorAll('input[data-check]').forEach(box=>{box.onclick=e=>e.stopPropagation();box.onchange=()=>{if(box.checked){if(chosen.size>=3){box.checked=false;$('count').textContent='Select up to 3 candidates';return;}chosen.add(box.dataset.check)}else chosen.delete(box.dataset.check);$('compare').textContent='⚖ Compare selected ('+chosen.size+'/3)';}});
 const p=players.find(x=>x.candidate_id===active);$('profileTitle').textContent=p?p.player_name:'Candidate profile';$('editCandidate').hidden=!canEdit||!p;$('openDossier').hidden=!p;
 $('profile').innerHTML=p?'<div class="detail-grid">'+[['Kingdom',p.kingdom],['Alliance',p.alliance],['Power',p.power_m==null?'Not recorded':fmt(p.power_m)+'M'],['Castle',p.castle_level],['Contact',p.contact_status],['Invitation (170M preview)',invitationPreview(p)],['Eligibility',p.transfer_eligibility],['Recruiter',p.recruiter],['Role',p.metadata?.role]].map(([a,b])=>'<div class="detail"><span>'+esc(a)+'</span><b>'+esc(b||'–')+'</b></div>').join('')+'</div><h3>Notes</h3><div class="notes">'+esc(p.notes||'No notes recorded.')+'</div>':'<p class="empty">Select a candidate.</p>';
@@ -90,24 +89,6 @@ finally{$('saveCandidate').disabled=false;}
 const externalTrials=['coliseum','forest','crystal','knowledge','molten','radiant'];
 const externalLabels={coliseum:'Heroes & Hero Gear',forest:'Pets',crystal:'Governor Charms',knowledge:'Research',molten:'Governor Gear',radiant:'Mixed · Radiant Spire'};
 let internalPlayers=null,internalPowers=[],internalSnapshot='',internalLoading=false;
-let fictionalExampleActive=false;
-const fictionalExternalCandidate={
- player_name:'Astra Vale',kingdom:'1768',power_m:218.4,
- metadata:{mystic_trials:{coliseum:'35-2',forest:'28-7',crystal:'27-6',knowledge:'31-8',molten:'24-9',radiant:'36-4'},
- mystic_trial_source:'FICTIONAL SAMPLE · no screenshot',mystic_trial_snapshot:'2026-09-29'}
-};
-const fictionalInternalGovernor={
- player_name:'Demo Governor #1885',alliance_tag:'DEMO',
- coliseum_stage:'29-4',forest_stage:'31-3',crystal_stage:'24-5',
- knowledge_stage:'34-2',molten_stage:'24-9',radiant_stage:'32-7'
-};
-const fictionalInternalPower={player_name:'Demo Governor #1885',power_m:215.8};
-$('toggleExternalExample').onclick=()=>{
- fictionalExampleActive=!fictionalExampleActive;
- $('toggleExternalExample').textContent=fictionalExampleActive?'✕ Hide fictional comparison':'✦ Show fictional comparison';
- $('toggleExternalExample').setAttribute('aria-pressed',String(fictionalExampleActive));
- renderExternalIntel();
-};
 const stageIndex=x=>{
  if(typeof x!=='string'||!/^\d{1,3}-\d{1,2}$/.test(x))return null;
  const [chapter,step]=x.split('-').map(Number);
@@ -116,25 +97,24 @@ const stageIndex=x=>{
 const normal=x=>String(x??'').normalize('NFKC').trim().toLowerCase();
 function renderExternalIntel(){
  const box=$('externalIntelResult');
- const candidate=fictionalExampleActive?fictionalExternalCandidate:players.find(p=>p.candidate_id===active);
- if(!candidate){box.textContent='Select a candidate from the live board first, or open the fictional example.';return;}
- if(!fictionalExampleActive&&internalLoading){box.textContent='Loading protected Kingdom #1885 data…';return;}
- if(!fictionalExampleActive&&!internalPlayers){box.textContent='Selected: '+candidate.player_name+' · Kingdom '+(candidate.kingdom||'unknown')+'. Load #1885 players to compare verified information.';return;}
- const internal=fictionalExampleActive?fictionalInternalGovernor:internalPlayers.find(p=>p.player_name===$('internalGovernor').value);
+ const candidate=players.find(p=>p.candidate_id===active);
+ if(!candidate){box.textContent='Select a candidate from your board first.';return;}
+ if(internalLoading){box.textContent='Loading protected Kingdom #1885 data…';return;}
+ if(!internalPlayers){box.textContent='Selected: '+candidate.player_name+' · Kingdom '+(candidate.kingdom||'unknown')+'. Load #1885 players to compare verified information.';return;}
+ const internal=internalPlayers.find(p=>p.player_name===$('internalGovernor').value);
  if(!internal){box.textContent='Select an internal player to compare.';return;}
  const ext=candidate.metadata?.mystic_trials||{};
  const comparable=externalTrials.slice(0,5).map(key=>({key,external:stageIndex(ext[key]),internal:stageIndex(internal[key+'_stage'])}))
    .filter(x=>x.external!==null&&x.internal!==null);
  const externalAhead=comparable.filter(x=>x.external>x.internal),internalAhead=comparable.filter(x=>x.internal>x.external);
  const matched=comparable.filter(x=>x.external===x.internal);
- const pwr=fictionalExampleActive?fictionalInternalPower:internalPowers.find(p=>normal(p.player_name)===normal(internal.player_name));
+ const pwr=internalPowers.find(p=>normal(p.player_name)===normal(internal.player_name));
  const extPower=candidate.power_m===null||candidate.power_m===undefined||candidate.power_m===''?null:Number(candidate.power_m);
  const intPower=pwr?.power_m===null||pwr?.power_m===undefined?null:Number(pwr.power_m);
  const validExternal=extPower!==null&&Number.isFinite(extPower)&&extPower>=0;
  const validInternal=intPower!==null&&Number.isFinite(intPower)&&intPower>=0;
  const heading=document.createElement('strong');heading.textContent=candidate.player_name+' (KD '+(candidate.kingdom||'?')+') ↔ '+internal.player_name+' (#1885)';
  box.replaceChildren();
- if(fictionalExampleActive){const marker=document.createElement('span');marker.className='fictional-banner';marker.textContent='FICTIONAL DEMO · BOTH PLAYERS INVENTED · NOT SAVED';box.append(marker);}
  box.append(heading);
  const add=(text,cls='')=>{const p=document.createElement('p');p.className=cls;p.textContent=text;box.append(p);};
  if(normal(candidate.kingdom).replace(/[^0-9]/g,'')==='1885')add('This candidate is marked as Kingdom #1885; confirm the origin kingdom before treating the profile as external.');
@@ -154,8 +134,7 @@ function renderExternalIntel(){
  const mixedA=stageIndex(ext.radiant),mixedB=stageIndex(internal.radiant_stage);
  if(mixedA!==null&&mixedB!==null)add('Radiant Spire (mixed indicator): '+candidate.player_name+' '+ext.radiant+' vs '+internal.player_name+' '+internal.radiant_stage+'. Not included in the five specialty trials.');
  const source=candidate.metadata?.mystic_trial_source,when=candidate.metadata?.mystic_trial_snapshot;
- add('Evidence: external trial data '+(source?'source '+source:'source not documented')+(when?', dated '+when:' (date not supplied)')+'; internal snapshot '+(fictionalExampleActive?'FICTIONAL SAMPLE':internalSnapshot||'date unavailable')+'. Cross-kingdom progression may not be directly comparable if game generations or trial conditions differ. Troop Power is unavailable; no troop-free power or battle outcome is inferred.','external-notice');
- if(fictionalExampleActive)add('This illustration uses invented values for both governors. It is not a player record, does not affect live counts or rankings, and nothing is stored in Supabase.','fictional-disclaimer');
+ add('Evidence: external trial data '+(source?'source '+source:'source not documented')+(when?', dated '+when:' (date not supplied)')+'; internal snapshot '+(internalSnapshot||'date unavailable')+'. Cross-kingdom progression may not be directly comparable if game generations or trial conditions differ. Troop Power is unavailable; no troop-free power or battle outcome is inferred.','external-notice');
 }
 $('loadInternal').onclick=async()=>{
  if(internalLoading)return;
@@ -207,7 +186,7 @@ function renderDossier(){
  const root=$('dossierContent');root.replaceChildren();
  const m=p.metadata||{},t=m.mystic_trials||{},labels={coliseum:'Heroes & Hero Gear',forest:'Pets',crystal:'Governor Charms',knowledge:'Research',molten:'Governor Gear',radiant:'Mixed · Radiant Spire'};
  if(dossierTab==='identity')root.append(dossierGrid('Identity & Power',[
-  ['Player name',p.player_name],['Player ID',m.governor_id||m.player_id],['Kingdom',p.kingdom],['Alliance',p.alliance],['Castle / Truegold',p.castle_level],
+  ['Player name',p.player_name],['Kingshot Player ID',m.governor_id||m.player_id],['Kingdom',p.kingdom],['Alliance',p.alliance],['Castle / Truegold',p.castle_level],
   ['Total Power',p.power_m==null?null:fmt(p.power_m)+'M'],['Previous name',m.previous_name],['Previous kingdom',m.previous_kingdom],
   ['Updated on',p.updated_at?new Date(p.updated_at).toLocaleDateString('en-GB'):'Unknown']]));
  if(dossierTab==='development'){
@@ -224,7 +203,7 @@ function renderDossier(){
   root.append(dossierGrid('Evidence & Sources',[
    ['Mystic Trial evidence',m.mystic_trial_source],['Observation date',m.mystic_trial_snapshot],
    ['Profile evidence',m.profile_source],['Saved screenshots','Not supported in LIVE yet']]));
-  root.append(dossierParagraph('Screenshots in the fictional demo are temporary previews, not evidence attached to this real candidate.'));
+  root.append(dossierParagraph('Only evidence recorded for this candidate is shown. Screenshot attachments are not connected yet.'));
  }
  if(dossierTab==='recruitment'){
   root.append(dossierGrid('Recruitment',[
@@ -255,98 +234,37 @@ $('backToBoard').onclick=()=>{closeDossier();$('openDossier').focus()};
 document.querySelectorAll('[data-dossier-tab]').forEach(b=>b.onclick=()=>{dossierTab=b.dataset.dossierTab;renderDossier()});
 
 
-/* Strictly in-memory fictional row. Never inserted into players or sent to Supabase. */
-let demoDossierOpen=false,returnFromDemoComparison=false,demoFrameStarted=false;
-function appendFictionalBoardRow(){
- const query=$('search').value.trim().toLowerCase();
- if(query&&!['astra vale','astra','1768','fictional','aur','demo'].some(t=>t.includes(query)||query.includes(t)))return;
- const row=document.createElement('tr');row.className='fictional-board-row';
- const cells=['—','', '1768','AUR','Rally Lead','TG5','218.4M','—','Special (demo)','Not verified','FICTIONAL'];
- for(let i=0;i<cells.length;i++){
-  const td=document.createElement('td');
-  if(i===1){
-   const btn=document.createElement('button');btn.type='button';btn.className='scouting-name-button';
-   btn.textContent='Astra Vale';btn.setAttribute('aria-label','Open fictional demo player dossier');
-   btn.onclick=e=>{e.stopPropagation();openFictionalDossier()};
-   const badge=document.createElement('span');badge.className='fictional-marker';badge.textContent='DEMO';
-   td.append(btn,badge);
-  }else td.textContent=cells[i];
-  row.append(td);
- }
- $('rows').append(row);
-}
-function openFictionalDossier(){
- demoDossierOpen=true;
- if(dossierOpen)closeDossier();
- $('scoutingBoard').hidden=true;
- $('fictionalDossier').hidden=false;
- $('returnToFictionalDossier').hidden=true;
- if(!demoFrameStarted){
-  const frame=$('fictionalDossierFrame');
-  frame.addEventListener('load',()=>{
-   try{
-    const back=frame.contentDocument?.querySelector('header.top a');
-    if(back)back.addEventListener('click',e=>{e.preventDefault();closeFictionalDossier()});
-   }catch(_){/* embedded demo remains usable via outer Back button */}
-  });
-  frame.src='./scouting-player-profile-demo.html?build=player-dossier-demo-v1';
-  demoFrameStarted=true;
- }
- $('fictionalDossier').scrollIntoView({block:'start',behavior:'auto'});
-}
-function closeFictionalDossier(){
- demoDossierOpen=false;
- $('fictionalDossier').hidden=true;
- $('scoutingBoard').hidden=false;
- $('returnToFictionalDossier').hidden=true;
-}
-$('backFromFictionalDossier').onclick=closeFictionalDossier;
-$('compareDemoDossier').onclick=()=>{
- demoDossierOpen=false;
- $('fictionalDossier').hidden=true;
- $('scoutingBoard').hidden=false;
- returnFromDemoComparison=true;
- $('returnToFictionalDossier').hidden=false;
- if(!fictionalExampleActive)$('toggleExternalExample').click();
- else renderExternalIntel();
- $('externalIntelPanel').scrollIntoView({block:'start',behavior:'auto'});
-};
-$('returnToFictionalDossier').onclick=()=>{
- returnFromDemoComparison=false;
- openFictionalDossier();
-};
-
 setInterval(()=>{if(!$('private').hidden&&$('modal').hidden&&!document.hidden)load()},20000);
 
 
 /* PHX ID STAGE: additive read-only feature; original LIVE V5 logic above remains unchanged. */
 const phxIdForm=$('phxIdForm'),phxIdStatus=$('phxIdStatus'),phxIdResult=$('phxIdResult');
 const phxBridgeUrl=SUPABASE_URL+'/functions/v1/phalanx-transfer-id-bridge-stage-20261030'; // Staging only; browser CORS requires verified deployment.
-function phxField(label,value){const cell=document.createElement('div');cell.className='detail';const key=document.createElement('span');key.textContent=label;const val=document.createElement('b');val.textContent=value===null||value===undefined||value===''?'Nicht verfügbar':String(value);cell.append(key,val);phxIdResult.append(cell);}
+function phxField(label,value){const cell=document.createElement('div');cell.className='detail';const key=document.createElement('span');key.textContent=label;const val=document.createElement('b');val.textContent=value===null||value===undefined||value===''?'Not available':String(value);cell.append(key,val);phxIdResult.append(cell);}
 phxIdForm.addEventListener('submit',async e=>{
- e.preventDefault();if(phxIdForm.querySelector('button').disabled)return;phxIdResult.replaceChildren();clearLookupCandidate();
- if($('private').hidden){phxIdStatus.textContent='Anmeldung erforderlich.';return;}
+ e.preventDefault();if(phxIdForm.querySelector('button').disabled)return;phxIdResult.replaceChildren();$('phxReview').hidden=true;clearLookupCandidate();
+ if($('private').hidden){phxIdStatus.textContent='Sign in to continue.';return;}
  const id=$('phxGovernorId').value.trim();
- if(!/^[1-9][0-9]{0,15}$/.test(id)){phxIdStatus.textContent='Bitte gültige Governor-ID eingeben.';return;}
- if(!phxBridgeUrl){phxIdStatus.textContent='Server-Vermittler noch nicht bereitgestellt. Keine unsichere Direktverbindung.';return;}
- const button=phxIdForm.querySelector('button');button.disabled=true;phxIdStatus.textContent='Spieler wird geprüft …';
+ if(!/^[1-9][0-9]{0,15}$/.test(id)){phxIdStatus.textContent='Enter a valid Kingshot Player ID.';return;}
+ if(!phxBridgeUrl){phxIdStatus.textContent='Player lookup is not available yet.';return;}
+ const button=phxIdForm.querySelector('button');button.disabled=true;phxIdStatus.textContent='Loading player data…';
  try{
   const {data:{session},error}=await db.auth.getSession();
-  if(error||!session?.access_token)throw Error('Bitte erneut anmelden.');
-  const endpoint=new URL(phxBridgeUrl);if(endpoint.protocol!=='https:')throw Error('HTTPS erforderlich.');
+  if(error||!session?.access_token)throw Error('Please sign in again.');
+  const endpoint=new URL(phxBridgeUrl);if(endpoint.protocol!=='https:')throw Error('A secure HTTPS connection is required.');
   endpoint.searchParams.set('governorId',id);
   const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),100000);
   let response;try{response=await fetch(endpoint,{headers:{Authorization:'Bearer '+session.access_token,apikey:KEY},signal:controller.signal,cache:'no-store'});}finally{clearTimeout(timeout);}
   if(!response.ok)throw Error(playerLookupError(response.status));
-  const payload=await response.json();if(payload.ok!==true||String(payload.governorId)!==id)throw Error('Spieleridentität nicht bestätigt.');const p=payload.player||{};
-  phxField('Governor-ID',id);phxField('Spielername',p.name||p.playerName||p.player_name);
-  phxField('Königreich',p.kingdom);phxField('Allianz',p.alliance);
-  phxField('Gesamtstärke',formatPlayerNumber(p.power));phxField('Datenstand UTC',formatPlayerUtc(payload.source?.cachedAt));phxField('Abfrage UTC',formatPlayerUtc(payload.checkedAtUtc));
-  const arena=payload.arenaSquad;phxField('Arena-Verteidigungsteam',formatPlayerSection(arena?.status));if(Array.isArray(arena?.heroes))arena.heroes.forEach((hero,i)=>phxField('Arena-Held '+(i+1),[hero.name,hero.level==null?null:'Level '+hero.level,(hero.stars??hero.star)==null?null:(hero.stars??hero.star)+' Sterne'].filter(Boolean).join(' · ')||'Unbekannt'));
-  const ranks=payload.ranks;phxField('Ranglisten',formatPlayerSection(ranks?.status));if(ranks?.values)for(const [key,label] of [['power_rank','Power-Rang'],['kills_rank','Kills-Rang'],['migrant_rank','Transfer-Rang'],['mystic_trial','Mystic Trial']])phxField(label,formatPlayerNumber(ranks.values[key]));
-  phxIdStatus.textContent='Schreibgeschützte Abfrage abgeschlossen. Keine Kandidatendaten verändert.';
+  const payload=await response.json();if($('phxGovernorId').value.trim()!==id){phxIdStatus.textContent='Kingshot Player ID changed. Load player data again.';return;}if(payload.ok!==true||String(payload.governorId)!==id)throw Error('Player identity could not be confirmed.');const p=payload.player||{};$('phxReview').hidden=false;
+  phxField('Data source','Kingshot player data via protected Stage Bridge');phxField('Kingshot Player ID',id);phxField('Player name',p.name||p.playerName||p.player_name);
+  phxField('Kingdom',p.kingdom);phxField('Alliance',p.alliance);
+  phxField('Total Power',formatPlayerNumber(p.power));phxField('Source captured (UTC)',formatPlayerUtc(payload.source?.cachedAt));phxField('Lookup time (UTC)',formatPlayerUtc(payload.checkedAtUtc));
+  const arena=payload.arenaSquad;phxField('Arena Squad',formatPlayerSection(arena?.status));if(Array.isArray(arena?.heroes))arena.heroes.forEach((hero,i)=>phxField('Arena hero '+(i+1),[hero.name,hero.level==null?null:'Level '+hero.level,(hero.stars??hero.star)==null?null:(hero.stars??hero.star)+' stars'].filter(Boolean).join(' · ')||'Unknown'));
+  const ranks=payload.ranks;phxField('Rankings',formatPlayerSection(ranks?.status));if(ranks?.values)for(const [key,label] of [['power_rank','Power rank'],['kills_rank','Kills rank'],['migrant_rank','Transfer rank'],['mystic_trial','Mystic Trial']])phxField(label,formatPlayerNumber(ranks.values[key]));
+  phxIdStatus.textContent='Player data loaded. Review the details before adding this player to Candidates.';
   offerLookupCandidate(payload,id);
- }catch(error){phxIdStatus.textContent=error.name==='AbortError'?'Die Abfrage hat zu lange gedauert. Bitte später erneut versuchen.':error instanceof TypeError?'Die Verbindung ist unterbrochen. Bitte die Internetverbindung prüfen.':error.message;}
+ }catch(error){phxIdStatus.textContent=error.name==='AbortError'?'The lookup timed out. Please try again later.':error instanceof TypeError?'Connection interrupted. Check your internet connection.':error.message;}
  finally{button.disabled=false;}
 });
 
@@ -357,14 +275,14 @@ function syncWorkspace(){
  const total=players.length, candidateView=workspaceView==='scoutingBoard';
  $('private').classList.toggle('is-empty',!total);
  $('candidate-empty').hidden=!!total;
- $('workspaceStats').hidden=!candidateView||!total||dossierOpen||demoDossierOpen;
+ $('workspaceStats').hidden=!candidateView||!total||dossierOpen;
  $('candidate-profile').hidden=!candidateView||!profileOpen||!players.some(p=>p.candidate_id===active);
  $('scoutingBoard').classList.toggle('profile-open',!$('candidate-profile').hidden);
  $('compare').disabled=chosen.size<2;$('compare').hidden=total<2;$('csv').hidden=!total;
  $('addFirstCandidate').hidden=!canEdit;$('readOnlyNotice').hidden=canEdit;
 }
 function showWorkspace(view){
- if(dossierOpen)closeDossier();if(demoDossierOpen)closeFictionalDossier();
+ if(dossierOpen)closeDossier();
  workspaceView=view;
  for(const id of ['scoutingBoard','phxIdPanel','workspace-tools'])$(id).hidden=id!==view;
  document.querySelector('main').dataset.workspaceView=view;
@@ -377,10 +295,9 @@ $('toolsCsv').onclick=()=>$('csv').click();
 $('closeProfile').onclick=()=>{profileOpen=false;syncWorkspace();};
 $('rows').addEventListener('click',e=>{if(e.target.closest('tr[data-id]')&&!e.target.closest('input,button')){profileOpen=true;syncWorkspace();}});
 $('rows').addEventListener('change',syncWorkspace);
-$('compareDemoDossier').addEventListener('click',()=>{showWorkspace('workspace-tools');$('externalIntelPanel').scrollIntoView({block:'start'});});
 new MutationObserver(syncWorkspace).observe($('rows'),{childList:true});
 showWorkspace('scoutingBoard');
-const advanced=document.createElement('details');advanced.className='advanced-fields';const summary=document.createElement('summary');summary.textContent='Weitere Details · Rolle, Kontakt & Entwicklung';advanced.append(summary);
+const advanced=document.createElement('details');advanced.className='advanced-fields';const summary=document.createElement('summary');summary.textContent='More details · Role, contact & development';advanced.append(summary);
 for(const label of [...$('candidateForm').querySelectorAll('.form-grid>label')]){if(!['player_name','kingdom'].includes(label.querySelector('[name]')?.name))advanced.append(label);}
 advanced.append($('candidateForm').querySelector('fieldset'));$('candidateForm').insertBefore(advanced,$('candidateForm').querySelector('label:has(textarea)'));
 
@@ -390,7 +307,7 @@ function clearLookupCandidate(){lookupCandidate=null;$('workspaceNotice').textCo
 function offerLookupCandidate(payload,id){
  if($('phxGovernorId').value.trim()!==id)return;
  try{lookupCandidate=candidateFromLookup(payload,id);$('phxAdoptCandidate').hidden=!canEdit;
- $('phxAdoptStatus').textContent=canEdit?'Daten prüfen und anschließend als Kandidaten übernehmen.':'Nur Lesen: Zum Übernehmen ist eine Recruiter-Berechtigung erforderlich.';
+ $('phxAdoptStatus').textContent=canEdit?'Review these details, then select Add to Candidates.':'Read only. Recruiter permission is required to add candidates.';
  }catch(error){clearLookupCandidate();$('phxAdoptStatus').textContent=error.message;}
 }
 $('phxGovernorId').addEventListener('input',clearLookupCandidate);
@@ -399,18 +316,18 @@ $('phxAdoptCandidate').onclick=async()=>{
  const draft=lookupCandidate,id=draft?.metadata.governor_id;
  if(!canEdit||$('private').hidden||!draft||$('phxGovernorId').value.trim()!==id){clearLookupCandidate();return;}
  lookupSaving=true;$('phxAdoptCandidate').disabled=true;$('phxGovernorId').disabled=true;phxIdForm.querySelector('button').disabled=true;
- $('phxAdoptStatus').textContent='Vorhandene Kandidaten werden geprüft …';
+ $('phxAdoptStatus').textContent='Checking existing candidates…';
  try{
   const {data:duplicates,error:readError}=await db.from('transfer_candidates').select('candidate_id,player_name').or(duplicateLookupFilter(id)).limit(1);
-  if(readError)throw Error('Vorhandene Kandidaten konnten nicht geprüft werden. Es wurde nichts gespeichert.');
-  if(duplicates?.length){$('phxAdoptStatus').textContent='Dieser Spieler ist bereits als Kandidat erfasst. Bestehende Daten bleiben unverändert.';return;}
+  if(readError)throw Error('Existing candidates could not be checked. Nothing was saved.');
+  if(duplicates?.length){$('phxAdoptStatus').textContent='This player is already a candidate. Existing data remains unchanged.';return;}
   const {data:saved,error}=await db.from('transfer_candidates').insert({...draft,updated_at:new Date().toISOString()}).select('candidate_id').maybeSingle();
-  if(error){if(error.code==='23505')throw Error('Dieser Spieler wurde bereits erfasst. Es wurde kein zweiter Eintrag angelegt.');throw Error('Übernahme fehlgeschlagen: '+error.message);}
-  if(!saved?.candidate_id)throw Error('Speichern nicht bestätigt. Vor erneutem Versuch die Kandidatenliste aktualisieren.');
+  if(error){if(error.code==='23505')throw Error('This player was already added. No duplicate was created.');throw Error('Could not add candidate: '+error.message);}
+  if(!saved?.candidate_id)throw Error('Save not confirmed. Refresh Candidates before trying again.');
   active=saved.candidate_id;clearLookupCandidate();
-  const loaded=await load();$('workspaceNotice').textContent=loaded?'Kandidat übernommen. Die Daten wurden gespeichert.':'Kandidat gespeichert. Die Liste konnte noch nicht neu geladen werden; bitte aktualisieren.';
+  const loaded=await load();$('workspaceNotice').textContent=loaded?'Candidate added. Player data saved.':'Candidate saved. The list could not reload; please refresh.';
   showWorkspace('scoutingBoard');
- }catch(error){$('phxAdoptStatus').textContent=error.message||'Speichern nicht bestätigt. Bitte Liste aktualisieren, bevor du es erneut versuchst.';}
+ }catch(error){$('phxAdoptStatus').textContent=error.message||'Save not confirmed. Refresh Candidates before trying again.';}
  finally{lookupSaving=false;$('phxAdoptCandidate').disabled=false;$('phxGovernorId').disabled=false;phxIdForm.querySelector('button').disabled=false;}
 };
 
