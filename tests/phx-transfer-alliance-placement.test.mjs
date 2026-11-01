@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import {placeInAlliance} from '../preview/phx-transfer-alliance-placement-20261101.js';
+const roster=Array.from({length:20},(_,i)=>({power:200-i*5}));
+const equal=placeInAlliance(200,roster,'2026-10-13');
+assert.equal(equal.status,'HISTORICAL_POWER_PLACEMENT');
+assert.equal(equal.rankMin,1);
+assert.equal(equal.rankMax,2);
+const unique=placeInAlliance(201,roster,'2026-10-13');
+assert.equal(unique.rankMin,1);
+assert.equal(unique.rankMax,1);
+const missing=placeInAlliance(0,[...roster,{power:null},{power:''},{power:undefined}],'2026-10-13');
+assert.equal(missing.rosterSize,20);
+assert.equal(missing.rankMin,21);
+assert.equal(placeInAlliance(null,roster).status,'MISSING_POWER');
+assert.equal(placeInAlliance(10,[{power:null}]).status,'INSUFFICIENT_ROSTER');
+console.log('9 historical placement assertions passed');
