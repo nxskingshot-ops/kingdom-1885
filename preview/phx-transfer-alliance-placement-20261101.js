@@ -7,5 +7,5 @@ export function placeInAlliance(candidatePower, roster=[], snapshotDate=''){
  const stronger=values.filter(n=>n>power).sort((a,b)=>a-b);const weaker=values.filter(n=>n<power).sort((a,b)=>b-a);
  const higher=values.filter(n=>n>power).length;
  const tied=values.filter(n=>n===power).length;
- return {status:'HISTORICAL_POWER_PLACEMENT',rankMin:higher+1,rankMax:higher+tied+1,top15Guaranteed:higher+tied+1<=15,top15Possible:higher+1<=15,rosterSize:values.length,nearestAbove:stronger[0]??null,nearestBelow:weaker[0]??null,snapshotDate,metric:'Total Power',note:'Hypothetical insertion into a dated roster; not current power, True Power, battle strength or invitation eligibility.'};
+ return {status:'HISTORICAL_POWER_PLACEMENT',rankMin:higher+1,rankMax:higher+tied+1,top15Guaranteed:higher+tied+1<=15,top15Possible:higher+1<=15,rosterSize:values.length,nearestAbove:stronger[0]??null,nearestBelow:weaker[0]??null,gapAbove:stronger.length?stronger[0]-power:null,gapBelow:weaker.length?power-weaker[0]:null,snapshotDate,metric:'Total Power',note:'Hypothetical insertion into a dated roster; not current power, True Power, battle strength or invitation eligibility.'};
 }
