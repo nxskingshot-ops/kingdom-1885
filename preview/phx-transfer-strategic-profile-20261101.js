@@ -30,5 +30,11 @@ export function mountStrategicProfile(target,rankings={}){
  const conclusion=document.createElement('p');conclusion.textContent=report.strengths.length>=3?'Multiple categories rank in the Kingdom Top 10, indicating a broad development profile. ':'Available rankings do not establish a broad elite profile. ';
  conclusion.append(document.createTextNode('Rally Leader, Joiner, Garrison Holder and Fighter roles require battle reports, formations and buffs; no role is verified from rankings alone.'));section.append(conclusion);
  const missing=document.createElement('p');missing.className='phx-scout-muted';missing.textContent='Not assessed: '+(report.missing.join(', ')||'none of these categories')+'.';section.append(missing);
+ const details=document.createElement('details');details.className='phx-intel-evidence';
+ const summary=document.createElement('summary');summary.textContent='Alle Rankingdaten, Quellen und Zeitstempel ansehen';details.append(summary);
+ const table=document.createElement('table');table.className='phx-intel-evidence-table';
+ const head=document.createElement('tr');for(const label of ['Kategorie','Kingdom-Rang','Quelle','Erfasst']){const th=document.createElement('th');th.textContent=label;head.append(th);}table.append(head);
+ for(const [key,label] of metrics){const raw=rankings?.[key];const tr=document.createElement('tr');const rank=report.rows.find(x=>x.key===key);const cells=[label,rank?'#'+rank.rank:'Nicht verfügbar',raw?.source||'Nicht angegeben',raw?.captured_at||'Nicht angegeben'];for(const value of cells){const td=document.createElement('td');td.textContent=String(value);tr.append(td);}table.append(tr);}
+ details.append(table);const note=document.createElement('p');note.className='phx-scout-muted';note.textContent='Originale Rankingangaben; unterschiedliche Erfassungszeiten sind möglich. Rankings beweisen keine Kampfergebnisse.';details.append(note);section.append(details);
  target.append(section);return report;
 }
