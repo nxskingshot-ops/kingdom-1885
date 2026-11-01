@@ -334,7 +334,7 @@ function renderDossier(){
  forecastNotice.textContent=phxTransferStatus(null)+'. Community forecast only; #1885 classification, official power metric, active cap, invitations and final rules are unconfirmed. Source: '+phxTransferForecast.source+' (checked '+phxTransferForecast.checked+').';
  forecastPanel.append(forecastHeading,forecastBody,forecastNotice);
  root.prepend(forecastPanel);
- mountRuleDraftEditor(forecastPanel,{canEdit});
+ mountRuleDraftEditor(forecastPanel,{canEdit:false}); // Fail closed until a server-verified transfer_admin role exists.
  applySmartDossierNavigation();
 }
 function openDossier(){
