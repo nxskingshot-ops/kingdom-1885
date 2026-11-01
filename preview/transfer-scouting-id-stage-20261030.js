@@ -104,7 +104,7 @@ async function readPlayer(id){
  const {data:{session},error}=await db.auth.getSession();if(error||!session?.access_token)throw Error('Please sign in again.');
  const response=await fetch(SUPABASE_URL+'/functions/v1/phalanx-transfer-id-snapshot-fallback-stage-20261031?governorId='+id,{headers:{apikey:KEY,Authorization:'Bearer '+session.access_token},cache:'no-store',signal:AbortSignal.timeout(110000)});
  if(!response.ok)throw Error(playerLookupError(response.status));const payload=await response.json();
- if(!payload.ok||String(payload.governorId)!==id)throw Error('Player identity could not be confirmed.');
+ if(payload.ok!==true||String(payload.governorId)!==id||!Number.isSafeInteger(payload.player?.kingdom)||payload.player.kingdom<1)throw Error('Player identity could not be confirmed.');
  return payload;
 }
 async function loadCandidateEvidence(p,force=false){
@@ -210,19 +210,21 @@ function dossierGrid(title,entries){
 function dossierParagraph(text){const p=document.createElement('p');p.textContent=text;return p}
 /* Smart Dossier V1: presentation-only grouping; original six evidence views remain available. */
 const dossierGroups={
- overview:['identity','intelligence'],
+ overview:['identity','intelligence','evidence'],
  development:['development'],
  recruitment:['recruitment'],
- history:['history','evidence']
+ comparison:['comparison']
 };
 let dossierSmartGroup='overview';
+const comparisonPanel=$('externalIntelPanel'),comparisonHome=comparisonPanel.parentNode;
+function restoreComparisonPanel(){if(comparisonPanel.parentNode!==comparisonHome)comparisonHome.append(comparisonPanel);}
 function applySmartDossierNavigation(){
- const names={identity:'Overview',development:'Development',recruitment:'Recruitment',history:'History & Evidence'};
+ const names={identity:'Overview',development:'Strengths & limits',recruitment:'Recruitment',history:'Compare #1885'};
  document.querySelectorAll('[data-dossier-tab]').forEach(button=>{
   const key=button.dataset.dossierTab;
   if(key==='intelligence'||key==='evidence'){button.hidden=true;return;}
   if(names[key])button.textContent=names[key];
-  button.setAttribute('aria-pressed',String(key===dossierSmartGroup));
+  button.setAttribute('aria-pressed',String(({identity:'overview',history:'comparison'})[key]===dossierSmartGroup||key===dossierSmartGroup));
  });
 }
 function renderDossierSection(){
@@ -230,7 +232,7 @@ function renderDossierSection(){
  const p=players.find(x=>x.candidate_id===active);
  if(!p){closeDossier();return}
  $('dossierTitle').textContent=p.player_name;
- $('dossierIdentity').textContent=[p.alliance,p.kingdom?'#'+p.kingdom:null,'ID '+evidenceKey(p),p.contact_status].filter(Boolean).join(' · ');
+ $('dossierIdentity').textContent=[p.alliance,p.kingdom?'#'+p.kingdom:null,'ID '+(evidenceKey(p)||'Not confirmed'),p.contact_status].filter(Boolean).join(' · ');
  const headlineEvidence=evidenceFor(p);renderHeadlineMetrics($('dossierOverview'),headlineEvidence,p);
  document.querySelectorAll('[data-dossier-tab]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.dossierTab===dossierTab)));
  const root=$('dossierContent');root.replaceChildren();
@@ -243,7 +245,9 @@ function renderDossierSection(){
   const details=document.createElement('details'),summary=document.createElement('summary');details.className='record-details';summary.textContent='Saved record & identity';details.append(summary,dossierGrid('Identity & Power',[
    ['Player name',p.player_name],['Kingshot Player ID',evidenceKey(p)],['Kingdom',p.kingdom],['Alliance',p.alliance],['Saved Castle / Truegold',p.castle_level],['Saved Total Power',p.power_m==null?null:fmt(p.power_m)+'M'],['Previous name',m.previous_name],['Previous kingdom',m.previous_kingdom],['Updated on',p.updated_at?new Date(p.updated_at).toLocaleDateString('en-GB'):null]]));root.append(details);
  }
+ if(dossierTab==='comparison'){root.append(comparisonPanel);renderExternalIntel();}
  if(dossierTab==='development'){
+  renderTrialAssessment(root,evidence?.ranks?.values);
   const rankings=document.createElement('section'),rankingHeading=document.createElement('h3'),rankingGrid=document.createElement('div');rankingHeading.textContent='Player Rankings';rankingGrid.className='dossier-list';appendRankingEntries(rankingGrid,evidence?.ranks?.values,'dossier-cell');rankings.append(rankingHeading,rankingGrid);root.append(rankings);
   root.append(arenaList(evidence?.arena_squad?.heroes||[]));
   const stages=Object.entries(labels).filter(([key])=>stageIndex(t[key])!==null),detail=document.createElement('details'),summary=document.createElement('summary');detail.className='record-details';summary.textContent='Recorded Mystic Trial Stages ('+stages.length+'/6)';detail.append(summary);
@@ -256,10 +260,11 @@ function renderDossierSection(){
   root.append(dossierParagraph('Persistent historical snapshots are not yet connected to live candidate dossiers.'));
  }
  if(dossierTab==='evidence'){
-  root.append(dossierGrid('Evidence & Sources',[
+  const disclosure=document.createElement('details'),caption=document.createElement('summary');disclosure.className='record-details';caption.textContent='Sources, dates & history';disclosure.append(caption);root.append(disclosure);
+  disclosure.append(dossierGrid('Evidence & Sources',[
    ['Mystic Trial evidence',m.mystic_trial_source],['Observation date',m.mystic_trial_snapshot],
    ['Profile evidence',m.profile_source||'Mighty Pulse via protected Stage Bridge'],['Player source capture',formatPlayerUtc(evidence?.source_cached_at)],['Player lookup time',formatPlayerUtc(evidence?.checked_at_utc)],['Saved screenshots','Not supported in LIVE yet']]));
-  root.append(dossierParagraph('Only evidence recorded for this candidate is shown. Screenshot attachments are not connected yet.'));
+  disclosure.append(dossierParagraph('Only evidence recorded for this candidate is shown. Screenshot attachments and persistent development history are not connected yet.'));
  }
  if(dossierTab==='recruitment'){
   root.append(dossierGrid('Recruitment',[
@@ -276,6 +281,7 @@ function renderDossierSection(){
 }
 function renderDossier(){
  if(!dossierOpen)return;
+ restoreComparisonPanel();
  const tabs=dossierGroups[dossierSmartGroup]||['identity'];
  const root=$('dossierContent');
  const sections=[];
@@ -295,10 +301,10 @@ function openDossier(){
  dossierOpen=true;dossierSmartGroup='overview';dossierTab='identity';$('scoutingBoard').hidden=true;$('candidateDossier').hidden=false;
  renderDossier();loadCandidateEvidence(players.find(p=>p.candidate_id===active));syncWorkspace();$('candidateDossier').scrollIntoView({block:'start',behavior:'auto'});
 }
-function closeDossier(){dossierOpen=false;$('candidateDossier').hidden=true;$('scoutingBoard').hidden=false;syncWorkspace()}
+function closeDossier(){restoreComparisonPanel();dossierOpen=false;$('candidateDossier').hidden=true;$('scoutingBoard').hidden=false;syncWorkspace()}
 $('openDossier').onclick=openDossier;
 $('backToBoard').onclick=()=>{closeDossier();$('openDossier').focus()};
-document.querySelectorAll('[data-dossier-tab]').forEach(b=>b.onclick=()=>{dossierSmartGroup=({identity:'overview',development:'development',recruitment:'recruitment',history:'history'})[b.dataset.dossierTab]||'overview';renderDossier()});
+document.querySelectorAll('[data-dossier-tab]').forEach(b=>b.onclick=()=>{dossierSmartGroup=({identity:'overview',development:'development',recruitment:'recruitment',history:'comparison'})[b.dataset.dossierTab]||'overview';renderDossier()});
 
 
 setInterval(()=>{if(!$('private').hidden&&$('modal').hidden&&!document.hidden)load()},20000);
@@ -325,6 +331,20 @@ function appendRankingEntries(target,values,cellClass){
  for(const board of Array.isArray(v.boards)?v.boards:[])if(board.status==='not_listed'&&!map[canonicalRankingName(board.name)])append(rankingLabels[board.name]||board.name,null,'Not listed in Top 100',board);
  if(!body.children.length)append('Rankings',null,'Not available');target.append(table);
  if(v.board_status==='unavailable'){const note=document.createElement('p');note.className='ranking-status';note.textContent='Additional kingdom boards unavailable; available player standings remain displayed.';target.append(note);}
+}
+function renderTrialAssessment(root,values){
+ const keys=['coliseum','forest_of_life','crystal_cave','knowledge_nexus','molten_fort','radiant_spire'],map=playerRankingMap(values);
+ const section=document.createElement('section'),title=document.createElement('h3'),grid=document.createElement('div');
+ title.textContent='Mystic Trials · relative development';grid.className='trial-balance';section.append(title,grid);
+ const ranks=[];
+ for(const key of keys){const row=document.createElement('div'),label=document.createElement('span'),value=document.createElement('b'),entry=map[key];label.textContent=rankingLabels[key];
+  const rank=Number(entry?.kingdom_rank),valid=entry?.kingdom_rank!=null&&Number.isInteger(rank)&&rank>=1&&rank<=100;
+  value.textContent=valid?'#'+rank:'Not available';row.append(label,value);grid.append(row);if(valid)ranks.push(rank);
+ }
+ const note=document.createElement('p');note.className='ranking-status';
+ note.textContent=(ranks.length===6?'Mean rank '+(ranks.reduce((a,b)=>a+b,0)/6).toFixed(1)+' · Rank spread '+(Math.max(...ranks)-Math.min(...ranks))+'. ':'Coverage '+ranks.length+'/6; no overall indicator calculated. ')+
+ 'Smaller ranks indicate stronger placement within this kingdom. These are development indicators; they do not reveal equipment levels or battle outcomes. Missing Top-100 entries are unknown, never rank 101 or zero. Mean and spread are descriptive, not official Mystic Power.';
+ section.append(note);root.append(section);
 }
 function renderHeadlineMetrics(target,evidence,record={}){
  const profile={power:evidence?.player?.power??(record.power_m==null?null:Number(record.power_m)*1e6),captured_at:evidence?.player?.power!=null?evidence?.source_cached_at:record.metadata?.external_lookup?.source_cached_at,castle_level:record.castle_level},metrics=playerSummaryMetrics(evidence?.ranks?.values,profile);target.replaceChildren();target.classList.add('headline-metrics');

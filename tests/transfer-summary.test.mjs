@@ -21,3 +21,11 @@ test('explicit adoption includes verified castle and preserves snapshot provenan
  const payload={ok:true,governorId:'123',uid:'u1',player:{name:'Synthetic',kingdom:1885,power:1000},ranks:{values:{leaderboards:[{...board('town_center',55),source:'saved_snapshot'}],boards:[{name:'town_center',source:'saved_snapshot',captured_at:capture,status:'listed'}]}}};
  const candidate=candidateFromLookup(payload,'123');assert.equal(candidate.castle_level,'TG5 5/5');assert.equal(candidate.metadata.external_lookup.ranks.values.leaderboards[0].value,'55');assert.equal(candidate.metadata.external_lookup.ranks.values.leaderboards[0].source,'saved_snapshot');assert.equal(candidate.metadata.external_lookup.ranks.values.boards[0].source,'saved_snapshot');
 });
+
+test('non-troop power refuses different subsecond captures and mixed provenance',()=>{
+ for(const troop of [{...board('troop_power',50,'2026-10-31T01:11:17.999Z')},{...board('troop_power',50),source:'saved_snapshot'}])assert.equal(playerSummaryMetrics({leaderboards:[board('personal_power',100),troop]})[1].value,null);
+});
+test('Master, Hero and Pet priority values identify ranking-score semantics',()=>{
+ const metrics=playerSummaryMetrics({leaderboards:[board('master_power',50),board('hero_total',60),board('pet_power',70)]});
+ for(const key of ['master_power','hero_total','pet_power'])assert.match(metrics.find(m=>m.key===key).label,/score/);
+});

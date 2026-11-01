@@ -50,12 +50,12 @@ test('three task views, candidate comparison, four smart dossier groups and back
  for(const box of $('rows').querySelectorAll('input'))box.click();await tick();assert.equal($('compare').disabled,false);$('compare').click();assert.match($('comparison').textContent,/Synthetic Sentinel/);assert.match($('comparison').textContent,/Synthetic Vanguard/);
  $('rows').querySelector('button').click();assert.equal($('candidateDossier').hidden,false);
  await tick();await tick();
- const groups={identity:['Saved record & identity','Available evidence'],development:['Player Rankings','Arena Squad','Recorded Mystic Trial Stages'],recruitment:['Recruitment','Notes'],history:['Development History','Evidence & Sources']};
+ const groups={identity:['Saved record & identity','Available evidence','Evidence & Sources'],development:['Player Rankings','Arena Squad','Recorded Mystic Trial Stages'],recruitment:['Recruitment','Notes'],history:['Compare with Kingdom #1885']};
  for(const [name,headings] of Object.entries(groups)){
   const tab=w.document.querySelector('[data-dossier-tab="'+name+'"]');
   assert.equal(tab.hidden,false,name+' should be visible');tab.click();
   for(const heading of headings)assert.ok($('dossierContent').textContent.includes(heading),name+' missing '+heading);
-  assert.equal($('dossierContent').querySelectorAll('button').length,1,name+' refresh control must not repeat');
+  assert.equal($('dossierContent').querySelectorAll('.compact-refresh').length,1,name+' refresh control must not repeat');
  }
  for(const name of ['evidence','intelligence'])assert.equal(w.document.querySelector('[data-dossier-tab="'+name+'"]').hidden,true,name+' is grouped, not removed');
  $('backToBoard').click();assert.equal($('scoutingBoard').hidden,false);assert.equal($('candidateDossier').hidden,true);assert.equal(x.writes(),0);
@@ -108,4 +108,21 @@ test('decision-first summary has six metrics, no kills, and keeps saved facts be
  assert.deepEqual([...x.$('dossierOverview').querySelectorAll('[data-metric]')].map(e=>e.dataset.metric),['power','true_power','master_power','pet_power','hero_total','castle']);
  assert.equal(x.$('dossierTitle').textContent,'Synthetic Sentinel');assert.match(x.$('dossierIdentity').textContent,/1885/);
  assert.equal(x.$('dossierContent').querySelector('.record-details').open,false);assert.equal(x.writes(),0);x.dom.window.close();
+});
+
+test('comparison panel survives dossier rerenders and returns to its original tools container',async()=>{
+ const x=await setup(),{$,w}=x,home=$('externalIntelPanel').parentNode;
+ $('rows').querySelector('button').click();await tick();await tick();
+ const comparison=w.document.querySelector('[data-dossier-tab="history"]');comparison.click();
+ assert.equal(comparison.getAttribute('aria-pressed'),'true');assert.equal($('externalIntelPanel').parentNode,$('dossierContent'));
+ await $('loadInternal').onclick();assert.match($('externalIntelResult').textContent,/Synthetic Internal/);
+ x.run('renderDossier()');assert.equal($('externalIntelPanel').parentNode,$('dossierContent'));
+ w.document.querySelector('[data-dossier-tab="identity"]').click();assert.equal($('externalIntelPanel').parentNode,home);
+ assert.equal(w.document.querySelector('[data-dossier-tab="identity"]').getAttribute('aria-pressed'),'true');
+ $('backToBoard').click();assert.equal($('externalIntelPanel').parentNode,home);assert.equal(x.writes(),0);x.dom.window.close();
+});
+test('Mystic assessment shows six categories without inferring ranks or power for missing boards',async()=>{
+ const x=await setup();x.$('rows').querySelector('button').click();await tick();await tick();x.w.document.querySelector('[data-dossier-tab="development"]').click();
+ assert.equal(x.$('dossierContent').querySelectorAll('.trial-balance>div').length,6);
+ assert.match(x.$('dossierContent').textContent,/Coverage 0\/6/);assert.match(x.$('dossierContent').textContent,/not official Mystic Power/);assert.equal(x.writes(),0);x.dom.window.close();
 });

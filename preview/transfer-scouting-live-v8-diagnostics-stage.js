@@ -242,12 +242,17 @@ function renderDossier(){
     const id=idField.value.trim();if(!/^[1-9][0-9]{0,15}$/.test(id)){result.textContent='Enter a valid numeric Player ID.';return;}
     button.disabled=true;result.textContent='Checking player identity and rankings…';
     try{
-      const {data,error}=await db.functions.invoke('phalanx-transfer-id-snapshot-fallback-stage-20261031?governorId='+encodeURIComponent(id),{method:'GET'});
-      if(error||!data?.ok){
-        const code=String(data?.error??error?.context?.status??error?.name??'unknown');
+      // Only the two headers accepted by the existing strict CORS contract.
+      // functions.invoke adds x-client-info, which the bridge intentionally does not allow.
+      const {data:{session},error:sessionError}=await db.auth.getSession();
+      if(sessionError||!session?.access_token)throw Error('Sign in again.');
+      const response=await fetch(URL+'/functions/v1/phalanx-transfer-id-snapshot-fallback-stage-20261031?governorId='+encodeURIComponent(id),{
+        method:'GET',headers:{apikey:KEY,Authorization:'Bearer '+session.access_token},cache:'no-store',signal:AbortSignal.timeout(110000)});
+      const data=await response.json().catch(()=>null);
+      if(!response.ok||data?.ok!==true){
         const allowed=['unauthorized','forbidden','origin_forbidden','rate_limit_exceeded','rate_limit_unavailable','upstream_unavailable','identity_unverified','invalid_governor_id','configuration_unavailable','authorization_unavailable'];
-        const safe=allowed.includes(code)?code:(/^4\\d\\d$|^5\\d\\d$/.test(code)?'HTTP '+code:'unknown');
-        result.textContent='Lookup failed · '+safe+'. No changes saved.';
+        const code=allowed.includes(data?.error)?data.error:'unavailable';
+        if(dossierOpen&&active===selected&&dossierTab==='intelligence')result.textContent='Lookup failed · HTTP '+response.status+' · '+code+'. No changes saved.';
         return;
       }
       const {summarizePlayer}=await import('./phalanx-transfer-id-card-stage-v1.js');

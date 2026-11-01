@@ -72,11 +72,11 @@ export function playerSummaryMetrics(values,profile={}){
  const totals=[power,...(Array.isArray(v.leaderboards)?v.leaderboards:[]).filter(e=>canonicalRankingName(e?.name)==='personal_power')].filter(Boolean);
  const troops=[map.troop_power,...(Array.isArray(v.leaderboards)?v.leaderboards:[]).filter(e=>canonicalRankingName(e?.name)==='troop_power')].filter(Boolean);
  const pairs=[];
- for(const total of totals)for(const troop of troops){const time=formatPlayerUtc(total.captured_at);if(time!=='Not available'&&time===formatPlayerUtc(troop.captured_at)&&number(total.value)!==null&&number(troop.value)!==null&&number(total.value)>=number(troop.value))pairs.push({total,troop,time});}
+ for(const total of totals)for(const troop of troops){const time=formatPlayerUtc(total.captured_at);if(time!=='Not available'&&String(total.captured_at)===String(troop.captured_at)&&(total.source||'provider')===(troop.source||'provider')&&number(total.value)!==null&&number(troop.value)!==null&&number(total.value)>=number(troop.value))pairs.push({total,troop,time});}
  pairs.sort((a,b)=>b.time.localeCompare(a.time));
  const pair=pairs[0],truePower=metric('true_power','True Power',pair?{value:Number(pair.total.value)-Number(pair.troop.value),captured_at:pair.total.captured_at}:null);
  truePower.calculated=Boolean(pair);truePower.details=pair?'Calculated: '+formatPlayerNumber(pair.total.value)+' minus '+formatPlayerNumber(pair.troop.value)+'. Matched source: '+pair.time+'. Non-troop power, not a battle prediction.':'Requires measured Total Power and Troop Power from the same source capture.';
  const castle=metric('castle','Castle / Truegold',map.town_center,true);
  if(castle.value===null&&profile.castle_level){castle.text=formatCastle(profile.castle_level);castle.details='Saved castle: '+profile.castle_level+'. Current source value unavailable.';}
- return [metric('power','Power',power),truePower,metric('master_power','Master Power',map.master_power),metric('pet_power','Pet Power',map.pet_power),metric('hero_total','Hero Power',map.hero_total),castle];
+ return [metric('power','Total Power',power),truePower,metric('master_power','Master Power · score',map.master_power),metric('pet_power','Pet Power · score',map.pet_power),metric('hero_total','Hero Power · score',map.hero_total),castle];
 }

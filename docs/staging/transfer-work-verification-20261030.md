@@ -375,3 +375,6 @@ Changes: lookup, dossier and one-to-one comparison share a compact read-only ran
 | Other prior release gates | NICHT GETESTET / unchanged | Live new-candidate save, full roles matrix, actual source outage, recovery reset and runtime rollback not repeated or claimed |
 
 BACKUP ERSTELLT: local full-history mobile-before.bundle at 81943fe and mobile-runtime.bundle at 31286c231062c1d31099d8447e966578ac262743; remote Git preserves both states. INTEGRITÄT GEPRÜFT: bundle verify and deployed-byte parity. WIEDERHERSTELLUNG GETESTET: before-change bundle fetched into separate empty repository, checkout 81943fe and full fsck pass. Deployment rollback/DB restore NICHT GETESTET. Existing persistent PHX_TRANSFER_VERIFIED_RECOVERY_20261031.zip remains the prior runtime recovery artifact; it is not mislabeled as the compact runtime package. No new user records, costs/plan purchases or permission changes.
+
+## PHX-TRANSFER-FINAL continuation — 01.11.2026
+Current evidence, CORS diagnosis, four-view integration, 59 local regression tests, protection/backup status and outstanding authenticated live gates: [transfer-final-verification-20261101.md](transfer-final-verification-20261101.md). No complete release claim; V5/V6/V7 and protected application modules retained.
