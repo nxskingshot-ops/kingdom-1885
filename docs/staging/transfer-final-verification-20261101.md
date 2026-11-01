@@ -69,3 +69,17 @@ The checkpoint above is superseded where this section records completed live tes
 | DB/Edge/deployment rollback | NICHT GETESTET | Source restore is not a live-system restore |
 
 First preview dpl_GH2TjzQwWS4dJjAzBUwpP6DuwecR was READY; eleven submitted source hashes matched deployment file IDs, existing test alias assigned. Final source/deployment identifiers and post-adjustment check follow below. No entire-app or Android acceptance claimed. Remaining limits: intermittent upstream refresh, incomplete external board supplement, real Android, live intended candidate save, full role matrix, full kingdom census and actual rollback tests.
+
+## Final deployment and critical-ID acceptance — 01.11.2026
+Runtime commit: 23838fac3302a54f4e0225e633930d7159e3d782.
+Deployment: dpl_Ck8ctYpcH1QyBViQRr8u2u8htGHU, READY, target=null (Preview), aliasError=null; existing project prj_XRX2lvA6YQ4YtT9GG53vy5dt2Kt5. All eleven deployed file SHA1 identifiers match submitted local bytes. No production deployment target used. Existing isolated test alias assigned after parity check; prior preview retained.
+Stable HTTPS test URL: https://phalanx-r11-atlas-preview.vercel.app/
+Immutable preview: https://phalanx-r11-atlas-preview-n2wkx3qy8-matze4428-6040.vercel.app/ (Vercel protection applies; use the stable alias for app CORS).
+
+BESTANDEN LIVE on final runtime after reload/session hydration: ID 227802999 -> グッチ, TYZ, #1555, Total Power 411700234 (411.7M), Castle TG5 5/5, 24 ranking categories, five Arena heroes. Headline Master score 21.34M, Pet score 13.42M, Hero score 48.38M. The earlier partial external supplement is superseded by this observed complete response; availability can still vary.
+True Power disclosure verified: 411700234 minus 257850662 = 153849572; matching board capture 2026-11-01 00:29:38 UTC. Primary player source capture 04:16:30 UTC, lookup time 04:20:52 UTC; these are deliberately separate. Kills absent from headline summary. Source and calculation disclosures open correctly.
+Session survives final runtime reload; no new login or candidate save needed. Existing saved 410.7M is not overwritten by refreshed 411.7M. Previously verified #1885 KomaR identity and FaQu comparison remain targeted regression evidence for unchanged integration code; final runtime differs only in request timeout/wait explanation.
+
+BACKUP ERSTELLT: phalanx-verified-final.bundle at exact runtime 23838fac3302a54f4e0225e633930d7159e3d782; SHA256 a0b711e7374e772482e7b7d69c845673a6609c7c4f34d2b9f83864a82ec6c7e9. INTEGRITÄT GEPRÜFT: git bundle verify. WIEDERHERSTELLUNG GETESTET: independent repository fetch/checkout, full fsck, exact restored HEAD. Bundles are local session backups; durable code/history and Stage V5 source rollback are committed in GitHub. No independent new off-site database backup or live rollback claimed.
+
+Final scope status: IMPLEMENTIERT / TECHNISCH GETESTET / ISOLIERTE TESTVORSCHAU. Not a completed whole-app release. Still NICHT GETESTET: physical Android layout; complete live roles/RLS matrix; new intended real candidate save/edit; actual DB/Edge/Vercel rollback; forced cold-cache boundary with the new margin; genuinely unlisted #1885 player live coverage; full HOME/Atlas/Reports integration. Top-100 source is not a kingdom census. No costs/plan purchase, main merge, permission weakening, data deletion or production PHALANX release.
