@@ -29,7 +29,7 @@ export function mountStrategicProfile(target,rankings={}){
 
 
  const conclusion=document.createElement('p');conclusion.textContent=report.strengths.length>=3?'Multiple categories rank in the Kingdom Top 10, indicating a broad development profile. ':'Available rankings do not establish a broad elite profile. ';
- conclusion.append(document.createTextNode('Rally Leader, Joiner, Garrison Holder and Fighter roles require battle reports, formations and buffs; no role is verified from rankings alone.'));section.append(conclusion);
+ section.append(conclusion);
  const missing=document.createElement('p');missing.className='phx-scout-muted';missing.textContent='Not assessed: '+(report.missing.join(', ')||'none of these categories')+'.';section.append(missing);
  const details=document.createElement('details');details.className='phx-intel-evidence';
  const summary=document.createElement('summary');summary.textContent='ⓘ Ranking Evidence & Timestamps';details.append(summary);
