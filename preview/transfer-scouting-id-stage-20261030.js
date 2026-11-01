@@ -486,7 +486,7 @@ phxIdForm.addEventListener('submit',async e=>{
   .phx-scout-facts strong,.phx-scout-roles strong{color:#e7c483;font-size:.98rem}
   .phx-scout-placement{margin:8px 0;color:#f1d7a4;line-height:1.6;overflow-wrap:anywhere}
   #phxIdResult>details{width:100%;min-width:0;box-sizing:border-box}
-  @media(max-width:390px){.phx-scout-facts,.phx-scout-roles{gap:6px}.phx-scout-section{padding:12px!important}}
+  @media(max-width:700px){.phx-scout-facts,.phx-scout-roles{grid-template-columns:1fr;gap:7px}#phxIdResult>.phx-scout-section{padding:12px}.phx-scout-section h4{font-size:1rem}.phx-scout-muted{font-size:.82rem;line-height:1.4}}
   `;document.head.append(style);}
   const rawPower=p.power??p.totalPower??p.total_power??playerRankingMap(payload.ranks?.values).personal_power?.value;
   if(rawPower==null||rawPower===''){rosterNote.textContent='Historical placement unavailable: total player power missing.';}
