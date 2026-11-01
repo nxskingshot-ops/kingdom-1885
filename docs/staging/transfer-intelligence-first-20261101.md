@@ -27,3 +27,6 @@ No changes to UNIFIED HEADER V2, HOME, Epic Navigation, PYLON IX, Atlas, candida
 
 ## Evidence status
 Baseline source: stage/transfer-id-lookup-20261030; c40fc53 and follow-up documentation commit. Earlier 64 automated tests are historical, not tests of this new design. No new UI tests, Android acceptance, backup restore or deployment has been performed for this change.
+
+## Mandatory transfer-rule engine (user requirement, 01.11.2026)
+Keep account strength and transfer eligibility as separate assessments. First-view eligibility must display: Kingdom #1885 transfer group (verified group and season), current official Power limit and which Power definition applies, ordinary vs special invitations and remaining quotas if authoritative, candidate eligibility, transfer window, and rule source with timestamp. Existing 170 M threshold is PROVISIONAL ONLY and must never be labeled official. Do not assume Total Power or True Power is the official invitation metric. Include group compatibility, kingdom age/state, cooldowns, restrictions and any event-specific rules only where verified. Unavailable inputs => UNKNOWN / NEEDS VERIFICATION, not eligible or ineligible. No invitation allocation, transfer action or permissions change without explicit authorization. Transfer-rule source verification and scenario tests are mandatory before release.
