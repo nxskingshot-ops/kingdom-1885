@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {reconcileRankings,normalizeAlliance} from '../preview/phx-transfer-roster-reconciliation-20261101.js';
+assert.equal(normalizeAlliance(' oOo '),'OOO');
+const old=[{player_id:'101',alliance:'NXS',power:100},{player_id:'102',alliance:'OoO',power:200}];
+const now=[{governor_id:'101',alliance_abbr:'nxs',score:120,rank:1},{governor_id:'102',alliance_abbr:'NXS',score:230,rank:2},{governor_id:'103',alliance_abbr:'',score:250,rank:3},{governor_id:'104',alliance_abbr:'FRA',score:260,rank:4},{governor_id:'104',alliance_abbr:'FRA',score:260,rank:4},{governor_id:'bad',alliance_abbr:'NXS',score:1,rank:5}];
+const result=reconcileRankings(old,now);
+assert.equal(result.matched.length,1);
+assert.equal(result.changedAlliance.length,1);
+assert.equal(result.unknownAlliance.length,1);
+assert.equal(result.newRanked.length,1);
+assert.equal(result.invalidCount,2);
+assert.equal(result.completeRoster,false);
+console.log('7 reconciliation assertions passed');
