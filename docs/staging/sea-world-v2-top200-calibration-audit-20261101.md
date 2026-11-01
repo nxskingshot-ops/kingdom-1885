@@ -66,3 +66,11 @@ Read-only SQL evidence collected during this session; no database rows modified.
 - Mean observed rank weight 80.31 / 90. These values are partial contributions, **not final total scores or calibrated star thresholds**.
 - Across 49 paired players, mean Total Power minus Troop Power = 78,149,334 (True Power proxy). Source is same run 235, but formula/semantics require verification against actual app data.
 - Next: per-player score interval with True Power normalization, tier stability, baseline outlier sensitivity, and reference account spot checks; do not freeze thresholds before these checks.
+
+## SEA WORLD V2 interval diagnostic — run 235
+- 49 paired-power eligible players scored with existing V2 rank weights and provisional True Power normalization denominator 134,260,900.
+- Lower score = sum of observed ranking contributions + 10 * min((Total Power - Troop Power) / 134,260,900, 1). Upper score = lower score + missing rank-board weight (90 - observed rank weight).
+- Observed lower score minimum 23.73, maximum 99.75, average 59.68. Average interval width 10.15 points.
+- 25/49 have the same provisional tier at lower and upper score bounds; 24/49 cross a provisional tier boundary and must not receive a confident final star classification.
+- 19/49 have all eight ranking boards and paired power. Note: a fully observed score still uses a **provisional** normalization and thresholds.
+- This is a read-only SQL diagnostic, not a deployment test, not a final tier calibration, and not approval to modify any FREEZE.
