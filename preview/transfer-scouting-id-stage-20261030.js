@@ -478,7 +478,7 @@ phxIdForm.addEventListener('submit',async e=>{
   if(!document.getElementById('phx-scout-layout-style')){const style=document.createElement('style');style.id='phx-scout-layout-style';style.textContent=`
   #phxIdResult{display:flex;flex-direction:column;gap:14px}
   #phxIdResult>.headline-metrics{order:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%}
-  .phx-castle-metric{display:flex;flex-direction:column;justify-content:center;gap:5px;min-width:0;padding:10px;color:#e7c483;border:1px solid rgba(194,151,74,.5)}.phx-castle-metric span{font-size:.8rem;color:#aab9c8}.phx-castle-metric strong{font-size:1.25rem}
+  .phx-castle-metric{display:flex;flex-direction:column;justify-content:center;gap:5px;min-width:0;padding:10px;color:#e7c483;border:1px solid rgba(194,151,74,.5);grid-column:auto;box-sizing:border-box}.phx-castle-metric span{font-size:.8rem;color:#aab9c8}.phx-castle-metric strong{font-size:1.25rem}
   .phx-verdict-card{border-color:#e5b967!important;background:linear-gradient(135deg,#102c3b,#061522)!important;box-shadow:0 0 22px rgba(202,148,61,.13)}.phx-verdict-card .phx-sea-rating{font-size:1.2rem;font-weight:800;color:#f6d48e}
   #phxIdResult>.phx-scout-section{width:100%;min-width:0;box-sizing:border-box;padding:16px;border:1px solid rgba(194,151,74,.6);background:rgba(5,24,39,.8);border-radius:5px}
   .phx-scout-section h4{margin:0 0 9px;color:#e7c483;font-size:1.1rem;letter-spacing:.025em}
