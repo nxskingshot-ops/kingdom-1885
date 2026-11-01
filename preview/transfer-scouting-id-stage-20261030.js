@@ -470,7 +470,7 @@ phxIdForm.addEventListener('submit',async e=>{
   const detail=document.createElement('details');detail.className='phx-scout-deep-dive';const detailLabel=document.createElement('summary');detailLabel.textContent='Ausführliche Bewertung und Nachweise';detail.append(detailLabel);while(accountNote.children.length>3)detail.append(accountNote.children[3]);accountNote.append(detail);
   const placementSection=makeSection('Alliance placement','Historical Total Power comparison · not live combat strength');
   const rosterNote=document.createElement('p');rosterNote.className='phx-scout-placement';rosterNote.setAttribute('aria-live','polite');rosterNote.textContent='Checking available alliance rosters…';placementSection.append(rosterNote);
-  const rolesSection=makeSection('Potential alliance role','Role assessment requires comparable battle evidence.');
+  const rolesSection=makeSection('Mögliche Allianzrolle','Kampfrollen lassen sich ohne vergleichbare Kampfberichte nicht sicher bewerten.');
   const roleGrid=document.createElement('div');roleGrid.className='phx-scout-roles';
   for(const role of ['Rally Leader','Rally Joiner','Garrison Holder','KvK Fighter']){const cell=document.createElement('div');const name=document.createElement('strong');name.textContent=role;const status=document.createElement('span');status.textContent='Not verified';cell.append(name,status);roleGrid.append(cell);}rolesSection.append(roleGrid);
   if(!document.getElementById('phx-scout-layout-style')){const style=document.createElement('style');style.id='phx-scout-layout-style';style.textContent=`
