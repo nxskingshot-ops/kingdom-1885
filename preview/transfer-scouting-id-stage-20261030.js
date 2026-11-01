@@ -444,7 +444,7 @@ phxIdForm.addEventListener('submit',async e=>{
   const seaWorld=seaWorldVerdict(p,{scope:'top25_provisional',ranks:seaRanks,truePower:trueMetric?.calculated?trueMetric.value:null});
   const rating=document.createElement('div');rating.className='phx-sea-rating';rating.setAttribute('aria-label','Provisional account rating');
   const tierNames={mega_whale:'Mega Whale',whale:'Whale',orca_elite:'Orca Elite',orca:'Orca',strong:'Strong',solid:'Solid',developing:'Developing'};
-  const coverage=Number.isFinite(seaWorld.coveragePct)?' · Coverage '+seaWorld.coveragePct+'%':'';
+  const coverage='';
   rating.textContent=seaWorld.stars?seaWorld.stars+' · '+(tierNames[seaWorld.tier]||'Vorläufig')+coverage:'Wegen mangelnder Datenlage keine Bewertung möglich'+coverage;
   accountNote.prepend(rating);
   const rules=document.createElement('details');rules.className='phx-scout-muted';
