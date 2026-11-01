@@ -1,4 +1,5 @@
 import { candidateFromLookup, duplicateLookupFilter } from './transfer-id-candidate-20261030.js';
+import { forecast as phxTransferForecast, transferStatus as phxTransferStatus } from './phx-transfer-forecast-20261101.js';
 import { formatPlayerNumber, formatPlayerUtc, formatPlayerSection, playerLookupError, playerRankingRows, rankingLabels, canonicalRankingName, playerRankingMap, rankingSourceText, playerSummaryMetrics, formatCastle, compactPower } from './transfer-id-display-20261030.js';
 const SUPABASE_URL='https://hcjrdofkdkasznywvcxo.supabase.co';
 const KEY='sb_publishable_hkqBaMme70g2f3wcxvaTKg_FczqkpCh';
@@ -321,6 +322,17 @@ function renderDossier(){
   sections.push(...nodes);
  }
  root.replaceChildren(...sections);
+ const forecastPanel=document.createElement('section');
+ forecastPanel.className='dossier-report';
+ forecastPanel.setAttribute('aria-label','Expected transfer rules');
+ const forecastHeading=document.createElement('h3');
+ forecastHeading.textContent='PYLON IX · Transfer Intelligence — FORECAST';
+ const forecastBody=document.createElement('p');
+ forecastBody.textContent='Expected Group '+phxTransferForecast.group+' · Kingdoms '+phxTransferForecast.range.join('–')+' · Ordinary reference '+phxTransferForecast.ordinaryReferenceM+'M · Leading reference '+phxTransferForecast.leadingReferenceM+'M · '+phxTransferForecast.window+'.';
+ const forecastNotice=document.createElement('p');
+ forecastNotice.textContent=phxTransferStatus(null)+'. Community forecast only; #1885 classification, official power metric, active cap, invitations and final rules are unconfirmed. Source: '+phxTransferForecast.source+' (checked '+phxTransferForecast.checked+').';
+ forecastPanel.append(forecastHeading,forecastBody,forecastNotice);
+ root.prepend(forecastPanel);
  applySmartDossierNavigation();
 }
 function openDossier(){
