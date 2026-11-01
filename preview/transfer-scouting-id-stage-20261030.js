@@ -454,21 +454,23 @@ phxIdForm.addEventListener('submit',async e=>{
    const alliances=['NXS','OoO','MYM','FRA'];
    const results=await Promise.all(alliances.map(async alliance=>{
     const latest=await db.from('phalanx_alliance_players').select('snapshot_date').eq('kingdom',1885).eq('alliance',alliance).order('snapshot_date',{ascending:false}).limit(1);
-    if(latest.error)return alliance+': access unavailable';
+    if(latest.error)return {alliance,status:'Access unavailable'};
     const date=latest.data?.[0]?.snapshot_date;
-    if(!date)return alliance+': no historical snapshot';
+    if(!date)return {alliance,status:'No historical snapshot'};
     const rows=[];
     for(let offset=0;offset<10000;offset+=500){
      const page=await db.from('phalanx_alliance_players').select('power').eq('kingdom',1885).eq('alliance',alliance).eq('snapshot_date',date).range(offset,offset+499);
-     if(page.error)return alliance+': access unavailable';
+     if(page.error)return {alliance,status:'Access unavailable'};
      rows.push(...(page.data||[]));
      if((page.data||[]).length<500)break;
-     if(offset===9500)return alliance+': roster exceeds safe comparison limit';
+     if(offset===9500)return {alliance,status:'Roster exceeds safe limit'};
     }
     const placement=placeInAlliance(rawPower,rows,date);
-    return placement.status==='HISTORICAL_POWER_PLACEMENT'?alliance+': #'+placement.rankMin+(placement.rankMax!==placement.rankMin?'–'+placement.rankMax:'')+' / '+placement.rosterSize+' (historical '+date+')':alliance+': insufficient historical data';
+    return placement.status==='HISTORICAL_POWER_PLACEMENT'?{alliance,status:'OK',rank:placement.rankMin,rankMax:placement.rankMax,total:placement.rosterSize,date,top15:placement.top15Guaranteed}:{alliance,status:'Insufficient historical data'};
    }));
-   rosterNote.textContent=results.join(' · ')+'. Historical power only; not verified combat strength or transfer eligibility.';
+   rosterNote.textContent='Hypothetical placement by Total Power in dated alliance snapshots (not live combat strength).';
+   const grid=document.createElement('div');grid.className='phx-alliance-grid';
+   for(const row of results){const item=document.createElement('div');item.className='phx-alliance-row';const name=document.createElement('strong');name.textContent=row.alliance;const position=document.createElement('span');position.textContent=row.status==='OK'?'#'+row.rank+(row.rankMax!==row.rank?'–'+row.rankMax:'')+' of '+row.total:row.status;const note=document.createElement('small');note.textContent=row.status==='OK'?(row.top15?'Top 15 · ':'Outside confirmed Top 15 · ')+row.date:'Not enough evidence';item.append(name,position,note);grid.append(item);}placementSection.append(grid);
   }
   const all=document.createElement('details'),allSummary=document.createElement('summary'),allBody=document.createElement('div');all.className='complete-rankings';allSummary.textContent='All rankings ('+Object.keys(playerRankingMap(payload.ranks?.values)).length+')';all.append(allSummary,allBody);appendRankingEntries(allBody,payload.ranks?.values,'');phxIdResult.append(all);
   const arenaDetail=document.createElement('details'),arenaSummary=document.createElement('summary');arenaDetail.className='arena-details';arenaSummary.textContent='Arena Squad ('+(payload.arenaSquad?.heroes||[]).length+') · '+formatPlayerSection(payload.arenaSquad?.status);arenaDetail.append(arenaSummary,arenaList(payload.arenaSquad?.heroes||[]));phxIdResult.append(arenaDetail);
