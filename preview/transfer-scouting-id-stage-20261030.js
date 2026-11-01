@@ -440,8 +440,15 @@ phxIdForm.addEventListener('submit',async e=>{
   }
   const trueMetric=playerSummaryMetrics(payload.ranks?.values,{power:p.power,captured_at:payload.source?.cachedAt}).find(m=>m.key==='true_power');
   const seaWorld=seaWorldVerdict(p,{scope:'top25_provisional',ranks:seaRanks,truePower:trueMetric?.calculated?trueMetric.value:null});
-  const rating=document.createElement('div');rating.className='phx-sea-rating';rating.setAttribute('aria-label','SEA WORLD V2: vorläufige Bewertung');rating.textContent=seaWorld.stars?seaWorld.stars+' · SEA WORLD V2 · VORLÄUFIG · Datenabdeckung '+seaWorld.coveragePct+'%':'SEA WORLD V2 · Wegen mangelnder Datenlage keine Bewertung möglich · Datenabdeckung '+seaWorld.coveragePct+'%';accountNote.prepend(rating);
-  const seaWorldNote=document.createElement('p');seaWorldNote.className='phx-scout-muted';seaWorldNote.textContent='SEA WORLD V2 · '+seaWorld.status.replaceAll('_',' ')+' · '+seaWorld.detail;accountNote.append(seaWorldNote);
+  const rating=document.createElement('div');rating.className='phx-sea-rating';rating.setAttribute('aria-label','Vorläufige Accountbewertung');
+  const tierNames={mega_whale:'Mega Whale',whale:'Whale',orca_elite:'Orca Elite',orca:'Orca',strong:'Strong',solid:'Solid',developing:'Developing'};
+  const coverage=Number.isFinite(seaWorld.coveragePct)?' · Datenabdeckung '+seaWorld.coveragePct+'%':'';
+  rating.textContent=seaWorld.stars?seaWorld.stars+' · '+(tierNames[seaWorld.tier]||'Vorläufig')+coverage:'Wegen mangelnder Datenlage keine Bewertung möglich'+coverage;
+  accountNote.prepend(rating);
+  const rules=document.createElement('details');rules.className='phx-scout-muted';
+  const rulesTitle=document.createElement('summary');rulesTitle.textContent='ⓘ Bewertungsregeln';rules.append(rulesTitle);
+  const rulesText=document.createElement('p');rulesText.textContent='Die vorläufige Sternebewertung verwendet neun gewichtete Leistungsbereiche: Mystic Trial (20 %), Master Power (15 %), Helden (10 %), Heldenausrüstung (10 %), Governor Gear (10 %), Governor Charms (10 %), Pet Power (7,5 %), Forschung (7,5 %) und True Power (10 %). Fehlende Daten sind keine schlechte Leistung. Sterne erscheinen nur, wenn die Bewertung trotz fehlender Daten innerhalb derselben Klasse bleibt. Grenzen und Referenzbasis sind noch vorläufig.';rules.append(rulesText);
+  accountNote.append(rules);
   const summaryTitle=document.createElement('strong');summaryTitle.className='phx-scout-verdict';summaryTitle.textContent=rankEvidence.length>=10?'Broad documented ranking profile':rankEvidence.length?'Partial ranking profile':'Insufficient ranking evidence';accountNote.append(summaryTitle);
   const combatNote=document.createElement('p');combatNote.className='phx-scout-muted';
   combatNote.textContent='KvK-style evidence check: '+combatEvidence.profile+' · '+combatEvidence.coverage+' comparable category rankings. '+combatEvidence.roleAssessment+'.';
