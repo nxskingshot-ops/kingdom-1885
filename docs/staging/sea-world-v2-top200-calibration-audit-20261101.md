@@ -74,3 +74,10 @@ Read-only SQL evidence collected during this session; no database rows modified.
 - 25/49 have the same provisional tier at lower and upper score bounds; 24/49 cross a provisional tier boundary and must not receive a confident final star classification.
 - 19/49 have all eight ranking boards and paired power. Note: a fully observed score still uses a **provisional** normalization and thresholds.
 - This is a read-only SQL diagnostic, not a deployment test, not a final tier calibration, and not approval to modify any FREEZE.
+
+## Fully observed reference-account distribution — run 235
+- 19 accounts have all eight ranking boards plus paired personal_power and troop_power, scored under the existing provisional 134,260,900 True Power normalization.
+- Minimum 34.17; maximum 99.75; mean 74.18; median 76.42.
+- Provisional score bands: <55: 4 accounts; 55–<70: 4; 70–<85: 3; 85–<90: 2; >=90: 6. These are **not newly calibrated thresholds**; they are descriptive counts using existing boundaries.
+- Caveat: selection on complete Top-100 rank coverage strongly favors high-ranking players; 19 accounts are not representative of all Kingdom #1885 players or even the selected top 200.
+- No thresholds changed. Before freezing: compare percentile/threshold sensitivity and manually verify rank semantics and True Power normalization.
