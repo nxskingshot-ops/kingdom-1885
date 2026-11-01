@@ -440,7 +440,7 @@ phxIdForm.addEventListener('submit',async e=>{
   }
   const trueMetric=playerSummaryMetrics(payload.ranks?.values,{power:p.power,captured_at:payload.source?.cachedAt}).find(m=>m.key==='true_power');
   const seaWorld=seaWorldVerdict(p,{scope:'top25_provisional',ranks:seaRanks,truePower:trueMetric?.calculated?trueMetric.value:null});
-  const rating=document.createElement('div');rating.className='phx-sea-rating';rating.setAttribute('aria-label','SEA WORLD V2: vorläufige Bewertung');rating.textContent=(seaWorld.stars||'☆☆☆☆☆')+' · SEA WORLD V2 · '+(seaWorld.stars?'VORLÄUFIG':'Einstufung unsicher')+' · Datenabdeckung '+seaWorld.coveragePct+'%';accountNote.prepend(rating);
+  const rating=document.createElement('div');rating.className='phx-sea-rating';rating.setAttribute('aria-label','SEA WORLD V2: vorläufige Bewertung');rating.textContent=seaWorld.stars?seaWorld.stars+' · SEA WORLD V2 · VORLÄUFIG · Datenabdeckung '+seaWorld.coveragePct+'%':'SEA WORLD V2 · Wegen mangelnder Datenlage keine Bewertung möglich · Datenabdeckung '+seaWorld.coveragePct+'%';accountNote.prepend(rating);
   const seaWorldNote=document.createElement('p');seaWorldNote.className='phx-scout-muted';seaWorldNote.textContent='SEA WORLD V2 · '+seaWorld.status.replaceAll('_',' ')+' · '+seaWorld.detail;accountNote.append(seaWorldNote);
   const summaryTitle=document.createElement('strong');summaryTitle.className='phx-scout-verdict';summaryTitle.textContent=rankEvidence.length>=10?'Broad documented ranking profile':rankEvidence.length?'Partial ranking profile':'Insufficient ranking evidence';accountNote.append(summaryTitle);
   const combatNote=document.createElement('p');combatNote.className='phx-scout-muted';
