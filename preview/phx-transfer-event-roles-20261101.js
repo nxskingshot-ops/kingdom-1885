@@ -9,7 +9,8 @@ export function evaluateEventRoles(rankings={},player={},context={}){
  const joiner=Number.isInteger(troopTier)&&troopTier>=4&&context.troopEvidenceVerified===true?'Verified troop tier supports Rally Joiner suitability review':'Rally Joiner suitability unverified: independently confirmed troop tier missing';
  const roster=context.kingdomRosterVerified===true?'Kingdom comparison available':'Full kingdom roster comparison missing';
  const alliance=context.allianceRosterVerified===true?'Alliance comparison available':'Alliance comparison missing';
- return {top15Count:top15.length,leadership,joiner,roster,alliance,
+ const roleEvidence=Object.fromEntries(Object.entries(roleSignals).map(([key,ranks])=>[key,{available:ranks.filter(Number.isInteger).length,top10:ranks.filter(rank=>Number.isInteger(rank)&&rank<=10).length,total:ranks.length}]));
+ return {top15Count:top15.length,leadership,joiner,roster,alliance,roleEvidence,
  kvk:'KvK · kingdom-wide: '+leadership+'. '+roster+'. Rally/Garrison leadership requires buffs, formations and battle evidence.',
  events:'Swordland / Tri-Alliance · alliance-specific: '+alliance+'. Event roles require event roster and rules; KvK roles do not transfer automatically.',
  allocation:top15.length>=2?'Evaluate leadership before routine joiner assignment.':'Do not assign a primary battle role without combat evidence.'};
