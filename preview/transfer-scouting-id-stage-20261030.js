@@ -510,7 +510,7 @@ phxIdForm.addEventListener('submit',async e=>{
      if(offset===9500)return {alliance,status:'Roster exceeds safe limit'};
     }
     const placement=placeInAlliance(rawPower,rows,date);
-    return placement.status==='HISTORICAL_POWER_PLACEMENT'?{alliance,status:'OK',rank:placement.rankMin,rankMax:placement.rankMax,total:placement.rosterSize,date,top15:placement.top15Guaranteed}:{alliance,status:'Insufficient historical data'};
+    return placement.status==='HISTORICAL_POWER_PLACEMENT'?{alliance,status:'OK',rank:placement.rankMin,rankMax:placement.rankMax,total:placement.rosterSize,date,top15:placement.top15Guaranteed,gapAbove:placement.gapAbove,gapBelow:placement.gapBelow}:{alliance,status:'Insufficient historical data'};
    }));
    rosterNote.textContent='Hypothetical placement by Total Power in dated alliance snapshots (not live combat strength).';
    const grid=document.createElement('div');grid.className='phx-alliance-grid';const preferredAlliance=String(p.alliance||p.allianceTag||p.alliance_tag||'').trim().toUpperCase();results.sort((a,b)=>(a.alliance.toUpperCase()===preferredAlliance?-1:0)-(b.alliance.toUpperCase()===preferredAlliance?-1:0));
