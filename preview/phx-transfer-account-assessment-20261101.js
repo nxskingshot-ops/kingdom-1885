@@ -16,3 +16,39 @@ export function assessAccount(player={}, ranks={}){
   rankingEvidence:rankEvidence
  };
 }
+
+
+// KvK Intelligence-derived evidence model. Only compares like-for-like metrics.
+// Missing inputs remain unknown; no combat role is certified from power alone.
+export function classifyCombatProfile(player = {}, rankings = {}) {
+ const groups = [
+  ['Troops', ['troop_power_rank','troopPowerRank']],
+  ['Hero equipment', ['hero_equip_rank','heroEquipRank']],
+  ['Governor gear', ['governor_gear_rank','governorGearRank']],
+  ['Governor charms', ['governor_charm_rank','governorCharmRank']],
+  ['Pets', ['pet_power_rank','petPowerRank']],
+  ['Research', ['research_rank','researchRank']],
+  ['Mystic Trial', ['mystic_rank','mysticRank']],
+  ['Kills', ['kills_rank','killsRank']]
+ ];
+ const lookup = (obj, keys) => keys.map(k=>obj?.[k]).find(v=>v!==undefined&&v!==null&&v!=='');
+ const rows = groups.map(([label,keys])=>{
+  const raw=lookup(player,keys);
+  const fromRanks=rankings?.[label.toLowerCase().replaceAll(' ','_')];
+  const rank=Number(raw??fromRanks?.kingdom_rank);
+  return {label,rank:Number.isInteger(rank)&&rank>0?rank:null};
+ }).filter(x=>x.rank!==null);
+ const top10=rows.filter(x=>x.rank<=10).sort((a,b)=>a.rank-b.rank);
+ const strengths=top10.map(x=>x.label+' #'+x.rank);
+ const coverage=rows.length;
+ let profile='Insufficient comparative evidence';
+ if(coverage>=4&&top10.length>=3){
+  const troop=rows.find(x=>x.label==='Troops');
+  const equip=rows.find(x=>x.label==='Hero equipment');
+  profile=troop?.rank<=5&&equip?.rank<=5?'Broad elite development':'Multiple documented ranking strengths';
+ }else if(coverage>=2&&top10.length>=1)profile='Partially documented development';
+ return {profile,coverage,documentedStrengths:strengths,
+  openQuestions:groups.filter(([label])=>!rows.some(x=>x.label===label)).map(([label])=>label),
+  roleAssessment:'Combat role not verified without battle reports, formation and comparable roster data',
+  evidenceLevel:coverage>=4?'MULTI_RANKING':coverage?'PARTIAL':'INSUFFICIENT'};
+}
