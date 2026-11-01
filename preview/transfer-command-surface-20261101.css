@@ -70,3 +70,12 @@ main{padding:0 5px 24px}
 #phxIdResult>.headline-metrics .detail{padding:8px!important}
 #phxReview .review-heading{margin-bottom:5px}
 }
+
+/* Scout verdict and dated alliance ranking comparison */
+#phxIdResult>.phx-verdict-card{border-color:#c89c55!important;background:linear-gradient(135deg,#172b35,#071722)!important}
+#phxIdResult .phx-scout-decision{color:#f0d7a7;font-size:clamp(13px,2.8vw,16px);line-height:1.45;margin:5px 0 8px}
+#phxIdResult .phx-alliance-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}
+#phxIdResult .phx-alliance-row{border:1px solid rgba(197,153,76,.38);padding:9px;display:flex;flex-direction:column;gap:3px;min-width:0}
+#phxIdResult .phx-alliance-row strong{color:#f0ce8b;font-size:14px}
+#phxIdResult .phx-alliance-row span{font-weight:700;color:#f3ddae;font-size:clamp(14px,3vw,18px)}
+#phxIdResult .phx-alliance-row small{font-size:11px;color:#aebfca;line-height:1.3}
