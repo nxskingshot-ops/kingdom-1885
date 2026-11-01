@@ -1,0 +1,44 @@
+/* PHX Transfer Command Surface — isolated UI override 2026-11-01.
+   Original header, navigation SVG assets, JS, IDs and protected data flows untouched. */
+@media screen {
+body{background:radial-gradient(ellipse at 50% 15%,#34404a 0%,#101d27 42%,#040b12 100%) fixed}
+main{padding-top:0}
+.phx-original-header{margin-bottom:0!important}
+#private{position:relative;margin-top:-1px;padding:12px clamp(9px,2vw,22px) 24px;background:linear-gradient(145deg,#28333b 0%,#0c1c28 24%,#07121e 75%,#17232b 100%);border:1px solid #76674d;box-shadow:inset 0 1px #d7bd82,inset 0 0 0 5px #1c2930,0 15px 38px #000a}
+#private:before{content:"";position:absolute;inset:6px;pointer-events:none;border:1px solid #b7a47a22}
+#private .panel,#private .utility-panel{border:1px solid #665c48;border-radius:3px;box-shadow:0 7px 20px #0005,inset 0 1px #b8a47b36;margin-bottom:12px}
+#private .panel:before,#private .panel:after,#private .utility-panel:before,#private .utility-panel:after{display:none}
+#private .panel-head{min-height:56px;padding:10px 15px;border-bottom:1px solid #6c614a66;background:linear-gradient(100deg,#152a38,#0a1a27)}
+#private .panel-head:has(.reference-scene){min-height:76px}
+#private .panel-head .reference-scene{opacity:.3}
+#private .panel-head .section-emblem{width:46px;height:46px}
+#private .panel-head h2{font-size:clamp(18px,3.5vw,23px)}
+#private .panel-body{padding:12px 15px}
+.workspace-nav{display:flex;justify-content:center;gap:0;padding:2px;margin:2px 0 12px;border:1px solid #776448;clip-path:none;box-shadow:inset 0 1px #b7a17a44;background:linear-gradient(#1b2a33,#07131e)}
+.workspace-nav a{min-height:46px;flex:1;max-width:300px;flex-direction:row;gap:9px;padding:5px 12px;font:clamp(12px,2.6vw,15px) Georgia,serif;border-right:1px solid #79684955}
+.workspace-nav .nav-emblem{width:34px;height:34px}
+.workspace-nav a[data-view="phxIdPanel"]{display:none!important}
+.workspace-nav a.active{box-shadow:inset 0 -2px #d9b16c;background:linear-gradient(#293b43,#12202b)}
+#phxIdPanel .lookup-intro{margin:0 0 9px;font-size:12px;line-height:1.4}
+#phxIdForm{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;align-items:center;margin:0}
+#phxIdForm label{font-size:12px}
+#phxIdForm input{min-height:42px;width:100%;font-size:16px}
+#phxIdForm button{min-height:42px;padding:8px 14px;white-space:nowrap}
+#phxIdPanel .lookup-help{margin:8px 0 0}
+#phxIdPanel .lookup-help:not([open]){padding:0;border:0}
+#phxIdPanel #phxIdStatus{margin:6px 0}
+#private .stage-actions{margin-bottom:6px;padding:4px 0}
+}
+@media(max-width:600px){
+main{padding:0 5px 24px}
+#private{padding:8px 8px 16px}
+.workspace-nav a{min-height:43px;padding:3px 7px}
+.workspace-nav .nav-emblem{width:29px;height:29px}
+#private .panel-head:has(.reference-scene){min-height:64px}
+#private .panel-head .section-emblem{width:39px;height:39px}
+#private .panel-body{padding:10px}
+#phxIdForm{grid-template-columns:1fr auto;gap:6px}
+#phxIdForm label{grid-column:1/-1}
+#phxIdForm button{font-size:12px;padding:7px 10px}
+#private .panel-head .reference-scene{opacity:.22}
+}
