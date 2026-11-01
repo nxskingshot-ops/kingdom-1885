@@ -1,3 +1,4 @@
+import { placeInAlliance } from './phx-transfer-alliance-placement-20261101.js';
 import { assessAccount } from './phx-transfer-account-assessment-20261101.js';
 import { candidateFromLookup, duplicateLookupFilter } from './transfer-id-candidate-20261030.js';
 import { forecast as phxTransferForecast, transferStatus as phxTransferStatus } from './phx-transfer-forecast-20261101.js';
@@ -411,7 +412,18 @@ phxIdForm.addEventListener('submit',async e=>{
   if(!response.ok)throw Error(playerLookupError(response.status));
   const payload=await response.json();if($('phxGovernorId').value.trim()!==id){phxIdStatus.textContent='Kingshot Player ID changed. Load player data again.';return;}if(payload.ok!==true||String(payload.governorId)!==id)throw Error('Player identity could not be confirmed.');const p=payload.player||{};$('phxReview').hidden=false;
   const identity=document.createElement('div');identity.className='player-identity';identity.textContent=[p.name||p.playerName||p.player_name,p.alliance,'#'+p.kingdom].filter(Boolean).join(' · ');phxIdResult.append(identity);phxField('Kingshot Player ID',id);
-  const headline=document.createElement('div');headline.className='headline-metrics';renderHeadlineMetrics(headline,{player:p,source_cached_at:payload.source?.cachedAt,ranks:payload.ranks},{});phxIdResult.append(headline);const assessment=assessAccount(p,playerRankingMap(payload.ranks?.values));const accountNote=document.createElement('div');accountNote.className='smallprint';accountNote.setAttribute('role','note');accountNote.textContent=assessment.headline+' — '+assessment.detail+' Battle role: '+assessment.battleRole+'. Top 15: '+assessment.top15Placement+'.';phxIdResult.append(accountNote);
+  const headline=document.createElement('div');headline.className='headline-metrics';renderHeadlineMetrics(headline,{player:p,source_cached_at:payload.source?.cachedAt,ranks:payload.ranks},{});phxIdResult.append(headline);const assessment=assessAccount(p,playerRankingMap(payload.ranks?.values));const accountNote=document.createElement('div');accountNote.className='smallprint';accountNote.setAttribute('role','note');accountNote.textContent=assessment.headline+' — '+assessment.detail+' Battle role: '+assessment.battleRole+'. Top 15: '+assessment.top15Placement+'.';phxIdResult.append(accountNote);const rosterNote=document.createElement('div');rosterNote.className='smallprint';rosterNote.textContent='NXS historical placement: checking accessible roster…';phxIdResult.append(rosterNote);
+  const rawPower=p.power??p.totalPower??p.total_power;
+  if(rawPower==null||rawPower===''){rosterNote.textContent='NXS placement: total player power unavailable; no estimate.';}
+  else {
+   const rosterRead=await db.from('phalanx_alliance_players').select('power,snapshot_date').eq('kingdom',1885).eq('alliance','NXS').order('snapshot_date',{ascending:false}).limit(100);
+   if(rosterRead.error){rosterNote.textContent='NXS placement unavailable: roster access not confirmed.';}
+   else {
+    const rows=rosterRead.data||[],date=rows[0]?.snapshot_date;
+    const placement=placeInAlliance(rawPower,rows.filter(x=>x.snapshot_date===date),date);
+    rosterNote.textContent=placement.status==='HISTORICAL_POWER_PLACEMENT'?'NXS historical Total Power placement: #'+placement.rankMin+(placement.rankMax!==placement.rankMin?'–'+placement.rankMax:'')+' among '+placement.rosterSize+' recorded players (snapshot '+date+'). '+placement.note:'NXS placement unavailable: '+placement.status+'.';
+   }
+  }
   const all=document.createElement('details'),allSummary=document.createElement('summary'),allBody=document.createElement('div');all.className='complete-rankings';allSummary.textContent='All rankings ('+Object.keys(playerRankingMap(payload.ranks?.values)).length+')';all.append(allSummary,allBody);appendRankingEntries(allBody,payload.ranks?.values,'');phxIdResult.append(all);
   const arenaDetail=document.createElement('details'),arenaSummary=document.createElement('summary');arenaDetail.className='arena-details';arenaSummary.textContent='Arena Squad ('+(payload.arenaSquad?.heroes||[]).length+') · '+formatPlayerSection(payload.arenaSquad?.status);arenaDetail.append(arenaSummary,arenaList(payload.arenaSquad?.heroes||[]));phxIdResult.append(arenaDetail);
   const provenance=document.createElement('details'),provenanceSummary=document.createElement('summary');provenance.className='lookup-provenance';provenanceSummary.textContent='Sources & lookup time';provenance.append(provenanceSummary);phxIdResult.append(provenance);provenance.append(phxField('Data source','Kingshot player data'),phxField('Source captured (UTC)',formatPlayerUtc(payload.source?.cachedAt)),phxField('Lookup time (UTC)',formatPlayerUtc(payload.checkedAtUtc)));
