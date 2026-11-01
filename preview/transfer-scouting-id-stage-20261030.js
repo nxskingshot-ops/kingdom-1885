@@ -415,8 +415,16 @@ phxIdForm.addEventListener('submit',async e=>{
   let response;try{response=await fetch(endpoint,{headers:{Authorization:'Bearer '+session.access_token,apikey:KEY},signal:controller.signal,cache:'no-store'});}finally{clearTimeout(timeout);}
   if(!response.ok)throw Error(playerLookupError(response.status));
   const payload=await response.json();if($('phxGovernorId').value.trim()!==id){phxIdStatus.textContent='Kingshot Player ID changed. Load player data again.';return;}if(payload.ok!==true||String(payload.governorId)!==id)throw Error('Player identity could not be confirmed.');const p=payload.player||{};$('phxReview').hidden=false;
-  const identity=document.createElement('div');identity.className='player-identity';identity.textContent=[p.name||p.playerName||p.player_name,p.alliance,'#'+p.kingdom].filter(Boolean).join(' · ');identity.classList.add('phx-player-hero');phxIdResult.append(identity);phxField('Kingshot Player ID',id);
-  const headline=document.createElement('div');headline.className='headline-metrics';renderHeadlineMetrics(headline,{player:p,source_cached_at:payload.source?.cachedAt,ranks:payload.ranks},{});phxIdResult.append(headline);
+  const identity=document.createElement('div');identity.className='player-identity';identity.textContent=[p.name||p.playerName||p.player_name,p.alliance,'#'+p.kingdom].filter(Boolean).join(' · ');identity.classList.add('phx-player-hero');
+  const name=document.createElement('div');name.className='phx-hero-name';name.textContent=p.name||p.playerName||p.player_name||'Unknown player';
+  const castleValue=playerSummaryMetrics(payload.ranks?.values,{power:p.power,captured_at:payload.source?.cachedAt}).find(m=>m.key==='castle');
+  const castle=document.createElement('div');castle.className='phx-hero-castle';castle.textContent=castleValue?.text&&castleValue.text!=='Not available'?'✦ '+castleValue.text+' ✦':'Castle: nicht verfügbar';
+  const sub=document.createElement('div');sub.className='phx-hero-meta';sub.textContent=[p.alliance,'Kingdom #'+p.kingdom,'ID '+id].filter(Boolean).join(' · ');
+  identity.replaceChildren(name,castle,sub);phxIdResult.append(identity);
+  const headline=document.createElement('div');headline.className='headline-metrics';renderHeadlineMetrics(headline,{player:p,source_cached_at:payload.source?.cachedAt,ranks:payload.ranks},{});
+  // Full metric data remains available in the ranking and evidence sections.
+  for(const key of ['master_power','pet_power','hero_total','castle'])headline.querySelector('[data-metric="'+key+'"]')?.remove();
+  phxIdResult.append(headline);
   const assessment=assessAccount(p,playerRankingMap(payload.ranks?.values));
   mountStrategicProfile(phxIdResult,playerRankingMap(payload.ranks?.values));
   mountEventRoles(phxIdResult,playerRankingMap(payload.ranks?.values),p);
