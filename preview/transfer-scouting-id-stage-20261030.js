@@ -468,7 +468,7 @@ phxIdForm.addEventListener('submit',async e=>{
   const caution=document.createElement('p');caution.className='phx-scout-muted';caution.textContent='Rankings describe available account development, not proven rally leadership, garrison performance or KvK outcomes.';accountNote.append(caution);
   identity.style.order='-5';accountNote.style.order='-4';headline.style.order='-3';
   const detail=document.createElement('details');detail.className='phx-scout-deep-dive';const detailLabel=document.createElement('summary');detailLabel.textContent='Ausführliche Bewertung und Nachweise';detail.append(detailLabel);while(accountNote.children.length>3)detail.append(accountNote.children[3]);accountNote.append(detail);
-  const placementSection=makeSection('Alliance placement','Historical Total Power comparison · not live combat strength');
+  const placementSection=makeSection('Allianzvergleich','Historischer Gesamtstärke-Vergleich · keine aktuelle Kampfstärke');
   const rosterNote=document.createElement('p');rosterNote.className='phx-scout-placement';rosterNote.setAttribute('aria-live','polite');rosterNote.textContent='Checking available alliance rosters…';placementSection.append(rosterNote);
   const rolesSection=makeSection('Mögliche Allianzrolle','Kampfrollen lassen sich ohne vergleichbare Kampfberichte nicht sicher bewerten.');
   const roleGrid=document.createElement('div');roleGrid.className='phx-scout-roles';
