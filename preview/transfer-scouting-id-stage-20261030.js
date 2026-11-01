@@ -468,7 +468,7 @@ phxIdForm.addEventListener('submit',async e=>{
   const strengths=document.createElement('p');strengths.className='phx-scout-muted';strengths.textContent=rankEvidence.length?'Best documented category: '+rankEvidence[0].key.replaceAll('_',' ')+' · kingdom #'+rankEvidence[0].rank+'.':'No documented ranking strength yet.';accountNote.append(strengths);
   const gaps=document.createElement('p');gaps.className='phx-scout-muted';gaps.textContent='Unverified: actual KvK performance, rally and garrison suitability. Missing evidence is not a proven weakness.';accountNote.append(gaps);
   const caution=document.createElement('p');caution.className='phx-scout-muted';caution.textContent='Rankings describe available account development, not proven rally leadership, garrison performance or KvK outcomes.';accountNote.append(caution);
-  identity.style.order='-5';accountNote.style.order='-4';headline.style.order='-3';
+  identity.style.order='-6';headline.style.order='-5';accountNote.style.order='-4';
   const detail=document.createElement('details');detail.className='phx-scout-deep-dive';const detailLabel=document.createElement('summary');detailLabel.textContent='Detailed assessment & evidence';detail.append(detailLabel);while(accountNote.children.length>3)detail.append(accountNote.children[3]);accountNote.append(detail);
   const placementSection=makeSection('Alliance Placement','Historical Total Power comparison · not live combat strength');
   const rosterNote=document.createElement('p');rosterNote.className='phx-scout-placement';rosterNote.setAttribute('aria-live','polite');rosterNote.textContent='Checking available alliance rosters…';placementSection.append(rosterNote);
