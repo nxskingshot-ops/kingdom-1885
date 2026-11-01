@@ -20,7 +20,7 @@ export function mountStrategicProfile(target,rankings={}){
   const fill=document.createElement('div');fill.className='phx-intel-fill';fill.style.width=Math.max(1,101-Math.min(100,item.rank))+'%';track.append(fill);row.append(track);section.append(row);
  }
  const pet=report.rows.find(x=>x.key==='pet_power');if(pet&&pet.rank>10){const note=document.createElement('p');note.className='phx-scout-muted';note.textContent='Pet Power #'+pet.rank+': resource saving for KvK Prep is possible, but unverified. This rank alone is not evidence of poor battle readiness.';section.append(note);}
- const sub=document.createElement('h4');sub.textContent='Strategic Account Assessment';section.append(sub);
+
  const paragraph=(label,items,kind,explanation)=>{
   if(!items.length)return;
   const p=document.createElement('p'),strong=document.createElement('strong');strong.className='phx-intel-'+kind;strong.textContent=label+': ';p.append(strong,document.createTextNode(items.map(x=>x.label+' (#'+x.rank+')').join(', ')+'. '+explanation));section.append(p);
