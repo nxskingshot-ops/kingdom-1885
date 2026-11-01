@@ -517,7 +517,7 @@ phxIdForm.addEventListener('submit',async e=>{
   const provenance=document.createElement('details'),provenanceSummary=document.createElement('summary');provenance.className='lookup-provenance';provenanceSummary.textContent='Sources & lookup time';provenance.append(provenanceSummary);phxIdResult.append(provenance);provenance.append(phxField('Data source','Kingshot player data'),phxField('Source captured (UTC)',formatPlayerUtc(payload.source?.cachedAt)),phxField('Lookup time (UTC)',formatPlayerUtc(payload.checkedAtUtc)));
   setPhxLookupState('success','✓ Player data loaded successfully. Review the details before adding this player to Candidates.');
   offerLookupCandidate(payload,id);
- }catch(error){setPhxLookupState('error',error.name==='AbortError'?'The lookup timed out. Please try again later.':error instanceof TypeError?'Connection interrupted. Check your internet connection.':error.message);}
+ }catch(error){setPhxLookupState('error',error.name==='AbortError'?'The lookup timed out. Please try again later.':error instanceof TypeError?'Spielerabfrage nicht erreichbar. Bitte die Freigabe der Testadresse (CORS), Anmeldung und API-Verbindung prüfen; deine Internetverbindung ist nicht zwingend die Ursache.':error.message);}
  finally{button.disabled=false;}
 });
 
