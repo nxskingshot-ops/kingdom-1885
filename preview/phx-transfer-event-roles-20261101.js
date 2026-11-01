@@ -2,6 +2,8 @@
 export function evaluateEventRoles(rankings={},player={},context={}){
  const entries=Object.entries(rankings||{}).map(([key,value])=>({key,rank:value?.kingdom_rank==null?NaN:Number(value.kingdom_rank)})).filter(x=>Number.isInteger(x.rank)&&x.rank>0);
  const top15=entries.filter(x=>x.rank<=15);
+ const getRank=key=>entries.find(x=>x.key===key)?.rank??null;
+ const roleSignals={rallyLeader:[getRank('hero_equip'),getRank('hero_total'),getRank('master_power')],rallyJoiner:[getRank('troop_power'),getRank('research_power')],garrisonHolder:[getRank('troop_power'),getRank('gov_gear'),getRank('gov_charm')],kvkFrontline:[getRank('troop_power'),getRank('research_power'),getRank('master_power')]};
  const leadership=top15.length>=2?'Multiple Top-15 category rankings: investigate kingdom leadership suitability':'Insufficient category evidence for leadership prioritization';
  const troopTier=context.verifiedTroopTier==null?null:Number(context.verifiedTroopTier);
  const joiner=Number.isInteger(troopTier)&&troopTier>=4&&context.troopEvidenceVerified===true?'Verified troop tier supports Rally Joiner suitability review':'Rally Joiner suitability unverified: independently confirmed troop tier missing';
