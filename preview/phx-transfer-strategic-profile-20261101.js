@@ -28,7 +28,7 @@ export function mountStrategicProfile(target,rankings={}){
 
 
 
- const conclusion=document.createElement('p');conclusion.textContent=report.strengths.length>=3?'Multiple categories rank in the Kingdom Top 10, indicating a broad development profile. ':'Available rankings do not establish a broad elite profile. ';
+ const conclusion=document.createElement('p');conclusion.textContent='Ranking positions are relative kingdom placements, not verified combat results.';
  section.append(conclusion);
  const missing=document.createElement('p');missing.className='phx-scout-muted';missing.textContent='Not assessed: '+(report.missing.join(', ')||'none of these categories')+'.';section.append(missing);
  const details=document.createElement('details');details.className='phx-intel-evidence';
