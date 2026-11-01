@@ -115,3 +115,11 @@ html,body{background:#020d17;color:#e9dec7}body{background-image:radial-gradient
  body:has(#private[hidden]) #login .panel-head h2{padding:13px 8px 12px!important}
 }
 
+
+/* PHX mobile safe layout: preserve original components, prevent calculator overflow. */
+#workspace-tools .phx-tools-scenario{margin:0 0 18px!important;padding:clamp(12px,3vw,20px)!important;max-width:100%;min-width:0;box-sizing:border-box;overflow-wrap:anywhere}
+#workspace-tools .phx-tools-scenario .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:100%}
+#workspace-tools .phx-tools-scenario .form-grid>label{display:block;min-width:0;max-width:100%;overflow-wrap:anywhere}
+#workspace-tools .phx-tools-scenario input:not([type=checkbox]){display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box}
+#workspace-tools .phx-tools-scenario input[type=checkbox]{width:auto;max-width:100%}
+@media(max-width:760px){#workspace-tools .phx-tools-scenario .form-grid{grid-template-columns:minmax(0,1fr)}#workspace-tools .phx-tools-scenario button{max-width:100%;white-space:normal}}
