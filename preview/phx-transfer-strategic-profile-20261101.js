@@ -25,7 +25,7 @@ export function mountStrategicProfile(target,rankings={}){
   if(!items.length)return;
   const p=document.createElement('p'),strong=document.createElement('strong');strong.className='phx-intel-'+kind;strong.textContent=label+': ';p.append(strong,document.createTextNode(items.map(x=>x.label+' (#'+x.rank+')').join(', ')+'. '+explanation));section.append(p);
  };
- paragraph('Documented strengths',report.strengths,'good','These are strong relative kingdom placements, not verified combat outcomes.');
+
  paragraph('Development opportunities',report.developing,'developing','These placements trail the Top-10 categories but do not alone prove an account deficit.');
  paragraph('Relative ranking gaps',report.gaps,'gap','Investigate the cause before interpreting these as weaknesses in battle.');
  const conclusion=document.createElement('p');conclusion.textContent=report.strengths.length>=3?'Multiple categories rank in the Kingdom Top 10, indicating a broad development profile. ':'Available rankings do not establish a broad elite profile. ';
