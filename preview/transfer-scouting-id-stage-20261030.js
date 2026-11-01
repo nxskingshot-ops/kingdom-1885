@@ -472,7 +472,7 @@ phxIdForm.addEventListener('submit',async e=>{
   const detail=document.createElement('details');detail.className='phx-scout-deep-dive';const detailLabel=document.createElement('summary');detailLabel.textContent='Detailed assessment & evidence';detail.append(detailLabel);while(accountNote.children.length>3)detail.append(accountNote.children[3]);accountNote.append(detail);
   const placementSection=makeSection('Alliance Placement','Historical Total Power comparison · not live combat strength');
   const rosterNote=document.createElement('p');rosterNote.className='phx-scout-placement';rosterNote.setAttribute('aria-live','polite');rosterNote.textContent='Checking available alliance rosters…';placementSection.append(rosterNote);
-  const rolesSection=makeSection('Potential Alliance Role','Indicative suitability, not verified battle performance.');
+  const rolesSection=makeSection('Potential Alliance Role','Indicative suitability, not verified battle performance.');rolesSection.hidden=true;
   const roleGrid=document.createElement('div');roleGrid.className='phx-scout-roles';
   for(const role of ['Rally Leader','Rally Joiner','Garrison Holder','KvK Fighter']){const cell=document.createElement('div');const name=document.createElement('strong');name.textContent=role;const status=document.createElement('span');status.textContent=['whale','mega_whale','orca','orca_elite'].includes(seaWorld.tier)?'Priority candidate · combat evidence pending':'Combat evidence pending';cell.append(name,status);roleGrid.append(cell);}rolesSection.append(roleGrid);
   if(!document.getElementById('phx-scout-layout-style')){const style=document.createElement('style');style.id='phx-scout-layout-style';style.textContent=`
