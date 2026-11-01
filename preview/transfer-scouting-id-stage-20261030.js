@@ -415,7 +415,7 @@ phxIdForm.addEventListener('submit',async e=>{
   let response;try{response=await fetch(endpoint,{headers:{Authorization:'Bearer '+session.access_token,apikey:KEY},signal:controller.signal,cache:'no-store'});}finally{clearTimeout(timeout);}
   if(!response.ok)throw Error(playerLookupError(response.status));
   const payload=await response.json();if($('phxGovernorId').value.trim()!==id){phxIdStatus.textContent='Kingshot Player ID changed. Load player data again.';return;}if(payload.ok!==true||String(payload.governorId)!==id)throw Error('Player identity could not be confirmed.');const p=payload.player||{};$('phxReview').hidden=false;
-  const identity=document.createElement('div');identity.className='player-identity';identity.textContent=[p.name||p.playerName||p.player_name,p.alliance,'#'+p.kingdom].filter(Boolean).join(' · ');phxIdResult.append(identity);phxField('Kingshot Player ID',id);
+  const identity=document.createElement('div');identity.className='player-identity';identity.textContent=[p.name||p.playerName||p.player_name,p.alliance,'#'+p.kingdom].filter(Boolean).join(' · ');identity.classList.add('phx-player-hero');phxIdResult.append(identity);phxField('Kingshot Player ID',id);
   const headline=document.createElement('div');headline.className='headline-metrics';renderHeadlineMetrics(headline,{player:p,source_cached_at:payload.source?.cachedAt,ranks:payload.ranks},{});phxIdResult.append(headline);
   const assessment=assessAccount(p,playerRankingMap(payload.ranks?.values));
   mountStrategicProfile(phxIdResult,playerRankingMap(payload.ranks?.values));
@@ -425,6 +425,7 @@ phxIdForm.addEventListener('submit',async e=>{
   const combatEvidence=classifyCombatProfile(p,playerRankingMap(payload.ranks?.values));
   const accountNote=makeSection('PHALANX Scout Verdict','Evidence-based account overview · combat roles not yet verified');accountNote.classList.add('phx-verdict-card');
   const seaWorld=seaWorldVerdict(p);
+  const rating=document.createElement('div');rating.className='phx-sea-rating';rating.setAttribute('aria-label','SEA WORLD V2: Bewertung ausstehend');rating.textContent='☆☆☆☆☆  ·  SEA WORLD V2 – Bewertung ausstehend';accountNote.prepend(rating);
   const seaWorldNote=document.createElement('p');seaWorldNote.className='phx-scout-muted';seaWorldNote.textContent='SEA WORLD V2 · '+seaWorld.status.replaceAll('_',' ')+' · '+seaWorld.detail;accountNote.append(seaWorldNote);
   const summaryTitle=document.createElement('strong');summaryTitle.className='phx-scout-verdict';summaryTitle.textContent=rankEvidence.length>=10?'Broad documented ranking profile':rankEvidence.length?'Partial ranking profile':'Insufficient ranking evidence';accountNote.append(summaryTitle);
   const combatNote=document.createElement('p');combatNote.className='phx-scout-muted';
@@ -443,7 +444,8 @@ phxIdForm.addEventListener('submit',async e=>{
   const strengths=document.createElement('p');strengths.className='phx-scout-muted';strengths.textContent=rankEvidence.length?'Best documented category: '+rankEvidence[0].key.replaceAll('_',' ')+' · kingdom #'+rankEvidence[0].rank+'.':'No documented ranking strength yet.';accountNote.append(strengths);
   const gaps=document.createElement('p');gaps.className='phx-scout-muted';gaps.textContent='Unverified: actual KvK performance, rally and garrison suitability. Missing evidence is not a proven weakness.';accountNote.append(gaps);
   const caution=document.createElement('p');caution.className='phx-scout-muted';caution.textContent='Rankings describe available account development, not proven rally leadership, garrison performance or KvK outcomes.';accountNote.append(caution);
-  accountNote.style.order='-2';headline.style.order='-1';
+  identity.style.order='-5';accountNote.style.order='-4';headline.style.order='-3';
+  const detail=document.createElement('details');detail.className='phx-scout-deep-dive';const detailLabel=document.createElement('summary');detailLabel.textContent='Ausführliche Bewertung und Nachweise';detail.append(detailLabel);while(accountNote.children.length>3)detail.append(accountNote.children[3]);accountNote.append(detail);
   const placementSection=makeSection('Alliance placement','Historical Total Power comparison · not live combat strength');
   const rosterNote=document.createElement('p');rosterNote.className='phx-scout-placement';rosterNote.setAttribute('aria-live','polite');rosterNote.textContent='Checking available alliance rosters…';placementSection.append(rosterNote);
   const rolesSection=makeSection('Potential alliance role','Role assessment requires comparable battle evidence.');
