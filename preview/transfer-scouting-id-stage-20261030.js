@@ -432,8 +432,15 @@ phxIdForm.addEventListener('submit',async e=>{
   const rankEvidence=[...assessment.rankingEvidence].sort((a,b)=>a.rank-b.rank);
   const combatEvidence=classifyCombatProfile(p,playerRankingMap(payload.ranks?.values));
   const accountNote=makeSection('PHALANX Scout Verdict','Evidence-based account overview · combat roles not yet verified');accountNote.classList.add('phx-verdict-card');
-  const seaWorld=seaWorldVerdict(p);
-  const rating=document.createElement('div');rating.className='phx-sea-rating';rating.setAttribute('aria-label','SEA WORLD V2: Bewertung ausstehend');rating.textContent='☆☆☆☆☆  ·  SEA WORLD V2 – Bewertung ausstehend';accountNote.prepend(rating);
+  const seaMap=playerRankingMap(payload.ranks?.values);
+  const seaRanks={};
+  for(const key of ['mystic_trial','hero_total','hero_equip','gov_gear','gov_charm','master_power','pet_power','research_power']){
+   const n=Number(seaMap[key]?.kingdom_rank);
+   if(seaMap[key]?.kingdom_rank!=null&&Number.isInteger(n)&&n>=1&&n<=100)seaRanks[key]=n;
+  }
+  const trueMetric=playerSummaryMetrics(payload.ranks?.values,{power:p.power,captured_at:payload.source?.cachedAt}).find(m=>m.key==='true_power');
+  const seaWorld=seaWorldVerdict(p,{scope:'top25_provisional',ranks:seaRanks,truePower:trueMetric?.calculated?trueMetric.value:null});
+  const rating=document.createElement('div');rating.className='phx-sea-rating';rating.setAttribute('aria-label','SEA WORLD V2: vorläufige Bewertung');rating.textContent=(seaWorld.stars||'☆☆☆☆☆')+' · SEA WORLD V2 · '+(seaWorld.stars?'VORLÄUFIG':'Einstufung unsicher')+' · Datenabdeckung '+seaWorld.coveragePct+'%';accountNote.prepend(rating);
   const seaWorldNote=document.createElement('p');seaWorldNote.className='phx-scout-muted';seaWorldNote.textContent='SEA WORLD V2 · '+seaWorld.status.replaceAll('_',' ')+' · '+seaWorld.detail;accountNote.append(seaWorldNote);
   const summaryTitle=document.createElement('strong');summaryTitle.className='phx-scout-verdict';summaryTitle.textContent=rankEvidence.length>=10?'Broad documented ranking profile':rankEvidence.length?'Partial ranking profile':'Insufficient ranking evidence';accountNote.append(summaryTitle);
   const combatNote=document.createElement('p');combatNote.className='phx-scout-muted';
