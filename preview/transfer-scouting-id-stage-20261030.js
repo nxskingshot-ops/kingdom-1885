@@ -1,5 +1,6 @@
 import { placeInAlliance } from './phx-transfer-alliance-placement-20261101.js';
 import { assessAccount, classifyCombatProfile } from './phx-transfer-account-assessment-20261101.js';
+import { seaWorldVerdict } from './phx-sea-world-v2-gate-20261101.js';
 import { mountStrategicProfile } from './phx-transfer-strategic-profile-20261101.js';
 import { mountEventRoles } from './phx-transfer-event-roles-20261101.js';
 import { candidateFromLookup, duplicateLookupFilter } from './transfer-id-candidate-20261030.js';
@@ -423,6 +424,8 @@ phxIdForm.addEventListener('submit',async e=>{
   const rankEvidence=[...assessment.rankingEvidence].sort((a,b)=>a.rank-b.rank);
   const combatEvidence=classifyCombatProfile(p,playerRankingMap(payload.ranks?.values));
   const accountNote=makeSection('PHALANX Scout Verdict','Evidence-based account overview · combat roles not yet verified');accountNote.classList.add('phx-verdict-card');
+  const seaWorld=seaWorldVerdict(p);
+  const seaWorldNote=document.createElement('p');seaWorldNote.className='phx-scout-muted';seaWorldNote.textContent='SEA WORLD V2 · '+seaWorld.status.replaceAll('_',' ')+' · '+seaWorld.detail;accountNote.append(seaWorldNote);
   const summaryTitle=document.createElement('strong');summaryTitle.className='phx-scout-verdict';summaryTitle.textContent=rankEvidence.length>=10?'Broad documented ranking profile':rankEvidence.length?'Partial ranking profile':'Insufficient ranking evidence';accountNote.append(summaryTitle);
   const combatNote=document.createElement('p');combatNote.className='phx-scout-muted';
   combatNote.textContent='KvK-style evidence check: '+combatEvidence.profile+' · '+combatEvidence.coverage+' comparable category rankings. '+combatEvidence.roleAssessment+'.';
