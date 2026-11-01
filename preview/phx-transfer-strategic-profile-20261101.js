@@ -27,7 +27,7 @@ export function mountStrategicProfile(target,rankings={}){
  };
 
 
- paragraph('Relative ranking gaps',report.gaps,'gap','Investigate the cause before interpreting these as weaknesses in battle.');
+
  const conclusion=document.createElement('p');conclusion.textContent=report.strengths.length>=3?'Multiple categories rank in the Kingdom Top 10, indicating a broad development profile. ':'Available rankings do not establish a broad elite profile. ';
  conclusion.append(document.createTextNode('Rally Leader, Joiner, Garrison Holder and Fighter roles require battle reports, formations and buffs; no role is verified from rankings alone.'));section.append(conclusion);
  const missing=document.createElement('p');missing.className='phx-scout-muted';missing.textContent='Not assessed: '+(report.missing.join(', ')||'none of these categories')+'.';section.append(missing);
