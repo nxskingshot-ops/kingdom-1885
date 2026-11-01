@@ -58,3 +58,11 @@ Read-only SQL evidence collected during this session; no database rows modified.
 - Latest snapshots for all ten inspected boards have the same source_captured_at: 2026-11-01 00:31:29.925 UTC. This supports synchronized board timestamps, but individual entries and source-run identity should still be checked before certifying paired True Power.
 - Remaining seven of the 56 lack a verified Total/Troop pair in the inspected board snapshots. Do not invent True Power.
 - Candidate status: 49 for further scoring and uncertainty audit, not yet a final calibration cohort. Tier thresholds and baseline remain unchanged; no FREEZE.
+
+## Weighted cohort diagnostic — coherent run 235
+- One coherent run_id=235 contains 16 boards at source timestamp 2026-11-01 00:31:29.925 UTC; chosen for this diagnostic.
+- 56 eligible players (>=6 of eight weighted rank boards); 49 have paired personal_power and troop_power values with nonnegative difference.
+- Across 56, observed rank-only weighted contribution: mean 53.71, minimum 18.93, maximum 89.75 points (out of 90 possible rank points).
+- Mean observed rank weight 80.31 / 90. These values are partial contributions, **not final total scores or calibrated star thresholds**.
+- Across 49 paired players, mean Total Power minus Troop Power = 78,149,334 (True Power proxy). Source is same run 235, but formula/semantics require verification against actual app data.
+- Next: per-player score interval with True Power normalization, tier stability, baseline outlier sensitivity, and reference account spot checks; do not freeze thresholds before these checks.
