@@ -126,3 +126,26 @@ test('Mystic assessment shows six categories without inferring ranks or power fo
  assert.equal(x.$('dossierContent').querySelectorAll('.trial-balance>div').length,6);
  assert.match(x.$('dossierContent').textContent,/Coverage 0\/6/);assert.match(x.$('dossierContent').textContent,/not official Mystic Power/);assert.equal(x.writes(),0);x.dom.window.close();
 });
+
+test('roster search and alliance filter preserve UID selection, including zero matches and duplicate names',async()=>{
+ const x=await setup(),{$}=x;
+ x.run(`internalPlayers=[{uid:'a',player_name:'Same Name',alliance_tag:'NXS',governor_id:'101'},{uid:'b',player_name:'Same Name',alliance_tag:'FRA',governor_id:'102'},{uid:'c',player_name:'Long <img onerror=bad> Name',alliance_tag:'OoO',governor_id:'103'}];refreshInternalFilters();renderInternalChoices('a');`);
+ assert.equal($('internalGovernor').options.length,3);assert.equal($('internalGovernor').value,'a');
+ $('internalAlliance').value='FRA';$('internalAlliance').onchange();assert.equal($('internalGovernor').options.length,2);assert.equal($('internalGovernor').value,'a');assert.match($('internalFilterStatus').textContent,/1 matches.*Selected player kept/);
+ $('internalSearch').value='does not exist';$('internalSearch').oninput();assert.equal($('internalGovernor').options.length,1);assert.equal($('internalGovernor').value,'a');assert.match($('internalFilterStatus').textContent,/0 matches/);
+ $('internalAlliance').value='';$('internalSearch').value='103';$('internalSearch').oninput();assert.equal($('internalGovernor').options[1].value,'c');assert.match($('internalGovernor').textContent,/<img/);assert.equal($('internalGovernor').querySelectorAll('img').length,0);
+ $('internalSearch').value='';$('internalSearch').oninput();assert.equal($('internalGovernor').options.length,3);assert.equal(x.writes(),0);x.dom.window.close();
+});
+test('comparison interpretation compares measured values, never cross-kingdom rank positions',async()=>{
+ const x=await setup();const brief=x.run(`comparisonBrief({personal_power:{value:200,kingdom_rank:7},pet_power:{value:50,kingdom_rank:99},hero_total:{value:null}},{personal_power:{value:100,kingdom_rank:1},pet_power:{value:100,kingdom_rank:1},hero_total:{value:200}})`);
+ assert.equal(brief.count,2);assert.equal(brief.higher[0].key,'personal_power');assert.equal(brief.lower[0].key,'pet_power');assert.match(brief.text,/Total Power \+100.0%/);assert.match(brief.text,/Lower values: Pet Power/);
+ assert.equal(x.run(`comparisonBrief({pet_power:{value:null}},{pet_power:{value:0}}).count`),0);assert.equal(x.writes(),0);x.dom.window.close();
+});
+test('dense comparison retains exact values and ranks in closed per-cell disclosures',async()=>{
+ const x=await setup();x.run(`currentEvidence.set('101',{ranks:{values:{leaderboards:[{name:'pet_power',value:12345678,kingdom_rank:7,captured_at:'2026-11-01T00:00:00Z'}]}}});internalPlayers=[{uid:'d',player_name:'Synthetic Other',rankings:{pet_power:{value:9876543,kingdom_rank:1}}}];refreshInternalFilters();renderInternalChoices('d');renderExternalIntel();`);
+ const table=x.$('externalIntelResult').querySelector('.ranking-comparison'),row=[...table.tBodies[0].rows].find(r=>r.cells[0].textContent==='Pet Power');
+ assert.equal(table.tHead.rows[0].cells.length,3);assert.equal(row.querySelector('.ranking-value').textContent,'12.35 M');assert.match(row.cells[1].querySelector('details').textContent,/12,345,678.*rank: 7/);assert.equal(row.querySelectorAll('details[open]').length,0);assert.equal(row.querySelectorAll('.ranking-rank').length,0);
+ assert.equal(x.$('externalIntelResult').querySelector('.comparison-method').open,false);assert.equal(x.writes(),0);x.dom.window.close();
+});
+
+test('manual ID entry is accessible behind a closed disclosure without losing its form',async()=>{const x=await setup();const details=x.$('internalIdForm').closest('details');assert.ok(details);assert.equal(details.className,'internal-id-details');assert.equal(details.open,false);details.open=true;assert.equal(x.$('internalPlayerId').closest('form').id,'internalIdForm');x.dom.window.close();});
