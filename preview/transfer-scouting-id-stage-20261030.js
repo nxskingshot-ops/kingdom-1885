@@ -431,7 +431,7 @@ phxIdForm.addEventListener('submit',async e=>{
   const makeSection=(heading,description)=>{const section=document.createElement('section');section.className='phx-scout-section';const h=document.createElement('h4');h.textContent=heading;section.append(h);if(description){const p=document.createElement('p');p.className='phx-scout-muted';p.textContent=description;section.append(p);}phxIdResult.append(section);return section;};
   const rankEvidence=[...assessment.rankingEvidence].sort((a,b)=>a.rank-b.rank);
   const combatEvidence=classifyCombatProfile(p,playerRankingMap(payload.ranks?.values));
-  const accountNote=makeSection('PHALANX Scout Verdict','Evidence-based account overview · combat roles not yet verified');accountNote.classList.add('phx-verdict-card');
+  const accountNote=makeSection('PHALANX Accountbewertung','Datenbasierte Einschätzung · Kampfrollen noch nicht bestätigt');accountNote.classList.add('phx-verdict-card');
   const seaMap=playerRankingMap(payload.ranks?.values);
   const seaRanks={};
   for(const key of ['mystic_trial','hero_total','hero_equip','gov_gear','gov_charm','master_power','pet_power','research_power']){
