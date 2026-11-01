@@ -79,3 +79,18 @@ main{padding:0 5px 24px}
 #phxIdResult .phx-alliance-row strong{color:#f0ce8b;font-size:14px}
 #phxIdResult .phx-alliance-row span{font-weight:700;color:#f3ddae;font-size:clamp(14px,3vw,18px)}
 #phxIdResult .phx-alliance-row small{font-size:11px;color:#aebfca;line-height:1.3}
+
+/* Evidence-based strategic profile: PHALANX mobile-first ranking bars. */
+.phx-intel-profile{color:#f1e4cf}
+.phx-intel-rank{margin:12px 0 18px}
+.phx-intel-rank-head{display:flex;justify-content:space-between;gap:10px;align-items:baseline;font-size:clamp(14px,2.8vw,21px);margin-bottom:9px}
+.phx-intel-rank-head b{white-space:nowrap}
+.phx-intel-track{height:12px;border-radius:999px;background:#35383d;overflow:hidden}
+.phx-intel-fill{height:100%;border-radius:999px;background:#3b986a}
+.phx-intel-rank[data-band=good] .phx-intel-rank-head b,.phx-intel-good{color:#68df9f}
+.phx-intel-rank[data-band=developing] .phx-intel-rank-head b,.phx-intel-developing{color:#f2b650}
+.phx-intel-rank[data-band=developing] .phx-intel-fill{background:#d39b42}
+.phx-intel-rank[data-band=gap] .phx-intel-rank-head b,.phx-intel-gap{color:#ef776e}
+.phx-intel-rank[data-band=gap] .phx-intel-fill{background:#bd5d4e}
+.phx-intel-profile p{line-height:1.65}
+@media(max-width:420px){.phx-intel-rank-head{font-size:13px}.phx-intel-track{height:10px}}
