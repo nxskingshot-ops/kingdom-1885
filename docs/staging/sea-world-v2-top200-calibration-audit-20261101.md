@@ -81,3 +81,9 @@ Read-only SQL evidence collected during this session; no database rows modified.
 - Provisional score bands: <55: 4 accounts; 55–<70: 4; 70–<85: 3; 85–<90: 2; >=90: 6. These are **not newly calibrated thresholds**; they are descriptive counts using existing boundaries.
 - Caveat: selection on complete Top-100 rank coverage strongly favors high-ranking players; 19 accounts are not representative of all Kingdom #1885 players or even the selected top 200.
 - No thresholds changed. Before freezing: compare percentile/threshold sensitivity and manually verify rank semantics and True Power normalization.
+
+## Wiederkehrender Scouting-Fehler – Pflichtprüfung vor Linkfreigabe (2026-11-01)
+- Befund: Die Edge Function `phalanx-transfer-id-snapshot-fallback-stage-20261031` verwendet eine explizite CORS-Origin-Allowlist. Neue zufällige Vercel-Deployment-Hosts fehlen darin und können Browser-Spielerabfragen blockieren. `READY` oder HTTP 200 für HTML beweisen keine funktionierende API.
+- Vor jeder Linkfreigabe: stabile, nur für Transfer Scouting vorgesehene URL und tatsächlichen Deployment-Commit ermitteln; Origin gegen Allowlist prüfen; Auth-Session und OPTIONS/GET mit autorisiertem Testkonto prüfen; gültige Spieler-ID im Browser laden; Android/Navigation/Regression dokumentieren.
+- Sicherheitsregel: Keine Wildcard-CORS, keine Abschaltung von JWT/Auth, keine produktive Domain-Umschaltung oder Änderung anderer Module ohne Freigabe. Keine Nutzer-/Spielerdaten überschreiben.
+- Aktueller Status: Browser-Abfrage FEHLGESCHLAGEN (Nutzerscreenshot); CORS-Mismatch zwischen neuem Deployment-Host und Allowlist im Quellcode bestätigt; sichere feste Scouting-URL und End-to-End-Test OFFEN.
