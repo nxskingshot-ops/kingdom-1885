@@ -98,3 +98,9 @@ main{padding:0 5px 24px}
 /* SEA WORLD mobile review correction: verdict must span the entire dossier grid. */
 #phxIdResult>.phx-verdict-card{grid-column:1/-1!important;width:100%!important;max-width:none!important;min-width:0!important;box-sizing:border-box!important}
 @media(max-width:600px){#phxIdResult>.phx-verdict-card{padding:12px!important}#phxIdResult>.phx-verdict-card .phx-scout-facts{grid-template-columns:repeat(2,minmax(0,1fr))!important}#phxIdResult>.phx-verdict-card .phx-scout-muted{max-width:100%;overflow-wrap:break-word}}
+
+/* PHALANX player identity: name, gold castle, provenance */
+#phxIdResult>.phx-player-hero{grid-column:1/-1!important;width:100%;box-sizing:border-box;text-align:center;padding:14px 8px;color:#e9c184}
+.phx-hero-name{font-family:Georgia,serif;font-size:clamp(32px,7vw,48px);font-weight:800;line-height:1.15;color:#f2c77b}
+.phx-hero-castle{font-size:clamp(20px,4.5vw,29px);font-weight:800;color:#f4c46b;margin:8px 0}
+.phx-hero-meta{font-size:clamp(13px,3vw,17px);color:#b9c7d1;font-weight:500}
