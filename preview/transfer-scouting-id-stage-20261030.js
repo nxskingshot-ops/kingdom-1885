@@ -1,5 +1,5 @@
 import { placeInAlliance } from './phx-transfer-alliance-placement-20261101.js';
-import { assessAccount } from './phx-transfer-account-assessment-20261101.js';
+import { assessAccount, classifyCombatProfile } from './phx-transfer-account-assessment-20261101.js';
 import { candidateFromLookup, duplicateLookupFilter } from './transfer-id-candidate-20261030.js';
 import { forecast as phxTransferForecast, transferStatus as phxTransferStatus } from './phx-transfer-forecast-20261101.js';
 import { mountRuleDraftEditor } from './phx-transfer-rules-editor-20261101.js';
@@ -417,8 +417,17 @@ phxIdForm.addEventListener('submit',async e=>{
   const assessment=assessAccount(p,playerRankingMap(payload.ranks?.values));
   const makeSection=(heading,description)=>{const section=document.createElement('section');section.className='phx-scout-section';const h=document.createElement('h4');h.textContent=heading;section.append(h);if(description){const p=document.createElement('p');p.className='phx-scout-muted';p.textContent=description;section.append(p);}phxIdResult.append(section);return section;};
   const rankEvidence=[...assessment.rankingEvidence].sort((a,b)=>a.rank-b.rank);
+  const combatEvidence=classifyCombatProfile(p,playerRankingMap(payload.ranks?.values));
   const accountNote=makeSection('PHALANX Scout Verdict','Evidence-based account overview · combat roles not yet verified');accountNote.classList.add('phx-verdict-card');
   const summaryTitle=document.createElement('strong');summaryTitle.className='phx-scout-verdict';summaryTitle.textContent=rankEvidence.length>=10?'Broad documented ranking profile':rankEvidence.length?'Partial ranking profile':'Insufficient ranking evidence';accountNote.append(summaryTitle);
+  const combatNote=document.createElement('p');combatNote.className='phx-scout-muted';
+  combatNote.textContent='KvK-style evidence check: '+combatEvidence.profile+' · '+combatEvidence.coverage+' comparable category rankings. '+combatEvidence.roleAssessment+'.';
+  accountNote.append(combatNote);
+  if(combatEvidence.documentedStrengths.length){
+   const combatStrengths=document.createElement('p');combatStrengths.className='phx-scout-muted';
+   combatStrengths.textContent='Documented Top-10 category placements: '+combatEvidence.documentedStrengths.join(' · ')+'.';
+   accountNote.append(combatStrengths);
+  }
   const summaryGrid=document.createElement('div');summaryGrid.className='phx-scout-facts';
   for(const [label,value] of [['Verified rankings',String(rankEvidence.length)],['Best kingdom rank',rankEvidence.length?'#'+rankEvidence[0].rank:'Not available']]){const cell=document.createElement('div');const k=document.createElement('span');k.textContent=label;const v=document.createElement('strong');v.textContent=value;cell.append(k,v);summaryGrid.append(cell);}
   accountNote.append(summaryGrid);
