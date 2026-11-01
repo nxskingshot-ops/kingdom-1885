@@ -19,5 +19,6 @@ export function mountEventRoles(target,rankings={},player={},context={}){
  for(const [title,detail] of [['Kingdom War Intelligence',data.kvk],['Alliance Event Intelligence',data.events],['Role Allocation',data.allocation],['Troop Evidence',data.joiner]]){
  const p=document.createElement('p');const strong=document.createElement('strong');strong.textContent=title+': ';p.append(strong,document.createTextNode(detail));section.append(p);
  }
+ const roleHint=document.createElement('p');roleHint.className='phx-scout-muted';roleHint.textContent='Role projections: Rally Leader needs verified rally buffs and battle reports; Rally Joiner needs verified troop tier and formations; Garrison Holder needs defense buffs and garrison reports; KvK Frontline needs troop depth and sustained combat evidence. Rankings alone cannot certify these roles.';section.append(roleHint);
  const note=document.createElement('p');note.className='phx-scout-muted';note.textContent='Evidence-based preliminary assessment; no battle role is certified. Same ranking data and rule version produce the same output.';section.append(note);target.append(section);return data;
 }
