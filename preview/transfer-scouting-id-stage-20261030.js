@@ -447,7 +447,12 @@ phxIdForm.addEventListener('submit',async e=>{
 
 // Native section links; existing dossiers keep their own Back navigation.
 /* V5 progressive workspace adapted to protected cloud IDs. Source: 55f372d. */
-let workspaceView='scoutingBoard',profileOpen=false;
+let workspaceView='phxIdPanel',profileOpen=false;
+// Preserve the existing transfer calculator, but place it under the established Tools view.
+const phxScenario=$('phxPowerScenario');
+const phxToolsBody=document.querySelector('#workspace-tools .tools-body');
+if(phxScenario&&phxToolsBody){phxScenario.classList.add('phx-tools-scenario');phxToolsBody.insertBefore(phxScenario,phxToolsBody.firstChild);}
+
 function syncWorkspace(){
  const total=players.length, candidateView=workspaceView==='scoutingBoard';
  $('private').classList.toggle('is-empty',!total);
@@ -473,7 +478,7 @@ $('closeProfile').onclick=()=>{profileOpen=false;syncWorkspace();};
 $('rows').addEventListener('click',e=>{if(e.target.closest('tr[data-id]')&&!e.target.closest('input,button')){profileOpen=true;syncWorkspace();}});
 $('rows').addEventListener('change',syncWorkspace);
 new MutationObserver(syncWorkspace).observe($('rows'),{childList:true});
-showWorkspace('scoutingBoard');
+showWorkspace('phxIdPanel');
 const advanced=document.createElement('details');advanced.className='advanced-fields';const summary=document.createElement('summary');summary.textContent='More details · Role, contact & development';advanced.append(summary);
 for(const label of [...$('candidateForm').querySelectorAll('.form-grid>label')]){if(!['player_name','kingdom'].includes(label.querySelector('[name]')?.name))advanced.append(label);}
 advanced.append($('candidateForm').querySelector('fieldset'));$('candidateForm').insertBefore(advanced,$('candidateForm').querySelector('label:has(textarea)'));
