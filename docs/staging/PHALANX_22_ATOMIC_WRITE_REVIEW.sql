@@ -4,7 +4,7 @@ create or replace function public.phalanx_store_22_snapshot_stage(p_run jsonb, p
 returns bigint
 language plpgsql security invoker set search_path = ''
 as $$
-declare v_run_id bigint; v_count integer; v_source text;
+declare v_run_id bigint; v_count integer; v_source integer;
 begin
   if jsonb_typeof(p_snapshots) <> 'array' or jsonb_array_length(p_snapshots) <> 22 then
     raise exception 'Expected exactly 22 ranking snapshots';
@@ -16,8 +16,12 @@ begin
   select count(distinct e->>'board'), count(distinct e->>'source_captured_at')
     into v_count, v_source
     from jsonb_array_elements(p_snapshots) e;
-  if v_count <> 22 or v_source <> '1' then
+  if v_count <> 22 or v_source <> 1 then
     raise exception 'Missing boards or mixed source timestamps';
+  end if;
+  if exists(select 1 from jsonb_array_elements(p_snapshots) e
+    where e->>'board' <> all(array['personal_power','alliance_power','alliance_kills','kills','town_center','hero_total','troop_power','building_power','research_power','hero_no_equip','hero_equip','gov_gear','gov_charm','pet_power','mystic_trial','master_power','coliseum','forest_of_life','crystal_cave','knowledge_nexus','molten_fort','radiant_spire'])) then
+    raise exception 'Unexpected board';
   end if;
   if exists(select 1 from jsonb_array_elements(p_snapshots) e
     where (e->>'entry_count')::integer <> 100
@@ -40,4 +44,6 @@ begin
   return v_run_id;
 end;
 $$;
--- No GRANT or deployment here. Restrict EXECUTE to trusted service role after review.
+revoke all on function public.phalanx_store_22_snapshot_stage(jsonb,jsonb) from public, anon, authenticated;
+grant execute on function public.phalanx_store_22_snapshot_stage(jsonb,jsonb) to service_role;
+-- STAGE REVIEW ONLY. Applying this DDL to shared production schema requires separate approval.
