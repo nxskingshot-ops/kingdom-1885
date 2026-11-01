@@ -35,6 +35,6 @@ export function mountStrategicProfile(target,rankings={}){
  const table=document.createElement('table');table.className='phx-intel-evidence-table';
  const head=document.createElement('tr');for(const label of ['Kategorie','Kingdom-Rang','Quelle','Erfasst']){const th=document.createElement('th');th.textContent=label;head.append(th);}table.append(head);
  for(const [key,label] of metrics){const raw=rankings?.[key];const tr=document.createElement('tr');const rank=report.rows.find(x=>x.key===key);const cells=[label,rank?'#'+rank.rank:'Nicht verfügbar',raw?.source||'Nicht angegeben',raw?.captured_at||'Nicht angegeben'];for(const value of cells){const td=document.createElement('td');td.textContent=String(value);tr.append(td);}table.append(tr);}
- details.append(table);const note=document.createElement('p');note.className='phx-scout-muted';note.textContent='Originale Rankingangaben; unterschiedliche Erfassungszeiten sind möglich. Rankings beweisen keine Kampfergebnisse.';details.append(note);section.append(details);
+ const tableScroll=document.createElement('div');tableScroll.style.cssText='max-width:100%;overflow-x:auto;overscroll-behavior-x:contain';tableScroll.append(table);details.append(tableScroll);const note=document.createElement('p');note.className='phx-scout-muted';note.textContent='Originale Rankingangaben; unterschiedliche Erfassungszeiten sind möglich. Rankings beweisen keine Kampfergebnisse.';details.append(note);section.append(details);
  target.append(section);return report;
 }
