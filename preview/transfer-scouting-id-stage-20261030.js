@@ -418,10 +418,19 @@ phxIdForm.addEventListener('submit',async e=>{
   else {
    const alliances=['NXS','OoO','MYM','FRA'];
    const results=await Promise.all(alliances.map(async alliance=>{
-    const read=await db.from('phalanx_alliance_players').select('power,snapshot_date').eq('kingdom',1885).eq('alliance',alliance).order('snapshot_date',{ascending:false}).limit(100);
-    if(read.error)return alliance+': access unavailable';
-    const rows=read.data||[],date=rows[0]?.snapshot_date;
-    const placement=placeInAlliance(rawPower,rows.filter(x=>x.snapshot_date===date),date);
+    const latest=await db.from('phalanx_alliance_players').select('snapshot_date').eq('kingdom',1885).eq('alliance',alliance).order('snapshot_date',{ascending:false}).limit(1);
+    if(latest.error)return alliance+': access unavailable';
+    const date=latest.data?.[0]?.snapshot_date;
+    if(!date)return alliance+': no historical snapshot';
+    const rows=[];
+    for(let offset=0;offset<10000;offset+=500){
+     const page=await db.from('phalanx_alliance_players').select('power').eq('kingdom',1885).eq('alliance',alliance).eq('snapshot_date',date).range(offset,offset+499);
+     if(page.error)return alliance+': access unavailable';
+     rows.push(...(page.data||[]));
+     if((page.data||[]).length<500)break;
+     if(offset===9500)return alliance+': roster exceeds safe comparison limit';
+    }
+    const placement=placeInAlliance(rawPower,rows,date);
     return placement.status==='HISTORICAL_POWER_PLACEMENT'?alliance+': #'+placement.rankMin+(placement.rankMax!==placement.rankMin?'–'+placement.rankMax:'')+' / '+placement.rosterSize+' (historical '+date+')':alliance+': insufficient historical data';
    }));
    rosterNote.textContent='Hypothetical Total Power placement — '+results.join(' | ')+'. Historical comparison only; not current combat strength or transfer eligibility.';
