@@ -1,10 +1,10 @@
 // Read-only, deterministic PYLON event-role evidence; no battle-role certification.
 export function evaluateEventRoles(rankings={},player={},context={}){
- const entries=Object.entries(rankings).map(([key,value])=>({key,rank:Number(value?.kingdom_rank)})).filter(x=>Number.isInteger(x.rank)&&x.rank>0);
+ const entries=Object.entries(rankings||{}).map(([key,value])=>({key,rank:value?.kingdom_rank==null?NaN:Number(value.kingdom_rank)})).filter(x=>Number.isInteger(x.rank)&&x.rank>0);
  const top15=entries.filter(x=>x.rank<=15);
- const leadership=top15.length>=2?'Prioritize kingdom leadership suitability review':'No broad leadership candidacy established by available rankings';
- const troopTier=Number(context.verifiedTroopTier);
- const joiner=Number.isInteger(troopTier)&&troopTier>=4?'Verified T4/T5 troop tier supports Rally Joiner suitability review':'Rally Joiner suitability unverified: troop tier evidence missing';
+ const leadership=top15.length>=2?'Multiple Top-15 category rankings: investigate kingdom leadership suitability':'Insufficient category evidence for leadership prioritization';
+ const troopTier=context.verifiedTroopTier==null?null:Number(context.verifiedTroopTier);
+ const joiner=Number.isInteger(troopTier)&&troopTier>=4&&context.troopEvidenceVerified===true?'Verified troop tier supports Rally Joiner suitability review':'Rally Joiner suitability unverified: independently confirmed troop tier missing';
  const roster=context.kingdomRosterVerified===true?'Kingdom comparison available':'Full kingdom roster comparison missing';
  const alliance=context.allianceRosterVerified===true?'Alliance comparison available':'Alliance comparison missing';
  return {top15Count:top15.length,leadership,joiner,roster,alliance,
