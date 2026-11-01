@@ -99,3 +99,18 @@ html,body{background:#020d17;color:#e9dec7}body{background-image:radial-gradient
 #login #authForm button[type=submit]:before,#login #authForm button[type=submit]:after{content:none!important}
 #login .panel-body>p:last-child{font-size:13px!important;text-align:center!important;margin:12px 0 0!important}
 @media(max-width:480px){#login{margin:24px 0 15px!important}#login .panel-body{padding:15px 14px!important}#login .panel-head h2{padding:16px 6px 13px!important}#login .phx-auth-choice{min-height:46px!important;font-size:16px!important}}
+
+/* PHX mobile first-impression: only while the protected login is visible */
+@media(max-width:700px){
+ body:has(#private[hidden]) .phx-original-header .module-title{padding-block:8px!important;margin-block:0!important}
+ body:has(#private[hidden]) .phx-original-header .module-title p{font-size:9px!important;margin:0 0 3px!important}
+ body:has(#private[hidden]) .phx-original-header .module-title h1{font-size:clamp(21px,5.1vw,29px)!important}
+ body:has(#private[hidden]) .stage-actions{margin:4px 0 7px!important;gap:6px!important}
+ body:has(#private[hidden]) .stage-actions p{font-size:9px!important;letter-spacing:.4px!important}
+ body:has(#private[hidden]) .stage-actions #refresh{min-height:36px!important;padding:6px 10px!important;font-size:12px!important}
+ body:has(#private[hidden]) #login{margin:10px 0 15px!important}
+ body:has(#private[hidden]) #login .panel-body{padding:13px 14px 15px!important}
+ body:has(#private[hidden]) #login .panel-body>p:first-child{font-size:12px!important;line-height:1.4!important;margin:0 auto 12px!important}
+ body:has(#private[hidden]) #login .phx-auth-choices{margin:0 0 12px!important}
+ body:has(#private[hidden]) #login .panel-head h2{padding:13px 8px 12px!important}
+}
