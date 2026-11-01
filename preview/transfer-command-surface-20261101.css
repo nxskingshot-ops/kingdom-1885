@@ -42,3 +42,31 @@ main{padding:0 5px 24px}
 #phxIdForm button{font-size:12px;padding:7px 10px}
 #private .panel-head .reference-scene{opacity:.22}
 }
+
+/* R2: mobile-first intelligence report; additive, presentation-only. */
+#phxReview .review-heading{margin:4px 0 8px}
+#phxReview .review-heading h3{font-size:clamp(21px,4vw,29px);margin:2px 0}
+#phxReview .review-heading p{font-size:12px;line-height:1.35;margin:2px 0 8px}
+#phxIdResult{gap:9px!important}
+#phxIdResult>.player-identity{font-size:clamp(17px,3.5vw,22px);margin:0}
+#phxIdResult>.detail{min-height:0;padding:8px 12px}
+#phxIdResult>.headline-metrics{gap:0!important;margin:0!important}
+#phxIdResult>.headline-metrics .detail{min-width:0!important;padding:9px 10px!important}
+#phxIdResult>.headline-metrics .detail b{font-size:clamp(17px,3.5vw,23px)!important;line-height:1.25}
+#phxIdResult>.phx-scout-section{padding:11px!important;margin:0!important;min-width:0!important;overflow-wrap:anywhere}
+#phxIdResult>.phx-scout-section h4{font-size:clamp(17px,3.4vw,21px)!important;margin:0 0 6px!important;line-height:1.3}
+#phxIdResult .phx-scout-muted{font-size:12px!important;line-height:1.45!important;margin:5px 0!important}
+#phxIdResult .phx-scout-facts{gap:7px!important}
+#phxIdResult .phx-scout-facts>div{padding:8px!important;min-width:0}
+#phxIdResult .phx-scout-roles{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}
+#phxIdResult .phx-scout-roles>div{min-width:0!important;padding:9px!important;overflow-wrap:normal;word-break:normal}
+#phxIdResult .phx-scout-roles strong{font-size:clamp(12px,2.6vw,15px)!important;hyphens:none}
+#phxIdResult .phx-scout-placement{font-size:12px!important;line-height:1.5!important;overflow-wrap:break-word}
+#phxIdPanel .lookup-intro{font-size:12px!important;line-height:1.35!important;margin:0 0 6px!important}
+#phxIdPanel .panel-body{padding-bottom:9px!important}
+@media(max-width:600px){
+#phxIdResult>.phx-scout-section{width:100%!important}
+#phxIdResult .phx-scout-roles>div{padding:8px!important}
+#phxIdResult>.headline-metrics .detail{padding:8px!important}
+#phxReview .review-heading{margin-bottom:5px}
+}
