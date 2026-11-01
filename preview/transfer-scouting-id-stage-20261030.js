@@ -354,6 +354,7 @@ setInterval(()=>{if(!$('private').hidden&&$('modal').hidden&&!document.hidden)lo
 
 /* PHX ID STAGE: additive read-only feature; original LIVE V5 logic above remains unchanged. */
 const phxIdForm=$('phxIdForm'),phxIdStatus=$('phxIdStatus'),phxIdResult=$('phxIdResult');
+const phxLookupIndicator=document.createElement('span');phxLookupIndicator.setAttribute('aria-hidden','true');phxLookupIndicator.style.cssText='display:none;width:17px;height:17px;border:2px solid rgba(226,189,112,.3);border-top-color:#e2bd70;border-radius:50%;animation:phx-lookup-spin .85s linear infinite;flex:none';const phxLookupWrap=document.createElement('div');phxLookupWrap.style.cssText='display:flex;align-items:center;gap:10px';phxIdStatus.parentNode.insertBefore(phxLookupWrap,phxIdStatus);phxLookupWrap.append(phxLookupIndicator,phxIdStatus);const phxLookupStyle=document.createElement('style');phxLookupStyle.textContent='@keyframes phx-lookup-spin{to{transform:rotate(360deg)}}';document.head.append(phxLookupStyle);function setPhxLookupState(state,message){phxIdStatus.textContent=message;phxLookupIndicator.style.display=state==='loading'?'inline-block':'none';phxIdStatus.style.color=state==='success'?'#70d69b':state==='error'?'#f0a0a0':'';phxIdStatus.style.fontWeight=state==='success'?'700':'';phxIdStatus.setAttribute('role','status');phxIdStatus.setAttribute('aria-live','polite');}
 const phxBridgeUrl=SUPABASE_URL+'/functions/v1/phalanx-transfer-id-snapshot-fallback-stage-20261031'; // Staging only; browser CORS requires verified deployment.
 // One compact read-only renderer for lookup, dossier and comparison. Values stay exact.
 function renderRankingEvidence(target,entry,missing='Not available from source',compact=false){
@@ -401,7 +402,7 @@ phxIdForm.addEventListener('submit',async e=>{
  const id=$('phxGovernorId').value.trim();
  if(!/^[1-9][0-9]{0,15}$/.test(id)){phxIdStatus.textContent='Enter a valid Kingshot Player ID.';return;}
  if(!phxBridgeUrl){phxIdStatus.textContent='Player lookup is not available yet.';return;}
- const button=phxIdForm.querySelector('button');button.disabled=true;phxIdStatus.textContent='Loading player data… Source refresh can take up to 90 seconds.';
+ const button=phxIdForm.querySelector('button');button.disabled=true;setPhxLookupState('loading','Loading player data… Source refresh can take up to 90 seconds.');
  try{
   const {data:{session},error}=await db.auth.getSession();
   if(error||!session?.access_token)throw Error('Please sign in again.');
@@ -438,9 +439,9 @@ phxIdForm.addEventListener('submit',async e=>{
   const all=document.createElement('details'),allSummary=document.createElement('summary'),allBody=document.createElement('div');all.className='complete-rankings';allSummary.textContent='All rankings ('+Object.keys(playerRankingMap(payload.ranks?.values)).length+')';all.append(allSummary,allBody);appendRankingEntries(allBody,payload.ranks?.values,'');phxIdResult.append(all);
   const arenaDetail=document.createElement('details'),arenaSummary=document.createElement('summary');arenaDetail.className='arena-details';arenaSummary.textContent='Arena Squad ('+(payload.arenaSquad?.heroes||[]).length+') · '+formatPlayerSection(payload.arenaSquad?.status);arenaDetail.append(arenaSummary,arenaList(payload.arenaSquad?.heroes||[]));phxIdResult.append(arenaDetail);
   const provenance=document.createElement('details'),provenanceSummary=document.createElement('summary');provenance.className='lookup-provenance';provenanceSummary.textContent='Sources & lookup time';provenance.append(provenanceSummary);phxIdResult.append(provenance);provenance.append(phxField('Data source','Kingshot player data'),phxField('Source captured (UTC)',formatPlayerUtc(payload.source?.cachedAt)),phxField('Lookup time (UTC)',formatPlayerUtc(payload.checkedAtUtc)));
-  phxIdStatus.textContent='Player data loaded. Review the details before adding this player to Candidates.';
+  setPhxLookupState('success','✓ Player data loaded successfully. Review the details before adding this player to Candidates.');
   offerLookupCandidate(payload,id);
- }catch(error){phxIdStatus.textContent=error.name==='AbortError'?'The lookup timed out. Please try again later.':error instanceof TypeError?'Connection interrupted. Check your internet connection.':error.message;}
+ }catch(error){setPhxLookupState('error',error.name==='AbortError'?'The lookup timed out. Please try again later.':error instanceof TypeError?'Connection interrupted. Check your internet connection.':error.message);}
  finally{button.disabled=false;}
 });
 
