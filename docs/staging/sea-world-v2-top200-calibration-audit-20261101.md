@@ -51,3 +51,10 @@ Mystic Trial 20; Hero Total 10; Hero Equipment 10; Governor Gear 10; Governor Ch
 6. No production deployment, database write, FREEZE, or approved final stars from this audit.
 
 Read-only SQL evidence collected during this session; no database rows modified.
+
+## Qualified cohort follow-up — 2026-11-01
+- 56/200 have at least six of eight SEA WORLD ranking boards; 21/200 have all eight.
+- 49 of these 56 also occur in both personal_power and troop_power latest Top-100 boards with Total Power >= Troop Power.
+- Latest snapshots for all ten inspected boards have the same source_captured_at: 2026-11-01 00:31:29.925 UTC. This supports synchronized board timestamps, but individual entries and source-run identity should still be checked before certifying paired True Power.
+- Remaining seven of the 56 lack a verified Total/Troop pair in the inspected board snapshots. Do not invent True Power.
+- Candidate status: 49 for further scoring and uncertainty audit, not yet a final calibration cohort. Tier thresholds and baseline remain unchanged; no FREEZE.
