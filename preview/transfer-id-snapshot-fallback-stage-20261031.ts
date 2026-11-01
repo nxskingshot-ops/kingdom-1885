@@ -1,7 +1,7 @@
 // PHALANX isolated read-only ID bridge. No database writes.
 // Deploy only after rate limiting and authorized browser tests are prepared.
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.0';
-const allowedOrigins=new Set(['https://phalanx-r11-atlas-preview-g7995somu-matze4428-6040.vercel.app','https://phalanx-r11-atlas-preview-oryusempo-matze4428-6040.vercel.app','https://phalanx-r11-atlas-preview-n0zkgl9rp-matze4428-6040.vercel.app','https://phalanx-r11-atlas-preview-qdy0ugj6k-matze4428-6040.vercel.app','https://phalanx-r11-atlas-preview-48nyih9au-matze4428-6040.vercel.app','https://phalanx-r11-atlas-preview.vercel.app','https://phalanx-r11-atlas-preview-hwmocd03j-matze4428-6040.vercel.app']);
+const allowedOrigins=new Set(['https://phalanx-r11-atlas-preview-kinvbyusp-matze4428-6040.vercel.app','https://phalanx-r11-atlas-preview-91lc31dq9-matze4428-6040.vercel.app','https://phalanx-r11-atlas-preview-g7995somu-matze4428-6040.vercel.app','https://phalanx-r11-atlas-preview-oryusempo-matze4428-6040.vercel.app','https://phalanx-r11-atlas-preview-n0zkgl9rp-matze4428-6040.vercel.app','https://phalanx-r11-atlas-preview-qdy0ugj6k-matze4428-6040.vercel.app','https://phalanx-r11-atlas-preview-48nyih9au-matze4428-6040.vercel.app','https://phalanx-r11-atlas-preview.vercel.app','https://phalanx-r11-atlas-preview-hwmocd03j-matze4428-6040.vercel.app']);
 const corsHeaders=(origin)=>origin&&allowedOrigins.has(origin)?{'access-control-allow-origin':origin,'access-control-allow-methods':'GET, OPTIONS','access-control-allow-headers':'authorization, apikey, content-type','access-control-max-age':'600'}:{};
 const json=(body,status=200,origin=null)=>new Response(JSON.stringify(body),{status,headers:{'content-type':'application/json','cache-control':'no-store','vary':'Origin',...corsHeaders(origin)}});
 Deno.serve(async req=>{
@@ -29,7 +29,7 @@ Deno.serve(async req=>{
  if(quotaGranted!==true)return reply({ok:false,error:'rate_limit_exceeded'},429);
  // Authenticated staging browser requests use the existing shared quota RPC.
  try{
-  const upstream=await fetch('https://api.mightpulse.com/v1/players/'+id+'?include=base,heroes,ranks',{headers:{'X-Api-Key':key},redirect:'error',signal:AbortSignal.timeout(95000)});
+  const upstream=await fetch('https://api.mightpulse.com/v1/players/'+id+'?include=base,heroes,ranks',{headers:{'X-Api-Key':key},redirect:'error',signal:AbortSignal.timeout(105000)});
   if(!upstream.ok)return reply({ok:false,error:'upstream_unavailable'},upstream.status===404?404:502);
   const d=await upstream.json(),p=d?.player;
   if(d?.ok!==true||String(d.governor_id)!==id||String(p?.governor_id??p?.fid)!==id||String(d.uid)!==String(p?.uid)||!Number.isSafeInteger(p?.kid)||p.kid<1)return reply({ok:false,error:'identity_unverified'},502);

@@ -21,3 +21,9 @@ test('V8 exposes allowlisted categories and status without arbitrary response te
  assert.match(x.result.textContent,/HTTP 502.*unavailable/);assert.doesNotMatch(x.result.textContent,/PRIVATE/);
  assert.equal(x.button.disabled,false);
 });
+test('staging backend change preserves live v5 security contract and only increases refresh margin',()=>{
+ const before=readFileSync('backups/transfer-id-fallback-v5-before-final-20261101.ts','utf8');
+ const after=readFileSync('preview/transfer-id-snapshot-fallback-stage-20261031.ts','utf8');
+ assert.equal(after,before.replace('AbortSignal.timeout(95000)','AbortSignal.timeout(105000)'));
+ assert.match(source,/125000/);
+});

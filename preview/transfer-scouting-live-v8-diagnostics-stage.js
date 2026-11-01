@@ -247,7 +247,7 @@ function renderDossier(){
       const {data:{session},error:sessionError}=await db.auth.getSession();
       if(sessionError||!session?.access_token)throw Error('Sign in again.');
       const response=await fetch(URL+'/functions/v1/phalanx-transfer-id-snapshot-fallback-stage-20261031?governorId='+encodeURIComponent(id),{
-        method:'GET',headers:{apikey:KEY,Authorization:'Bearer '+session.access_token},cache:'no-store',signal:AbortSignal.timeout(110000)});
+        method:'GET',headers:{apikey:KEY,Authorization:'Bearer '+session.access_token},cache:'no-store',signal:AbortSignal.timeout(125000)});
       const data=await response.json().catch(()=>null);
       if(!response.ok||data?.ok!==true){
         const allowed=['unauthorized','forbidden','origin_forbidden','rate_limit_exceeded','rate_limit_unavailable','upstream_unavailable','identity_unverified','invalid_governor_id','configuration_unavailable','authorization_unavailable'];

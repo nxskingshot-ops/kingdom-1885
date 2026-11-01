@@ -102,7 +102,7 @@ const evidenceFor=p=>currentEvidence.get(evidenceKey(p))||p?.metadata?.external_
 async function readPlayer(id){
  if(!/^[1-9][0-9]{0,15}$/.test(id))throw Error('Enter a valid Kingshot Player ID.');
  const {data:{session},error}=await db.auth.getSession();if(error||!session?.access_token)throw Error('Please sign in again.');
- const response=await fetch(SUPABASE_URL+'/functions/v1/phalanx-transfer-id-snapshot-fallback-stage-20261031?governorId='+id,{headers:{apikey:KEY,Authorization:'Bearer '+session.access_token},cache:'no-store',signal:AbortSignal.timeout(110000)});
+ const response=await fetch(SUPABASE_URL+'/functions/v1/phalanx-transfer-id-snapshot-fallback-stage-20261031?governorId='+id,{headers:{apikey:KEY,Authorization:'Bearer '+session.access_token},cache:'no-store',signal:AbortSignal.timeout(125000)});
  if(!response.ok)throw Error(playerLookupError(response.status));const payload=await response.json();
  if(payload.ok!==true||String(payload.governorId)!==id||!Number.isSafeInteger(payload.player?.kingdom)||payload.player.kingdom<1)throw Error('Player identity could not be confirmed.');
  return payload;
@@ -359,13 +359,13 @@ phxIdForm.addEventListener('submit',async e=>{
  const id=$('phxGovernorId').value.trim();
  if(!/^[1-9][0-9]{0,15}$/.test(id)){phxIdStatus.textContent='Enter a valid Kingshot Player ID.';return;}
  if(!phxBridgeUrl){phxIdStatus.textContent='Player lookup is not available yet.';return;}
- const button=phxIdForm.querySelector('button');button.disabled=true;phxIdStatus.textContent='Loading player data…';
+ const button=phxIdForm.querySelector('button');button.disabled=true;phxIdStatus.textContent='Loading player data… Source refresh can take up to 90 seconds.';
  try{
   const {data:{session},error}=await db.auth.getSession();
   if(error||!session?.access_token)throw Error('Please sign in again.');
   const endpoint=new URL(phxBridgeUrl);if(endpoint.protocol!=='https:')throw Error('A secure HTTPS connection is required.');
   endpoint.searchParams.set('governorId',id);
-  const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),110000);
+  const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),125000);
   let response;try{response=await fetch(endpoint,{headers:{Authorization:'Bearer '+session.access_token,apikey:KEY},signal:controller.signal,cache:'no-store'});}finally{clearTimeout(timeout);}
   if(!response.ok)throw Error(playerLookupError(response.status));
   const payload=await response.json();if($('phxGovernorId').value.trim()!==id){phxIdStatus.textContent='Kingshot Player ID changed. Load player data again.';return;}if(payload.ok!==true||String(payload.governorId)!==id)throw Error('Player identity could not be confirmed.');const p=payload.player||{};$('phxReview').hidden=false;
