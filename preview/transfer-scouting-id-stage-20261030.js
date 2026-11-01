@@ -1,5 +1,6 @@
 import { candidateFromLookup, duplicateLookupFilter } from './transfer-id-candidate-20261030.js';
 import { forecast as phxTransferForecast, transferStatus as phxTransferStatus } from './phx-transfer-forecast-20261101.js';
+import { mountRuleDraftEditor } from './phx-transfer-rules-editor-20261101.js';
 import { formatPlayerNumber, formatPlayerUtc, formatPlayerSection, playerLookupError, playerRankingRows, rankingLabels, canonicalRankingName, playerRankingMap, rankingSourceText, playerSummaryMetrics, formatCastle, compactPower } from './transfer-id-display-20261030.js';
 const SUPABASE_URL='https://hcjrdofkdkasznywvcxo.supabase.co';
 const KEY='sb_publishable_hkqBaMme70g2f3wcxvaTKg_FczqkpCh';
@@ -333,6 +334,7 @@ function renderDossier(){
  forecastNotice.textContent=phxTransferStatus(null)+'. Community forecast only; #1885 classification, official power metric, active cap, invitations and final rules are unconfirmed. Source: '+phxTransferForecast.source+' (checked '+phxTransferForecast.checked+').';
  forecastPanel.append(forecastHeading,forecastBody,forecastNotice);
  root.prepend(forecastPanel);
+ mountRuleDraftEditor(forecastPanel,{canEdit});
  applySmartDossierNavigation();
 }
 function openDossier(){
