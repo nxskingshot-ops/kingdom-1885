@@ -1,5 +1,6 @@
 import { placeInAlliance } from './phx-transfer-alliance-placement-20261101.js';
 import { assessAccount, classifyCombatProfile } from './phx-transfer-account-assessment-20261101.js';
+import { mountStrategicProfile } from './phx-transfer-strategic-profile-20261101.js';
 import { candidateFromLookup, duplicateLookupFilter } from './transfer-id-candidate-20261030.js';
 import { forecast as phxTransferForecast, transferStatus as phxTransferStatus } from './phx-transfer-forecast-20261101.js';
 import { mountRuleDraftEditor } from './phx-transfer-rules-editor-20261101.js';
@@ -415,6 +416,7 @@ phxIdForm.addEventListener('submit',async e=>{
   const identity=document.createElement('div');identity.className='player-identity';identity.textContent=[p.name||p.playerName||p.player_name,p.alliance,'#'+p.kingdom].filter(Boolean).join(' · ');phxIdResult.append(identity);phxField('Kingshot Player ID',id);
   const headline=document.createElement('div');headline.className='headline-metrics';renderHeadlineMetrics(headline,{player:p,source_cached_at:payload.source?.cachedAt,ranks:payload.ranks},{});phxIdResult.append(headline);
   const assessment=assessAccount(p,playerRankingMap(payload.ranks?.values));
+  mountStrategicProfile(phxIdResult,playerRankingMap(payload.ranks?.values));
   const makeSection=(heading,description)=>{const section=document.createElement('section');section.className='phx-scout-section';const h=document.createElement('h4');h.textContent=heading;section.append(h);if(description){const p=document.createElement('p');p.className='phx-scout-muted';p.textContent=description;section.append(p);}phxIdResult.append(section);return section;};
   const rankEvidence=[...assessment.rankingEvidence].sort((a,b)=>a.rank-b.rank);
   const combatEvidence=classifyCombatProfile(p,playerRankingMap(payload.ranks?.values));
