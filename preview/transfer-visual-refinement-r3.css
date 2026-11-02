@@ -1,0 +1,4 @@
+/* Isolated PHALANX Transfer visual refinement R3 */
+#phxReview{background:linear-gradient(145deg,#152833,#091622 75%,#291d1b);border:1px solid #a88753;padding:clamp(10px,2vw,20px)}
+.phx-hero-name{font-variant:small-caps;letter-spacing:.025em;text-shadow:0 3px 12px #000c;overflow-wrap:anywhere;font-size:clamp(26px,6vw,52px)}
+#phxIdResult>.phx-verdict-card{border-top:3px solid #e2b96a!important;background:linear-gradient(145deg,#291b1d,#14242e 50%,#081722)!important}
