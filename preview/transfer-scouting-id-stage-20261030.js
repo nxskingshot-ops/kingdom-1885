@@ -630,7 +630,7 @@ let workspaceView='phxIdPanel',profileOpen=false;
 // Preserve the existing transfer calculator, but place it under the established Tools view.
 const phxScenario=$('phxPowerScenario');
 const phxToolsBody=document.querySelector('#workspace-tools .tools-body');
-if(phxScenario&&phxToolsBody){phxScenario.classList.add('phx-tools-scenario');phxToolsBody.insertBefore(phxScenario,phxToolsBody.firstChild);}
+if(phxScenario&&phxToolsBody){phxScenario.classList.add('phx-tools-scenario');const slot=document.querySelector('#phxToolsMenu .phx-tool-item:nth-of-type(2) .phx-tool-content');if(slot)slot.append(phxScenario);else phxToolsBody.insertBefore(phxScenario,phxToolsBody.firstChild);}
 
 function syncWorkspace(){
  const total=players.length, candidateView=workspaceView==='scoutingBoard';
