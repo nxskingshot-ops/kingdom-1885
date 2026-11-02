@@ -1,0 +1,6 @@
+/* PHALANX PYLON IX — isolated, additive staging integration.
+   Source asset: user's exact JPEG, SHA256 f115c407a12e1695673121cc8b073eb3c006b5a4fb1edf034e2e069a98e4e7a1.
+   Do not activate until binary is present at ./assets/PYLON_IX_V2_FINAL_ORIGINAL.jpg. */
+#phxIdResult>.phx-event-intelligence>h4{display:flex;align-items:center;gap:10px;min-width:0}
+#phxIdResult>.phx-event-intelligence>h4::before{content:"";display:block;flex:none;width:clamp(42px,9vw,64px);height:clamp(42px,9vw,64px);border-radius:50%;border:1px solid #bc934f;background:#08080a url('./assets/PYLON_IX_V2_FINAL_ORIGINAL.jpg') center/contain no-repeat;box-shadow:0 0 14px #168cff50}
+@media(max-width:450px){#phxIdResult>.phx-event-intelligence>h4{gap:7px}#phxIdResult>.phx-event-intelligence>h4::before{width:44px;height:44px}}
