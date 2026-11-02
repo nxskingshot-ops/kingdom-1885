@@ -17,6 +17,6 @@ const planContent=menu.querySelector('.phx-tool-content');
 Array.from(tools.children).filter(el=>el.matches('details.sub-disclosure')).forEach(el=>planContent.append(el));
 const powerContent=menu.querySelectorAll('.phx-tool-content')[1];
 const power=document.getElementById('phxPowerScenario');
-if(power)powerContent.append(power);
+if(power){powerContent.append(power);power.hidden=false;power.removeAttribute('style');}
 Array.from(tools.children).filter(el=>el.matches('p.smallprint')).forEach(el=>{if(el.textContent.startsWith('Export the currently filtered'))el.hidden=true;});
 }if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();})();
