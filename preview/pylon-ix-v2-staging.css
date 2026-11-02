@@ -1,0 +1,17 @@
+/* PYLON IX V2 — isolated visual integration. Requires exact approved JPEG asset. */
+/* Scope: transfer scouting intelligence card only. No data or event handlers altered. */
+#phxIdResult > .phx-event-intelligence { position: relative; }
+#phxIdResult > .phx-event-intelligence > h4 {
+  display: flex; align-items: center; gap: 10px; min-width: 0;
+}
+#phxIdResult > .phx-event-intelligence > h4::before {
+  content: ""; display: block; flex: 0 0 auto;
+  width: clamp(42px, 9vw, 64px); height: clamp(42px, 9vw, 64px);
+  background: #08080a url('./assets/PYLON_IX_V2_FINAL_ORIGINAL.jpg') center / contain no-repeat;
+  border-radius: 50%; border: 1px solid #bc934f;
+  box-shadow: 0 0 14px #168cff50;
+}
+@media (max-width: 450px) {
+ #phxIdResult > .phx-event-intelligence > h4 { gap: 7px; }
+ #phxIdResult > .phx-event-intelligence > h4::before { width: 44px; height: 44px; }
+}
