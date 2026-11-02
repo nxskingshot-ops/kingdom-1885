@@ -1,0 +1,39 @@
+name: PYLON IX isolated Cloudflare preview
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  preview:
+    if: github.ref == 'refs/heads/stage/pylon-ix-livebase-20261102'
+    runs-on: ubuntu-latest
+    env:
+      CF_READY: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify PYLON IX source and dependencies
+        run: |
+          set -euo pipefail
+          for f in preview/transfer-scouting-id-stage-20261030.html preview/transfer-scouting-id-stage-20261030.js preview/pylon-ix-v2-safe-loader.js preview/PYLON_IX_V2_FINAL_ORIGINAL.jpg preview/phx-transfer-alliance-placement-20261101.js preview/phx-transfer-account-assessment-20261101.js preview/phx-sea-world-v2-gate-20261101.js preview/phx-transfer-strategic-profile-20261101.js preview/phx-transfer-event-roles-20261101.js preview/transfer-id-candidate-20261030.js preview/phx-transfer-forecast-20261101.js preview/phx-transfer-rules-editor-20261101.js preview/transfer-id-display-20261030.js; do
+            test -s "$f" || exit 1
+          done
+          node --check preview/transfer-scouting-id-stage-20261030.js
+      - name: Assemble isolated preview without modifying originals
+        run: |
+          set -euo pipefail
+          mkdir -p dist/pylon-ix
+          cp preview/* dist/pylon-ix/
+          cp preview/transfer-scouting-id-stage-20261030.html dist/pylon-ix/index.html
+          printf 'User-agent: *\nDisallow: /\n' > dist/pylon-ix/robots.txt
+          test -s dist/pylon-ix/index.html
+      - name: Deploy to existing Cloudflare Pages test project
+        if: ${{ env.CF_READY == 'true' }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          npx --yes wrangler@3 pages deploy dist/pylon-ix --project-name=nexus-phalanx-kvk-test --branch=pylon-ix-transfer-scouting --commit-dirty=true
+      - name: Explain unavailable credentials
+        if: ${{ env.CF_READY != 'true' }}
+        run: echo 'Cloudflare credentials unavailable; no deployment attempted.'
