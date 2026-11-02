@@ -549,9 +549,9 @@ phxIdForm.addEventListener('submit',async e=>{
   const truePowerPeerRating=(()=>{
    const castle=playerSummaryMetrics(payload.ranks?.values,{power:p.power,captured_at:payload.source?.cachedAt}).find(m=>m.key==='castle');
    if(!trueMetric?.calculated||!Number.isFinite(trueMetric.value)||!castle?.text||castle.text==='Not available')return null;
-   const ownTG=castle.text.match(/^TG(\\d+) (\\d)\\/5$/);
+   const ownTG=castle.text.match(/^TG(\d+) (\d)\/5$/);
    if(!ownTG||!Array.isArray(internalPlayers))return null;
-   const peers=internalPlayers.filter(x=>x&&x.true_power_verified===true&&Number.isFinite(Number(x.true_power))&&Number(x.true_power)>=0&&typeof x.captured_at==='string'&&x.captured_at.length>0&&typeof x.castle_level==='string'&&/^TG\\d+ [0-5]\\/5$/.test(x.castle_level));
+   const peers=internalPlayers.filter(x=>x&&x.true_power_verified===true&&Number.isFinite(Number(x.true_power))&&Number(x.true_power)>=0&&typeof x.captured_at==='string'&&x.captured_at.length>0&&typeof x.castle_level==='string'&&/^TG\d+ [0-5]\/5$/.test(x.castle_level));
    const evaluate=(list,scope)=>{
     if(list.length<20)return null;
     const times=new Set(list.map(x=>x.captured_at));
