@@ -477,7 +477,16 @@ phxIdForm.addEventListener('submit',async e=>{
   rating.style.setProperty('position','static','important');rating.style.setProperty('inset','auto','important');rating.style.setProperty('transform','none','important');rating.style.setProperty('float','none','important');rating.style.setProperty('display','block','important');rating.style.setProperty('width','100%','important');rating.style.setProperty('max-width','100%','important');rating.style.setProperty('min-width','0','important');rating.style.setProperty('box-sizing','border-box','important');rating.style.setProperty('white-space','normal','important');rating.style.setProperty('overflow-wrap','anywhere','important');rating.style.setProperty('text-align','center','important');rating.style.setProperty('font-size','clamp(1rem, 4vw, 1.5rem)','important');rating.style.setProperty('line-height','1.3','important');
   const tierNames={mega_whale:'Mega Whale',whale:'Whale',orca_elite:'Orca Elite',orca:'Orca',strong:'Strong',solid:'Solid',developing:'Developing'};
   const coverage='';
-  rating.textContent=seaWorld.stars?seaWorld.stars+' · '+(tierNames[seaWorld.tier]||'Provisional')+coverage:'Insufficient data for a reliable rating'+coverage;
+  const ratingRange=seaWorld.stars?seaWorld.stars+' · '+(tierNames[seaWorld.tier]||'Provisional'):seaWorld.status==='PROVISIONAL_RANGE'?(tierNames[seaWorld.lowerTier]||'Provisional')+' – '+(tierNames[seaWorld.upperTier]||'Provisional')+' possible':'Rating not available';
+  rating.textContent=ratingRange+coverage;
+  if(seaWorld.status==='PROVISIONAL_RANGE'){
+   const uncertainty=document.createElement('p');uncertainty.className='phx-scout-muted';uncertainty.style.cssText='margin:.4rem 0 .8rem;max-width:100%;overflow-wrap:anywhere;font-size:.9rem;line-height:1.4';
+   const scoreRange=Number.isFinite(seaWorld.scoreLower)&&Number.isFinite(seaWorld.scoreUpper)?seaWorld.scoreLower.toFixed(2)+'–'+seaWorld.scoreUpper.toFixed(2)+' / 100':'not available';
+   const missingNames={mystic_trial:'Mystic Trial',hero_total:'Hero Power',hero_equip:'Hero Equipment',gov_gear:'Governor Gear',gov_charm:'Governor Charms',master_power:'Master Power',pet_power:'Pet Power',research_power:'Research Power',true_power:'True Power'};
+   const missingList=Array.isArray(seaWorld.missing)?seaWorld.missing.map(k=>missingNames[k]||k).join(', '):'not available';
+   uncertainty.textContent='Provisional score: '+scoreRange+' · Data coverage: '+seaWorld.coveragePct+'% · Missing rating evidence: '+(missingList||'none')+'. The final tier depends on missing evidence.';
+   rating.after(uncertainty);
+  }
   accountNote.prepend(rating);
   const rules=document.createElement('details');rules.className='phx-scout-muted';
   const rulesTitle=document.createElement('summary');rulesTitle.textContent='ⓘ Rating Method & Data Coverage';rules.append(rulesTitle);
