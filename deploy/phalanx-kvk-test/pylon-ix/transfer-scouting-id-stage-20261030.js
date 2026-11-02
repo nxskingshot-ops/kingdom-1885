@@ -479,6 +479,7 @@ phxIdForm.addEventListener('submit',async e=>{
   const coverage='';
   const ratingRange=seaWorld.stars?seaWorld.stars+' · '+(tierNames[seaWorld.tier]||'Provisional'):seaWorld.status==='PROVISIONAL_RANGE'?(tierNames[seaWorld.lowerTier]||'Provisional')+' – '+(tierNames[seaWorld.upperTier]||'Provisional')+' possible':'Rating not available';
   rating.textContent=ratingRange+coverage;
+  accountNote.prepend(rating);
   if(seaWorld.status==='PROVISIONAL_RANGE'){
    const uncertainty=document.createElement('p');uncertainty.className='phx-scout-muted';uncertainty.style.cssText='margin:.4rem 0 .8rem;max-width:100%;overflow-wrap:anywhere;font-size:.9rem;line-height:1.4';
    const scoreRange=Number.isFinite(seaWorld.scoreLower)&&Number.isFinite(seaWorld.scoreUpper)?seaWorld.scoreLower.toFixed(2)+'–'+seaWorld.scoreUpper.toFixed(2)+' / 100':'not available';
@@ -487,7 +488,6 @@ phxIdForm.addEventListener('submit',async e=>{
    uncertainty.textContent='Provisional score: '+scoreRange+' · Data coverage: '+seaWorld.coveragePct+'% · Missing rating evidence: '+(missingList||'none')+'. The final tier depends on missing evidence.';
    rating.after(uncertainty);
   }
-  accountNote.prepend(rating);
   const rules=document.createElement('details');rules.className='phx-scout-muted';
   const rulesTitle=document.createElement('summary');rulesTitle.textContent='ⓘ Rating Method & Data Coverage';rules.append(rulesTitle);
   const rulesText=document.createElement('p');rulesText.textContent='Provisional weighted rating: Mystic Trial (20%), Master Power (15%), Hero Power (10%), Hero Equipment (10%), Governor Gear (10%), Governor Charms (10%), Pet Power (7.5%), Research (7.5%), True Power (10%). Missing data does not mean poor performance. Stars are displayed only when the classification remains stable despite missing evidence. Thresholds and reference scope remain provisional.';rules.append(rulesText);const coverageInfo=document.createElement('p');coverageInfo.textContent='Data coverage: '+(Number.isFinite(seaWorld.coveragePct)?seaWorld.coveragePct+'%':'not available')+'. Coverage measures available evidence, not player strength.';rules.append(coverageInfo);
