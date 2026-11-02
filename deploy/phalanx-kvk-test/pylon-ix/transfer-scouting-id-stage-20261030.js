@@ -631,6 +631,8 @@ let workspaceView='phxIdPanel',profileOpen=false;
 const phxScenario=$('phxPowerScenario');
 const phxToolsBody=document.querySelector('#workspace-tools .tools-body');
 if(phxScenario&&phxToolsBody){phxScenario.classList.add('phx-tools-scenario');phxToolsBody.insertBefore(phxScenario,phxToolsBody.firstChild);}
+// Initialize the existing five-card Tools menu only after the calculator is relocated.
+if(typeof window.phxInitToolsMenu==='function')window.phxInitToolsMenu();
 
 function syncWorkspace(){
  const total=players.length, candidateView=workspaceView==='scoutingBoard';
