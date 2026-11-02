@@ -9,6 +9,7 @@ if(panel){
   if(!plan||typeof plan!=='object')return;
   const cap=byId('phxOfficialCap'),verified=byId('phxCapVerified');
   if(!cap||!verified)return;
+  verified.disabled=true; // A local checkbox cannot establish independent verification.
   const context=normalizeEventContext(plan,{capSource:plan.phxEventCapSource,capVerifiedAt:plan.phxEventCapVerifiedAt});
   if(context.powerCap.million!==null){cap.value=String(context.powerCap.million);verified.checked=context.powerCap.status===EVIDENCE.CONFIRMED;}else{cap.value='';verified.checked=false;}
   const status=byId('phxPowerOutcome');
@@ -18,7 +19,7 @@ if(panel){
  window.addEventListener('phx:event-context-updated',applySavedPlanning);
  byId('phxCalculatePower').addEventListener('click',()=>{
   const val=id=>{const raw=byId(id).value.trim();return raw===''?undefined:Number(raw)};
-  const result=simulateTransferPower({currentTransferPowerM:val('phxCurrentTransferPower'),hypotheticalReductionM:val('phxPowerReduction'),confirmedCapM:val('phxOfficialCap'),capVerified:byId('phxCapVerified').checked});
+  const result=simulateTransferPower({currentTransferPowerM:val('phxCurrentTransferPower'),hypotheticalReductionM:val('phxPowerReduction'),confirmedCapM:val('phxOfficialCap'),capVerified:false});
   byId('phxPowerOutcome').textContent=(result.projectedM===undefined?'':('Simulated power: '+result.projectedM+'M. '))+(result.differenceM===undefined?'':('Difference to example cap: '+result.differenceM+'M. '))+result.message;
  });
 }
