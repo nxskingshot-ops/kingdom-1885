@@ -1,7 +1,7 @@
 /* PYLON IX V2 safe loader — activate only after the exact staged asset resolves. */
 (function(){
   'use strict';
-  const imageUrl=new URL('./assets/PYLON_IX_V2_FINAL_ORIGINAL.jpg',document.baseURI);
+  const imageUrl=new URL('./PYLON_IX_V2_FINAL_ORIGINAL.jpg',document.baseURI);
   const probe=new Image();
   probe.onload=function(){
     if(probe.naturalWidth!==1536||probe.naturalHeight!==1536)return;
