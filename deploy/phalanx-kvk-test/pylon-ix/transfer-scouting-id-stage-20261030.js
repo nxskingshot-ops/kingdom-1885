@@ -473,6 +473,8 @@ phxIdForm.addEventListener('submit',async e=>{
   const trueMetric=playerSummaryMetrics(payload.ranks?.values,{power:p.power,captured_at:payload.source?.cachedAt}).find(m=>m.key==='true_power');
   const seaWorld=seaWorldVerdict(p,{scope:'top25_provisional',ranks:seaRanks,truePower:trueMetric?.calculated?trueMetric.value:null});
   const rating=document.createElement('div');rating.className='phx-sea-rating';rating.setAttribute('aria-label','Provisional account rating');
+  // The verdict must stay in document flow on narrow screens, even if legacy theme CSS positions rating badges absolutely.
+  rating.style.setProperty('position','static','important');rating.style.setProperty('inset','auto','important');rating.style.setProperty('transform','none','important');rating.style.setProperty('float','none','important');rating.style.setProperty('display','block','important');rating.style.setProperty('width','100%','important');rating.style.setProperty('max-width','100%','important');rating.style.setProperty('min-width','0','important');rating.style.setProperty('box-sizing','border-box','important');rating.style.setProperty('white-space','normal','important');rating.style.setProperty('overflow-wrap','anywhere','important');rating.style.setProperty('text-align','center','important');rating.style.setProperty('font-size','clamp(1rem, 4vw, 1.5rem)','important');rating.style.setProperty('line-height','1.3','important');
   const tierNames={mega_whale:'Mega Whale',whale:'Whale',orca_elite:'Orca Elite',orca:'Orca',strong:'Strong',solid:'Solid',developing:'Developing'};
   const coverage='';
   rating.textContent=seaWorld.stars?seaWorld.stars+' · '+(tierNames[seaWorld.tier]||'Provisional')+coverage:'Insufficient data for a reliable rating'+coverage;
