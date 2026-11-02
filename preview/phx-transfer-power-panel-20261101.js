@@ -9,7 +9,7 @@ if(panel){
   const cap=byId('phxOfficialCap'),verified=byId('phxCapVerified');
   if(!cap||!verified)return;
   const raw=String(plan.phxEventCap??'').trim();
-  if(raw!==''&&Number.isFinite(Number(raw))&&Number(raw)>0){cap.value=raw;verified.checked=plan.phxEventCapVerified===true;}
+  if(raw!==''&&Number.isFinite(Number(raw))&&Number(raw)>0){cap.value=raw;verified.checked=plan.phxEventCapVerified===true;}else{cap.value='';verified.checked=false;}
  };
  applySavedPlanning();
  window.addEventListener('phx:event-context-updated',applySavedPlanning);
