@@ -491,7 +491,7 @@ phxIdForm.addEventListener('submit',async e=>{
   const rolePriority=roleProfile==='balanced'?'Balanced top-10 account: leadership review recommended.':roleProfile==='multi-category'?'Several top-10 strengths: role review recommended.':'Role suitability cannot yet be established.';
   const recommendationText=document.createElement('p');recommendationText.textContent=coreTop.length>=2?'First review: Rally Leader (hero, troop and equipment rankings). Next: Garrison Holder and Garrison Attacker; their relative suitability cannot be established without combat reports.':'No preferred combat role established from available rankings.';
   const recommendationCaveat=document.createElement('small');recommendationCaveat.textContent='Provisional priority, not a combat rating. Check formations, buffs and battle reports before assigning roles.';
-  const evidenceBox=document.createElement('div');evidenceBox.className='phx-role-evidence-matrix';
+  const evidenceBox=document.createElement('div');evidenceBox.className='phx-role-evidence-matrix';evidenceBox.style.display='grid';evidenceBox.style.gap='12px';
   const roleDefinitions=[
     ['Rally Leader',['hero_total','troop_power','hero_equip'],'Offensive formations and rally buffs'],
     ['Garrison Attacker',['hero_total','troop_power','hero_equip'],'Building assault reports and attack buffs'],
