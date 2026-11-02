@@ -1,3 +1,4 @@
+import {normalizeEventContext, EVIDENCE} from './phx-event-context.mjs';
 import {simulateTransferPower} from './phx-transfer-power-simulator-20261101.js';
 const byId=id=>document.getElementById(id);
 const panel=byId('phxPowerScenario');
@@ -8,8 +9,10 @@ if(panel){
   if(!plan||typeof plan!=='object')return;
   const cap=byId('phxOfficialCap'),verified=byId('phxCapVerified');
   if(!cap||!verified)return;
-  const raw=String(plan.phxEventCap??'').trim();
-  if(raw!==''&&Number.isFinite(Number(raw))&&Number(raw)>0){cap.value=raw;verified.checked=plan.phxEventCapVerified===true;}else{cap.value='';verified.checked=false;}
+  const context=normalizeEventContext(plan);
+  if(context.powerCap.million!==null){cap.value=String(context.powerCap.million);verified.checked=context.powerCap.status===EVIDENCE.CONFIRMED;}else{cap.value='';verified.checked=false;}
+  const status=byId('phxPowerOutcome');
+  if(status&&context.powerCap.status!==EVIDENCE.CONFIRMED)status.textContent='Planning cap is provisional or unknown. Verify official source and event metric before assessing transfer eligibility.';
  };
  applySavedPlanning();
  window.addEventListener('phx:event-context-updated',applySavedPlanning);
