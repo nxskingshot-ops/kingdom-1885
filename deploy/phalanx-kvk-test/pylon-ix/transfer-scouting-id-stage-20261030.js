@@ -484,7 +484,7 @@ phxIdForm.addEventListener('submit',async e=>{
   const nearPromotion=Number.isFinite(selectedScore)&&Number.isFinite(nextThreshold[selectedTier])&&selectedScore>=nextThreshold[selectedTier]-3;
   const tierLabel=(tierNames[selectedTier]||'Rating not available')+(nearPromotion?'+':'');
   const tierStars={mega_whale:'★★★★★',whale:'★★★★★',orca_elite:'★★★★☆',orca:'★★★★☆',strong:'★★★☆☆',solid:'★★☆☆☆',developing:'★☆☆☆☆'};
-  const ratingRange=(tierStars[selectedTier]?tierStars[selectedTier]+' · ':'')+tierLabel;
+  const ratingRange=(tierStars[selectedTier]?tierStars[selectedTier]+' · ':'')+(['orca_elite','mega_whale'].includes(selectedTier)?'◆ ':'')+tierLabel;
   rating.textContent=ratingRange+coverage;
   accountNote.prepend(rating);
   if(seaWorld.status==='PROVISIONAL_RANGE'){
@@ -497,7 +497,7 @@ phxIdForm.addEventListener('submit',async e=>{
   }
   const rules=document.createElement('details');rules.className='phx-scout-muted';
   const rulesTitle=document.createElement('summary');rulesTitle.textContent='ⓘ Rating Method & Data Coverage';rules.append(rulesTitle);
-  const rulesText=document.createElement('p');rulesText.textContent='Provisional weighted rating: Mystic Trial (20%), Master Power (15%), Hero Power (10%), Hero Equipment (10%), Governor Gear (10%), Governor Charms (10%), Pet Power (7.5%), Research (7.5%), True Power (10%). Missing data does not mean poor performance. Stars are displayed only when the classification remains stable despite missing evidence. Thresholds and reference scope remain provisional.';rules.append(rulesText);const coverageInfo=document.createElement('p');coverageInfo.textContent='Data coverage: '+(Number.isFinite(seaWorld.coveragePct)?seaWorld.coveragePct+'%':'not available')+'. Coverage measures available evidence, not player strength.';rules.append(coverageInfo);
+  const rulesText=document.createElement('p');rulesText.textContent='Provisional weighted rating: Mystic Trial (20%), Master Power (15%), Hero Power (10%), Hero Equipment (10%), Governor Gear (10%), Governor Charms (10%), Pet Power (7.5%), Research (7.5%), True Power (10%). Missing data does not mean poor performance. Stars represent the conservatively supported tier; missing evidence and provisional ranges are disclosed separately. Thresholds and reference scope remain provisional.';rules.append(rulesText);const coverageInfo=document.createElement('p');coverageInfo.textContent='Data coverage: '+(Number.isFinite(seaWorld.coveragePct)?seaWorld.coveragePct+'%':'not available')+'. Coverage measures available evidence, not player strength.';rules.append(coverageInfo);
   accountNote.append(rules);
   const summaryTitle=document.createElement('strong');summaryTitle.className='phx-scout-verdict';summaryTitle.textContent=rankEvidence.length>=10?'Broad documented ranking profile':rankEvidence.length?'Partial ranking profile':'Insufficient ranking evidence';accountNote.append(summaryTitle);
   const combatNote=document.createElement('p');combatNote.className='phx-scout-muted';
@@ -525,10 +525,10 @@ phxIdForm.addEventListener('submit',async e=>{
   const legend=document.createElement('details');legend.className='phx-sea-world-legend';legend.style.cssText='margin-top:8px;font-size:12px;text-align:center;width:100%';
   const toggle=document.createElement('summary');toggle.textContent='ⓘ Bewertungsskala anzeigen';toggle.style.cssText='cursor:pointer;color:#b6c5ce;text-align:center;font-weight:400';
   const panel=document.createElement('div');panel.style.cssText='margin-top:8px;padding:10px;border:1px solid #a98749;border-radius:8px;background:#0b1b27;color:#eee;line-height:1.6';
-  const levels=[['★★★★★','Mega Whale','98–100'],['★★★★★','Whale','90–<98'],['★★★★☆','Orca Elite','85–<90'],['★★★★☆','Orca','70–<85'],['★★★☆☆','Strong','55–<70'],['★★☆☆☆','Solid','40–<55'],['★☆☆☆☆','Developing','0–<40']];
+  const levels=[['★★★★★ ◆','Mega Whale','98–100'],['★★★★★','Whale','90–<98'],['★★★★☆ ◆','Orca Elite','85–<90'],['★★★★☆','Orca','70–<85'],['★★★☆☆','Strong','55–<70'],['★★☆☆☆','Solid','40–<55'],['★☆☆☆☆','Developing','0–<40']];
   for(const [stars,name,range] of levels){const line=document.createElement('div');line.textContent=stars+' · '+name+' · '+range+' Punkte';panel.append(line);}
   const note=document.createElement('small');note.textContent='PYLON IX · Account-Bewertung · vorläufige Top-25-Referenz, keine kingdomweite Kalibrierung. Sterne nur bei ausreichender Datenlage; keine Aussage über Kampfeignung.';note.style.cssText='display:block;margin-top:8px';panel.append(note);
-  const plusNote=document.createElement('small');plusNote.textContent='Ein + bedeutet: innerhalb der aktuellen Kategorie höchstens 3 Punkte von der nächsten Stufe entfernt. Bei fehlenden Daten gilt die konservativ belegte Stufe; Unsicherheit wird separat ausgewiesen.';panel.append(plusNote);legend.append(toggle,panel);intelHead.append(intelPlayer,intelRating);intel.append(intelHead);
+  const plusNote=document.createElement('small');plusNote.textContent='◆ kennzeichnet Orca Elite und Mega Whale. Ein + hinter dem Kategorienamen bedeutet: innerhalb der aktuellen Kategorie höchstens 3 Punkte von der nächsten Stufe entfernt. Bei fehlenden Daten gilt die konservativ belegte Stufe; Unsicherheit wird separat ausgewiesen.';panel.append(plusNote);legend.append(toggle,panel);intelHead.append(intelPlayer,intelRating);intel.append(intelHead);
   // TG-peer True Power comparison: only measured, dated, same-capture evidence.
   // A partial leaderboard is not a representative census; do not color without a valid peer cohort.
   const truePowerPeerRating=(()=>{
