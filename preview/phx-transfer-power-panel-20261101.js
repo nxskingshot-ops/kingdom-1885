@@ -9,7 +9,7 @@ if(panel){
   if(!plan||typeof plan!=='object')return;
   const cap=byId('phxOfficialCap'),verified=byId('phxCapVerified');
   if(!cap||!verified)return;
-  const context=normalizeEventContext(plan);
+  const context=normalizeEventContext(plan,{capSource:plan.phxEventCapSource,capVerifiedAt:plan.phxEventCapVerifiedAt});
   if(context.powerCap.million!==null){cap.value=String(context.powerCap.million);verified.checked=context.powerCap.status===EVIDENCE.CONFIRMED;}else{cap.value='';verified.checked=false;}
   const status=byId('phxPowerOutcome');
   if(status&&context.powerCap.status!==EVIDENCE.CONFIRMED)status.textContent='Planning cap is provisional or unknown. Verify official source and event metric before assessing transfer eligibility.';
