@@ -1,0 +1,14 @@
+/* Scoped PHALANX transfer-planning mobile correction; preserve other modules. */
+.phx-planning-context,.phx-planning-context *{box-sizing:border-box}
+.phx-planning-context{min-width:0;max-width:100%;overflow:hidden}
+.phx-planning-context .panel-body{min-width:0}
+.phx-planning-context .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;min-width:0}
+.phx-planning-context .form-grid>label{min-width:0;max-width:100%;display:flex;flex-direction:column;gap:5px;overflow-wrap:anywhere}
+.phx-planning-context input:not([type=checkbox]),.phx-planning-context select{display:block;width:100%;min-width:0;max-width:100%;font:inherit}
+.phx-planning-context label:has(>input[type=checkbox]){display:flex;flex-direction:row;align-items:center;gap:9px}
+.phx-planning-context input[type=checkbox]{flex:0 0 auto}
+.phx-planning-context .phx-planning-power{max-width:100%;margin:12px 0 0!important;padding:12px!important}
+.phx-planning-context .phx-planning-power h2{font-size:1.2rem;line-height:1.25;margin:0 0 8px}
+.phx-planning-context .phx-planning-power .smallprint{margin:8px 0}
+.phx-planning-context #phxSaveEvent,.phx-planning-context #phxCalculatePower{max-width:100%;white-space:normal}
+@media(max-width:650px){.phx-planning-context .form-grid{grid-template-columns:minmax(0,1fr);gap:10px}.phx-planning-context .panel-body{padding:12px!important}.phx-planning-context .phx-planning-power{padding:10px!important}.phx-planning-context input:not([type=checkbox]),.phx-planning-context select{min-height:42px}.phx-planning-context .panel-head h2{font-size:1.3rem;line-height:1.25}}
