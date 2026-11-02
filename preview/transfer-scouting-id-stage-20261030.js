@@ -491,7 +491,26 @@ phxIdForm.addEventListener('submit',async e=>{
   const rolePriority=roleProfile==='balanced'?'Balanced development: evaluate offensive leadership and defensive holding equally.':roleProfile==='multi-category'?'Multiple documented strengths: evaluate both attack and defense; specialization unresolved.':'Insufficient comparable rankings to prioritize attack versus defense.';
   const recommendationText=document.createElement('p');recommendationText.textContent=rolePriority+' '+(coreTop.length>=2?'Rally Leader / Garrison Attacker / Garrison Holder: provisional review.':'No preferred combat role established.')+(eliteRoleTier?'':' Rally Joiner may be considered as support.')+' Actual combat performance remains unverified.';
   const recommendationCaveat=document.createElement('small');recommendationCaveat.textContent='Garrison attack and defense require separate battle evidence. Check alliance Top 15, buffs and formations before assignment.'+(petRank!==null?' Pet ranking: #'+petRank+'.':' Pet ranking unavailable.');
-  recommendation.append(recommendationTitle,recommendationText,recommendationCaveat);
+  const evidenceBox=document.createElement('div');evidenceBox.className='phx-role-evidence-matrix';
+  const roleDefinitions=[
+    ['Rally Leader',['hero_total','troop_power','hero_equip'],'Offensive formations and rally buffs'],
+    ['Garrison Attacker',['hero_total','troop_power','hero_equip'],'Building assault reports and attack buffs'],
+    ['Garrison Holder',['hero_total','troop_power','hero_equip'],'Defensive formations and garrison buffs'],
+    ['KvK Frontline',['troop_power','hero_equip'],'KvK battle records and sustained losses']
+  ];
+  for(const [role,keys,missing] of roleDefinitions){
+    const ranks=keys.map(k=>({key:k,rank:evidenceRank(k)}));
+    const documented=ranks.filter(x=>x.rank!==null);
+    const top10=documented.filter(x=>x.rank<=10);
+    const line=document.createElement('div');line.className='phx-role-evidence-line';
+    const heading=document.createElement('strong');heading.textContent=role;
+    const explanation=document.createElement('span');explanation.textContent=top10.length===keys.length?'Strong account-development indicators':top10.length>=2?'Multiple supporting rankings':documented.length?'Partial account evidence':'Ranking evidence unavailable';
+    const detail=document.createElement('small');detail.textContent=keys.map(k=>k.replaceAll('_',' ')+' '+(evidenceRank(k)!==null?'#'+evidenceRank(k):'n/a')).join(' · ')+' · Not verified: '+missing;
+    line.append(heading,explanation,detail);evidenceBox.append(line);
+  }
+  const evidenceDisclaimer=document.createElement('small');evidenceDisclaimer.textContent='Role evidence reflects shared account rankings only. It cannot distinguish attack from defense or prove combat leadership.';
+  evidenceBox.append(evidenceDisclaimer);
+  recommendation.append(recommendationTitle,recommendationText,recommendationCaveat,evidenceBox);
   intelBody.append(kicker,verdict,narrative,recommendation)
   const rankMap=playerRankingMap(payload.ranks?.values);const rankText=key=>{const n=Number(rankMap[key]?.kingdom_rank);return Number.isInteger(n)&&n>0?'#'+n:'n/a';};const insight=document.createElement('div');insight.className='phx-intel-insights';for(const [label,value] of [['↗ Strengths','Hero '+rankText('hero_total')+' · Troops '+rankText('troop_power')+' · Equipment '+rankText('hero_equip')],['◇ Review','Pet '+rankText('pet_power')+' · Battle evidence pending']]){const cell=document.createElement('div');const strong=document.createElement('strong');strong.textContent=label;const p=document.createElement('p');p.textContent=value;cell.append(strong,p);insight.append(cell);}intelBody.append(insight);intel.append(intelBody);
   const disclosure=document.createElement('details');const disclosureLabel=document.createElement('summary');disclosureLabel.textContent='Evidence-based · Provisional assessment';disclosure.append(disclosureLabel,rules,detail);intel.append(disclosure);
