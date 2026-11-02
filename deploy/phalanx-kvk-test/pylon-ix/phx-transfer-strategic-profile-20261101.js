@@ -19,6 +19,17 @@ export function mountStrategicProfile(target,rankings={}){
   const track=document.createElement('div');track.className='phx-intel-track';
   const fill=document.createElement('div');fill.className='phx-intel-fill';fill.style.width=Math.max(1,101-Math.min(100,item.rank))+'%';track.append(fill);row.append(track);section.append(row);
  }
+ // Historical reference: Lothlorien reportedly saved upgrades before KvK Prep,
+ // then upgraded TG4 to TG5 5/5 during Prep. User-reported, not independently verified.
+ // This example is a reasoning rule, never a factual claim about another player.
+ const coreTop=report.rows.filter(x=>x.key!=='pet_power'&&x.rank<=15);
+ const petUnknown=!report.rows.some(x=>x.key==='pet_power');
+ if(petUnknown&&coreTop.length>=3){
+  const insight=document.createElement('p');
+  insight.className='phx-scout-muted';
+  insight.textContent='KvK Prep timing signal (unverified): strong core rankings alongside unavailable Pet Power may reflect deliberate upgrade prioritization or saved resources. Do not equate missing Pet Power with weak pet buffs or poor battle readiness. Compare dated snapshots and upgrade history before attributing intent.';
+  section.append(insight);
+ }
  const pet=report.rows.find(x=>x.key==='pet_power');if(pet&&pet.rank>10){const note=document.createElement('p');note.className='phx-scout-muted';note.textContent='Pet Power #'+pet.rank+': resource saving for KvK Prep is possible, but unverified. This rank alone is not evidence of poor battle readiness.';section.append(note);}
 
  const paragraph=(label,items,kind,explanation)=>{
