@@ -17,7 +17,7 @@ const fmt=x=>x==null?'–':Number(x).toLocaleString('en-US',{maximumFractionDigi
 let players=[],chosen=new Set(),active=null,canEdit=false;
 // The event-specific cap and metric have not been verified. Never classify invitations from account power.
 function invitationPreview(p){return 'Verify event rules';}
-function showLogin(message=''){canEdit=false;$('login').hidden=false;$('private').hidden=true;$('message').textContent=message;}
+function showLogin(message=''){canEdit=false;$('login').hidden=false;$('private').hidden=true;$('message').textContent=message||'Please sign in with your approved NXS account.';$('message').setAttribute('role','status');}
 function chosenPlayers(){return [...chosen].map(id=>players.find(p=>p.candidate_id===id)).filter(Boolean);}
 function filtered(){const q=$('search').value.trim().toLowerCase();const list=players.filter(p=>[p.player_name,p.kingdom,p.alliance,p.contact_status,p.metadata?.role].some(v=>String(v??'').toLowerCase().includes(q)));const s=$('sort').value;return list.sort((a,b)=>s==='name'?a.player_name.localeCompare(b.player_name):s==='power'?Number(b.power_m||0)-Number(a.power_m||0):Date.parse(b.updated_at)-Date.parse(a.updated_at));}
 function render(){
@@ -39,12 +39,27 @@ $('kingdomNotes').innerHTML=[...kds].sort((a,b)=>b[1]-a[1]).slice(0,5).map(([kd,
 }
 async function load(){const {data,error}=await db.from('transfer_candidates').select('*').order('updated_at',{ascending:false}).limit(1000);
 if(error){$('count').textContent='Access or database error: '+error.message;return false;}players=data||[];chosen=new Set([...chosen].filter(id=>players.some(p=>p.candidate_id===id)));if(!players.some(p=>p.candidate_id===active))active=players[0]?.candidate_id||null;render();if(dossierOpen)renderDossier();return true;}
-async function check(){try{const {data:{user},error}=await db.auth.getUser();if(error||!user){showLogin();return;}
+async function check(){try{
+const {data:{user},error}=await db.auth.getUser();
+if(error){showLogin('Session verification failed: '+error.message+'. Please sign in again.');return;}
+if(!user){showLogin('No active session. Please sign in with your approved NXS account.');return;}
 const {data:membership,error:merror}=await db.from('nxs_memberships').select('role,active,expires_at').eq('user_id',user.id).maybeSingle();
-if(merror||!membership?.active||!['member','r4','r5','admin'].includes(membership.role)||(membership.expires_at&&Date.parse(membership.expires_at)<=Date.now())){showLogin('Approved NXS membership required.');return;}
+if(merror){showLogin('Signed in, but membership verification failed: '+merror.message);return;}
+if(!membership){showLogin('Signed in, but no approved NXS membership was found for this account.');return;}
+if(!membership.active){showLogin('Signed in, but this NXS membership is inactive.');return;}
+if(membership.expires_at&&Date.parse(membership.expires_at)<=Date.now()){showLogin('Signed in, but this NXS membership has expired.');return;}
+if(!['member','r4','r5','admin'].includes(membership.role)){showLogin('Signed in, but this account role is not approved for Transfer Scouting.');return;}
 canEdit=['r4','r5','admin'].includes(membership.role);$('newCandidate').hidden=!canEdit;$('login').hidden=true;$('private').hidden=false;await load();
-}catch(e){showLogin('Unable to verify access: '+e.message)}}
-$('authForm').onsubmit=async e=>{e.preventDefault();$('message').textContent='Signing in…';const {error}=await db.auth.signInWithPassword({email:$('email').value,password:$('password').value});$('password').value='';if(error)showLogin(error.message);else check();};
+}catch(e){showLogin('Unable to verify access: '+(e?.message||'Unknown error'));}}
+$('authForm').onsubmit=async e=>{
+e.preventDefault();const submit=$('authForm').querySelector('button[type="submit"]');if(submit.disabled)return;
+submit.disabled=true;$('message').textContent='Signing in…';
+try{const {error}=await db.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});$('password').value='';
+if(error){showLogin('Sign-in failed: '+error.message);return;}
+await check();
+}catch(error){showLogin('Sign-in request failed: '+(error?.message||'Network error'));}
+finally{submit.disabled=false;}
+};
 $('refresh').onclick=check;$('search').oninput=render;$('sort').onchange=render;
 $('compare').onclick=()=>{const a=chosenPlayers();if(a.length<2){$('comparison').textContent='Select two or three candidates.';return;}
 const rows=[['Kingdom',p=>p.kingdom],['Alliance',p=>p.alliance],['Castle',p=>p.castle_level],['Power',p=>p.power_m==null?'–':fmt(p.power_m)+'M'],['Status',p=>p.contact_status],['Invitation · event verification',p=>invitationPreview(p)],['Transfer',p=>p.transfer_eligibility]];
