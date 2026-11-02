@@ -2,6 +2,12 @@ name: PHALANX isolated Cloudflare Pages test deploy
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - phalanx-cloudflare-test-deploy
+    paths:
+      - 'deploy/phalanx-kvk-test/pylon-ix/**'
+      - '.github/workflows/phalanx-cloudflare-test.yml'
 
 permissions:
   contents: read
@@ -12,6 +18,7 @@ concurrency:
 
 jobs:
   deploy:
+    if: github.ref == 'refs/heads/phalanx-cloudflare-test-deploy'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout isolated branch
