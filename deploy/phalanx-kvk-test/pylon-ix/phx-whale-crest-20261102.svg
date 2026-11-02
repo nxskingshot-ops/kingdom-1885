@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 140" role="img" aria-label="Royal badge ornament">
+<defs><linearGradient id="gold" x2=".2" y2="1"><stop stop-color="#fff2ba"/><stop offset=".45" stop-color="#e7b54d"/><stop offset="1" stop-color="#9b5a16"/></linearGradient><linearGradient id="red" x2="0" y2="1"><stop stop-color="#991c20"/><stop offset=".5" stop-color="#650b13"/><stop offset="1" stop-color="#39060d"/></linearGradient></defs>
+<g fill="none" stroke="url(#gold)" stroke-width="3" stroke-linecap="round">
+<path d="M85 113 Q42 96 47 52 M255 113 Q298 96 293 52"/>
+<path d="M74 106q-24-1-26-18 M66 96q-21-7-19-24 M59 82q-17-11-12-26 M55 67q-12-14-5-27 M266 106q24-1 26-18 M274 96q21-7 19-24 M281 82q17-11 12-26 M285 67q12-14 5-27"/>
+</g>
+<g fill="url(#gold)">
+<ellipse cx="53" cy="91" rx="5" ry="12" transform="rotate(-43 53 91)"/><ellipse cx="48" cy="73" rx="5" ry="11" transform="rotate(-32 48 73)"/><ellipse cx="49" cy="55" rx="5" ry="10" transform="rotate(-18 49 55)"/><ellipse cx="287" cy="91" rx="5" ry="12" transform="rotate(43 287 91)"/><ellipse cx="292" cy="73" rx="5" ry="11" transform="rotate(32 292 73)"/><ellipse cx="291" cy="55" rx="5" ry="10" transform="rotate(18 291 55)"/>
+<path d="M146 34 L139 14 L154 24 L170 4 L186 24 L201 14 L194 34 Z"/><rect x="145" y="34" width="50" height="7" rx="2"/>
+<circle cx="139" cy="13" r="3"/><circle cx="170" cy="4" r="3"/><circle cx="201" cy="13" r="3"/>
+</g>
+<path d="M90 48 L250 48 Q260 48 262 59 L262 103 Q260 114 248 117 L170 127 L92 117 Q80 114 78 103 L78 59 Q80 48 90 48Z" fill="url(#red)" stroke="#f5d17c" stroke-width="5"/>
+<path d="M93 55 L247 55 Q254 55 255 62 L255 100 Q254 107 245 110 L170 119 L95 110 Q86 107 85 100 L85 62 Q86 55 93 55Z" fill="none" stroke="#a96c2b" stroke-width="2"/>
+</svg>
