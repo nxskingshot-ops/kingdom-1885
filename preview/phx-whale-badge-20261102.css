@@ -1,0 +1,37 @@
+/* PYLON IX: compact Whale tier ornament; only presentation changes. */
+.phx-intel-rating .phx-rating-shield {
+  position:relative;
+  display:block;
+  align-self:center;
+  margin:14px auto 8px;
+  padding:9px 18px;
+  border:2px solid #e9bc60;
+  border-radius:10px;
+  background:linear-gradient(140deg,#651016,#b02221 50%,#5b1117);
+  box-shadow:inset 0 0 0 2px #77331c,0 0 12px rgba(244,190,80,.22);
+  color:#ffe3a3;
+  font:800 1.2rem Georgia,serif;
+  letter-spacing:.06em;
+  text-align:center;
+  text-shadow:0 2px 4px #3c1010;
+}
+.phx-intel-rating .phx-rating-shield::before {
+  content:"♛";
+  position:absolute;
+  top:-20px;
+  left:50%;
+  transform:translateX(-50%);
+  color:#f4cf83;
+  font-size:24px;
+}
+.phx-intel-rating .phx-rating-shield::after {
+  content:"❧";
+  position:absolute;
+  bottom:-14px;
+  left:50%;
+  transform:translateX(-50%);
+  color:#f4cf83;
+  font-size:20px;
+}
+.phx-intel-rating {align-items:center;text-align:center}
+.phx-intel-rating .phx-sea-world-legend {align-self:center;text-align:center}
