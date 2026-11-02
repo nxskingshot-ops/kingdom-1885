@@ -477,7 +477,13 @@ phxIdForm.addEventListener('submit',async e=>{
   rating.style.setProperty('position','static','important');rating.style.setProperty('inset','auto','important');rating.style.setProperty('transform','none','important');rating.style.setProperty('float','none','important');rating.style.setProperty('display','block','important');rating.style.setProperty('width','100%','important');rating.style.setProperty('max-width','100%','important');rating.style.setProperty('min-width','0','important');rating.style.setProperty('box-sizing','border-box','important');rating.style.setProperty('white-space','normal','important');rating.style.setProperty('overflow-wrap','anywhere','important');rating.style.setProperty('text-align','center','important');rating.style.setProperty('font-size','clamp(1rem, 4vw, 1.5rem)','important');rating.style.setProperty('line-height','1.3','important');
   const tierNames={mega_whale:'Mega Whale',whale:'Whale',orca_elite:'Orca Elite',orca:'Orca',strong:'Strong',solid:'Solid',developing:'Developing'};
   const coverage='';
-  const ratingRange=seaWorld.stars?seaWorld.stars+' · '+(tierNames[seaWorld.tier]||'Provisional'):seaWorld.status==='PROVISIONAL_RANGE'?(tierNames[seaWorld.lowerTier]||'Provisional')+' – '+(tierNames[seaWorld.upperTier]||'Provisional')+' possible':'Rating not available';
+  // A missing metric must not promote an account into an unverified higher tier.
+  const selectedTier=seaWorld.status==='PROVISIONAL_RANGE'?seaWorld.lowerTier:seaWorld.tier;
+  const selectedScore=seaWorld.status==='PROVISIONAL_RANGE'?seaWorld.scoreLower:seaWorld.scoreLower;
+  const nextThreshold={developing:40,solid:55,strong:70,orca:85,orca_elite:90,whale:98};
+  const nearPromotion=Number.isFinite(selectedScore)&&Number.isFinite(nextThreshold[selectedTier])&&selectedScore>=nextThreshold[selectedTier]-3;
+  const tierLabel=(tierNames[selectedTier]||'Rating not available')+(nearPromotion?'+':'');
+  const ratingRange=(seaWorld.stars?seaWorld.stars+' · ':'')+tierLabel;
   rating.textContent=ratingRange+coverage;
   accountNote.prepend(rating);
   if(seaWorld.status==='PROVISIONAL_RANGE'){
@@ -514,15 +520,23 @@ phxIdForm.addEventListener('submit',async e=>{
   const intel=document.createElement('section');intel.className='phx-scout-section phx-player-intel-card';intel.style.order='-7';
   const intelHead=document.createElement('div');intelHead.className='phx-intel-head';
   const intelPlayer=document.createElement('div');intelPlayer.innerHTML='<small>PHALANX · PLAYER INTELLIGENCE</small>';const intelName=document.createElement('h3');intelName.textContent=name.textContent;const intelMeta=document.createElement('p');intelMeta.textContent=sub.textContent;intelPlayer.append(intelName,intelMeta);
-  const intelRating=document.createElement('div');intelRating.className='phx-intel-rating';const ratingParts=rating.textContent.split(' · ');const ratingStars=document.createElement('strong');ratingStars.textContent=ratingParts[0]||'—';const ratingTier=document.createElement('span');ratingTier.textContent=ratingParts.slice(1).join(' · ');intelRating.append(ratingStars,ratingTier);ratingTier.className='phx-rating-shield';
+  const intelRating=document.createElement('div');intelRating.className='phx-intel-rating';const ratingParts=rating.textContent.split(' · ');const ratingStars=document.createElement('strong');ratingStars.textContent=ratingParts.length>1?ratingParts[0]:'';const ratingTier=document.createElement('span');ratingTier.textContent=ratingParts.length>1?ratingParts.slice(1).join(' · '):ratingParts[0];intelRating.append(ratingStars,ratingTier);ratingTier.className='phx-rating-shield';
   const legend=document.createElement('details');legend.className='phx-sea-world-legend';legend.style.cssText='margin-top:8px;font-size:12px;text-align:center;width:100%';
   const toggle=document.createElement('summary');toggle.textContent='ⓘ Bewertungsskala anzeigen';toggle.style.cssText='cursor:pointer;color:#b6c5ce;text-align:center;font-weight:400';
   const panel=document.createElement('div');panel.style.cssText='margin-top:8px;padding:10px;border:1px solid #a98749;border-radius:8px;background:#0b1b27;color:#eee;line-height:1.6';
-  const levels=[['★★★★★+','Mega Whale','98–100'],['★★★★★','Whale','90–<98'],['★★★★☆+','Orca Elite','85–<90'],['★★★★☆','Orca','70–<85'],['★★★☆☆','Strong','55–<70'],['★★☆☆☆','Solid','40–<55'],['★☆☆☆☆','Developing','0–<40']];
+  const levels=[['★★★★★','Mega Whale','98–100'],['★★★★★','Whale','90–<98'],['★★★★☆','Orca Elite','85–<90'],['★★★★☆','Orca','70–<85'],['★★★☆☆','Strong','55–<70'],['★★☆☆☆','Solid','40–<55'],['★☆☆☆☆','Developing','0–<40']];
   for(const [stars,name,range] of levels){const line=document.createElement('div');line.textContent=stars+' · '+name+' · '+range+' Punkte';panel.append(line);}
   const note=document.createElement('small');note.textContent='PYLON IX · Account-Bewertung · vorläufige Top-25-Referenz, keine kingdomweite Kalibrierung. Sterne nur bei ausreichender Datenlage; keine Aussage über Kampfeignung.';note.style.cssText='display:block;margin-top:8px';panel.append(note);
-  legend.append(toggle,panel);intelHead.append(intelPlayer,intelRating);intel.append(intelHead);
-  const intelMetrics=document.createElement('div');intelMetrics.className='phx-intel-metrics';for(const metric of [...headline.children]){const cell=document.createElement('div');cell.className='phx-intel-metric';const label=metric.querySelector('span')?.textContent||'Castle / TG';const value=metric.querySelector('strong')?.textContent||'Not available';const k=document.createElement('small');k.textContent=label;const v=document.createElement('strong');v.textContent=value;cell.append(k,v);intelMetrics.append(cell);}intel.append(intelMetrics);intel.append(legend);
+  const plusNote=document.createElement('small');plusNote.textContent='Ein + bedeutet: innerhalb der aktuellen Kategorie höchstens 3 Punkte von der nächsten Stufe entfernt. Bei fehlenden Daten gilt die konservativ belegte Stufe; Unsicherheit wird separat ausgewiesen.';panel.append(plusNote);legend.append(toggle,panel);intelHead.append(intelPlayer,intelRating);intel.append(intelHead);
+  const intelMetrics=document.createElement('div');intelMetrics.className='phx-intel-metrics';for(const metric of [...headline.children]){const cell=document.createElement('div');cell.className='phx-intel-metric';const label=metric.querySelector('span')?.textContent||'Castle / TG';const value=metric.querySelector('strong')?.textContent||'Not available';const k=document.createElement('small');k.textContent=label;const v=document.createElement('strong');v.textContent=value;if(label.toLowerCase().includes('true power')){
+    // No verified TG-matched reference distribution is available in this response.
+    // Keep the value neutral rather than inventing a comparative performance rating.
+    v.classList.add('phx-true-power-value');
+    const help=document.createElement('details');help.className='phx-true-power-help';
+    const summary=document.createElement('summary');summary.textContent='ⓘ Farbe & Bewertung';
+    const explanation=document.createElement('p');explanation.textContent='Grün = sehr stark · Blau = stark · Gelb = durchschnittlich · Rot = schwach. Die Einstufung erfolgt erst mit belastbaren Vergleichsdaten von Spielern mit ähnlichem TG-Level. Bis dahin bleibt die Zahl neutral; die Farbe ist keine Schätzung.';
+    help.append(summary,explanation);cell.append(k,v,help);
+   }else cell.append(k,v);intelMetrics.append(cell);}intel.append(intelMetrics);intel.append(legend);
   const intelBody=document.createElement('div');intelBody.className='phx-intel-body';const kicker=document.createElement('div');kicker.className='phx-dossier-brand';kicker.innerHTML='<strong>⚔ PYLON IX</strong><small>ZENTRALE ACCOUNT-BEWERTUNG</small>';const verdict=document.createElement('h4');verdict.textContent=rankEvidence.length>=10?'Elite account · Leadership potential':rankEvidence.length?'Developing account · Further review':'Insufficient ranking evidence';const narrative=document.createElement('p');
   const intelligenceRanks=playerRankingMap(payload.ranks?.values);
   const evidenceRank=k=>{const n=Number(intelligenceRanks[k]?.kingdom_rank);return Number.isInteger(n)&&n>=1&&n<=100?n:null;};
