@@ -489,8 +489,8 @@ phxIdForm.addEventListener('submit',async e=>{
   const eliteRoleTier=['whale','mega_whale','orca','orca_elite'].includes(seaWorld.tier);
   const roleProfile=coreTop.length===3?'balanced':coreTop.length>=2?'multi-category':'incomplete';
   const rolePriority=roleProfile==='balanced'?'Balanced top-10 account: leadership review recommended.':roleProfile==='multi-category'?'Several top-10 strengths: role review recommended.':'Role suitability cannot yet be established.';
-  const recommendationText=document.createElement('p');recommendationText.textContent=rolePriority+' '+(coreTop.length>=2?'Rally Leader, Garrison Attacker and Garrison Holder remain separate candidates.':'No preferred combat role established.')+(eliteRoleTier?'':' Rally Joiner is an additional support option.')+' Battle performance unverified.';
-  const recommendationCaveat=document.createElement('small');recommendationCaveat.textContent='Role assignment requires battle reports and buffs. Alliance placement uses historical Total Power only.'+(petRank!==null?' Pet rank #'+petRank+'.':' Pet ranking unavailable.');
+  const recommendationText=document.createElement('p');recommendationText.textContent=coreTop.length>=2?'First review: Rally Leader (hero, troop and equipment rankings). Next: Garrison Holder and Garrison Attacker; their relative suitability cannot be established without combat reports.':'No preferred combat role established from available rankings.';
+  const recommendationCaveat=document.createElement('small');recommendationCaveat.textContent='Provisional priority, not a combat rating. Check formations, buffs and battle reports before assigning roles.';
   const evidenceBox=document.createElement('div');evidenceBox.className='phx-role-evidence-matrix';
   const roleDefinitions=[
     ['Rally Leader',['hero_total','troop_power','hero_equip'],'Offensive formations and rally buffs'],
@@ -506,12 +506,12 @@ phxIdForm.addEventListener('submit',async e=>{
     const heading=document.createElement('strong');heading.textContent=role;
     const explanation=document.createElement('span');explanation.textContent=top10.length===keys.length?'Strong account-development indicators':top10.length>=2?'Multiple supporting rankings':documented.length?'Partial account evidence':'Ranking evidence unavailable';
     const detail=document.createElement('small');detail.textContent=keys.map(k=>k.replaceAll('_',' ')+' '+(evidenceRank(k)!==null?'#'+evidenceRank(k):'n/a')).join(' · ')+' · Not verified: '+missing;
-    line.append(heading,explanation,detail);evidenceBox.append(line);
+    heading.style.display='block';explanation.style.display='block';detail.style.display='block';line.append(heading,explanation,detail);evidenceBox.append(line);
   }
   const evidenceDisclaimer=document.createElement('small');evidenceDisclaimer.textContent='Role evidence reflects shared account rankings only. It cannot distinguish attack from defense or prove combat leadership.';
   evidenceBox.append(evidenceDisclaimer);
   recommendation.append(recommendationTitle,recommendationText,recommendationCaveat);const evidenceDisclosure=document.createElement('details');evidenceDisclosure.className='phx-role-evidence-disclosure';const evidenceSummary=document.createElement('summary');evidenceSummary.textContent='Role evidence · expand';evidenceDisclosure.append(evidenceSummary,evidenceBox);recommendation.append(evidenceDisclosure);
-  intelBody.append(kicker,verdict,narrative,recommendation)
+  intelBody.append(kicker,verdict,recommendation)
   const rankMap=playerRankingMap(payload.ranks?.values);const rankText=key=>{const n=Number(rankMap[key]?.kingdom_rank);return Number.isInteger(n)&&n>0?'#'+n:'n/a';};const insight=document.createElement('div');insight.className='phx-intel-insights';for(const [label,value] of [['↗ Strengths','Hero '+rankText('hero_total')+' · Troops '+rankText('troop_power')+' · Equipment '+rankText('hero_equip')],['◇ Review','Pet '+rankText('pet_power')+' · Battle evidence pending']]){const cell=document.createElement('div');const strong=document.createElement('strong');strong.textContent=label;const p=document.createElement('p');p.textContent=value;cell.append(strong,p);insight.append(cell);}intelBody.append(insight);intel.append(intelBody);
   const disclosure=document.createElement('details');const disclosureLabel=document.createElement('summary');disclosureLabel.textContent='Evidence-based · Provisional assessment';disclosure.append(disclosureLabel,rules,detail);intel.append(disclosure);
   identity.hidden=true;headline.hidden=true;accountNote.hidden=true;phxIdResult.append(intel);for(const [selector,title] of [['.phx-intel-profile','Kingdom ranking details'],['.phx-event-intelligence','Combat roles & supporting evidence']]){const section=phxIdResult.querySelector(selector);if(section){const fold=document.createElement('details');fold.className='phx-dossier-detail';const label=document.createElement('summary');label.textContent=title;fold.append(label,section);intel.append(fold);}}
