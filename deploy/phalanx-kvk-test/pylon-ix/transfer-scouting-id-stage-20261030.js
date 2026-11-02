@@ -483,7 +483,8 @@ phxIdForm.addEventListener('submit',async e=>{
   const nextThreshold={developing:40,solid:55,strong:70,orca:85,orca_elite:90,whale:98};
   const nearPromotion=Number.isFinite(selectedScore)&&Number.isFinite(nextThreshold[selectedTier])&&selectedScore>=nextThreshold[selectedTier]-3;
   const tierLabel=(tierNames[selectedTier]||'Rating not available')+(nearPromotion?'+':'');
-  const ratingRange=(seaWorld.stars?seaWorld.stars+' · ':'')+tierLabel;
+  const tierStars={mega_whale:'★★★★★',whale:'★★★★★',orca_elite:'★★★★☆',orca:'★★★★☆',strong:'★★★☆☆',solid:'★★☆☆☆',developing:'★☆☆☆☆'};
+  const ratingRange=(tierStars[selectedTier]?tierStars[selectedTier]+' · ':'')+tierLabel;
   rating.textContent=ratingRange+coverage;
   accountNote.prepend(rating);
   if(seaWorld.status==='PROVISIONAL_RANGE'){
