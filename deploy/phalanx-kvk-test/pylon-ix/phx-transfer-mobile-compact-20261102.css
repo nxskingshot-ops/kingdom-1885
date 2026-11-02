@@ -12,3 +12,6 @@
 .phx-planning-context .phx-planning-power .smallprint{margin:8px 0}
 .phx-planning-context #phxSaveEvent,.phx-planning-context #phxCalculatePower{max-width:100%;white-space:normal}
 @media(max-width:650px){.phx-planning-context .form-grid{grid-template-columns:minmax(0,1fr);gap:10px}.phx-planning-context .panel-body{padding:12px!important}.phx-planning-context .phx-planning-power{padding:10px!important}.phx-planning-context input:not([type=checkbox]),.phx-planning-context select{min-height:42px}.phx-planning-context .panel-head h2{font-size:1.3rem;line-height:1.25}}
+
+/* Keep legacy cap controls accessible as a read-only reflection of planning context. */
+.phx-planning-context .phx-planning-power label:has(#phxOfficialCap),.phx-planning-context .phx-planning-power label:has(#phxCapVerified){display:none!important}
