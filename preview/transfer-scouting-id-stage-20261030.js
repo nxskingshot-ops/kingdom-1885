@@ -69,6 +69,30 @@ function openEditor(p){
 }
 $('newCandidate').onclick=()=>{showWorkspace('phxIdPanel');$('phxGovernorId').focus();};
 $('editCandidate').onclick=()=>openEditor(players.find(p=>p.candidate_id===active));
+// Protected removal: explicit confirmation, R4/R5/admin UI gate, exact record ID and verified response.
+const removeCandidateButton=document.createElement('button');
+removeCandidateButton.type='button';removeCandidateButton.textContent='Kandidat entfernen';
+removeCandidateButton.className='secondary phx-remove-candidate';removeCandidateButton.hidden=true;
+$('editCandidate').insertAdjacentElement('afterend',removeCandidateButton);
+removeCandidateButton.onclick=async()=>{
+ const candidate=players.find(p=>p.candidate_id===active);
+ if(!canEdit||!candidate||removeCandidateButton.disabled)return;
+ const id=candidate.candidate_id;
+ if(!window.confirm('Kandidat '+candidate.player_name+' aus der gespeicherten Liste entfernen? Dieser Vorgang kann nicht rückgängig gemacht werden.'))return;
+ removeCandidateButton.disabled=true;
+ try{
+  const {data,error}=await db.from('transfer_candidates').delete().eq('candidate_id',id).select('candidate_id');
+  if(error)throw error;
+  if(!Array.isArray(data)||data.length!==1||data[0].candidate_id!==id)throw Error('Löschung nicht bestätigt.');
+  chosen.delete(id);if(active===id)active=null;
+  if(dossierOpen)closeDossier();
+  await load();
+ }catch(error){window.alert('Kandidat konnte nicht entfernt werden: '+error.message);}
+ finally{removeCandidateButton.disabled=false;}
+};
+const originalRenderCandidate=render;
+render=function(){originalRenderCandidate();removeCandidateButton.hidden=!canEdit||!players.some(p=>p.candidate_id===active);};
+
 function closeEditor(){$('modal').hidden=true}
 $('cancelEdit').onclick=closeEditor;$('closeEdit').onclick=closeEditor;
 
