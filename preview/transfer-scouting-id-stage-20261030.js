@@ -482,7 +482,7 @@ phxIdForm.addEventListener('submit',async e=>{
   const coreTop=core.filter(([k])=>evidenceRank(k)!==null&&evidenceRank(k)<=10);
   const petRank=evidenceRank('pet_power');
   const strengthsText=coreTop.map(([k,label])=>label+' #'+evidenceRank(k)).join(', ');
-  verdict.textContent=coreTop.length===3?'Balanced elite · Leadership candidate':coreTop.length>=2?'Specialized high-potential account':coreTop.length===1?'Documented strength · Further review':'Account profile · Evidence incomplete';
+  verdict.textContent=coreTop.length===3?'Three top-10 strengths · leadership review':coreTop.length>=2?'Multiple top-10 strengths · role review':coreTop.length===1?'One documented top-10 strength':'Ranking evidence insufficient for tactical classification';
   narrative.textContent=coreTop.length>=2?'Documented strengths: '+strengthsText+'. Evaluate Rally Leader, Garrison Attacker and Garrison Holder independently. This is account-development evidence, not proof of combat performance.':coreTop.length===1?'Documented strength: '+strengthsText+'. Additional role-specific evidence is required before recommending leadership.':'Available rankings do not yet support a reliable role recommendation.';
   const recommendation=document.createElement('div');recommendation.className='phx-achilles-recommendation';
   const recommendationTitle=document.createElement('strong');recommendationTitle.textContent='PYLON IX · Tactical recommendation (provisional)';
@@ -490,7 +490,7 @@ phxIdForm.addEventListener('submit',async e=>{
   const roleProfile=coreTop.length===3?'balanced':coreTop.length>=2?'multi-category':'incomplete';
   const rolePriority=roleProfile==='balanced'?'Balanced development: evaluate offensive leadership and defensive holding equally.':roleProfile==='multi-category'?'Multiple documented strengths: evaluate both attack and defense; specialization unresolved.':'Insufficient comparable rankings to prioritize attack versus defense.';
   const recommendationText=document.createElement('p');recommendationText.textContent=rolePriority+' '+(coreTop.length>=2?'Rally Leader / Garrison Attacker / Garrison Holder: provisional review.':'No preferred combat role established.')+(eliteRoleTier?'':' Rally Joiner may be considered as support.')+' Actual combat performance remains unverified.';
-  const recommendationCaveat=document.createElement('small');recommendationCaveat.textContent='Garrison attack and defense require separate battle evidence. Check alliance Top 15, buffs and formations before assignment.'+(petRank!==null?' Pet ranking: #'+petRank+'.':' Pet ranking unavailable.');
+  const recommendationCaveat=document.createElement('small');recommendationCaveat.textContent='Garrison attack and defense require separate battle evidence. Alliance Top 15 is historical Total Power placement, not tactical proof; check buffs, formations and battle reports before assignment.'+(petRank!==null?' Pet ranking: #'+petRank+'.':' Pet ranking unavailable.');
   const evidenceBox=document.createElement('div');evidenceBox.className='phx-role-evidence-matrix';
   const roleDefinitions=[
     ['Rally Leader',['hero_total','troop_power','hero_equip'],'Offensive formations and rally buffs'],
