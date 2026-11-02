@@ -491,35 +491,34 @@ phxIdForm.addEventListener('submit',async e=>{
   const strengthsText=coreTop.map(([k,label])=>label+' #'+evidenceRank(k)).join(', ');
   verdict.textContent=coreTop.length===3?'Ausgewogener Elite-Account · Rollenprüfung':coreTop.length>=2?'Mehrere Top-10-Stärken · Rollenprüfung':coreTop.length===1?'Eine belegte Top-10-Stärke':'Keine belastbare taktische Einordnung möglich';
   narrative.textContent=coreTop.length>=2?'Breite Account-Entwicklung: '+strengthsText+'. '+(petRank!==null?'Pets auf Platz '+petRank+' – relativ zu den Spitzenwerten prüfen.':'Pet-Daten fehlen.')+' Kampfstärke nicht bestätigt.':coreTop.length===1?'Belegte Stärke: '+strengthsText+'. Für eine Rollenempfehlung fehlen weitere Nachweise.':'Die verfügbaren Rankings reichen für eine verlässliche Bewertung nicht aus.';
+  const ranked=[['Helden','hero_total'],['Truppen','troop_power'],['Ausrüstung','hero_equip'],['Pets','pet_power'],['Master Power','master_power'],['Forschung','research_power']].map(([label,key])=>({label,key,rank:evidenceRank(key)}));
+  const known=ranked.filter(x=>x.rank!==null).sort((a,b)=>a.rank-b.rank);
+  const strong=known.filter(x=>x.rank<=10);
+  const developing=known.filter(x=>x.rank>10).sort((a,b)=>b.rank-a.rank);
+  const strengthText=strong.length?strong.slice(0,3).map(x=>x.label+' #'+x.rank).join(' · '):known.length?'Bester dokumentierter Bereich: '+known[0].label+' #'+known[0].rank:'Keine belastbaren Rankings';
+  const relativeGap=developing.length&&strong.length&&developing[0].rank-strong[0].rank>=8?developing[0]:null;
+  verdict.textContent=strong.length>=3?'Breit entwickelter Spitzenaccount':strong.length>=2?'Mehrere ausgeprägte Account-Stärken':strong.length===1?'Account mit klarer Schwerpunktstärke':known.length?'Accountprofil noch nicht eindeutig':'Datenlage für Bewertung unzureichend';
+  narrative.textContent=strong.length?'Stark in '+strengthText+'. '+(relativeGap?relativeGap.label+' (#'+relativeGap.rank+') liegt innerhalb dieses Accounts deutlich hinter den Spitzenbereichen.':'Keine deutliche relative Entwicklungslücke in den bekannten Bereichen.'):'Vorliegende Rankings reichen nicht für eine belastbare Stärkenanalyse.';
   const recommendation=document.createElement('div');recommendation.className='phx-achilles-recommendation';
-  const recommendationTitle=document.createElement('strong');recommendationTitle.textContent='Taktische Einsatzprüfung';
-  const eliteRoleTier=['whale','mega_whale','orca','orca_elite'].includes(seaWorld.tier);
-  const roleProfile=coreTop.length===3?'balanced':coreTop.length>=2?'multi-category':'incomplete';
-  const rolePriority=roleProfile==='balanced'?'Balanced top-10 account: leadership review recommended.':roleProfile==='multi-category'?'Several top-10 strengths: role review recommended.':'Role suitability cannot yet be established.';
-  const recommendationText=document.createElement('p');recommendationText.textContent=coreTop.length>=2?'1. Rally Leader prüfen · 2. Garrison Holder prüfen · 3. Garrison Attacker prüfen. Diese Reihenfolge ist eine Prüfpriorität, keine bestätigte Kampfeignung.':'Keine bevorzugte Kampfrolle aus den verfügbaren Rankings ableitbar.';
-  const recommendationCaveat=document.createElement('small');recommendationCaveat.textContent='Vor der Einteilung: Rally-/Garrison-Buffs, Formationen und aktuelle Gefechtsberichte prüfen.';
-  const evidenceBox=document.createElement('div');evidenceBox.className='phx-role-evidence-matrix';evidenceBox.style.display='grid';evidenceBox.style.gap='12px';
-  const roleDefinitions=[
-    ['Rally Leader',['hero_total','troop_power','hero_equip'],'Offensive formations and rally buffs'],
-    ['Garrison Attacker',['hero_total','troop_power','hero_equip'],'Building assault reports and attack buffs'],
-    ['Garrison Holder',['hero_total','troop_power','hero_equip'],'Defensive formations and garrison buffs'],
-    ['KvK Frontline',['troop_power','hero_equip'],'KvK battle records and sustained losses']
-  ];
-  for(const [role,keys,missing] of roleDefinitions){
-    const ranks=keys.map(k=>({key:k,rank:evidenceRank(k)}));
-    const documented=ranks.filter(x=>x.rank!==null);
-    const top10=documented.filter(x=>x.rank<=10);
-    const line=document.createElement('div');line.className='phx-role-evidence-line';
-    const heading=document.createElement('strong');heading.textContent=role;
-    const explanation=document.createElement('span');explanation.textContent=top10.length===keys.length?'Strong account-development indicators':top10.length>=2?'Multiple supporting rankings':documented.length?'Partial account evidence':'Ranking evidence unavailable';
-    const detail=document.createElement('small');detail.textContent=keys.map(k=>k.replaceAll('_',' ')+' '+(evidenceRank(k)!==null?'#'+evidenceRank(k):'n/a')).join(' · ')+' · Not verified: '+missing;
-    heading.style.display='block';explanation.style.display='block';detail.style.display='block';line.append(heading,explanation,detail);evidenceBox.append(line);
-  }
-  const evidenceDisclaimer=document.createElement('small');evidenceDisclaimer.textContent='Role evidence reflects shared account rankings only. It cannot distinguish attack from defense or prove combat leadership.';
-  evidenceBox.append(evidenceDisclaimer);
-  recommendation.append(recommendationTitle,recommendationText,recommendationCaveat);recommendationTitle.style.display='block';recommendationText.style.margin='8px 0';const evidenceDisclosure=document.createElement('details');evidenceDisclosure.className='phx-role-evidence-disclosure';const evidenceSummary=document.createElement('summary');evidenceSummary.textContent='Rollennachweise anzeigen';evidenceDisclosure.append(evidenceSummary,evidenceBox);recommendation.append(evidenceDisclosure);
-  intelBody.append(kicker,verdict,narrative,recommendation)
-  const rankMap=playerRankingMap(payload.ranks?.values);const rankText=key=>{const n=Number(rankMap[key]?.kingdom_rank);return Number.isInteger(n)&&n>0?'#'+n:'n/a';};const insight=document.createElement('div');insight.className='phx-intel-insights';for(const [label,value] of [['↗ Strengths','Hero '+rankText('hero_total')+' · Troops '+rankText('troop_power')+' · Equipment '+rankText('hero_equip')],['◇ Review','Pet '+rankText('pet_power')+' · Battle evidence pending']]){const cell=document.createElement('div');const strong=document.createElement('strong');strong.textContent=label;const p=document.createElement('p');p.textContent=value;cell.append(strong,p);insight.append(cell);}intelBody.append(insight);intel.append(intelBody);
+  const recommendationTitle=document.createElement('strong');recommendationTitle.textContent='Taktischer Nutzen für die Allianz';
+  const recommendationText=document.createElement('p');
+  const leadershipEvidence=['hero_total','troop_power','hero_equip'].filter(k=>evidenceRank(k)!==null&&evidenceRank(k)<=10).length;
+  const troop=evidenceRank('troop_power'),hero=evidenceRank('hero_total'),equip=evidenceRank('hero_equip');
+  recommendationText.textContent=leadershipEvidence>=3?'Starke Helden, Truppen und Ausrüstung machen den Account zu einem Kandidaten für tragende KvK-Aufgaben. Rally-Führung ist eine sinnvolle Prüfoption; ob er Angriffe oder Garnisonen besser führt, ist aus diesen Werten nicht erkennbar.':leadershipEvidence>=2?'Mehrere starke Kernbereiche sprechen für einen möglichen Beitrag in wichtigen KvK-Gefechten. Eine Führungsrolle ist erst nach Prüfung der jeweiligen Kampfbuffs sinnvoll.':troop!==null&&troop<=15?'Die Truppenentwicklung ist ein positiver Hinweis für KvK-Einsätze. Für Rally- oder Garnisonsführung fehlen ausreichende zusätzliche Nachweise.':'Aus den derzeitigen Daten ergibt sich keine belastbare bevorzugte Kampfrolle. Zunächst Einsatzprofil und Gefechtsdaten prüfen.';
+  const conclusion=document.createElement('p');conclusion.className='phx-scout-conclusion';conclusion.textContent=leadershipEvidence>=2?'Empfehlung: Als möglichen Schlüsselspieler prüfen. Vor einer Zusage aktuelle Rally-/Garnisonsbuffs, Formationen, Gefechtsberichte und Verfügbarkeit abgleichen.':'Empfehlung: Weitere Account- und Kampfdaten einholen, bevor eine feste Allianzrolle vergeben wird.';
+  const evidenceDisclosure=document.createElement('details');evidenceDisclosure.className='phx-role-evidence-disclosure';
+  const evidenceSummary=document.createElement('summary');evidenceSummary.textContent='Taktische Nachweise und Grenzen';evidenceDisclosure.append(evidenceSummary);
+  const evidenceBox=document.createElement('div');evidenceBox.className='phx-role-evidence-matrix';
+  for(const [role,reason,missing] of [
+    ['Rally Leader','Helden '+(hero===null?'ohne Rang':'#'+hero)+' · Ausrüstung '+(equip===null?'ohne Rang':'#'+equip),'Angriffsformationen, Rally-Buffs, Kampfberichte'],
+    ['Garrison Holder','Truppen '+(troop===null?'ohne Rang':'#'+troop)+' · Ausrüstung '+(equip===null?'ohne Rang':'#'+equip),'Defensivformationen, Garnisonsbuffs, Halteberichte'],
+    ['KvK-Kämpfer','Truppen '+(troop===null?'ohne Rang':'#'+troop)+' · Helden '+(hero===null?'ohne Rang':'#'+hero),'Aktivität, Heilkapazität und dokumentierte Gefechte']
+  ]){const line=document.createElement('p');line.style.margin='9px 0';const name=document.createElement('strong');name.textContent=role+' · ';line.append(name,document.createTextNode(reason+'. Offen: '+missing+'.'));evidenceBox.append(line);}
+  const disclaimer=document.createElement('small');disclaimer.textContent='Rankings belegen Accountentwicklung, nicht Angriffserfolg, Verteidigungsleistung oder Führungskompetenz.';evidenceBox.append(disclaimer);evidenceDisclosure.append(evidenceBox);
+  recommendation.append(recommendationTitle,recommendationText,conclusion,evidenceDisclosure);
+  const insight=document.createElement('div');insight.className='phx-intel-insights';
+  for(const [label,value] of [['↗ Stärken',strengthText],['◇ Entwicklungsfelder',relativeGap?relativeGap.label+' #'+relativeGap.rank+' · relativ zu den Spitzenbereichen':'Keine gesicherte Schwäche; Kampfnachweise fehlen']]){const cell=document.createElement('div');const heading=document.createElement('strong');heading.textContent=label;const body=document.createElement('p');body.textContent=value;cell.append(heading,body);insight.append(cell);}
+  intelBody.append(kicker,verdict,narrative,insight,recommendation);intel.append(intelBody);
   const disclosure=document.createElement('details');const disclosureLabel=document.createElement('summary');disclosureLabel.textContent='Evidence-based · Provisional assessment';disclosure.append(disclosureLabel,rules,detail);intel.append(disclosure);
   identity.hidden=true;headline.hidden=true;accountNote.hidden=true;phxIdResult.append(intel);for(const [selector,title] of [['.phx-intel-profile','Kingdom ranking details'],['.phx-event-intelligence','Combat roles & supporting evidence']]){const section=phxIdResult.querySelector(selector);if(section){const fold=document.createElement('details');fold.className='phx-dossier-detail';const label=document.createElement('summary');label.textContent=title;fold.append(label,section);intel.append(fold);}}
   const placementSection=makeSection('Allianzvergleich','Historische Gesamtstärke, keine aktuelle Kampfkraft');intelBody.append(placementSection);
