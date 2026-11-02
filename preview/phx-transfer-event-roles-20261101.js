@@ -17,8 +17,9 @@ export function evaluateEventRoles(rankings={},player={},context={}){
 }
 export function mountEventRoles(target,rankings={},player={},context={}){
  const data=evaluateEventRoles(rankings,player,context);
- const section=document.createElement('section');section.className='phx-scout-section phx-event-intelligence';const quick=document.createElement('p');quick.className='phx-scout-muted';quick.textContent='Strategic projection · '+(data.roleEvidence.rallyLeader.top10>=2?'Leadership evaluation priority':'Combat role unverified')+' · '+data.top15Count+' Top-15 ranking signals. Battle performance not certified.';section.append(quick);
+ const section=document.createElement('section');section.className='phx-scout-section phx-event-intelligence';
  const heading=document.createElement('h4');heading.textContent='PYLON IX · Strategic Role Intelligence';section.append(heading);
+ const quick=document.createElement('p');quick.className='phx-scout-muted phx-pylon-summary';quick.textContent='Strategic projection · '+(data.roleEvidence.rallyLeader.top10>=2?'Leadership evaluation priority':'Combat role unverified')+' · '+data.top15Count+' Top-15 ranking signals. Battle performance not certified.';section.append(quick);
  for(const [title,detail] of [['Kingdom War Intelligence',data.kvk],['Alliance Event Intelligence',data.events],['Role Allocation',data.allocation],['Troop Evidence',data.joiner]]){
  const p=document.createElement('p');const strong=document.createElement('strong');strong.textContent=title+': ';p.append(strong,document.createTextNode(detail));section.append(p);
  }
