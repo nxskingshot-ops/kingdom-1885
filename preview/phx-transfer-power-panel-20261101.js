@@ -5,11 +5,16 @@ const panel=byId('phxPowerScenario');
 if(panel){
  const applySavedPlanning=()=>{
   let plan;
-  try{plan=JSON.parse(localStorage.getItem('phx-transfer-event-plan-v1')||'null');}catch(_){return;}
-  if(!plan||typeof plan!=='object')return;
+  try{plan=JSON.parse(localStorage.getItem('phx-transfer-event-plan-v1')||'null');}catch(_){plan=null;}
   const cap=byId('phxOfficialCap'),verified=byId('phxCapVerified');
   if(!cap||!verified)return;
   verified.disabled=true; // A local checkbox cannot establish independent verification.
+  if(!plan||typeof plan!=='object'||Array.isArray(plan)){
+   cap.value='';verified.checked=false;
+   const status=byId('phxPowerOutcome');
+   if(status)status.textContent='No valid saved planning cap. Enter a new plan before comparing scenarios.';
+   return;
+  }
   const context=normalizeEventContext(plan,{capSource:plan.phxEventCapSource,capVerifiedAt:plan.phxEventCapVerifiedAt});
   if(context.powerCap.million!==null){cap.value=String(context.powerCap.million);verified.checked=context.powerCap.status===EVIDENCE.CONFIRMED;}else{cap.value='';verified.checked=false;}
   const status=byId('phxPowerOutcome');
