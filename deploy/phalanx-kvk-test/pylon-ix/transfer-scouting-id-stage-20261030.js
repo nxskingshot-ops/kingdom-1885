@@ -583,6 +583,13 @@ phxIdForm.addEventListener('submit',async e=>{
    const exact=evaluate(peers.filter(x=>x.castle_level===castle.text),'gleiche TG-Ausbaustufe');
    return exact||evaluate(peers.filter(x=>x.castle_level.startsWith('TG'+ownTG[1]+' ')),'gleiche TG-Hauptstufe');
   })();
+  const rankProfile=(()=>{
+   const keys=['research_power','troop_power','hero_total','hero_equip','master_power','gov_gear','gov_charm','mystic_trial'];
+   const ranks=keys.map(k=>Number(seaMap[k]?.kingdom_rank)).filter(n=>Number.isInteger(n)&&n>=1&&n<=100).sort((a,b)=>a-b);
+   if(ranks.length<4)return null;
+   const median=(ranks[Math.floor((ranks.length-1)/2)]+ranks[Math.floor(ranks.length/2)])/2;
+   return {count:ranks.length,median,title:median<=10?'Sehr stark':median<=25?'Stark':median<=50?'Durchschnittlich':'Entwicklungsbedarf',color:median<=10?'#4ADE80':median<=25?'#38BDF8':median<=50?'#FACC15':'#FB7185'};
+  })();
   const intelMetrics=document.createElement('div');intelMetrics.className='phx-intel-metrics';for(const metric of [...headline.children]){const cell=document.createElement('div');cell.className='phx-intel-metric';const label=metric.querySelector('span')?.textContent||'Castle / TG';const value=metric.querySelector('strong')?.textContent||'Not available';const k=document.createElement('small');k.textContent=label;const v=document.createElement('strong');v.textContent=value;if(label.toLowerCase().includes('true power')){
     // No verified TG-matched reference distribution is available in this response.
     // Keep the value neutral rather than inventing a comparative performance rating.
