@@ -21,7 +21,7 @@ export function assessPlayer(values,options={}){
  ];
  return {evidence,strongest,weakest,notes,roles,coverage:ranked.length,sourceKingdom:options.kingdom??null,disclaimer:'Kingdom ranks are not alliance ranks. Role signals are provisional.'};
 }
-export function alliancePlacement(candidate,roster,metric='personal_power'){
+export function alliancePlacement(candidate,roster,metric='personal_power',snapshot={}){
  const key=canonicalRankingName(metric);
  const value=asNumber(playerRankingMap(candidate)[key]?.value);
  if(value===null)return {status:'unknown',reason:'Candidate metric unavailable'};
@@ -30,7 +30,8 @@ export function alliancePlacement(candidate,roster,metric='personal_power'){
  const sameAlliance=valid.every(p=>p.alliance===roster[0]?.alliance);
  const complete=roster.every(p=>p.metrics&&asNumber(p.metrics[key])!==null);
  const sameCapture=valid.length>0&&valid.every(p=>p.sourceAt&&p.sourceAt===valid[0].sourceAt);
- if(!sameAlliance||!complete||!sameCapture)return {status:'unknown',reason:'Complete, single-alliance, same-capture roster required'};
+ const proven=snapshot.complete===true&&Number.isSafeInteger(snapshot.expectedMemberCount)&&snapshot.expectedMemberCount===roster.length&&typeof snapshot.alliance==='string'&&snapshot.alliance.length>0&&snapshot.alliance===roster[0]?.alliance&&typeof snapshot.capturedAt==='string'&&snapshot.capturedAt.length>0&&snapshot.capturedAt===valid[0]?.sourceAt&&new Set(roster.map(p=>String(p.id??''))).size===roster.length&&roster.every(p=>p.id!=null&&String(p.id).length>0); 
+ if(!sameAlliance||!complete||!sameCapture||!proven)return {status:'unknown',reason:'Verified complete alliance roster, distinct IDs and synchronized snapshot metadata required'};
  const ahead=valid.filter(p=>p.value>value).length;
  const tied=valid.filter(p=>p.value===value).length;
  return {status:'ranked',rank:ahead+1,tied,top15:ahead+1<=15,rosterSize:valid.length,metric:key,sourceAt:valid[0].sourceAt};
