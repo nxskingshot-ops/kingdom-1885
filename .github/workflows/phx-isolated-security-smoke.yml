@@ -65,6 +65,26 @@ jobs:
             exit 1
           fi
           echo "PASS: unauthorized origin reset denied (HTTP $status)"
+      - name: Verify preflight from untrusted origin does not grant CORS access
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --silent --show-error --max-time 20 -D /tmp/phx-cors-headers -o /dev/null -X OPTIONS "$PHX_TEST_URL" -H 'Origin: https://unauthorized.example' -H 'Access-Control-Request-Method: POST'
+          if grep -iq '^access-control-allow-origin: https://unauthorized.example' /tmp/phx-cors-headers; then
+            echo "FAIL: untrusted origin authorized by CORS"
+            exit 1
+          fi
+          echo "PASS: untrusted origin not authorized by CORS"
+      - name: Verify cross-origin request without JWT cannot mutate
+        shell: bash
+        run: |
+          set -euo pipefail
+          status=$(curl --silent --show-error --max-time 20 -o /dev/null -w '%{http_code}' -X POST "$PHX_TEST_URL" -H 'Origin: https://unauthorized.example' -H 'Content-Type: application/json' --data '{"action":"approve","id":990011}')
+          if [[ "$status" != 401 && "$status" != 403 ]]; then
+            echo "FAIL: untrusted origin without JWT returned HTTP $status"
+            exit 1
+          fi
+          echo "PASS: untrusted origin without JWT denied"
       - name: Report remaining coverage
         run: |
           echo "NOT TESTED: authenticated officer approval/rejection, account creation, reset, GOD rights, transactional failure recovery."
