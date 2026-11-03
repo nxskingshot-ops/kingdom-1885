@@ -571,7 +571,7 @@ phxIdForm.addEventListener('submit',async e=>{
    if(!ownTG||!Array.isArray(internalPlayers))return null;
    const peers=internalPlayers.filter(x=>x&&x.true_power_verified===true&&Number.isFinite(Number(x.true_power))&&Number(x.true_power)>=0&&typeof x.captured_at==='string'&&x.captured_at.length>0&&typeof x.castle_level==='string'&&/^TG\d+ [0-5]\/5$/.test(x.castle_level));
    const evaluate=(list,scope)=>{
-    if(list.length<20)return null;
+    if(list.length<5)return null;
     const times=new Set(list.map(x=>x.captured_at));
     if(times.size!==1)return null;
     const values=list.map(x=>Number(x.true_power)).sort((a,b)=>a-b);
@@ -591,7 +591,7 @@ phxIdForm.addEventListener('submit',async e=>{
     const help=document.createElement('details');help.className='phx-true-power-help';
     const summary=document.createElement('summary');summary.textContent='ⓘ';summary.title='Farbcode und Vergleichsbewertung';summary.setAttribute('aria-label','Farbcode und Vergleichsbewertung');summary.style.cssText='cursor:pointer;list-style:none;font-size:20px;width:25px;height:25px;display:flex;align-items:center;justify-content:center';
     const explanation=document.createElement('p');explanation.textContent='Grün = sehr stark · Blau = stark · Gelb = durchschnittlich · Rot = schwach. Die Einstufung erfolgt erst mit belastbaren Vergleichsdaten von Spielern mit ähnlichem TG-Level. Bis dahin bleibt die Zahl neutral; die Farbe ist keine Schätzung.';
-    if(truePowerPeerRating)explanation.textContent+=' Aktuelle Einstufung: '+truePowerPeerRating.title+' (Perzentil '+truePowerPeerRating.percentile+', '+truePowerPeerRating.count+' Vergleichsspieler, '+truePowerPeerRating.scope+', Datenstand '+truePowerPeerRating.capture+').';else explanation.textContent+=' Derzeit keine ausreichende, verifizierte Vergleichsgruppe (mindestens 20 gleichzeitige True-Power-Messungen).';help.append(summary,explanation);cell.append(k,v,help);
+    if(truePowerPeerRating)explanation.textContent+=' Aktuelle Einstufung: '+truePowerPeerRating.title+' (Perzentil '+truePowerPeerRating.percentile+', '+truePowerPeerRating.count+' Vergleichsspieler, '+truePowerPeerRating.scope+', Datenstand '+truePowerPeerRating.capture+').';else explanation.textContent+=' Derzeit keine ausreichende, verifizierte Vergleichsgruppe (mindestens 5 gleichzeitige True-Power-Messungen).';help.append(summary,explanation);cell.append(k,v,help);
    }else cell.append(k,v);intelMetrics.append(cell);}intel.append(intelMetrics);intel.append(legend);
   const intelBody=document.createElement('div');intelBody.className='phx-intel-body';const kicker=document.createElement('div');kicker.className='phx-dossier-brand';kicker.innerHTML='<strong>⚔ PYLON IX</strong><small>ZENTRALE ACCOUNT-BEWERTUNG</small>';const verdict=document.createElement('h4');verdict.textContent=rankEvidence.length>=10?'Elite account · Leadership potential':rankEvidence.length?'Developing account · Further review':'Insufficient ranking evidence';const narrative=document.createElement('p');
   const intelligenceRanks=playerRankingMap(payload.ranks?.values);
