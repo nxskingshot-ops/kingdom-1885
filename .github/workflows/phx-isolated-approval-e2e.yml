@@ -1,0 +1,61 @@
+name: PHALANX isolated approval E2E
+on:
+  push:
+    branches:
+      - test/phx-security-e2e-20261103
+    paths:
+      - .github/workflows/phx-isolated-approval-e2e.yml
+  workflow_dispatch:
+    inputs:
+      request_id:
+        description: "Existing synthetic pending request ID (test project only)"
+        required: true
+        type: string
+      confirm:
+        description: "Type APPROVE_SYNTHETIC_TEST to authorize one account creation"
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  registration:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Approval workflow registered; no mutation on push."
+  approval:
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      BASE: https://yuyvmbdybwpwpqsipfjt.supabase.co
+      KEY: ${{ secrets.PHX_TEST_PUBLISHABLE_KEY }}
+      EMAIL: ${{ secrets.PHX_TEST_OFFICER_EMAIL }}
+      PASSWORD: ${{ secrets.PHX_TEST_OFFICER_PASSWORD }}
+      REQUEST_ID: ${{ inputs.request_id }}
+      CONFIRM: ${{ inputs.confirm }}
+    steps:
+      - name: Verify exact test scope and confirmation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$BASE" = "https://yuyvmbdybwpwpqsipfjt.supabase.co"
+          test "$CONFIRM" = APPROVE_SYNTHETIC_TEST
+          [[ "$REQUEST_ID" =~ ^9900[0-9]{2}$ ]] || exit 1
+          test -n "$KEY" && test -n "$EMAIL" && test -n "$PASSWORD"
+      - name: Approve existing synthetic request exactly once
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          trap 'rm -f /tmp/phx-approve-*' EXIT
+          payload=$(jq -nc --arg e "$EMAIL" --arg p "$PASSWORD" '{email:$e,password:$p}')
+          auth_code=$(curl -sS --max-time 20 -o /tmp/phx-approve-auth -w '%{http_code}' -X POST "$BASE/auth/v1/token?grant_type=password" -H "apikey: $KEY" -H 'Content-Type: application/json' --data "$payload")
+          [[ "$auth_code" == 200 ]] || { echo "FAIL: officer authentication HTTP $auth_code"; exit 1; }
+          token=$(jq -er '.access_token' /tmp/phx-approve-auth)
+          echo "::add-mask::$token"
+          body=$(jq -nc --argjson id "$REQUEST_ID" '{action:"approve",id:$id,grant:"member"}')
+          code=$(curl -sS --max-time 30 -o /tmp/phx-approve-result -w '%{http_code}' -X POST "$BASE/functions/v1/nexus-access-review" -H "apikey: $KEY" -H "Authorization: Bearer $token" -H 'Origin: https://nxskingshot-ops.github.io' -H 'Content-Type: application/json' --data "$body")
+          [[ "$code" == 200 ]] && [[ "$(jq -r '.status // empty' /tmp/phx-approve-result)" == approved ]] || { echo "FAIL: approval HTTP $code; check isolated DB for reconciliation"; exit 1; }
+          echo "PASS: isolated HTTP approval returned 200/approved; secrets and generated login credentials withheld."
+      - name: Verification boundary
+        run: echo "Independent SQL verification of Auth identity, membership, request and immutable binding is still required."
