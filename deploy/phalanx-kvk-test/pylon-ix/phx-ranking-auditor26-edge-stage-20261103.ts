@@ -4,7 +4,7 @@ const boards = ['personal_power','kills','town_center','rebel_conquest','single_
 const json = (body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:{'content-type':'application/json','cache-control':'no-store'}});
 Deno.serve(async(req:Request)=>{
  if(req.method!=='POST') return json({ok:false,error:'method_not_allowed'},405);
- const auth=req.headers.get('authorization')?.replace(/^Bearer\\s+/i,'');
+ const auth=req.headers.get('authorization')?.replace(/^Bearer\s+/i,'');
  const serviceKey=Deno.env.get('SUPABASE_SERVICE_ROLE_KEY'),key=Deno.env.get('MIGHTPULSE_API_KEY');
  if(!auth||!serviceKey||auth!==serviceKey) return json({ok:false,error:'unauthorized'},401);
  if(!key) return json({ok:false,error:'provider_not_configured'},503);
