@@ -523,6 +523,23 @@ phxIdForm.addEventListener('submit',async e=>{
    combatStrengths.textContent='Documented Top-10 category placements: '+combatEvidence.documentedStrengths.join(' · ')+'.';
    accountNote.append(combatStrengths);
   }
+  // KvK deployment decisions are relative to the selected destination alliance, never to an opponent.
+  // No joiner grading, event-leader inference, or fabricated role ranks.
+  const destinationAlliance=String($('internalAlliance')?.value||'NXS').trim()||'NXS';
+  const alliancePeers=Array.isArray(internalPlayers)?internalPlayers.filter(x=>String(x.alliance_tag||'').trim().toUpperCase()===destinationAlliance.toUpperCase()):[];
+  const deployment=document.createElement('section');deployment.className='phx-scout-section phx-kvk-deployment';
+  const deploymentTitle=document.createElement('h4');deploymentTitle.textContent='KvK Battles · '+destinationAlliance+' deployment';deployment.append(deploymentTitle);
+  const deploymentInfo=document.createElement('p');deploymentInfo.className='phx-scout-muted';
+  deploymentInfo.textContent=alliancePeers.length
+    ?'Available '+destinationAlliance+' comparison records: '+alliancePeers.length+'. Candidate is assessed as a potential addition; opponents and alliance events are excluded.'
+    :'No current '+destinationAlliance+' comparison cohort loaded. Load the #1885 player list and select the destination alliance before assigning any KvK leadership position.';
+  deployment.append(deploymentInfo);
+  const deploymentRoles=document.createElement('p');deploymentRoles.className='phx-scout-muted';
+  deploymentRoles.textContent='KvK Rally Leader: not verified · KvK Garrison Leader: not verified. Account tier alone does not establish role suitability; verified, comparable role-specific evidence and an alliance-relative ranking are required.';
+  deployment.append(deploymentRoles);
+  const deploymentPolicy=document.createElement('p');deploymentPolicy.className='phx-scout-muted';
+  deploymentPolicy.textContent='Deployment priority is determined by the best available accounts within the destination alliance, not the opponent. No Rally Joiner score or alliance-event leader score.';
+  deployment.append(deploymentPolicy);accountNote.append(deployment);
   const summaryGrid=document.createElement('div');summaryGrid.className='phx-scout-facts';
   for(const [label,value] of [['Verified rankings',String(rankEvidence.length)],['Best kingdom rank',rankEvidence.length?'#'+rankEvidence[0].rank:'Not available']]){const cell=document.createElement('div');const k=document.createElement('span');k.textContent=label;const v=document.createElement('strong');v.textContent=value;cell.append(k,v);summaryGrid.append(cell);}
   accountNote.append(summaryGrid);
