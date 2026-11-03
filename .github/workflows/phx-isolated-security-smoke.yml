@@ -1,0 +1,40 @@
+name: PHALANX isolated security smoke tests
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  isolated-security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      PHX_TEST_URL: https://yuyvmbdybwpwpqsipfjt.supabase.co/functions/v1/nexus-access-review
+    steps:
+      - name: Verify isolated project and no credentials in logs
+        shell: bash
+        run: |
+          test "$PHX_TEST_URL" = "https://yuyvmbdybwpwpqsipfjt.supabase.co/functions/v1/nexus-access-review"
+      - name: Verify unauthenticated requests are rejected
+        shell: bash
+        run: |
+          set -euo pipefail
+          status=$(curl --silent --show-error --max-time 20 --output /tmp/phx-response --write-out '%{http_code}' -X POST "$PHX_TEST_URL" -H 'Content-Type: application/json' --data '{"action":"reset","id":990011}')
+          if [[ "$status" != "401" && "$status" != "403" ]]; then
+            echo "FAIL: unauthenticated request returned HTTP $status"
+            exit 1
+          fi
+          echo "PASS: unauthenticated reset denied (HTTP $status)"
+      - name: Verify invalid bearer is rejected
+        shell: bash
+        run: |
+          set -euo pipefail
+          status=$(curl --silent --show-error --max-time 20 --output /tmp/phx-response --write-out '%{http_code}' -X POST "$PHX_TEST_URL" -H 'Content-Type: application/json' -H 'Authorization: Bearer invalid.synthetic.jwt' --data '{"action":"approve","id":990011}')
+          if [[ "$status" != "401" && "$status" != "403" ]]; then
+            echo "FAIL: invalid JWT returned HTTP $status"
+            exit 1
+          fi
+          echo "PASS: invalid bearer denied (HTTP $status)"
+      - name: Report remaining coverage
+        run: |
+          echo "NOT TESTED: authenticated officer approval/rejection, account creation, reset, GOD rights, transactional failure recovery."
+          echo "This workflow intentionally does not create or modify any Auth users, production data or credentials."
