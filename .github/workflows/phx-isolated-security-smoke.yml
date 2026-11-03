@@ -1,6 +1,9 @@
 name: PHALANX isolated security smoke tests
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - test/phx-security-e2e-20261103
 permissions:
   contents: read
 jobs:
