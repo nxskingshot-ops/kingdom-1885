@@ -1,0 +1,33 @@
+name: PHALANX GOD Mode isolated PostgreSQL gate
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  owner-guard-fixture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: fixture
+          POSTGRES_PASSWORD: fixture_only_not_production
+          POSTGRES_DB: isolated_gate
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U fixture -d isolated_gate"
+          --health-interval 5s --health-timeout 3s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run disposable fixture only (no production credentials)
+        env:
+          PGHOST: localhost
+          PGPORT: "5432"
+          PGUSER: fixture
+          PGPASSWORD: fixture_only_not_production
+          PGDATABASE: isolated_gate
+        run: |
+          psql --version
+          psql -X -v ON_ERROR_STOP=1 -f security/tests/phx-god-mode-disposable-gate-20261103.sql
