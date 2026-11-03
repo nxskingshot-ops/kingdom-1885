@@ -1,3 +1,4 @@
+import {assessPlayer} from './transfer-assessment-20261103.js';
 import { candidateFromLookup, duplicateLookupFilter } from './transfer-id-candidate-20261030.js';
 import { formatPlayerNumber, formatPlayerUtc, formatPlayerSection, playerLookupError, playerRankingRows, rankingLabels, canonicalRankingName, playerRankingMap, rankingSourceText, playerSummaryMetrics, formatCastle, compactPower } from './transfer-id-display-20261030.js';
 const SUPABASE_URL='https://hcjrdofkdkasznywvcxo.supabase.co';
@@ -254,6 +255,18 @@ function applySmartDossierNavigation(){
   button.setAttribute('aria-pressed',String(({identity:'overview',history:'comparison'})[key]===dossierSmartGroup||key===dossierSmartGroup));
  });
 }
+function renderAssessmentSection(values,kingdom){
+ const section=document.createElement('section');section.className='phx-assessment';section.setAttribute('aria-label','Scouting assessment');
+ const heading=document.createElement('h3');heading.textContent='Scouting Intelligence · Preliminary';section.append(heading);
+ const a=assessPlayer(values,{kingdom});
+ const summary=document.createElement('p');summary.textContent=a.coverage?'Measured ranking evidence: '+a.coverage+' core categories. Source-kingdom ranking positions, not alliance ranks.':'No verified core rankings available for assessment.';section.append(summary);
+ const format=entries=>entries.length?entries.map(x=>(rankingLabels[x.key]||x.key)+' #'+x.rank).join(' · '):'Not available';
+ for(const [label,entries] of [['Highest ranked',a.strongest],['Areas to review',a.weakest]]){const row=document.createElement('p'),strong=document.createElement('strong');strong.textContent=label+': ';row.append(strong,document.createTextNode(format(entries)));section.append(row);}
+ const roleTitle=document.createElement('h4');roleTitle.textContent='Possible alliance roles';section.append(roleTitle);
+ const ul=document.createElement('ul');for(const role of a.roles){const li=document.createElement('li');li.textContent=role.role+' · '+(role.status==='potential'?'Potential':role.status==='requires_combat_review'?'Combat review needed':'Insufficient evidence')+' — '+role.reason;ul.append(li);}section.append(ul);
+ const note=document.createElement('p');note.textContent='Assessment is provisional. Rankings alone cannot establish KvK performance, leader suitability or a complete alliance placement.';section.append(note);
+ return section;
+}
 function renderDossierSection(){
  if(!dossierOpen)return;
  const p=players.find(x=>x.candidate_id===active);
@@ -274,6 +287,7 @@ function renderDossierSection(){
  }
  if(dossierTab==='comparison'){root.append(comparisonPanel);renderExternalIntel();}
  if(dossierTab==='development'){
+  root.append(renderAssessmentSection(evidence?.ranks?.values,p.kingdom));
   renderTrialAssessment(root,evidence?.ranks?.values);
   const rankings=document.createElement('section'),rankingHeading=document.createElement('h3'),rankingGrid=document.createElement('div');rankingHeading.textContent='Player Rankings';rankingGrid.className='dossier-list';appendRankingEntries(rankingGrid,evidence?.ranks?.values,'dossier-cell');rankings.append(rankingHeading,rankingGrid);root.append(rankings);
   root.append(arenaList(evidence?.arena_squad?.heroes||[]));
