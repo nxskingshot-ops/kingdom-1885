@@ -21,7 +21,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          status=$(curl --silent --show-error --max-time 20 --output /tmp/phx-response --write-out '%{http_code}' -X POST "$PHX_TEST_URL" -H 'Content-Type: application/json' --data '{"action":"reset","id":990011}')
+          status=$(curl --silent --show-error --max-time 20 --output /tmp/phx-response --write-out '%{http_code}' -X POST "$PHX_TEST_URL" -H 'Origin: https://nxskingshot-ops.github.io' -H 'Content-Type: application/json' --data '{"action":"reset","id":990011}')
           if [[ "$status" != "401" && "$status" != "403" ]]; then
             echo "FAIL: unauthenticated request returned HTTP $status"
             exit 1
@@ -31,7 +31,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          status=$(curl --silent --show-error --max-time 20 --output /tmp/phx-response --write-out '%{http_code}' -X POST "$PHX_TEST_URL" -H 'Content-Type: application/json' -H 'Authorization: Bearer invalid.synthetic.jwt' --data '{"action":"approve","id":990011}')
+          status=$(curl --silent --show-error --max-time 20 --output /tmp/phx-response --write-out '%{http_code}' -X POST "$PHX_TEST_URL" -H 'Origin: https://nxskingshot-ops.github.io' -H 'Content-Type: application/json' -H 'Authorization: Bearer invalid.synthetic.jwt' --data '{"action":"approve","id":990011}')
           if [[ "$status" != "401" && "$status" != "403" ]]; then
             echo "FAIL: invalid JWT returned HTTP $status"
             exit 1
@@ -43,7 +43,7 @@ jobs:
           set -euo pipefail
           for action in approve reject reset; do
             for credential in missing invalid; do
-              args=(-H 'Content-Type: application/json')
+              args=(-H 'Origin: https://nxskingshot-ops.github.io' -H 'Content-Type: application/json')
               if [[ "$credential" == invalid ]]; then
                 args+=(-H 'Authorization: Bearer invalid.synthetic.jwt')
               fi
@@ -59,7 +59,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          status=$(curl --silent --show-error --max-time 20 --output /tmp/phx-response --write-out '%{http_code}' -X POST "$PHX_TEST_URL" -H 'Origin: https://unauthorized.example' -H 'Content-Type: application/json' --data '{"action":"reset","id":990011}')
+          status=$(curl --silent --show-error --max-time 20 --output /tmp/phx-response --write-out '%{http_code}' -X POST "$PHX_TEST_URL" -H 'Origin: https://unauthorized.example' -H 'Origin: https://nxskingshot-ops.github.io' -H 'Content-Type: application/json' --data '{"action":"reset","id":990011}')
           if [[ "$status" != 401 && "$status" != 403 ]]; then
             echo "FAIL: unauthorized origin reset returned HTTP $status"
             exit 1
@@ -79,7 +79,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          status=$(curl --silent --show-error --max-time 20 -o /dev/null -w '%{http_code}' -X POST "$PHX_TEST_URL" -H 'Origin: https://unauthorized.example' -H 'Content-Type: application/json' --data '{"action":"approve","id":990011}')
+          status=$(curl --silent --show-error --max-time 20 -o /dev/null -w '%{http_code}' -X POST "$PHX_TEST_URL" -H 'Origin: https://unauthorized.example' -H 'Origin: https://nxskingshot-ops.github.io' -H 'Content-Type: application/json' --data '{"action":"approve","id":990011}')
           if [[ "$status" != 401 && "$status" != 403 ]]; then
             echo "FAIL: untrusted origin without JWT returned HTTP $status"
             exit 1
