@@ -32,3 +32,4 @@ jobs:
           psql --version
           psql -X -v ON_ERROR_STOP=1 -f security/tests/phx-god-mode-disposable-gate-20261103.sql
           psql -X -v ON_ERROR_STOP=1 -f security/tests/phx-god-mode-role-matrix-isolated-20261103.sql
+          psql -X -v ON_ERROR_STOP=1 -f security/tests/phx-god-mode-rls-fixture-20261103.sql
