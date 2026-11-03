@@ -595,6 +595,7 @@ phxIdForm.addEventListener('submit',async e=>{
     // Keep the value neutral rather than inventing a comparative performance rating.
     v.classList.add('phx-true-power-value');
     if(truePowerPeerRating){v.style.color=truePowerPeerRating.color;v.title=truePowerPeerRating.title+' · Vergleich mit '+truePowerPeerRating.count+' Spielern ('+truePowerPeerRating.scope+')';}
+    if(!truePowerPeerRating&&rankProfile){const hint=document.createElement('small');hint.textContent='Profil: '+rankProfile.title;hint.style.color=rankProfile.color;hint.style.fontSize='.65rem';hint.title='Ranking-basierte Account-Einordnung, keine True-Power-Einstufung';cell.append(hint);}
     const help=document.createElement('details');help.className='phx-true-power-help';
     const summary=document.createElement('summary');summary.textContent='ⓘ';summary.title='Farbcode und Vergleichsbewertung';summary.setAttribute('aria-label','Farbcode und Vergleichsbewertung');summary.style.cssText='cursor:pointer;list-style:none;font-size:20px;width:25px;height:25px;display:flex;align-items:center;justify-content:center';
     const explanation=document.createElement('p');explanation.textContent='Grün = sehr stark · Blau = stark · Gelb = durchschnittlich · Rot = schwach. Die Einstufung erfolgt erst mit belastbaren Vergleichsdaten von Spielern mit ähnlichem TG-Level. Bis dahin bleibt die Zahl neutral; die Farbe ist keine Schätzung.';
