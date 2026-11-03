@@ -1,5 +1,10 @@
 name: PHALANX isolated rejection E2E
 on:
+  push:
+    branches:
+      - test/phx-security-e2e-20261103
+    paths:
+      - .github/workflows/phx-isolated-rejection-e2e.yml
   workflow_dispatch:
 permissions:
   contents: read
