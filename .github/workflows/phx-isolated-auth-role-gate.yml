@@ -1,0 +1,56 @@
+name: PHALANX isolated authenticated role gate
+on:
+  push:
+    branches:
+      - test/phx-security-e2e-20261103
+    paths:
+      - .github/workflows/phx-isolated-auth-role-gate.yml
+permissions:
+  contents: read
+jobs:
+  role-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      BASE: https://yuyvmbdybwpwpqsipfjt.supabase.co
+      KEY: ${{ secrets.PHX_TEST_PUBLISHABLE_KEY }}
+      OFFICER_EMAIL: ${{ secrets.PHX_TEST_OFFICER_EMAIL }}
+      OFFICER_PASSWORD: ${{ secrets.PHX_TEST_OFFICER_PASSWORD }}
+      MEMBER_EMAIL: ${{ secrets.PHX_TEST_MEMBER_EMAIL }}
+      MEMBER_PASSWORD: ${{ secrets.PHX_TEST_MEMBER_PASSWORD }}
+    steps:
+      - name: Validate isolated project and secret presence
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$BASE" = "https://yuyvmbdybwpwpqsipfjt.supabase.co"
+          for v in KEY OFFICER_EMAIL OFFICER_PASSWORD MEMBER_EMAIL MEMBER_PASSWORD; do
+            test -n "${!v}" || { echo "Missing secret: $v"; exit 1; }
+          done
+      - name: Authenticate and verify role boundaries without mutations
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          trap 'rm -f /tmp/phx-auth-* /tmp/phx-check-*' EXIT
+          for role in member officer; do
+            if [[ "$role" == member ]]; then email="$MEMBER_EMAIL"; password="$MEMBER_PASSWORD"; else email="$OFFICER_EMAIL"; password="$OFFICER_PASSWORD"; fi
+            payload=$(jq -nc --arg e "$email" --arg p "$password" '{email:$e,password:$p}')
+            login_status=$(curl -sS --max-time 20 -o "/tmp/phx-auth-$role" -w '%{http_code}' -X POST "$BASE/auth/v1/token?grant_type=password" -H "apikey: $KEY" -H 'Content-Type: application/json' --data "$payload")
+            if [[ "$login_status" != 200 ]]; then echo "FAIL: $role authentication HTTP $login_status"; exit 1; fi
+            token=$(jq -er '.access_token' "/tmp/phx-auth-$role")
+            echo "::add-mask::$token"
+            if [[ "$role" == member ]]; then
+              for action in approve reject reset; do
+                status=$(curl -sS --max-time 20 -o "/tmp/phx-check-$role" -w '%{http_code}' -X POST "$BASE/functions/v1/nexus-access-review" -H "apikey: $KEY" -H "Authorization: Bearer $token" -H 'Origin: https://nxskingshot-ops.github.io' -H 'Content-Type: application/json' --data "{\"action\":\"$action\",\"id\":990011}")
+                if [[ "$status" != 403 ]]; then echo "FAIL: member $action HTTP $status (expected 403)"; exit 1; fi
+                echo "PASS: member $action forbidden"
+              done
+            else
+              status=$(curl -sS --max-time 20 -o /tmp/phx-check-officer -w '%{http_code}' -X POST "$BASE/functions/v1/nexus-access-review" -H "apikey: $KEY" -H "Authorization: Bearer $token" -H 'Origin: https://nxskingshot-ops.github.io' -H 'Content-Type: application/json' --data '{"action":"reject","id":990011}')
+              if [[ "$status" != 404 ]]; then echo "FAIL: officer request lookup HTTP $status (expected 404)"; exit 1; fi
+              echo "PASS: officer passed role gate, nonexistent request returned 404"
+            fi
+          done
+      - name: Scope statement
+        run: echo "Authenticated role-gate checks only. No approval, reset, GOD or compensation mutation tested."
