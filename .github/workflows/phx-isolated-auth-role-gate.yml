@@ -50,6 +50,9 @@ jobs:
               status=$(curl -sS --max-time 20 -o /tmp/phx-check-officer -w '%{http_code}' -X POST "$BASE/functions/v1/nexus-access-review" -H "apikey: $KEY" -H "Authorization: Bearer $token" -H 'Origin: https://nxskingshot-ops.github.io' -H 'Content-Type: application/json' --data '{"action":"reject","id":990011}')
               if [[ "$status" != 404 ]]; then echo "FAIL: officer request lookup HTTP $status (expected 404)"; exit 1; fi
               echo "PASS: officer passed role gate, nonexistent request returned 404"
+              reset_code=$(curl -sS --max-time 20 -o /tmp/phx-check-officer-reset -w '%{http_code}' -X POST "$BASE/functions/v1/nexus-access-review" -H "apikey: $KEY" -H "Authorization: Bearer $token" -H 'Origin: https://nxskingshot-ops.github.io' -H 'Content-Type: application/json' --data '{"action":"reset","id":990015}')
+              if [[ "$reset_code" != 403 ]]; then echo "FAIL: officer reset HTTP $reset_code (expected 403)"; exit 1; fi
+              echo "PASS: officer cannot reset approved synthetic account"
             fi
           done
       - name: Scope statement
