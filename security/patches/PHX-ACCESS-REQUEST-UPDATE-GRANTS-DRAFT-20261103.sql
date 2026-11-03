@@ -1,14 +1,24 @@
--- PHALANX SECURITY DRAFT - DO NOT APPLY TO PRODUCTION
--- Reviewed 2026-11-03. Requires full dependency audit, current backup, restore rehearsal, approval.
--- Existing nexus-access-review v6 performs approve/reject via service_role.
--- Existing preview/kingdom-hub-menu-test.html reads access requests and invokes Edge Function.
--- Goal: remove direct client UPDATE of identity-binding and status columns.
+-- PHALANX SECURITY DRAFT — DO NOT APPLY TO PRODUCTION
+-- Change intent: prohibit direct client UPDATE to access-request identity bindings.
+-- Preconditions: current database+Auth backup, verified integrity, restore test,
+-- dependency inventory, explicit approval, and tested rollback.
+-- IMPORTANT: save exact original grants before changing them. A blanket GRANT UPDATE
+-- is NOT a safe rollback if original privileges were column-specific.
+-- Read-only preflight (run separately before any migration):
+-- SELECT grantee, privilege_type, column_name FROM information_schema.column_privileges
+-- WHERE table_schema='public' AND table_name='nexus_access_requests'
+-- AND grantee IN ('PUBLIC','anon','authenticated') AND privilege_type='UPDATE';
+-- SELECT policyname, cmd, roles, qual, with_check FROM pg_policies
+-- WHERE schemaname='public' AND tablename='nexus_access_requests';
+-- Check role inheritance and PUBLIC grants; do not assume REVOKE on direct grants
+-- eliminates rights inherited from other roles.
 BEGIN;
-REVOKE UPDATE ON TABLE public.nexus_access_requests FROM anon, authenticated;
--- IMPORTANT: verify no inherited PUBLIC UPDATE grant remains.
--- IMPORTANT: RLS UPDATE policy alone is insufficient; keep policy until all dependencies reviewed.
--- Server-only review endpoint must continue to perform authorized changes.
+REVOKE UPDATE ON TABLE public.nexus_access_requests FROM PUBLIC, anon, authenticated;
+-- For column-specific grants, explicitly revoke per-column UPDATE as well,
+-- based on preflight inventory; do not execute until verified.
+-- Confirm with has_table_privilege/has_column_privilege for anon/authenticated,
+-- and test a direct UPDATE as both roles on a disposable copy.
 COMMIT;
--- Rollback ONLY if explicitly approved and previous grants verified:
--- GRANT UPDATE ON TABLE public.nexus_access_requests TO authenticated;
--- Do NOT grant anon UPDATE unless verified to have been necessary.
+-- Rollback: restore ONLY the precise previously captured table/column grants,
+-- not blanket GRANT UPDATE. Execute on a clone and verify before production.
+-- service_role review workflow must be tested independently.
