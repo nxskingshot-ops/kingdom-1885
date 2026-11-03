@@ -9,8 +9,9 @@ BEGIN
  IF EXISTS (SELECT 1 FROM phx_god_gate_fixture.owner_principal WHERE principal=OLD.auth_user) THEN
  RAISE EXCEPTION 'owner-protected' USING ERRCODE='42501';
  END IF;
- RETURN OLD;
-END $$;
+ IF TG_OP = 'DELETE' THEN RETURN OLD; END IF;
+ RETURN NEW;
+END $;
 CREATE TRIGGER protect_owner_membership BEFORE UPDATE OR DELETE ON phx_god_gate_fixture.memberships FOR EACH ROW EXECUTE FUNCTION phx_god_gate_fixture.protect_owner();
 INSERT INTO phx_god_gate_fixture.owner_principal VALUES(true,'11111111-1111-4111-8111-111111111111');
 INSERT INTO phx_god_gate_fixture.memberships VALUES('11111111-1111-4111-8111-111111111111','owner',true),('22222222-2222-4222-8222-222222222222','admin',true);
