@@ -277,6 +277,15 @@ function renderDossierSection(){
  document.querySelectorAll('[data-dossier-tab]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.dossierTab===dossierTab)));
  const root=$('dossierContent');root.replaceChildren();
  const evidence=evidenceFor(p),id=evidenceKey(p);
+ const overview=assessPlayer(evidence?.ranks?.values,{kingdom:p.kingdom});
+ const brief=document.createElement('section');brief.className='phx-intelligence-brief';brief.setAttribute('aria-label','Account assessment summary');
+ const briefTitle=document.createElement('strong');briefTitle.textContent='⚔ Account assessment · '+(overview.coverage?'Preliminary':'Data needed');brief.append(briefTitle);
+ const formatBrief=entries=>entries.length?entries.map(x=>(rankingLabels[x.key]||x.key)+' #'+x.rank).join(' · '):'Not available';
+ const strength=document.createElement('p');strength.textContent='Strengths: '+formatBrief(overview.strongest.slice(0,2));brief.append(strength);
+ const review=document.createElement('p');review.textContent='Review: '+formatBrief(overview.weakest.slice(0,2));brief.append(review);
+ const placement=document.createElement('p');placement.textContent='NXS placement: Not verified · Combat roles: Provisional, review required';brief.append(placement);
+ const sourceNote=document.createElement('small');sourceNote.textContent='Based on '+overview.coverage+'/9 available core kingdom ranks. Rankings are within the source kingdom, not comparable across kingdoms.';brief.append(sourceNote);
+ root.append(brief);
  const source=document.createElement('p');source.className='compact-source-line';source.textContent=(currentEvidence.has(id)?'Latest available data':'Saved data')+' · '+formatPlayerUtc(evidence?.source_cached_at)+(evidencePending.has(id)?' · Loading…':'')+(evidenceErrors.has(id)?' · Refresh unavailable':'');root.append(source);
  if(id){const refresh=document.createElement('button');refresh.type='button';refresh.className='compact-refresh';refresh.textContent='↻ Refresh';refresh.disabled=evidencePending.has(id);refresh.onclick=()=>loadCandidateEvidence(p,true);root.append(refresh);}
 
