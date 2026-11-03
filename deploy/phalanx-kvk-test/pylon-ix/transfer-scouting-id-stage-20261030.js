@@ -691,14 +691,14 @@ phxIdForm.addEventListener('submit',async e=>{
     if(!date)return {alliance,status:'No historical snapshot'};
     const rows=[];
     for(let offset=0;offset<10000;offset+=500){
-     const page=await db.from('phalanx_alliance_players').select('power').eq('kingdom',1885).eq('alliance',alliance).eq('snapshot_date',date).range(offset,offset+499);
+     const page=await db.from('phalanx_alliance_players').select('player_id,player_name,power,tg_level').eq('kingdom',1885).eq('alliance',alliance).eq('snapshot_date',date).range(offset,offset+499);
      if(page.error)return {alliance,status:'Access unavailable'};
      rows.push(...(page.data||[]));
      if((page.data||[]).length<500)break;
      if(offset===9500)return {alliance,status:'Roster exceeds safe limit'};
     }
     const placement=placeInAlliance(rawPower,rows,date);
-    return placement.status==='HISTORICAL_POWER_PLACEMENT'?{alliance,status:'OK',rank:placement.rankMin,rankMax:placement.rankMax,total:placement.rosterSize,date,top15:placement.top15Guaranteed,gapAbove:placement.gapAbove,gapBelow:placement.gapBelow}:{alliance,status:'Insufficient historical data'};
+    return placement.status==='HISTORICAL_POWER_PLACEMENT'?{alliance,status:'OK',rank:placement.rankMin,rankMax:placement.rankMax,total:placement.rosterSize,date,historicalRoster:rows,top15:placement.top15Guaranteed,gapAbove:placement.gapAbove,gapBelow:placement.gapBelow}:{alliance,status:'Insufficient historical data'};
    }));
    let liveUsed=false;
    try{
@@ -717,7 +717,20 @@ phxIdForm.addEventListener('submit',async e=>{
    }catch(_err){/* historical fallback remains available */}
    rosterNote.textContent=liveUsed?'Latest available Top-100 snapshot · not complete alliance rosters.':'Historical alliance data · not current combat strength.';
    const grid=document.createElement('div');grid.className='phx-alliance-grid';const preferredAlliance=String(p.alliance||p.allianceTag||p.alliance_tag||'').trim().replace(/^\[|\]$/g,'').toUpperCase();results.sort((a,b)=>(a.alliance.toUpperCase()===preferredAlliance?-1:0)-(b.alliance.toUpperCase()===preferredAlliance?-1:0));
-   for(const row of results){const item=document.createElement('div');item.className='phx-alliance-row';const name=document.createElement('strong');name.textContent=row.alliance;const position=document.createElement('span');position.textContent=(row.status==='OK'||row.status==='LIVE')?'#'+row.rank+(row.rankMax!==row.rank?'–'+row.rankMax:'')+(row.status==='LIVE'?' · '+row.total+' recorded':' of '+row.total):'Insufficient data';const note=document.createElement('small');note.textContent=(row.status==='OK'||row.status==='LIVE')?(row.top15?'Top 15 · ':'Top 15 not confirmed · ')+(row.date?new Date(row.date).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric',timeZone:'UTC'}):'Date unknown'):'Data unavailable';item.append(name,position,note);if(row.status==='OK'){const gaps=document.createElement('small');gaps.textContent='Gap above: '+(row.gapAbove==null?'–':(row.gapAbove/1e6).toFixed(2)+' M')+' · below: '+(row.gapBelow==null?'–':(row.gapBelow/1e6).toFixed(2)+' M');item.append(gaps);}grid.append(item);}placementSection.append(grid);
+   for(const row of results){const item=document.createElement('div');item.className='phx-alliance-row';const name=document.createElement('strong');name.textContent=row.alliance;const position=document.createElement('span');position.textContent=(row.status==='OK'||row.status==='LIVE')?'#'+row.rank+(row.rankMax!==row.rank?'–'+row.rankMax:'')+(row.status==='LIVE'?' · '+row.total+' recorded':' of '+row.total):'Insufficient data';const note=document.createElement('small');note.textContent=(row.status==='OK'||row.status==='LIVE')?(row.top15?'Top 15 · ':'Top 15 not confirmed · ')+(row.date?new Date(row.date).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric',timeZone:'UTC'}):'Date unknown'):'Data unavailable';item.append(name,position,note);if(row.status==='OK'){const gaps=document.createElement('small');gaps.textContent='Gap above: '+(row.gapAbove==null?'–':(row.gapAbove/1e6).toFixed(2)+' M')+' · below: '+(row.gapBelow==null?'–':(row.gapBelow/1e6).toFixed(2)+' M');item.append(gaps);}grid.append(item);
+    if(Array.isArray(row.historicalRoster)&&row.historicalRoster.length){
+     const peers=row.historicalRoster.filter(x=>Number.isFinite(Number(x.power))&&Number(x.power)>0).sort((a,b)=>Number(b.power)-Number(a.power)).slice(0,15);
+     if(peers.length){
+      const details=document.createElement('details');details.className='phx-alliance-top15';
+      const summary=document.createElement('summary');summary.textContent='Historical Top 15 by Total Power · '+row.alliance;
+      details.append(summary);
+      const warning=document.createElement('small');warning.textContent='Snapshot '+row.date+' · '+row.historicalRoster.length+' recorded players. Not a complete live roster or combat ranking.';details.append(warning);
+      const list=document.createElement('ol');
+      for(const peer of peers){const li=document.createElement('li');const display=String(peer.player_name||'Player ID '+(peer.player_id||'unknown'));li.textContent=display+' · '+(Number(peer.power)/1e6).toFixed(2)+' M'+(peer.tg_level!=null?' · TG '+peer.tg_level:'');list.append(li);}
+      details.append(list);item.append(details);
+     }
+    }
+   }placementSection.append(grid);
   }
   const all=document.createElement('details'),allSummary=document.createElement('summary'),allBody=document.createElement('div');all.className='complete-rankings';allSummary.textContent='All rankings ('+Object.keys(playerRankingMap(payload.ranks?.values)).length+')';all.append(allSummary,allBody);appendRankingEntries(allBody,payload.ranks?.values,'');intel.append(all);
   const arenaDetail=document.createElement('details'),arenaSummary=document.createElement('summary');arenaDetail.className='arena-details';arenaSummary.textContent='Arena Squad ('+(payload.arenaSquad?.heroes||[]).length+') · '+formatPlayerSection(payload.arenaSquad?.status);arenaDetail.append(arenaSummary,arenaList(payload.arenaSquad?.heroes||[]));intel.append(arenaDetail);
