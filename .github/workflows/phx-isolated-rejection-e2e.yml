@@ -1,0 +1,39 @@
+name: PHALANX isolated rejection E2E
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  rejection:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      BASE: https://yuyvmbdybwpwpqsipfjt.supabase.co
+      KEY: ${{ secrets.PHX_TEST_PUBLISHABLE_KEY }}
+      EMAIL: ${{ secrets.PHX_TEST_OFFICER_EMAIL }}
+      PASSWORD: ${{ secrets.PHX_TEST_OFFICER_PASSWORD }}
+    steps:
+      - name: Require isolated configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$BASE" = "https://yuyvmbdybwpwpqsipfjt.supabase.co"
+          for v in KEY EMAIL PASSWORD; do test -n "${!v}" || exit 1; done
+      - name: Reject pre-seeded synthetic pending request once
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          trap 'rm -f /tmp/phx-reject-*' EXIT
+          payload=$(jq -nc --arg e "$EMAIL" --arg p "$PASSWORD" '{email:$e,password:$p}')
+          login=$(curl -sS --max-time 20 -o /tmp/phx-reject-auth -w '%{http_code}' -X POST "$BASE/auth/v1/token?grant_type=password" -H "apikey: $KEY" -H 'Content-Type: application/json' --data "$payload")
+          if [[ "$login" != 200 ]]; then echo "FAIL: officer authentication HTTP $login"; exit 1; fi
+          token=$(jq -er '.access_token' /tmp/phx-reject-auth)
+          echo "::add-mask::$token"
+          status=$(curl -sS --max-time 20 -o /tmp/phx-reject-result -w '%{http_code}' -X POST "$BASE/functions/v1/nexus-access-review" -H "apikey: $KEY" -H "Authorization: Bearer $token" -H 'Origin: https://nxskingshot-ops.github.io' -H 'Content-Type: application/json' --data '{"action":"reject","id":990012}')
+          if [[ "$status" != 200 ]] || [[ "$(jq -r '.status // empty' /tmp/phx-reject-result)" != rejected ]]; then
+            echo "FAIL: synthetic rejection HTTP $status"; exit 1
+          fi
+          echo "PASS: isolated synthetic rejection returned 200 and rejected"
+      - name: Verification boundary
+        run: echo "DB state and reviewer identity require independent read-only SQL verification; this workflow does not assert persistence."
