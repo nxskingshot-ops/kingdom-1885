@@ -84,3 +84,9 @@ html,body{background:#020d17;color:#e9dec7}body{background-image:radial-gradient
  #private #scoutingBoard .scouting-name-button{font-size:16px!important;min-height:32px;padding:2px 0!important;text-align:left}
  #private #scoutingBoard .scouting-table tr[data-id] input[type=checkbox]{width:19px;height:19px}
 }
+
+/* PHX dossier: concise evidence-based account summary, no effect on stored data. */
+#private .phx-intelligence-brief{border:1px solid #b18a4a;background:linear-gradient(115deg,#18334a,#091926);padding:12px 14px;margin:4px 0 10px;color:#e7d6b5}
+#private .phx-intelligence-brief>strong{font:700 17px Georgia,serif;color:#f3ce89;display:block;margin-bottom:7px}
+#private .phx-intelligence-brief p{font:12px/1.45 system-ui;margin:4px 0;color:#e3e8e9}
+#private .phx-intelligence-brief small{display:block;color:#aebfc9;font:10px/1.4 system-ui;margin-top:8px}
