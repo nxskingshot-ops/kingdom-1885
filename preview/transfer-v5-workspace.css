@@ -59,3 +59,28 @@ html,body{background:#020d17;color:#e9dec7}body{background-image:radial-gradient
  .workspace-nav a{flex-direction:row;min-height:58px;padding:6px 3px;gap:4px;font-size:11px}.workspace-nav .nav-emblem{width:32px;height:32px;flex:none}.workspace-nav{margin-bottom:10px}.stage-actions{margin-bottom:8px}
  #private #candidateDossier>.panel-head{padding:9px 10px;min-height:0;gap:5px}#private #candidateDossier>.panel-head h2{font-size:21px}#private #candidateDossier>.panel-body{padding:8px}#private #candidateDossier #backToBoard{min-height:36px;padding:6px 9px;font:12px system-ui}#private #candidateDossier .headline-metric{padding:7px 23px 7px 8px}#private #candidateDossier .headline-metric>strong{font-size:17px}#private #candidateDossier .headline-metric>span{font-size:10px}#private #candidateDossier .dossier-tabs{gap:4px;margin:6px 0!important}#private #candidateDossier .dossier-tabs button{min-height:40px!important;font-size:11px!important;padding:6px!important}#private #candidateDossier #externalIntelPanel>.panel-body{padding:0}#private #externalIntelPanel .panel-body>p.smallprint{display:none}#private .ranking-comparison tr>th,#private .ranking-comparison tr>td{padding-top:7px!important;padding-bottom:7px!important}#private .ranking-comparison .ranking-value{font-size:12px}
 }
+
+/* PHX Transfer compact candidate list: presentation only; no record or event changes. */
+@media(max-width:760px){
+ #private #scoutingBoard .scouting-table tr[data-id]{
+  grid-template-columns:28px minmax(0,1fr) auto!important;
+  align-items:center;column-gap:9px;row-gap:3px;
+  padding:9px 11px!important;margin-bottom:7px!important;
+  min-height:76px;
+ }
+ #private #scoutingBoard .scouting-table tr[data-id] td:nth-child(1){grid-column:1;grid-row:1 / span 2;align-self:center}
+ #private #scoutingBoard .scouting-table tr[data-id] td:nth-child(2){grid-column:2;grid-row:1;font-size:15px!important;line-height:1.2}
+ #private #scoutingBoard .scouting-table tr[data-id] td:nth-child(3){grid-column:2;grid-row:2;font-size:12px;color:#afc3ce}
+ #private #scoutingBoard .scouting-table tr[data-id] td:nth-child(7){grid-column:3;grid-row:1;font-size:16px;font-weight:700;color:#efd094;text-align:right;white-space:nowrap!important}
+ #private #scoutingBoard .scouting-table tr[data-id] td:nth-child(11){grid-column:3;grid-row:2;font-size:11px;color:#afc3ce;text-align:right}
+ #private #scoutingBoard .scouting-table tr[data-id] td:nth-child(4),
+ #private #scoutingBoard .scouting-table tr[data-id] td:nth-child(5),
+ #private #scoutingBoard .scouting-table tr[data-id] td:nth-child(6),
+ #private #scoutingBoard .scouting-table tr[data-id] td:nth-child(8),
+ #private #scoutingBoard .scouting-table tr[data-id] td:nth-child(9),
+ #private #scoutingBoard .scouting-table tr[data-id] td:nth-child(10){display:none!important}
+ #private #scoutingBoard .scouting-table td:nth-child(3):before{content:'KD ';display:inline;font-size:11px;letter-spacing:0;margin:0}
+ #private #scoutingBoard .scouting-table td:nth-child(7):before{content:'';display:none}
+ #private #scoutingBoard .scouting-name-button{font-size:16px!important;min-height:32px;padding:2px 0!important;text-align:left}
+ #private #scoutingBoard .scouting-table tr[data-id] input[type=checkbox]{width:19px;height:19px}
+}
