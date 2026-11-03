@@ -55,5 +55,28 @@ jobs:
               echo "PASS: officer cannot reset approved synthetic account"
             fi
           done
+      - name: Verify isolated administrator reset for synthetic request 990015
+        shell: bash
+        env:
+          ADMIN_EMAIL: ${{ secrets.PHX_TEST_ADMIN_EMAIL }}
+          ADMIN_PASSWORD: ${{ secrets.PHX_TEST_ADMIN_PASSWORD }}
+        run: |
+          set -euo pipefail
+          umask 077
+          trap 'rm -f /tmp/phx-admin-auth /tmp/phx-admin-reset' EXIT
+          test "$BASE" = "https://yuyvmbdybwpwpqsipfjt.supabase.co"
+          test "$ADMIN_EMAIL" = phx-admin-test-1885@example.com
+          test -n "$ADMIN_PASSWORD"
+          payload=$(jq -nc --arg e "$ADMIN_EMAIL" --arg p "$ADMIN_PASSWORD" '{email:$e,password:$p}')
+          code=$(curl -sS --max-time 20 -o /tmp/phx-admin-auth -w '%{http_code}' -X POST "$BASE/auth/v1/token?grant_type=password" -H "apikey: $KEY" -H 'Content-Type: application/json' --data "$payload")
+          test "$code" = 200 || { echo "FAIL admin login HTTP $code"; exit 1; }
+          token=$(jq -er '.access_token' /tmp/phx-admin-auth)
+          echo "::add-mask::$token"
+          code=$(curl -sS --max-time 30 -o /tmp/phx-admin-reset -w '%{http_code}' -X POST "$BASE/functions/v1/nexus-access-review" -H "apikey: $KEY" -H "Authorization: Bearer $token" -H 'Origin: https://nxskingshot-ops.github.io' -H 'Content-Type: application/json' --data '{"action":"reset","id":990015}')
+          if [[ "$code" != 200 ]] || [[ "$(jq -r '.status // empty' /tmp/phx-admin-reset)" != reset ]]; then
+            echo "FAIL synthetic admin reset HTTP $code"; exit 1
+          fi
+          jq -e '.password and .role == "member"' /tmp/phx-admin-reset >/dev/null
+          echo "PASS synthetic administrator reset; no credentials logged"
       - name: Scope statement
-        run: echo "Authenticated role-gate checks only. No approval, reset, GOD or compensation mutation tested."
+        run: echo "Role gates and isolated synthetic admin reset tested; independent database verification and failure compensation remain separate."
