@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - phalanx-cloudflare-test-deploy
+      - stage/transfer-live-rankings-20261103
     paths:
       - 'deploy/phalanx-kvk-test/pylon-ix/**'
       - '.github/workflows/phalanx-cloudflare-test.yml'
@@ -18,7 +19,7 @@ concurrency:
 
 jobs:
   deploy:
-    if: github.ref == 'refs/heads/phalanx-cloudflare-test-deploy'
+    if: github.ref == 'refs/heads/phalanx-cloudflare-test-deploy' || github.ref == 'refs/heads/stage/transfer-live-rankings-20261103'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout isolated branch
@@ -40,4 +41,4 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy deploy/phalanx-kvk-test --project-name=nexus-phalanx-kvk-test --branch=phalanx-cloudflare-test-deploy
+          command: pages deploy deploy/phalanx-kvk-test --project-name=nexus-phalanx-kvk-test --branch=${{ github.ref_name }}
