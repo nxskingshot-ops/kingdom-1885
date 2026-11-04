@@ -577,7 +577,7 @@ phxIdForm.addEventListener('submit',async e=>{
     const values=list.map(x=>Number(x.true_power)).sort((a,b)=>a-b);
     const percentile=values.filter(n=>n<=trueMetric.value).length/values.length;
     const color=percentile>=.85?'#4ADE80':percentile>=.60?'#38BDF8':percentile>=.20?'#FACC15':'#FB7185';
-    const title=percentile>=.85?'Very strong':percentile>=.60?'Stark':percentile>=.20?'Average':'Schwach';
+    const title=percentile>=.85?'Very strong':percentile>=.60?'Strong':percentile>=.20?'Average':'Needs development';
     return {color,title,count:values.length,scope,percentile:Math.round(percentile*100),capture:[...times][0]};
    };
    const exact=evaluate(peers.filter(x=>x.castle_level===castle.text),'same TG upgrade level');
@@ -595,13 +595,13 @@ phxIdForm.addEventListener('submit',async e=>{
     // Keep the value neutral rather than inventing a comparative performance rating.
     v.classList.add('phx-true-power-value');
     if(truePowerPeerRating){v.style.color=truePowerPeerRating.color;v.title=truePowerPeerRating.title+' · Vergleich mit '+truePowerPeerRating.count+' Spielern ('+truePowerPeerRating.scope+')';}
-    if(!truePowerPeerRating&&rankProfile){v.style.color=rankProfile.color;v.title='Account-Profile: '+rankProfile.title+' (Ranking-basiert; keine direkte True-Power-Einstufung)';}
+    if(!truePowerPeerRating&&rankProfile){v.style.color=rankProfile.color;v.title='Account profile: '+rankProfile.title+' (Ranking-basiert; keine direkte True-Power-Einstufung)';}
     const help=document.createElement('details');help.className='phx-true-power-help';
     const summary=document.createElement('summary');summary.textContent='ⓘ';summary.title='Color coding and comparison';summary.setAttribute('aria-label','Color coding and comparison');summary.style.cssText='cursor:pointer;list-style:none;font-size:20px;width:25px;height:25px;display:flex;align-items:center;justify-content:center';
     const explanation=document.createElement('p');
-    if(truePowerPeerRating)explanation.textContent='True-Power-Vergleich: '+truePowerPeerRating.title+'. '+truePowerPeerRating.count+' verifizierte Spieler ('+truePowerPeerRating.scope+'), Perzentil '+truePowerPeerRating.percentile+'. '+(truePowerPeerRating.count<20?'Vorläufige Einstufung. ':'')+'Datenstand: '+truePowerPeerRating.capture+'.';
-    else if(rankProfile)explanation.textContent='Account-Profile: '+rankProfile.title+'. Grundlage: '+rankProfile.count+' Kingdom-Rankings, Median-Rang '+rankProfile.median+'. Die Farbe des angezeigten Werts kennzeichnet die Gesamtstärke des Accounts, NICHT eine direkte True-Power-Einstufung. Dafür fehlen mindestens fünf verifizierte Vergleichswerte mit ähnlichem TG-Level.';
-    else explanation.textContent='Keine belastbare Farbbewertung verfügbar: Es fehlen ausreichend verifizierte True-Power-Vergleichswerte und Kingdom-Rankings.';
+    if(truePowerPeerRating)explanation.textContent='Verified True Power comparison: '+truePowerPeerRating.title+'. '+truePowerPeerRating.count+' verified players ('+truePowerPeerRating.scope+'), percentile '+truePowerPeerRating.percentile+'. '+(truePowerPeerRating.count<20?'Provisional rating. ':'')+'Snapshot: '+truePowerPeerRating.capture+'.';
+    else if(rankProfile)explanation.textContent='Account-Profile: '+rankProfile.title+'. Based on '+rankProfile.count+' kingdom rankings, median rank '+rankProfile.median+'. The color indicates overall ranking-based account strength, NOT a direct True Power rating. A direct comparison requires at least five verified players with a similar TG level.';
+    else explanation.textContent='No reliable color rating: insufficient verified True Power peers and kingdom rankings.';
     const closeInfo=document.createElement('button');closeInfo.type='button';closeInfo.textContent='× Close';closeInfo.style.cssText='position:sticky;top:0;float:right;z-index:2;display:block;margin:-8px -8px 12px 10px;padding:7px 12px;border:1px solid #c39a54;border-radius:8px;background:#283949;color:#f3ead8;cursor:pointer;font-size:16px';closeInfo.addEventListener('click',()=>{help.open=false;});help.addEventListener('keydown',event=>{if(event.key==='Escape'){help.open=false;summary.focus();}});explanation.prepend(closeInfo);help.append(summary,explanation);const valueRow=document.createElement('div');valueRow.className='phx-true-power-inline';valueRow.append(v,help);cell.append(k,valueRow);
    }else cell.append(k,v);intelMetrics.append(cell);}intel.append(intelMetrics);intel.append(legend);
   const intelBody=document.createElement('div');intelBody.className='phx-intel-body';const kicker=document.createElement('div');kicker.className='phx-dossier-brand';kicker.innerHTML='<strong>⚔ PYLON IX</strong><small>CENTRAL ACCOUNT ASSESSMENT</small>';const verdict=document.createElement('h4');verdict.textContent=rankEvidence.length>=10?'Elite account · Leadership potential':rankEvidence.length?'Developing account · Further review':'Insufficient ranking evidence';const narrative=document.createElement('p');
