@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PHALANX · Login-Diagnose (nur Staging)</title>
+<style>
+:root{color-scheme:dark}body{margin:0;background:#081522;color:#f1d6a0;font:15px system-ui,sans-serif;padding:18px}
+main{max-width:780px;margin:auto}h1{font:700 25px Georgia,serif}button{padding:12px 18px;background:#a77732;color:white;border:1px solid #e3b869;border-radius:7px;font-weight:700}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#111f2d;border:1px solid #8e6b39;padding:14px;min-height:150px;line-height:1.5}
+small{color:#c5bca9}iframe{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+</style></head><body><main><h1>⚔ PHALANX Login-Diagnose</h1>
+<p>Nur für den bestehenden Staging-Branch. Es werden keine Zugangsdaten abgefragt oder gespeichert.</p>
+<button id="run" type="button">Diagnose starten</button>
+<p><small>Die Diagnose lädt die vorhandene Transfer-Scouting-Seite in einem unsichtbaren Testfenster und protokolliert JavaScript-Fehler. Keine Änderungen am Backend.</small></p>
+<pre id="log" role="status" aria-live="polite">Bereit.</pre><div id="frame"></div></main>
+<script>
+(()=>{'use strict';
+const log=document.getElementById('log'),run=document.getElementById('run');
+const name='transfer-scouting-id-stage-20261030.html';
+const write=s=>{log.textContent+=(log.textContent?'\n':'')+s};
+const instrument=`<script>
+(function(){
+function send(kind,detail){try{parent.postMessage({phxDiag:true,kind:String(kind),detail:String(detail).slice(0,1200)},'*')}catch(_){}}
+window.addEventListener('error',function(e){send('ERROR',e.message+' | '+(e.filename||'')+':'+(e.lineno||0)+':'+(e.colno||0))},true);
+window.addEventListener('unhandledrejection',function(e){var r=e.reason;send('PROMISE',r&&r.stack||r&&r.message||r||'unknown rejection')});
+window.addEventListener('DOMContentLoaded',function(){send('DOM','HTML loaded');setTimeout(function(){var f=document.getElementById('authForm');send('HANDLER',f&&typeof f.onsubmit==='function'?'ready':'missing after 5 seconds')},5000)});
+})();
+<\/script>`;
+window.addEventListener('message',e=>{const frame=document.querySelector('#frame iframe');if(!frame||e.source!==frame.contentWindow||!e.data||e.data.phxDiag!==true)return;write(e.data.kind+': '+e.data.detail)});
+run.addEventListener('click',async()=>{
+ run.disabled=true;log.textContent='Lade Staging-HTML …';
+ try{
+ const response=await fetch('./'+name+'?phxdiag='+Date.now(),{cache:'no-store'});
+ write('HTML HTTP '+response.status);
+ if(!response.ok)throw Error('HTML konnte nicht geladen werden');
+ let source=await response.text();
+ if(!/<head[^>]*>/i.test(source))throw Error('Kein HEAD-Element gefunden');
+ source=source.replace(/<head([^>]*)>/i,(_m,a)=>'<head'+a+'><base href="'+new URL('./',location.href).href+'">'+instrument);
+ const host=document.getElementById('frame');host.replaceChildren();
+ const iframe=document.createElement('iframe');
+ iframe.title='Isolierter Staging-Modultest';iframe.setAttribute('sandbox','allow-scripts allow-same-origin');
+ iframe.addEventListener('load',()=>write('FRAME: iframe geladen (noch kein Nachweis für JavaScript-Ausführung)'));iframe.srcdoc=source;host.append(iframe);
+ write('Modultest gestartet; warte 5 Sekunden auf Handlerstatus …');setTimeout(()=>{if(!log.textContent.includes('HANDLER:'))write('TIMEOUT: Keine Handler-Rückmeldung nach 9 Sekunden; mögliche Script-/Frame-Blockade.')},9000);
+ }catch(e){write('DIAGNOSEFEHLER: '+e.message)}
+ finally{run.disabled=false}
+});
+})();
+</script></body></html>
