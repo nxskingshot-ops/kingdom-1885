@@ -612,7 +612,8 @@ phxIdForm.addEventListener('submit',async e=>{
     // No verified TG-matched reference distribution is available in this response.
     // Keep the value neutral rather than inventing a comparative performance rating.
     v.classList.add('phx-true-power-value');
-    if(absoluteTruePlacement){v.title='Verified sample placement #'+absoluteTruePlacement.rank+' / '+absoluteTruePlacement.total+' · NXS #'+absoluteTruePlacement.allianceRank+' / '+absoluteTruePlacement.allianceTotal;}\n    if(truePowerPeerRating){v.style.color=truePowerPeerRating.color;v.title=truePowerPeerRating.title+' · Vergleich mit '+truePowerPeerRating.count+' Spielern ('+truePowerPeerRating.scope+')';}
+    if(absoluteTruePlacement){v.title='Verified sample placement #'+absoluteTruePlacement.rank+' / '+absoluteTruePlacement.total+' · NXS #'+absoluteTruePlacement.allianceRank+' / '+absoluteTruePlacement.allianceTotal;}
+    if(truePowerPeerRating){v.style.color=truePowerPeerRating.color;v.title=truePowerPeerRating.title+' · Vergleich mit '+truePowerPeerRating.count+' Spielern ('+truePowerPeerRating.scope+')';}
     if(!truePowerPeerRating&&rankProfile){v.style.color=rankProfile.color;v.title='Account profile: '+rankProfile.title+' (Ranking-basiert; keine direkte True-Power-Einstufung)';}
     const help=document.createElement('details');help.className='phx-true-power-help';
     const summary=document.createElement('summary');summary.textContent='ⓘ';summary.title='Color coding and comparison';summary.setAttribute('aria-label','Color coding and comparison');summary.style.cssText='cursor:pointer;list-style:none;font-size:20px;width:25px;height:25px;display:flex;align-items:center;justify-content:center';
