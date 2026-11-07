@@ -1,22 +1,50 @@
-// Read-only, evidence-gated assessment; never extrapolate combat roles.
-export function assessAccount(player={}, ranks={}){
- const keys=[['Hero Power','heroPower','hero_power'],['Pet Power','petPower','pet_power'],['Master Power','masterPower','master_power'],['True Power','truePower','true_power']];
- const available=keys.map(([label,a,b])=>({label,raw:player[a]??player[b]})).filter(x=>x.raw!=null&&x.raw!==''&&Number.isFinite(Number(x.raw))&&Number(x.raw)>=0);
- const rankEvidence=Object.entries(ranks||{}).filter(([,v])=>v&&Number.isInteger(Number(v.kingdom_rank))&&Number(v.kingdom_rank)>0).map(([key,v])=>({key,rank:Number(v.kingdom_rank),source:v.source||'Provider data',capturedAt:v.captured_at||null}));
- const top15=rankEvidence.filter(x=>x.rank<=15);
- const best=[...rankEvidence].sort((a,b)=>a.rank-b.rank)[0];
- const evidence=best?'Best available kingdom leaderboard: '+best.key.replaceAll('_',' ')+' #'+best.rank+'.':'No verified kingdom ranking available.';
+import { formatPlayerUtc } from './transfer-id-display-20261030.js';
+
+// Decision Summary V2: documented kingdom positions, never missing ranks or battle scores.
+const metrics = [
+ ['hero_equip','Hero Equipment'], ['research_power','Research Power'], ['hero_total','Hero Power'],
+ ['master_power','Master Power'], ['pet_power','Pet Power'], ['troop_power','Troop Power'],
+ ['gov_gear','Governor Gear'], ['gov_charm','Governor Charms'], ['mystic_trial','Mystic Trial']
+];
+
+export function assessAccount(_player = {}, rankings = {}) {
+ const rankingEvidence = metrics.flatMap(([key, label]) => {
+  const entry = rankings[key];
+  const raw = entry?.kingdom_rank ?? entry;
+  const rank = typeof raw === 'string' || typeof raw === 'number' ? Number(raw) : NaN;
+  return Number.isSafeInteger(rank) && rank > 0 ? [{
+   key, label, rank, capturedAt: formatPlayerUtc(entry?.captured_at)
+  }] : [];
+ }).sort((a, b) => a.rank - b.rank);
+ const top = rankingEvidence.filter(entry => entry.rank <= 15);
+ const coverage = rankingEvidence.length;
+ const median = coverage
+  ? (rankingEvidence[Math.floor((coverage - 1) / 2)].rank + rankingEvidence[Math.floor(coverage / 2)].rank) / 2
+  : null;
+ const level = coverage < 4 ? (coverage ? 'Partial kingdom profile' : 'Insufficient ranking evidence')
+  : median <= 15 ? 'Strong kingdom profile' : median <= 40 ? 'Established kingdom profile' : 'Developing kingdom profile';
+ const profile = coverage < 4 ? 'Profile open'
+  : top.length && rankingEvidence.at(-1).rank > 30 ? 'Specialized'
+  : rankingEvidence.at(-1).rank - rankingEvidence[0].rank <= 15 ? 'Balanced' : 'Mixed development';
+ const dates = rankingEvidence.map(entry => entry.capturedAt).filter(date => date !== 'Not available').sort();
+ const ranked = Object.fromEntries(rankingEvidence.map(entry => [entry.key, entry]));
+ const cue = keys => keys.map(key => ranked[key]).filter(entry => entry?.rank <= 15);
+ const roles = [
+  ['Rally Leader', cue(['hero_equip','gov_gear','gov_charm']), 2, 'Rally reports, lead buffs and capacity'],
+  ['Rally Joiner', cue(['troop_power','research_power']), 1, 'Troop tiers, march size and joiner heroes'],
+  ['Garrison Holder', cue(['gov_gear','gov_charm','hero_equip']), 2, 'Defense reports, garrison buffs and formation'],
+  ['KvK Fighter', cue(['troop_power','research_power','hero_total']), 2, 'KvK battle reports, combat buffs and formation']
+ ].map(([label, evidence, threshold, missing]) => ({
+  label, review: evidence.length >= threshold, evidence, missing
+ }));
  return {
-  status:rankEvidence.length?'PARTIAL_RANKING_EVIDENCE':available.length>=2?'PARTIAL':'INSUFFICIENT_DATA',
-  headline:rankEvidence.length?'Account overview · leaderboard evidence':available.length>=2?'Account overview · preliminary':'Account overview · awaiting data',
-  detail:evidence+' '+(top15.length?'Top-15 in '+top15.length+' available kingdom leaderboard(s); this is not an alliance Top-15 placement.':'No Top-15 placement confirmed in available leaderboards.')+' Combat roles and strengths require comparable alliance roster and battle evidence.',
-  available:available.map(x=>x.label),
-  battleRole:'Not verified',
-  top15Placement:'Alliance Top-15 not verified',
-  rankingEvidence:rankEvidence
+  level, profile, median, rankingEvidence, coverage, expected: metrics.length,
+  strengths: top.slice(0, 3),
+  development: rankingEvidence.filter(entry => entry.rank > 15).slice(-3).reverse(),
+  missing: metrics.filter(([key]) => !ranked[key]).map(([, label]) => label),
+  dated: dates.length, oldest: dates[0], newest: dates.at(-1), roles
  };
 }
-
 
 // KvK Intelligence-derived evidence model. Only compares like-for-like metrics.
 // Missing inputs remain unknown; no combat role is certified from power alone.
