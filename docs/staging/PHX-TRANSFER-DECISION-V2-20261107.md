@@ -67,3 +67,15 @@ Chromium mit Testdaten bei 320, 390, 430 und 1280 CSS-Pixeln prüfte Kennzahlenr
 | Chromium mit simulierten API-Antworten | BESTANDEN | Echtes Supabase-JS-SDK mit isolierten Testantworten. Gast, Admin, Member und inaktive Mitgliedschaft, ID-Abruf mit 404, Datenlücken, drei Kennzahlen, Orca Elite+ als Fixture, Ranking-Zuordnung, KvK-Rollen, True-Power-Dialog, Allianzwechsel, Rückweg bei Listenfehler, Peer-Kategorien, Einzelvergleich mit Suche und ID, Kandidat speichern und neu laden, Dossier sowie Tools und Rücknavigation. |
 | Responsive Ansicht | BESTANDEN | Chromium bei 320, 390, 430 und 1280 CSS-Pixeln. Die Spielerübersicht mit drei Kacheln hatte keinen horizontalen Überlauf. |
 | Übrige geschützte App-Routen | NICHT GETESTET | HOME, Territory Control, Reports, Outpost Map und GOD-Mode waren außerhalb der geänderten Transfer-Dateien. |
+
+## Cloudflare-Herkunft für die geschützte #1885-Liste · Korrektur zur Freigabe
+
+**Status** · Lokal getestet, separater Arbeitsbranch. Die aktive Edge Function wurde nicht geändert.
+
+Der aktive Quellstand der Edge Function `phalanx-transfer-intelligence-stage-20261031` ist Version 6 mit `verify_jwt=true`. Die Vorabfrage an der Cloudflare-Staging-Adresse erhält die Vercel-Herkunft. Das Ranking-Snapshot-Tableau ist für Gast und normale angemeldete Sitzung nicht lesbar. Die bestehende Allianz-RPC liefert Einordnungsdaten und keine Spielerliste.
+
+Der [Patch](phalanx-transfer-intelligence-cloudflare-origin-20261107.patch) ergänzt genau `https://stage-transfer-live-rankings.nexus-phalanx-kvk-test.pages.dev` als Herkunft. Für diese Adresse bleiben ein gültiges Token, eine aktive Mitgliedschaft und die vorhandenen Scouting-Rollen `member`, `r4`, `r5` und `admin` Voraussetzung. Anonyme Konten werden abgewiesen. Die vier Vercel-Herkünfte, die Datenpfade und das JWT-Gateway bleiben für zulässige Anfragen unverändert. Der Patch korrigiert außerdem den nachgewiesenen Initialisierungsfehler beim Ablehnen unzulässiger Methoden oder Herkünfte.
+
+- **BESTANDEN** · 7 lokale Tests mit dem echten Handler und simulierten Abhängigkeiten. Geprüft wurden Vorabfrage, ähnlich aussehende fremde Herkunft, fehlende oder ungültige Sitzung, inaktive, abgelaufene und unzulässige Mitgliedschaft, vier freigegebene Rollen, Datenquelle und Snapshot-Rückweg, bestehende Vercel-Herkünfte und HTTP 405 für eine unzulässige Methode.
+- **BESTANDEN** · Vorwärts- und Rückwärtsanwendung des Patches mit anschließendem Bytevergleich. SHA-256 der Version 6 `e0fccf87915d980d95ea3024892cbfd24772ee27092bc0bbdaaa142be8e71271`. SHA-256 des Kandidaten `ae9124a1b4acf24c92a17635f9865d0aeeeb9b8dfa15cf534d088c28d80b0a0d`. Für den Rückweg vor der Veröffentlichung die Live-Fassung und ihre Prüfsumme erneut kontrollieren.
+- **NICHT GETESTET** · Authentifizierter Abruf mit dem Patch auf Cloudflare. Die zusätzliche erlaubte Herkunft erfordert eine ausdrückliche Freigabe für die bestehende geschützte Funktion im gemeinsamen Supabase-Projekt.

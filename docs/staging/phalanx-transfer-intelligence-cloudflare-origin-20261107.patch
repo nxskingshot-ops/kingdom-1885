@@ -1,0 +1,37 @@
+--- a/index.ts
++++ b/index.ts
+@@ -3,6 +3,7 @@
+ const EXTRA_ORIGIN = "https://phalanx-r11-atlas-preview-48nyih9au-matze4428-6040.vercel.app";
+ const V2_ORIGIN = "https://phalanx-r11-atlas-preview-qdy0ugj6k-matze4428-6040.vercel.app";
+ const COMPACT_ORIGIN = "https://phalanx-r11-atlas-preview-n0zkgl9rp-matze4428-6040.vercel.app";
++const CLOUDFLARE_STAGE_ORIGIN = "https://stage-transfer-live-rankings.nexus-phalanx-kvk-test.pages.dev";
+ const cors: Record<string,string> = {
+   "Access-Control-Allow-Origin":ORIGIN,
+   "Access-Control-Allow-Headers":"Authorization, apikey, x-client-info, Content-Type",
+@@ -10,14 +11,13 @@
+   "Cache-Control":"no-store",
+   "Vary":"Origin"
+ };
+-const respond=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:{...cors,"Content-Type":"application/json; charset=utf-8"}});
+ Deno.serve(async(req:Request)=>{
+   const requestOrigin=req.headers.get("Origin");
+-  const headers=(requestOrigin===EXTRA_ORIGIN||requestOrigin===V2_ORIGIN||requestOrigin===COMPACT_ORIGIN)?{...cors,"Access-Control-Allow-Origin":requestOrigin}:cors;
++  const headers=(requestOrigin===EXTRA_ORIGIN||requestOrigin===V2_ORIGIN||requestOrigin===COMPACT_ORIGIN||requestOrigin===CLOUDFLARE_STAGE_ORIGIN)?{...cors,"Access-Control-Allow-Origin":requestOrigin}:cors;
++  const respond=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:{...headers,"Content-Type":"application/json; charset=utf-8"}});
+   if(req.method==="OPTIONS")return new Response(null,{status:204,headers});
+   if(req.method!=="GET")return respond({error:"Method not allowed"},405);
+-  if(requestOrigin!==ORIGIN&&requestOrigin!==EXTRA_ORIGIN&&requestOrigin!==V2_ORIGIN&&requestOrigin!==COMPACT_ORIGIN)return respond({error:"Origin not allowed"},403);
+-  const respond=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:{...headers,"Content-Type":"application/json; charset=utf-8"}});
++  if(requestOrigin!==ORIGIN&&requestOrigin!==EXTRA_ORIGIN&&requestOrigin!==V2_ORIGIN&&requestOrigin!==COMPACT_ORIGIN&&requestOrigin!==CLOUDFLARE_STAGE_ORIGIN)return respond({error:"Origin not allowed"},403);
+   const token=req.headers.get("Authorization")?.match(/^Bearer (.+)$/)?.[1];
+   if(!token)return respond({error:"Sign in to NEXUS to view protected intelligence."},401);
+   const url=Deno.env.get("SUPABASE_URL"),service=Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+@@ -29,6 +29,8 @@
+      .select("active,role,expires_at").eq("user_id",identity.user.id).maybeSingle();
+   if(memberError||!membership?.active||(membership.expires_at&&Date.parse(membership.expires_at)<=Date.now()))
+     return respond({error:"Active NEXUS membership required."},403);
++  if(requestOrigin===CLOUDFLARE_STAGE_ORIGIN&&(identity.user.is_anonymous||!["member","r4","r5","admin"].includes(membership.role)))
++    return respond({error:"Approved Transfer Scouting membership required."},403);
+ 
+ 
+   try{
