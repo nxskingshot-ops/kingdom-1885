@@ -79,3 +79,10 @@ Der [Patch](phalanx-transfer-intelligence-cloudflare-origin-20261107.patch) erg�
 - **BESTANDEN** · 7 lokale Tests mit dem echten Handler und simulierten Abhängigkeiten. Geprüft wurden Vorabfrage, ähnlich aussehende fremde Herkunft, fehlende oder ungültige Sitzung, inaktive, abgelaufene und unzulässige Mitgliedschaft, vier freigegebene Rollen, Datenquelle und Snapshot-Rückweg, bestehende Vercel-Herkünfte und HTTP 405 für eine unzulässige Methode.
 - **BESTANDEN** · Vorwärts- und Rückwärtsanwendung des Patches mit anschließendem Bytevergleich. SHA-256 der Version 6 `e0fccf87915d980d95ea3024892cbfd24772ee27092bc0bbdaaa142be8e71271`. SHA-256 des Kandidaten `ae9124a1b4acf24c92a17635f9865d0aeeeb9b8dfa15cf534d088c28d80b0a0d`. Für den Rückweg vor der Veröffentlichung die Live-Fassung und ihre Prüfsumme erneut kontrollieren.
 - **NICHT GETESTET** · Authentifizierter Abruf mit dem Patch auf Cloudflare. Die zusätzliche erlaubte Herkunft erfordert eine ausdrückliche Freigabe für die bestehende geschützte Funktion im gemeinsamen Supabase-Projekt.
+
+### Veröffentlichung nach ausdrücklicher Freigabe
+
+- **BESTANDEN** · Version 6 vor der Veröffentlichung erneut ausgelesen. Die Prüfsumme entsprach der geprüften Basis. Der Patch wurde daraus reproduziert und rückwärts angewendet. Die Wiederherstellung der ursprünglichen Datei war bytegleich.
+- **BESTANDEN** · Supabase führt die bestehende Testfunktion als Version 7 mit `verify_jwt=true`. Der nach der Veröffentlichung ausgelesene Quelltext entspricht bytegleich dem geprüften Kandidaten. Der Cloudflare-Frontend-Stand ist weiterhin `55945cccba8c55cd73fd8eafe3acd770dd9df3e8`.
+- **BESTANDEN** · Live-Vorabfragen für Cloudflare-Staging und alle vier bisherigen Vercel-Adressen antworteten mit HTTP 204 und jeweils der exakten Herkunft. Eine ähnlich aussehende Fremdadresse erhielt keine passende Herkunftsfreigabe. Zwei Cloudflare-GETs ohne gültige Sitzung lieferten HTTP 401 ohne Ranglistendaten.
+- **NICHT GETESTET** · Authentifizierter Live-Abruf mit einem zugelassenen PHALANX-Konto und physisches Android-Gerät. Die vier Rollen und der Rankingpfad sind aus den lokalen Handler-Tests belegt.
