@@ -121,10 +121,13 @@
   color: #f3ead8;
 }
 .phx-decision-true-help::backdrop { background: #000b; }
-.phx-decision-alliance > div > div > meter { display: block; margin: 5px 0; }
 .phx-decision-alliance { margin-top: 20px; border-top: 1px solid #bd914a; padding: 12px 0 2px; }
-.phx-decision-alliance-controls label { display: block; color: var(--decision-gold); font-weight: 700; font-size: .82rem; }
-#phxDecisionAlliance { width: 100%; padding: 10px 12px; margin: 8px 0; border: 1px solid #bd914a; border-radius: 8px; background: #0b2230; color: #f1c87b; }
+.phx-alliance-results { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 8px; }
+.phx-alliance-result { min-width: 0; padding: 8px; border: 1px solid #80643d; border-radius: 7px; background: #112333; overflow-wrap: anywhere; }
+.phx-alliance-result h5 { margin: 0 0 4px; color: #f8d69b; font-size: 1.06rem; }
+.phx-alliance-result > p { margin: 4px 0; }
+#phxIdResult .phx-alliance-result > details > summary { background: transparent; border: 0; padding: 8px 0; font-size: .82rem; }
+.phx-alliance-result .phx-decision-list { padding-inline-start: 16px; }
 .phx-decision-placement { display: block; color: var(--decision-gold); font: 700 1.06rem Georgia, serif; }
 .phx-decision-fold { border-top: 1px solid #9d704d70; min-width: 0; }
 .phx-decision-fold > summary { padding: 7px 0; min-height: 36px; box-sizing: border-box; color: #f2ca84; font-size: .8rem; font-weight: 650; cursor: pointer; }
@@ -162,7 +165,6 @@
 
 #phxIdResult :is(
   .phx-intel-body > .phx-decision-fold,
-  .phx-decision-alliance .phx-decision-fold,
   .phx-player-intel-card > .phx-decision-fold,
   #externalIntelResult > .phx-decision-fold
 ) > summary {
@@ -178,7 +180,6 @@
 }
 #phxIdResult :is(
   .phx-intel-body > .phx-decision-fold,
-  .phx-decision-alliance .phx-decision-fold,
   .phx-player-intel-card > .phx-decision-fold,
   #externalIntelResult > .phx-decision-fold
 )[open] > summary {

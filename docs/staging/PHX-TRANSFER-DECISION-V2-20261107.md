@@ -120,3 +120,16 @@ Die aufklappbaren Hauptabschnitte im Scoutingergebnis erhalten dunkle Titelzeile
 SHA-256 `49075.png`: `242854e95e0a2fe1d472638a873d75c1139de3e3dab2cc0d33dc0e7d8c157a37`.
 
 SHA-256 `49076.png`: `9bebfedceb1f6fcefd3437017e37889215183a252593501da5834bca2db505a7`.
+
+## Vier Allianzkacheln mit jüngster verfügbarer Erfassung · 07.11.2026
+
+**Basis** · Staging-Register `33b1ba18abe8a3db17cc073bbb035a317a184eb1`, ausgelieferte Laufzeit `f54b3fd1abe987fcfebfa996cef230880e0b35ef`. HTML, CSS und JS waren bytegleich zur HTTPS-Basis. Lokale Laufzeitbasis und Entwurf der Viereransicht jeweils als Git-Bundle gesichert, mit `git bundle verify` geprüft und in ein leeres Repository mit identischem Tree eingelesen.
+
+Die vier Kacheln NXS, OoO, MYM und FRA verwenden denselben geschützten Rankingabruf wie der #1885-Einzelvergleich. Der Endpunkt fragt zuerst den Anbieter ab und liefert bei einem Gesamtausfall die jüngsten gespeicherten Ranking-Boards mit dem Erfassungszeitpunkt. Nur gültige Total-Power-Werte derselben jüngsten Erfassung fließen in eine Kachelplatzierung ein. Der Kandidat wird anhand bekannter IDs aus der Vergleichsgruppe entfernt. Rang und Top-15-Liste in den Details gelten für den Kingdom-Top-100-Ausschnitt. Die Kachel zeigt die Zahl vergleichbarer Spieler. Alte Allianz-Kader und die gesonderte Teilstichproben-RPC werden für diese Auswertungen nicht mehr abgerufen.
+
+Der Einzelvergleich lädt die Rankings beim Öffnen und beim manuellen Aktualisieren. Bei einem fehlenden Rankingsatz bleibt der direkte ID-Abruf verfügbar. Dossiers und der Vergleich gespeicherter Kandidaten fragen Spielerdaten per ID ab. Gespeicherte Kandidaten, Notizen, Rollen und Nachweise bleiben als erfasste Daten erhalten. Der Board-Tabellenwert ist als Recorded Power gekennzeichnet. Automatische Vergleiche greifen nicht auf gespeicherte Kandidatenwerte zurück.
+
+- **BESTANDEN** · Chromium bei 320, 390, 430 und 1280 CSS-Pixeln mit isolierten Testantworten. 2×2-Raster, Platzierungen mit Selbstausschluss und ohne Vermischung unterschiedlicher Total-Power-Erfassungen, fehlende Allianzdaten, gekennzeichnete Anbieter- und gespeicherte Erfassung, getrennte Kacheldetails, Spielerauswahl und direkter ID-Abruf bei Rankingausfall. Dossier und Kandidatenvergleich zeigen bei Fehlern fehlende Werte und verwenden keine erfasste Kandidaten-Power. Keine historischen Kaderabfragen im Test beobachtet.
+- **BESTANDEN** · 23 Entscheidungs- und Rankingtests, JS-Syntax, Asset-Preflight und `git diff --check`.
+- **BESTANDEN** · Nur lesender Quellenabgleich. Der aktive geschützte Endpunkt unterstützt Cloudflare-Staging und stellt Anbieter- und gespeicherte Erfassung getrennt bereit. Die jüngste gespeicherte Total-Power-Erfassung beim Abgleich lag bei 01:45:37 UTC am 07.11.2026 und enthielt vor Selbstausschluss 41 NXS-, 28 OoO-, 22 MYM- und 8 FRA-Zeilen. Die beobachtete gespeicherte Erfassung belegt keine aktuellere Anbieter-Erfassung.
+- **NICHT GETESTET** · Dieser Laufzeitstand auf Cloudflare-Staging und einem physischen Android-Gerät.
