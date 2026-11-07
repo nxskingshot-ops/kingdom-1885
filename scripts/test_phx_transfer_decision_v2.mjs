@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { assessAccount } from '../deploy/phalanx-kvk-test/pylon-ix/phx-transfer-account-assessment-20261101.js';
-import { placeInAlliance } from '../deploy/phalanx-kvk-test/pylon-ix/phx-transfer-alliance-placement-20261101.js';
+import { placeInAlliance, compareTopPeers } from '../deploy/phalanx-kvk-test/pylon-ix/phx-transfer-alliance-placement-20261101.js';
 import { playerRankingMap, playerSummaryMetrics } from '../deploy/phalanx-kvk-test/pylon-ix/transfer-id-display-20261030.js';
 
 const date = '2026-10-13';
@@ -61,6 +61,7 @@ test('uses Total Power and keeps exactly the highest 15 from a complete roster',
  assert.equal(result.top15Guaranteed, true);
  assert.equal(result.top15.length, 15);
  assert.equal(result.top15[0].power, 290_000_000);
+ assert.equal(result.top15Gap, 84_630_000);
  assert.equal(result.gapAbove, 5_370_000);
  assert.equal(result.gapBelow, 4_630_000);
 });
@@ -78,7 +79,8 @@ test('calculates positions outside Top 15 and excludes the candidate’s histori
  assert.equal(result.rankMin, 18);
  assert.equal(result.rankMax, 19);
  assert.equal(result.top15Possible, false);
- assert.equal(result.top15[0].player_id, '20');
+ assert.equal(result.top15[0].player_id, '19');
+ assert.equal(result.comparisonSize, 19);
 });
 
 test('unknown count, wrong sum or duplicated IDs cannot establish roster completeness', () => {
@@ -90,7 +92,29 @@ test('unknown count, wrong sum or duplicated IDs cannot establish roster complet
  ]) {
   assert.equal(result.status,'PARTIAL_SNAPSHOT');
   assert.equal(result.top15Guaranteed,false);
+  assert.equal(result.top15Gap,null);
  }
+});
+
+test('only compares category medians against verified IDs with at least five same-capture peer values', () => {
+ const top15=roster.slice(0,6);
+ const observations=top15.map((row,index)=>({governor_id:row.player_id,rankings:{
+  pet_power:{value:10+index,captured_at:index===5?'2026-11-07T07:00:00Z':capture}
+ }}));
+ const candidate={pet_power:{value:16,captured_at:capture},hero_total:{value:0}};
+ assert.deepEqual(compareTopPeers(candidate,top15,[...observations,observations[0]]),[
+  {key:'pet_power',value:16,median:12,count:5,capture:Date.parse(capture),candidateCapture:Date.parse(capture)}
+ ]);
+ assert.deepEqual(compareTopPeers(candidate,top15,observations.slice(1)),[]);
+ assert.deepEqual(compareTopPeers(candidate,top15,observations.map(({governor_id,...row})=>({...row,uid:governor_id}))),[]);
+});
+
+test('uses separate indicators for Rally Leader and Garrison Holder', () => {
+ const attack=assessAccount({}, {hero_equip:2,hero_total:3,personal_power:1});
+ const defense=assessAccount({}, {troop_power:3,gov_charm:4,personal_power:1});
+ assert.equal(attack.priorities[0].label,'Rally Leader');
+ assert.equal(defense.priorities[0].label,'Garrison Holder');
+ assert.equal(assessAccount({}, {personal_power:1}).priorities.length,0);
 });
 
 test('handles a genuinely complete alliance with fewer than 15 members', () => {

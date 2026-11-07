@@ -1,5 +1,5 @@
-import { placeInAlliance } from './phx-transfer-alliance-placement-20261101.js?v=phx-decision-v2-20261107';
-import { assessAccount } from './phx-transfer-account-assessment-20261101.js?v=phx-decision-v2-20261107';
+import { placeInAlliance, compareTopPeers } from './phx-transfer-alliance-placement-20261101.js?v=phx-transfer-evidence-20261107';
+import { assessAccount } from './phx-transfer-account-assessment-20261101.js?v=phx-transfer-evidence-20261107';
 import { seaWorldVerdict, THRESHOLDS, WEIGHTS } from './phx-sea-world-v2-gate-20261101.js';
 import { candidateFromLookup, duplicateLookupFilter } from './transfer-id-candidate-20261030.js';
 import { forecast as phxTransferForecast, transferStatus as phxTransferStatus } from './phx-transfer-forecast-20261101.js';
@@ -169,8 +169,10 @@ function refreshInternalFilters(){
 }
 function renderInternalChoices(selected=$('internalGovernor').value){
  const select=$('internalGovernor'),query=normal($('internalSearch').value),alliance=$('internalAlliance').value;
- const matches=(internalPlayers||[]).filter(p=>(!alliance||(p.alliance_tag||'No alliance')===alliance)&&(!query||[p.player_name,p.governor_id].some(v=>normal(v).includes(query))));
- const chosen=(internalPlayers||[]).find(p=>String(p.uid||p.player_name)===selected),pinned=chosen&&!matches.includes(chosen);
+ const ownIds=comparisonPanel.parentNode===lookupIntel?.compare?lookupIntel.ids:[];
+ const available=(internalPlayers||[]).filter(p=>![p.governor_id,p.uid].some(id=>ownIds.includes(String(id))));
+ const matches=available.filter(p=>(!alliance||(p.alliance_tag||'No alliance')===alliance)&&(!query||[p.player_name,p.governor_id].some(v=>normal(v).includes(query))));
+ const chosen=available.find(p=>String(p.uid||p.player_name)===selected),pinned=chosen&&!matches.includes(chosen);
  select.replaceChildren();
  const append=p=>{const option=document.createElement('option');option.value=String(p.uid||p.player_name);option.textContent=p.player_name+' · '+(p.alliance_tag||'—');select.append(option);};
  if(pinned)append(chosen);
@@ -184,14 +186,37 @@ function renderInternalChoices(selected=$('internalGovernor').value){
 $('internalSearch').oninput=()=>renderInternalChoices();
 $('internalAlliance').onchange=()=>renderInternalChoices();
 function comparisonBrief(external,inside){
- const keys=['personal_power','master_power','pet_power','hero_total','coliseum','forest_of_life','crystal_cave','knowledge_nexus','molten_fort','radiant_spire'];
- const number=x=>x===null||x===undefined||String(x).trim()===''||!['number','string'].includes(typeof x)?null:Number.isFinite(Number(x))&&Number(x)>=0?Number(x):null;
- const pairs=keys.map(k=>({key:k,a:number(external[k]?.value),b:number(inside[k]?.value)})).filter(x=>x.a!==null&&x.b!==null);
- const higher=pairs.filter(x=>x.a>x.b),lower=pairs.filter(x=>x.a<x.b),same=pairs.length-higher.length-lower.length;
- const list=items=>items.slice(0,2).map(x=>boardLabels[x.key]||x.key).join(', ')+(items.length>2?' (+'+(items.length-2)+')':'');
- const power=pairs.find(x=>x.key==='personal_power'),percent=power&&power.b>0?100*(power.a-power.b)/power.b:null;
- const powerText=percent===null?'':(' Total Power '+(percent>=0?'+':'')+percent.toFixed(1)+'% vs selected player.');
- return {count:pairs.length,higher,lower,same,text:pairs.length?pairs.length+'/10 priority values on both sides.'+powerText+(higher.length?' Higher values: '+list(higher)+'.':'')+(lower.length?' Lower values: '+list(lower)+'.':'')+(same?' Equal: '+same+'.':''):'Insufficient shared values for a comparison.'};
+ const keys=['personal_power','true_power','troop_power','master_power','pet_power','hero_total','hero_equip',
+  'gov_gear','gov_charm','research_power','coliseum','forest_of_life','crystal_cave','knowledge_nexus','molten_fort','radiant_spire'];
+ const number=x=>['number','string'].includes(typeof x)&&String(x).trim()!==''&&Number.isFinite(Number(x))&&Number(x)>=0?Number(x):null;
+ const pairs=keys.map(key=>({key,a:number(external[key]?.value),b:number(inside[key]?.value)}))
+  .filter(row=>row.a!==null&&row.b!==null);
+ const describe=rows=>rows.slice(0,2).map(row=>(boardLabels[row.key]||'True Power')
+  +(row.b>0?' ('+((row.a-row.b)/row.b*100).toLocaleString('en-US',{signDisplay:'always',maximumFractionDigits:1})+'%)':'')).join(' · ');
+ const focus=direction=>pairs.filter(row=>row.key!=='personal_power'&&direction*(row.a-row.b)>0)
+  .sort((a,b)=>Math.abs(b.a-b.b)/Math.max(1,b.a,b.b)-Math.abs(a.a-a.b)/Math.max(1,a.a,a.b));
+ const power=pairs.find(row=>row.key==='personal_power');
+ const higher=focus(1),lower=focus(-1);
+ const stamps=new Set(pairs.flatMap(({key})=>[external[key].captured_at,inside[key].captured_at]).map(formatPlayerUtc));
+ return {
+  summary: pairs.length
+   ? [power&&describe([power]),higher.length&&'Higher '+describe(higher),lower.length&&'Lower '+describe(lower)].filter(Boolean).join(' · ')
+    ||'Shared values are equal.'
+   : 'No comparable values are available.',
+  coverage: pairs.length+' of '+keys.length+' metrics compared'
+   +(pairs.length&&(stamps.size>1||stamps.has('Not available'))?' · Capture times differ or are unknown':'')
+ };
+}
+function lookupComparisonRanks(payload,ranks=rankingMap(payload.ranks?.values),metrics){
+ const p=payload.player;
+ const [total,truePower]=metrics||playerSummaryMetrics(payload.ranks?.values,{
+  power:p.power??p.totalPower??p.total_power,captured_at:payload.source?.cachedAt
+ });
+ const entries={...ranks};
+ if(total.value!==null)entries.personal_power={value:total.value,captured_at:total.captured_at,kingdom_rank:total.rank,
+  source:total.captured_at===ranks.personal_power?.captured_at?ranks.personal_power?.source:undefined};
+ if(truePower.calculated)entries.true_power={value:truePower.value,captured_at:truePower.captured_at,source:'calculated'};
+ return entries;
 }
 function renderExternalIntel(){
  const box=$('externalIntelResult');
@@ -206,9 +231,10 @@ function renderExternalIntel(){
  const external=lookup?.ranks||rankingMap(evidence?.ranks?.values),inside=internal.rankings||{};
  const header=document.createElement('strong');header.textContent=candidate.player_name+' (KD '+(candidate.kingdom||'?')+') ↔ '+internal.player_name+' (#1885)';box.replaceChildren(header);
  const note=text=>{const p=document.createElement('p');p.textContent=text;box.append(p);};
- const brief=comparisonBrief(external,inside),assessment=document.createElement('p');assessment.className='comparison-brief';assessment.textContent=brief.text+' Higher scores do not establish combat superiority.';box.append(assessment);
+ const brief=comparisonBrief(external,inside);
+ box.append(element('p',brief.summary,'comparison-brief'),element('p',brief.coverage,'phx-decision-source'));
  const graphic=element('div',null,'phx-comparison-bars');
- for(const [key,label] of [['personal_power','Total Power'],['master_power','Master Power'],['pet_power','Pet Power'],['hero_total','Hero Power']]){
+ for(const [key,label] of [['personal_power','Total Power'],['true_power','True Power'],['master_power','Master Power'],['pet_power','Pet Power'],['hero_total','Hero Power']]){
   const first=external[key]?.value, second=inside[key]?.value;
   if([first,second].some(value=>value==null||String(value).trim()===''||!Number.isFinite(Number(value))||Number(value)<0))continue;
   const max=Math.max(Number(first),Number(second),1);
@@ -228,7 +254,7 @@ function renderExternalIntel(){
  if(!external.personal_power&&candidate.power_m!=null)note('Saved candidate Total Power: '+fmt(candidate.power_m)+'M (stored profile; current ranking value unavailable).');
  const rows=[];for(const key of new Set([...Object.keys(boardLabels),...Object.keys(external),...Object.keys(inside)])){
   const a=external[key],b=inside[key];
-  rows.push([boardLabels[key]||key,a,b]);
+  rows.push([boardLabels[key]||(key==='true_power'?'True Power':key),a,b]);
  }
  const wrap=document.createElement('div');wrap.className='scroll';const table=document.createElement('table');
  const thead=document.createElement('thead'),tr=document.createElement('tr');for(const label of ['Metric',candidate.player_name,internal.player_name]){const th=document.createElement('th');th.textContent=label;tr.append(th);}thead.append(tr);table.append(thead);
@@ -287,7 +313,8 @@ $('loadInternal').onclick=async()=>{
   const previous=$('internalGovernor').value;
   refreshInternalFilters();
   const context=comparisonPanel.closest('#phxIdResult')?lookupIntel:null;
-  const selected=context?strongestInternalPlayer(context.picker.value,context.id)
+  const selected=context?(internalPlayers.find(p=>String(p.governor_id||p.uid)===context.manualPeer)
+   ||strongestInternalPlayer(context.picker.value,context.ids))
    :internalPlayers.find(p=>String(p.uid||p.player_name)===previous)||internalPlayers.find(p=>p.player_name==='FaQu')||internalPlayers[0];
   renderInternalChoices(selected?String(selected.uid||selected.player_name):'');
   if(!context)loadCandidateEvidence(players.find(p=>p.candidate_id===active));
@@ -308,17 +335,29 @@ async function refreshInternalPlayer(){
  if(!selected?.governor_id)return;
  const stillSelected=()=>internalPlayers?.find(p=>String(p.uid||p.player_name)===$('internalGovernor').value)===selected;
  try{const payload=await readPlayer(String(selected.governor_id));if(payload.player?.kingdom!==1885)throw Error('Player kingdom has changed.');
- selected.rankings=rankingMap(payload.ranks?.values);selected.captured_at=formatPlayerUtc(payload.source?.cachedAt);selected.player_name=payload.player.name;
+  const refreshed=lookupComparisonRanks(payload);
+  // Retain the dated roster value if the current profile has no Total Power.
+  if(refreshed.personal_power?.value==null&&selected.rankings?.personal_power?.value!=null){
+   refreshed.personal_power=selected.rankings.personal_power;
+  }
+  selected.rankings=refreshed;
+  selected.captured_at=formatPlayerUtc(payload.source?.cachedAt);selected.player_name=payload.player.name;
  if(stillSelected())renderExternalIntel();
  }catch(e){if(stillSelected()){renderExternalIntel();const note=document.createElement('p');note.textContent='Current player refresh failed: '+e.message+'. Available ranking snapshot remains visible.';$('externalIntelResult').append(note);}}
 }
-$('internalGovernor').onchange=refreshInternalPlayer;
+$('internalGovernor').onchange=()=>{
+ const selected=internalPlayers?.find(p=>String(p.uid||p.player_name)===$('internalGovernor').value);
+ if(lookupIntel&&comparisonPanel.parentNode===lookupIntel.compare)lookupIntel.manualPeer=String(selected?.governor_id||selected?.uid||'');
+ void refreshInternalPlayer();
+};
 $('internalIdForm').onsubmit=async e=>{
  e.preventDefault();const button=$('loadInternalId');if(button.disabled)return;button.disabled=true;
  try{const id=$('internalPlayerId').value.trim(),payload=await readPlayer(id);if($('internalPlayerId').value.trim()!==id)throw Error('Kingshot Player ID changed. Load the player again.');if(payload.player?.kingdom!==1885)throw Error('This player is not in Kingdom #1885.');
- const record={uid:String(payload.uid||id),governor_id:id,player_name:payload.player.name,alliance_tag:payload.player.alliance,rankings:rankingMap(payload.ranks?.values)};
+ if(comparisonPanel.parentNode===lookupIntel?.compare&&lookupIntel.ids.some(own=>own===id||own===String(payload.uid)))throw Error('Choose a different player for comparison.');
+ const record={uid:String(payload.uid||id),governor_id:id,player_name:payload.player.name,alliance_tag:payload.player.alliance,rankings:lookupComparisonRanks(payload)};
  internalPlayers=internalPlayers||[];const index=internalPlayers.findIndex(p=>p.uid===record.uid||p.governor_id===id);if(index>=0)internalPlayers[index]=record;else internalPlayers.push(record);
  refreshInternalFilters();renderInternalChoices(record.uid);
+ if(lookupIntel&&comparisonPanel.parentNode===lookupIntel.compare)lookupIntel.manualPeer=id;
  record.captured_at=formatPlayerUtc(payload.source?.cachedAt);renderExternalIntel();loadCandidateEvidence(players.find(p=>p.candidate_id===active));
  }catch(error){$('externalIntelResult').textContent='Player comparison unavailable: '+error.message;}finally{button.disabled=false;}
 };
@@ -470,7 +509,7 @@ function renderRankingEvidence(target,entry,missing='Not available from source',
  const value=document.createElement('strong'),rank=document.createElement('small'),details=document.createElement('details'),summary=document.createElement('summary'),source=document.createElement('p');
  value.className='ranking-value';value.textContent=compact?compactPower(entry.value):formatPlayerNumber(entry.value);value.title='Exact value: '+formatPlayerNumber(entry.value);
  rank.className='ranking-rank';rank.textContent='Kingdom rank: '+formatPlayerNumber(entry.kingdom_rank);
- details.className='ranking-source';summary.textContent=compact?'ⓘ':entry.source==='saved_snapshot'?'Saved snapshot':'Source & time';summary.title='Exact value, kingdom rank, source and capture time';source.textContent='Exact value: '+formatPlayerNumber(entry.value)+' · Kingdom rank: '+formatPlayerNumber(entry.kingdom_rank)+rankingSourceText(entry);details.append(summary,source);target.append(value);if(!compact)target.append(rank);target.append(details);
+ details.className='ranking-source';summary.textContent=compact?'ⓘ':entry.source==='saved_snapshot'?'Saved snapshot':'Source & time';summary.title='Exact value, kingdom rank, source and capture time';source.textContent='Exact value: '+formatPlayerNumber(entry.value)+' · Kingdom rank: '+formatPlayerNumber(entry.kingdom_rank)+(entry.source==='calculated'?' · Calculated from matched Total and Troop Power · '+formatPlayerUtc(entry.captured_at):rankingSourceText(entry));details.append(summary,source);target.append(value);if(!compact)target.append(rank);target.append(details);
 }
 function appendRankingEntries(target,values,cellClass){
  const v=values||{},map=playerRankingMap(v),table=document.createElement('table'),head=document.createElement('thead'),header=document.createElement('tr'),body=document.createElement('tbody');table.className='ranking-list';
@@ -519,8 +558,8 @@ function allianceTag(value){
 const destinationAlliances=['NXS','OoO','MYM','FRA'];
 let lookupIntel=null;
 
-function strongestInternalPlayer(preferred, ownId){
- const available=(internalPlayers||[]).filter(player=>ownId!==String(player.governor_id??player.uid??''));
+function strongestInternalPlayer(preferred, ownIds){
+ const available=(internalPlayers||[]).filter(player=>![player.governor_id,player.uid].some(id=>ownIds.includes(String(id))));
  const power=player=>Number(player.rankings?.personal_power?.value)||0;
  const ordered=[...available].sort((a,b)=>power(b)-power(a));
  return ordered.find(player=>allianceTag(player.alliance_tag)===allianceTag(preferred)&&power(player)>0)
@@ -570,19 +609,21 @@ function mountDecision(payload,id){
  const [total,truePower]=metrics;
  const castle=metrics.at(-1);
  if(castle.value===null&&castle.text!=='Not available')castle.details='Profile field · '+formatPlayerUtc(stamp);
- const comparisonRanks=total.value===null?ranks:{...ranks,personal_power:{
-  ...ranks.personal_power,value:total.value,captured_at:total.captured_at
- }};
+ const comparisonRanks=lookupComparisonRanks(payload,ranks,metrics);
  const seaRanks=Object.fromEntries(assessment.rankingEvidence.filter(row=>row.rank<=100).map(row=>[row.key,row.rank]));
- const sea=seaWorldVerdict({...p,governorId:id},p.kingdom===1885?{
+ // Use the documented historical rating presentation and the existing provisional formula.
+ const sea=seaWorldVerdict({...p,governorId:id},Object.keys(WEIGHTS).some(key=>seaRanks[key])?{
   scope:'top25_provisional',ranks:seaRanks,truePower:truePower.calculated?truePower.value:null
  }:null);
  const tierName=tier=>tier.replaceAll('_',' ').replace(/\b[a-z]/g,letter=>letter.toUpperCase());
  const rating=element('div',null,'phx-decision-rating');
- if(sea.stars)rating.append(element('strong',sea.stars.replace('+',' ◆'),'phx-decision-stars'));
- const tier=sea.tier?tierName(sea.tier):'Rating unavailable';
- rating.append(element('span',sea.status==='PROVISIONAL_RANGE'?tier+'–'+tierName(sea.upperTier):tier,'phx-decision-tier'),
-  element('small','SEA WORLD V2 · '+(sea.tier?'Provisional':'No reference')));
+ const tierIndex=THRESHOLDS.findIndex(row=>row.tier===sea.tier);
+ const nextThreshold=THRESHOLDS[tierIndex-1]?.min;
+ const tier=sea.tier?tierName(sea.tier)+(sea.scoreLower>=nextThreshold-3?'+':''):'Rating unavailable';
+ const tierStars=THRESHOLDS[tierIndex]?.stars;
+ if(tierStars)rating.append(element('strong',tierStars.replace('+',' ◆'),'phx-decision-stars'));
+ rating.append(element('span',tier,'phx-decision-tier'),
+  element('small',sea.status==='PROVISIONAL_RANGE'?'SEA WORLD V2 · Lower bound':sea.tier?'SEA WORLD V2 · Provisional':'SEA WORLD V2 · No reference'));
  const card=element('section',null,'phx-transfer-decision');
  const head=element('header',null,'phx-decision-head');
  const identity=element('div');
@@ -590,7 +631,6 @@ function mountDecision(payload,id){
   element('p',[p.alliance,'Kingdom #'+p.kingdom,'ID '+id].filter(Boolean).join(' · ')));
  head.append(identity,rating);
  const tiles=element('dl',null,'phx-decision-metrics');
- const secondary=element('dl',null,'phx-decision-secondary');
  const metricEvidence=element('ul',null,'phx-decision-list');
  const trueSample=element('p');
  const trueHelp=element('dialog',null,'phx-decision-true-help');
@@ -598,10 +638,12 @@ function mountDecision(payload,id){
  const closeHelp=element('button','Close');
  const closeForm=element('form');closeForm.method='dialog';closeForm.append(closeHelp);
  trueHelp.append(element('h4','True Power · calculation and comparison'),element('p',truePower.details),trueSample,closeForm);
- for(const metric of [total,castle,truePower,...metrics.slice(2,-1)]){
+ for(const metric of [total,truePower,castle,...metrics.slice(2,-1)]){
+  const label=metric.label.replace(' · score','').replace('Truegold','TG');
+  metricEvidence.append(element('li',label+' · '+metric.details));
+  if(metric!==total&&metric!==truePower&&metric!==castle)continue;
   const tile=element('div');
   tile.dataset.metric=metric.key;
-  const label=metric.label.replace(' · score','').replace('Truegold','TG');
   const value=element('dd',metric.text==='Not available'?'—':metric.text);
   value.title=metric.details;
   if(metric===truePower){
@@ -611,8 +653,7 @@ function mountDecision(payload,id){
    value.append(info);
   }
   tile.append(element('dt',label),value);
-  (metric===total||metric===castle||metric===truePower?tiles:secondary).append(tile);
-  metricEvidence.append(element('li',label+' · '+metric.details));
+  tiles.append(tile);
  }
 
  const facts=element('div',null,'phx-decision-facts');
@@ -625,10 +666,17 @@ function mountDecision(payload,id){
  }
  const capture=formatPlayerUtc(stamp);
  const freshness=element('p',assessment.profile+' · '+assessment.coverage+'/'+assessment.expected
-  +' categories · '+(capture==='Not available'?'Profile capture unknown':'Profile '+capture.slice(0,10)+' UTC'),'phx-decision-source');
+  +' kingdom categories'+(assessment.dated<assessment.coverage?' · Some dates unknown':assessment.oldest!==assessment.newest?' · Mixed capture dates':''),'phx-decision-source');
  const verdict=element('section',null,'phx-decision-verdict');
- verdict.append(element('small','⚔ PYLON IX · STRATEGIC VERDICT'),element('h4',assessment.level),freshness,facts);
- card.append(head,tiles,secondary,trueHelp,verdict);
+ const primaryRole=assessment.priorities[0];
+ const tiedRoles=primaryRole?assessment.priorities.filter(role=>role.evidence.length===primaryRole.evidence.length
+  && role.evidence.reduce((sum,row)=>sum+row.rank,0)===primaryRole.evidence.reduce((sum,row)=>sum+row.rank,0)):[];
+ const roleSummary=primaryRole?'Review '+tiedRoles.map(role=>role.label).join(' or ')+' potential'
+  +(tiedRoles.length===1?' · '+short(primaryRole.evidence.slice(0,2)):'')
+  :'More evidence needed before suggesting a KvK role';
+ verdict.append(element('small','⚔ PYLON IX · CENTRAL ACCOUNT ASSESSMENT'),element('h4',assessment.level),freshness,facts,
+  element('p',roleSummary+'.','phx-decision-role-summary'));
+ card.append(head,tiles,trueHelp,verdict);
 
  const alliance=element('section',null,'phx-decision-alliance');
  const controls=element('div',null,'phx-decision-alliance-controls');
@@ -650,12 +698,13 @@ function mountDecision(payload,id){
  for(const role of assessment.roles){
   roleEvidence.append(element('li',role.label+' · '+(short(role.evidence)||'No Top-15 indicators recorded')+'. Verify: '+role.missing+'.'));
  }
- const roles=decisionDetails('KvK roles · combat evidence pending',roleGrid,
-  element('p','Review priorities use kingdom ranks. Combat buffs and Battle Reports are unavailable here.'),roleEvidence);
+ const roles=decisionDetails('KvK roles & evidence',roleGrid,
+  element('p','Review priority uses the number of role-related Top-15 indicators, then the sum of their ranks. Verify role-specific buffs and battle reports before assigning a role.'),roleEvidence);
+ verdict.append(roles);
 
  const evidence=element('div');
  const method=element('p','Overall level uses the median of at least 4 of 9 category ranks (≤15 strong, ≤40 established, >40 developing). '
-  +'Strengths are Top 15. Development lists the weakest documented positions outside that group. '
+  +'Strengths are Top 15. Development lists the weakest documented positions outside that group. Missing metrics remain unknown. '
   +'With enough categories, a Top-15 strength and a rank beyond #30 indicate specialization; a spread of 15 places or less indicates a balanced profile.');
  evidence.append(method,element('p',(assessment.median===null?'Median unavailable':'Median kingdom rank #'+assessment.median)
   +' · '+assessment.dated+'/'+assessment.coverage+' ranked categories dated'
@@ -664,7 +713,9 @@ function mountDecision(payload,id){
  const seaTiers=THRESHOLDS.map(({tier,min})=>tier.replaceAll('_',' ')+' ≥'+min).join(' · ');
  const seaWeights=Object.entries(WEIGHTS).map(([key,value])=>(rankingLabels[key]||'True Power')+' '+value+'%').join(' · ');
  evidence.append(decisionDetails('SEA WORLD rating method',element('p',sea.detail),
-  element('p','Provisional #1885 reference · '+seaTiers),element('p',seaWeights)));
+  ...(sea.status==='PROVISIONAL_RANGE'?[element('p','Possible upper tier with missing metrics: '+tierName(sea.upperTier)+'.')]:[]),
+  element('p','Provisional #1885 reference · '+seaTiers),element('p',seaWeights),
+  element('p','A + indicates a documented score within 3 points of the next tier. For other kingdoms the model uses the same provisional #1885 scale and local ranking positions.')));
  const candidateIds=[id,payload.uid,p.uid,p.governorId,p.governor_id].filter(Boolean).map(String);
  const refreshTrueSample=()=>{trueSample.textContent=verifiedTruePowerEvidence(truePower,castle,candidateIds);};
  refreshTrueSample();
@@ -691,10 +742,11 @@ function mountDecision(payload,id){
 
  const compare=decisionDetails('Compare with a #1885 player');
  const chooseDefault=()=>{
-  const peer=strongestInternalPlayer(picker.value,id);
+  const peer=internalPlayers?.find(player=>String(player.governor_id||player.uid)===lookupIntel.manualPeer)
+   ||strongestInternalPlayer(picker.value,candidateIds);
   renderInternalChoices(peer?String(peer.uid||peer.player_name):'');
  };
- lookupIntel={id,name,kingdom:p.kingdom,ranks:comparisonRanks,stamp,picker,compare,refresh:refreshTrueSample};
+ lookupIntel={id,ids:candidateIds,name,kingdom:p.kingdom,ranks:comparisonRanks,stamp,picker,compare,refresh:refreshTrueSample};
  const showComparison=()=>{
   if(!compare.open||lookupIntel?.compare!==compare)return;
   const moved=comparisonPanel.parentNode!==compare;
@@ -708,17 +760,19 @@ function mountDecision(payload,id){
  lookupIntel.showComparison=showComparison;
  compare.addEventListener('toggle',showComparison);
  picker.addEventListener('change',()=>{
+  lookupIntel.manualPeer='';
   if(comparisonPanel.parentNode===compare&&internalPlayers){
    chooseDefault();renderExternalIntel();
    if(internalHistorical)void refreshInternalPlayer();
   }
  });
  const heroes=payload.arenaSquad?.heroes||[];
- card.append(compare,roles,decisionDetails('Rankings & evidence · '+Object.keys(ranks).length+' metrics',all,
+ card.append(compare,decisionDetails('Rankings & evidence · '+Object.keys(ranks).length+' metrics',all,
   decisionDetails('Sources, calculations & freshness',evidence),
   decisionDetails('Arena Squad · '+heroes.length+' · '+formatPlayerSection(payload.arenaSquad?.status),arenaList(heroes))));
  phxIdResult.replaceChildren(card);
- mountAlliancePlacement(picker,placement,total,id);
+ const refreshPlacement=mountAlliancePlacement(picker,placement,total,candidateIds,comparisonRanks);
+ lookupIntel.refresh=()=>{refreshTrueSample();refreshPlacement();};
 }
 
 async function loadAllianceSnapshot(tag){
@@ -743,29 +797,35 @@ async function loadAllianceSnapshot(tag){
  return {date,rows};
 }
 
-function mountAlliancePlacement(picker,root,total,id){
+function mountAlliancePlacement(picker,root,total,candidateIds,candidateRanks){
  const cache=new Map();
  const rpc=!Number.isSafeInteger(total.value)?Promise.resolve(null):Promise.resolve(db.rpc('phx_live_alliance_placement',{p_power:total.value}))
   .then(result=>result.error||!Array.isArray(result.data)?null:result.data,()=>null);
  let generation=0;
+ let updatePeerEvidence=()=>{};
  const render=async()=>{
   const request=++generation,tag=picker.value;
+  updatePeerEvidence=()=>{};
   root.replaceChildren(element('p','Loading '+tag+' snapshots…'));
   if(!cache.has(tag))cache.set(tag,loadAllianceSnapshot(tag).catch(error=>({error:error.message})));
   const historical=await cache.get(tag);
   if(!root.isConnected||picker.value!==tag||request!==generation)return;
   const snapshot=placeInAlliance(total.value,historical.rows,historical.date,{
-   candidateIds:[id],members:historical.metadata?.members,totalPower:historical.metadata?.total_power
+   candidateIds,members:historical.metadata?.members,totalPower:historical.metadata?.total_power
   });
   const result=element('div');
   if(snapshot.rankMin!==null){
    const position='#'+snapshot.rankMin+(snapshot.rankMin===snapshot.rankMax?'':'–'+snapshot.rankMax);
    const top=snapshot.top15Guaranteed?'Top 15':!snapshot.top15Possible?'Outside Top 15'
     :snapshot.complete?'Top-15 boundary tie':'Top 15 unverified';
-   result.append(element('strong',position+(snapshot.complete?'':' in sample')+' · '+top,'phx-decision-placement'));
+   result.append(element('strong',snapshot.complete?position+' · '+top:top,'phx-decision-placement'));
    result.append(element('p',(snapshot.complete?'Complete historical roster':'Partial historical roster')+' · '
-    +snapshot.rosterSize+' members recorded · '+snapshot.snapshotDate+' · Total Power','phx-decision-source'));
+    +snapshot.comparisonSize+' peers · '+snapshot.snapshotDate+' · Total Power','phx-decision-source'));
+   if(!snapshot.complete)result.append(element('p',snapshot.ahead+' of '+snapshot.comparisonSize+' recorded peers have higher Total Power. Overall placement is unknown.'));
    if(snapshot.complete){
+    const delta=snapshot.top15Gap;
+    if(delta!==null)result.append(element('p',delta===0?'Equal to the historical Top-15 cutoff.'
+     :compactPower(Math.abs(delta))+' '+(delta>0?'above':'below')+' the historical Top-15 cutoff.'));
     const bar=element('meter');bar.min=0;bar.max=snapshot.rosterSize+1;
     bar.value=snapshot.rosterSize+2-snapshot.rankMin;
     bar.setAttribute('aria-label','Historical placement '+position);result.append(bar);
@@ -783,6 +843,25 @@ function mountAlliancePlacement(picker,root,total,id){
     +' · below '+(snapshot.gapBelow==null?'—':compactPower(snapshot.gapBelow));
    supporting.append(list,element('p',gap+' · Candidate Total Power capture '+formatPlayerUtc(total.captured_at)+'.'));
    result.append(supporting);
+   const categories=element('div');
+   result.insertBefore(categories,supporting);
+   updatePeerEvidence=()=>{
+    const evidence=compareTopPeers(candidateRanks,snapshot.top15,internalPlayers||[]);
+    const summary=direction=>evidence.filter(row=>direction*(row.value-row.median)>0)
+     .map(row=>rankingLabels[row.key]).join(', ');
+    categories.replaceChildren(element('p',evidence.length?[
+     summary(1)&&'Above peer median: '+summary(1),summary(-1)&&'Below peer median: '+summary(-1)
+    ].filter(Boolean).join(' · ')||'Measured categories match their peer medians.'
+     :'Total Power supports the roster comparison. Category comparisons need at least five dated peer values from the same capture.','phx-decision-source'));
+    if(evidence.length){
+     const details=decisionDetails('Category evidence · Historical roster peers');
+     for(const row of evidence)details.append(element('p',rankingLabels[row.key]+' · Candidate '+formatPlayerNumber(row.value)
+      +' ('+formatPlayerUtc(row.candidateCapture)+') · Median '+formatPlayerNumber(row.median)
+      +' from '+row.count+'/'+snapshot.top15.length+' peers ('+formatPlayerUtc(row.capture)+')'));
+     categories.append(details);
+    }
+   };
+   updatePeerEvidence();
   }
   root.replaceChildren(result);
   const live=(await rpc)?.find(row=>allianceTag(row.alliance)===allianceTag(tag));
@@ -790,11 +869,12 @@ function mountAlliancePlacement(picker,root,total,id){
    ||!Number.isSafeInteger(Number(live.covered))||Number(live.covered)<1)return;
   if(!supporting.isConnected)result.append(supporting);
   supporting.append(decisionDetails('Kingdom Top 100 · partial snapshot',
-   element('p','Insertion #'+live.rank+' · '+live.covered+' '+tag+' entries · '+formatPlayerUtc(live.sourceCapturedAt)
-    +'. This partial board can include the candidate’s earlier entry.')));
+   element('p',live.covered+' '+tag+' entries · '+formatPlayerUtc(live.sourceCapturedAt)
+    +'. This board is a partial sample and can include the candidate’s earlier entry.')));
  };
  picker.addEventListener('change',render);
  render();
+ return ()=>updatePeerEvidence();
 }
 
 phxIdForm.addEventListener('submit',async e=>{

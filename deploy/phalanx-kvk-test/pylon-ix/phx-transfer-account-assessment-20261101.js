@@ -30,19 +30,23 @@ export function assessAccount(_player = {}, rankings = {}) {
  const ranked = Object.fromEntries(rankingEvidence.map(entry => [entry.key, entry]));
  const cue = keys => keys.map(key => ranked[key]).filter(entry => entry?.rank <= 15);
  const roles = [
-  ['Rally Leader', cue(['hero_equip','gov_gear','gov_charm']), 2, 'Rally reports, lead buffs and capacity'],
+  ['Rally Leader', cue(['hero_equip','hero_total','gov_gear','gov_charm']), 2, 'Rally reports, lead buffs and capacity'],
   ['Rally Joiner', cue(['troop_power','research_power']), 1, 'Troop tiers, march size and joiner heroes'],
-  ['Garrison Holder', cue(['gov_gear','gov_charm','hero_equip']), 2, 'Defense reports, garrison buffs and formation'],
+  ['Garrison Holder', cue(['gov_gear','gov_charm','troop_power']), 2, 'Defense reports, garrison buffs and formation'],
   ['KvK Fighter', cue(['troop_power','research_power','hero_total']), 2, 'KvK battle reports, combat buffs and formation']
  ].map(([label, evidence, threshold, missing]) => ({
-  label, review: evidence.length >= threshold, evidence, missing
+  label, review: evidence.length >= threshold, evidence: evidence.sort((a,b) => a.rank-b.rank), missing
  }));
+ const priorities = roles.filter(role => role.review).sort((a,b) =>
+  b.evidence.length-a.evidence.length
+  || a.evidence.reduce((sum,row) => sum+row.rank,0)-b.evidence.reduce((sum,row) => sum+row.rank,0)
+ );
  return {
   level, profile, median, rankingEvidence, coverage, expected: metrics.length,
   strengths: top.slice(0, 3),
   development: rankingEvidence.filter(entry => entry.rank > 15).slice(-3).reverse(),
   missing: metrics.filter(([key]) => !ranked[key]).map(([, label]) => label),
-  dated: dates.length, oldest: dates[0], newest: dates.at(-1), roles
+  dated: dates.length, oldest: dates[0], newest: dates.at(-1), roles, priorities
  };
 }
 
