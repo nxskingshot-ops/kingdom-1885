@@ -134,14 +134,27 @@
 .phx-decision-roles { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 5px; list-style: none; padding: 0; margin: 0; }
 .phx-decision-roles li { display: grid; padding: 5px; border: 1px solid var(--decision-line); border-radius: 5px; }
 .phx-decision-roles li span { color: var(--decision-muted); font-size: .75rem; }
-.phx-comparison-bars { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 4px 9px; margin: 5px 0; }
-.phx-comparison-bars > div { display: grid; font-size: .74rem; }
-.phx-player-intel-card meter, .phx-comparison-bars meter { width: 100%; height: 8px; }
-.phx-player-intel-card meter::-webkit-meter-optimum-value, .phx-comparison-bars meter::-webkit-meter-optimum-value { background: #c38d52; }
-.phx-player-intel-card meter::-moz-meter-bar, .phx-comparison-bars meter::-moz-meter-bar { background: #c38d52; }
-.phx-comparison-bars small { margin-top: 3px; }
-.phx-comparison-bars meter:last-child::-webkit-meter-optimum-value { background: #ad5355; }
-.phx-comparison-bars meter:last-child::-moz-meter-bar { background: #ad5355; }
+.phx-comparison-summary { margin: 0 0 8px; color: #dce5e9; overflow-wrap: anywhere; }
+.phx-comparison-match { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 7px; margin: 0; font: 700 1.05rem/1.35 system-ui; }
+.phx-comparison-summary p { margin: 5px 0; }
+.phx-comparison-summary .comparison-brief { font-size: .85rem; line-height: 1.45; }
+.phx-comparison-candidate { --comparison-color: #f1c578; color: var(--comparison-color); }
+.phx-comparison-peer { --comparison-color: #91c7e4; color: var(--comparison-color); }
+.phx-comparison-controls { margin: 0 0 10px; }
+#private .phx-comparison-controls > summary { cursor: pointer; color: #dfbc7a; font-size: .83rem; padding-block: 8px; }
+#private .phx-comparison-controls > .toolbar { gap: 6px; }
+#internalIdStatus:empty, #private #externalIntelResult:empty { display: none; }
+.phx-comparison-bars { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px 12px; margin: 3px 0 8px; }
+.phx-comparison-bars > div { display: grid; min-width: 0; font-size: .78rem; overflow-wrap: anywhere; }
+#private .phx-comparison-bars > div > strong { background: transparent; color: #f1d7a4; }
+.phx-comparison-bars small { margin-top: 4px; }
+.phx-player-intel-card meter { width: 100%; height: 8px; }
+.phx-player-intel-card meter::-webkit-meter-optimum-value { background: #c38d52; }
+.phx-player-intel-card meter::-moz-meter-bar { background: #c38d52; }
+#private .phx-comparison-bars meter { width: 100%; height: 10px; appearance: none; }
+#private .phx-comparison-bars meter::-webkit-meter-bar { background: #263746; border: 0; border-radius: 6px; }
+#private .phx-comparison-bars meter::-webkit-meter-optimum-value { background: var(--comparison-color); border-radius: 6px; }
+#private .phx-comparison-bars meter::-moz-meter-bar { background: var(--comparison-color); border-radius: 6px; }
 .phx-player-intel-card #externalIntelPanel { margin: 3px 0 8px; min-width: 0; }
 .phx-player-intel-card #externalIntelPanel > .panel-head { display: none; }
 .phx-player-intel-card #externalIntelPanel .panel-body { padding: 8px; }

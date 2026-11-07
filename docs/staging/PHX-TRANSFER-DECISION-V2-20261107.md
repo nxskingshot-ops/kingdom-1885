@@ -87,3 +87,13 @@ Bei geöffnetem Scoutingergebnis bis 700 CSS-Pixeln bleibt der Außenrahmen des 
 - **BESTANDEN** · Bei 390 CSS-Pixeln wuchs die Nutzbreite des Vergleichsergebnisses im Browser von 276 auf 340 CSS-Pixel. Geprüft wurden die Rahmenbreiten, Einzüge, Steuerelementkonturen und die Rückkehr zur Kandidatenansicht.
 - **BESTANDEN** · Browserprüfung bei 320, 390, 430 und 1280 CSS-Pixeln, 23 vorhandene Entscheidungs- und Rankingtests und Assetprüfung.
 - **NICHT GETESTET** · Sichtprüfung der Rahmenkorrektur auf dem physischen Android-Gerät.
+
+## Einzelvergleich mit Ergebnis zuerst · 07.11.2026
+
+**Basis** · `f0149ddce2e08f46a3ddc6516eb181c80ed2f1b7`. Die auf Cloudflare ausgelieferten HTML-, CSS- und JS-Dateien stimmen bytegenau mit dem Basis-Commit überein. Ein Git-Bundle der Basis wurde erstellt, mit `git bundle verify` geprüft und in ein leeres Repository eingelesen. Die wiederhergestellte CSS-Blob-SHA stimmt mit der Basis überein. Der physische Android-Nachweis der Basis liegt im Projektnachtrag `PHX-TRANSFER-ANDROID-RAHMEN-20261107.md`, Screenshot `49060.png`.
+
+Die bestehende Vergleichsansicht zeigt Paarung, stärksten Vorsprung und größten Rückstand aus Sicht des geprüften Spielers direkt unter der Vergleichsüberschrift. Die Auswahl klappt beim ersten Ergebnis ein, sofern sie gerade keinen Fokus hat. Suche, Allianzfilter, Refresh und ID-Abfrage bleiben erreichbar. Ein fehlgeschlagener ID-Abruf lässt den bisherigen Vergleich stehen. Spielername und Balken verwenden dieselben Farben, Gold für den geprüften und Blau für den #1885-Spieler. Zeitstand, Datenabdeckung, vollständiger Rankingvergleich und historisch gekennzeichnete Allianz-Top-15 bleiben erhalten.
+
+- **BESTANDEN** · 23 Entscheidungs- und Rankingtests, JS-Syntax, Asset-Preflight und `git diff --check`.
+- **BESTANDEN** · Chromium mit isolierten Testantworten bei 320, 390, 430 und 1280 CSS-Pixeln. Ergebnis vor Auswahl, einklappbare Filter, Paarungswechsel über Suche und ID, fehlerhafte ID, Listen-Refresh, historischer Rückweg, Balkenzuordnung, vollständiger Rankingvergleich, Kandidat speichern im Test und Dossier-Rückweg. Bei 390 CSS-Pixeln bleibt die Vergleichsbreite 340 CSS-Pixel. Kein horizontaler Seitenüberlauf in den geprüften Zuständen.
+- **NICHT GETESTET** · Diese Änderung auf einem physischen Android-Gerät oder in einer persönlichen Live-Sitzung.

@@ -192,17 +192,24 @@ function comparisonBrief(external,inside){
  const number=x=>['number','string'].includes(typeof x)&&String(x).trim()!==''&&Number.isFinite(Number(x))&&Number(x)>=0?Number(x):null;
  const pairs=keys.map(key=>({key,a:number(external[key]?.value),b:number(inside[key]?.value)}))
   .filter(row=>row.a!==null&&row.b!==null);
- const describe=rows=>rows.slice(0,2).map(row=>(boardLabels[row.key]||'True Power')
-  +(row.b>0?' ('+((row.a-row.b)/row.b*100).toLocaleString('en-US',{signDisplay:'always',maximumFractionDigits:1})+'%)':'')).join(' · ');
- const focus=direction=>pairs.filter(row=>row.key!=='personal_power'&&direction*(row.a-row.b)>0)
+ const describe=row=>{
+  const label=boardLabels[row.key]||'True Power';
+  if(!row.b)return label+' ('+row.a.toLocaleString('en-US')+' vs 0)';
+  const percent=Math.abs((row.a-row.b)/row.b*100);
+  const amount=percent<0.05?'<0.1':percent.toLocaleString('en-US',{maximumFractionDigits:1});
+  return label+' ('+amount+'% '+(row.a>row.b?'higher':'lower')+')';
+ };
+ const focus=direction=>pairs.filter(row=>direction*(row.a-row.b)>0)
   .sort((a,b)=>Math.abs(b.a-b.b)/Math.max(1,b.a,b.b)-Math.abs(a.a-a.b)/Math.max(1,a.a,a.b));
- const power=pairs.find(row=>row.key==='personal_power');
- const higher=focus(1),lower=focus(-1);
+ const [higher]=focus(1),[lower]=focus(-1);
+ const highlights=[
+  higher&&'Biggest lead: '+describe(higher)+'.',
+  lower&&'Biggest gap: '+describe(lower)+'.'
+ ].filter(Boolean);
  const stamps=new Set(pairs.flatMap(({key})=>[external[key].captured_at,inside[key].captured_at]).map(formatPlayerUtc));
  return {
   summary: pairs.length
-   ? [power&&describe([power]),higher.length&&'Higher '+describe(higher),lower.length&&'Lower '+describe(lower)].filter(Boolean).join(' · ')
-    ||'Shared values are equal.'
+   ? highlights.join(' ')||'Shared values are equal.'
    : 'No comparable values are available.',
   coverage: pairs.length+' of '+keys.length+' metrics compared'
    +(pairs.length&&(stamps.size>1||stamps.has('Not available'))?' · Capture times differ or are unknown':'')
@@ -220,20 +227,37 @@ function lookupComparisonRanks(payload,ranks=rankingMap(payload.ranks?.values),m
  return entries;
 }
 function renderExternalIntel(){
- const box=$('externalIntelResult');
+ const box=$('externalIntelResult'),summary=$('externalIntelSummary'),controls=$('internalCompareControls');
+ const controlLabel=controls.querySelector('summary');
+ const showStatus=(message,needsSelection=true)=>{
+  summary.textContent=message;box.replaceChildren();
+  if(needsSelection){
+   controls.open=true;
+   delete controls.dataset.ready;
+   controlLabel.textContent='Choose a #1885 player';
+  }
+ };
  const lookup=comparisonPanel.closest('#phxIdResult')?lookupIntel:null;
  const candidate=lookup?{player_name:lookup.name,kingdom:lookup.kingdom}:players.find(p=>p.candidate_id===active);
- if(!candidate){box.textContent='Select a candidate from your board first.';return;}
- if(internalLoading){box.textContent='Loading protected Kingdom #1885 data…';return;}
- if(!internalPlayers){box.textContent='Selected: '+candidate.player_name+'. Load the latest available #1885 rankings or enter an internal Kingshot Player ID.';return;}
+ if(!candidate){showStatus('Select a candidate from your board first.');return;}
+ if(internalLoading){showStatus('Loading protected Kingdom #1885 data…',false);return;}
+ if(!internalPlayers){showStatus('Selected: '+candidate.player_name+'. Load the latest available #1885 rankings or enter an internal Kingshot Player ID.');return;}
  const internal=internalPlayers.find(p=>String(p.uid||p.player_name)===$('internalGovernor').value);
- if(!internal){box.textContent='Select an internal player to compare.';return;}
+ if(!internal){showStatus('Select an internal player to compare.');return;}
  const evidence=lookup?{source_cached_at:lookup.stamp}:evidenceFor(candidate);
  const external=lookup?.ranks||rankingMap(evidence?.ranks?.values),inside=internal.rankings||{};
- const header=document.createElement('strong');header.textContent=candidate.player_name+' (KD '+(candidate.kingdom||'?')+') ↔ '+internal.player_name+' (#1885)';box.replaceChildren(header);
- const note=text=>{const p=document.createElement('p');p.textContent=text;box.append(p);};
  const brief=comparisonBrief(external,inside);
- box.append(element('p',brief.summary,'comparison-brief'),element('p',brief.coverage,'phx-decision-source'));
+ const heading=element('h4',null,'phx-comparison-match');
+ heading.append(element('span',candidate.player_name+' (KD '+(candidate.kingdom||'?')+')','phx-comparison-candidate'),
+  element('span','↔'),element('span',internal.player_name+' (#1885)','phx-comparison-peer'));
+ summary.replaceChildren(heading,element('p',brief.summary,'comparison-brief'),element('p',brief.coverage,'phx-decision-source'));
+ if(!controls.dataset.ready){
+  if(!controls.contains(document.activeElement))controls.open=false;
+  controls.dataset.ready='true';
+  controlLabel.textContent='Change comparison player';
+ }
+ box.replaceChildren();
+ const note=text=>{const p=document.createElement('p');p.textContent=text;box.append(p);};
  const graphic=element('div',null,'phx-comparison-bars');
  for(const [key,label] of [['personal_power','Total Power'],['true_power','True Power'],['master_power','Master Power'],['pet_power','Pet Power'],['hero_total','Hero Power']]){
   const first=external[key]?.value, second=inside[key]?.value;
@@ -241,8 +265,8 @@ function renderExternalIntel(){
   const max=Math.max(Number(first),Number(second),1);
   const group=element('div');
   group.append(element('strong',label));
-  for(const [name,value] of [[candidate.player_name,first],[internal.player_name,second]]){
-   const meter=element('meter');meter.min=0;meter.max=max;meter.value=Number(value);
+  for(const [name,value,tone] of [[candidate.player_name,first,'candidate'],[internal.player_name,second,'peer']]){
+   const meter=element('meter',null,'phx-comparison-'+tone);meter.min=0;meter.max=max;meter.value=Number(value);
    meter.setAttribute('aria-label',name+' '+label+' '+compactPower(value));
    group.append(element('small',name+' · '+compactPower(value)),meter);
   }
@@ -326,7 +350,7 @@ $('loadInternal').onclick=async()=>{
   const box=$('externalIntelResult'),message='Comparison list unavailable: '+(error?.message||'Unknown error');
   internalLoading=false;
   if(internalPlayers){renderExternalIntel();box.append(element('p',message));}
-  else box.textContent=message;
+  else $('externalIntelSummary').textContent=message;
  }finally{
   $('loadInternal').disabled=false;
  }
@@ -353,6 +377,7 @@ $('internalGovernor').onchange=()=>{
 };
 $('internalIdForm').onsubmit=async e=>{
  e.preventDefault();const button=$('loadInternalId');if(button.disabled)return;button.disabled=true;
+ const status=$('internalIdStatus');status.textContent='';
  try{const id=$('internalPlayerId').value.trim(),payload=await readPlayer(id);if($('internalPlayerId').value.trim()!==id)throw Error('Kingshot Player ID changed. Load the player again.');if(payload.player?.kingdom!==1885)throw Error('This player is not in Kingdom #1885.');
  if(comparisonPanel.parentNode===lookupIntel?.compare&&lookupIntel.ids.some(own=>own===id||own===String(payload.uid)))throw Error('Choose a different player for comparison.');
  const record={uid:String(payload.uid||id),governor_id:id,player_name:payload.player.name,alliance_tag:payload.player.alliance,rankings:lookupComparisonRanks(payload)};
@@ -360,7 +385,7 @@ $('internalIdForm').onsubmit=async e=>{
  refreshInternalFilters();renderInternalChoices(record.uid);
  if(lookupIntel&&comparisonPanel.parentNode===lookupIntel.compare)lookupIntel.manualPeer=id;
  record.captured_at=formatPlayerUtc(payload.source?.cachedAt);renderExternalIntel();loadCandidateEvidence(players.find(p=>p.candidate_id===active));
- }catch(error){$('externalIntelResult').textContent='Player comparison unavailable: '+error.message;}finally{button.disabled=false;}
+ }catch(error){status.textContent='Player comparison unavailable: '+error.message;}finally{button.disabled=false;}
 };
 
 
