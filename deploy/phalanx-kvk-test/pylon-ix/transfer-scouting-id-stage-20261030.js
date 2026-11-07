@@ -133,7 +133,7 @@ finally{$('saveCandidate').disabled=false;}
 /* Optional external scouting evidence and protected read-only internal comparison. */
 const externalTrials=['coliseum','forest','crystal','knowledge','molten','radiant'];
 const externalLabels={coliseum:'Heroes & Hero Gear',forest:'Pets',crystal:'Governor Charms',knowledge:'Research',molten:'Governor Gear',radiant:'Mixed · Radiant Spire'};
-let internalPlayers=null,internalPowers=[],internalSnapshot='',internalLoading=false;
+let internalPlayers=null,internalSnapshot='',internalLoading=false,internalHistorical=false;
 const stageIndex=x=>{
  if(typeof x!=='string'||!/^\d{1,3}-\d{1,2}$/.test(x))return null;
  const [chapter,step]=x.split('-').map(Number);
@@ -177,7 +177,9 @@ function renderInternalChoices(selected=$('internalGovernor').value){
  for(const p of matches)append(p);
  if(chosen)select.value=selected;
  select.disabled=!select.options.length;
- $('internalFilterStatus').textContent=matches.length+' matches / '+(internalPlayers||[]).length+' available'+(pinned?' · Selected player kept outside filter':'');
+ $('internalFilterStatus').textContent=matches.length+' matches / '+(internalPlayers||[]).length+' available'
+  +(internalHistorical?' · Historical alliance rosters · Use ID for other players':'')
+  +(pinned?' · Selected player kept outside filter':'');
 }
 $('internalSearch').oninput=()=>renderInternalChoices();
 $('internalAlliance').onchange=()=>renderInternalChoices();
@@ -220,7 +222,7 @@ function renderExternalIntel(){
   graphic.append(group);
  }
  if(graphic.childElementCount)box.append(graphic);
- const sourceDetails=document.createElement('details'),sourceSummary=document.createElement('summary'),sourceText=document.createElement('p');sourceDetails.className='comparison-method';sourceSummary.textContent='Sources, coverage & interpretation';sourceText.textContent='Candidate capture '+formatPlayerUtc(evidence?.source_cached_at)+'; #1885 capture '+(internal.captured_at||formatPlayerUtc(internalSnapshot))+'. Request time is not capture time. Each rank belongs to its own kingdom and is not directly comparable across kingdoms. Missing Top-100 entries are unknown, never zero or rank 101. Scores are not verified trial stages or battle predictions. The player list covers available Top-100 boards, not a complete census.';sourceDetails.append(sourceSummary,sourceText);box.append(sourceDetails);
+ const sourceDetails=document.createElement('details'),sourceSummary=document.createElement('summary'),sourceText=document.createElement('p');sourceDetails.className='comparison-method';sourceSummary.textContent='Sources, coverage & interpretation';sourceText.textContent='Candidate capture '+formatPlayerUtc(evidence?.source_cached_at)+'; #1885 capture '+(internal.captured_at||formatPlayerUtc(internalSnapshot))+'. Request time is not capture time. Each rank belongs to its own kingdom and is not directly comparable across kingdoms. Missing Top-100 entries are unknown, never zero or rank 101. Scores are not verified trial stages or battle predictions. '+(internalHistorical?'The player picker uses historical alliance rosters. Use an ID for other #1885 players.':'The player list covers available Top-100 boards, not a complete census.');sourceDetails.append(sourceSummary,sourceText);box.append(sourceDetails);
  if(evidencePending.has(evidenceKey(candidate)))note('Loading current candidate rankings…');
  if(evidenceErrors.has(evidenceKey(candidate)))note('Current candidate refresh failed: '+evidenceErrors.get(evidenceKey(candidate))+'. Saved evidence remains visible.');
  if(!external.personal_power&&candidate.power_m!=null)note('Saved candidate Total Power: '+fmt(candidate.power_m)+'M (stored profile; current ranking value unavailable).');
@@ -242,19 +244,45 @@ function renderExternalIntel(){
  table.append(body);wrap.append(table);box.append(decisionDetails('Full ranking comparison',wrap));
 
 }
+async function loadHistoricalComparison(){
+ const snapshots=await Promise.allSettled(destinationAlliances.map(loadAllianceSnapshot));
+ const records=new Map();
+ for(let i=0;i<snapshots.length;i++){
+  const snapshot=snapshots[i];
+  if(snapshot.status!=='fulfilled')continue;
+  const {date,rows}=snapshot.value;
+  for(const row of rows){
+   const id=String(row.player_id??'');
+   if(!/^[1-9][0-9]{0,15}$/.test(id))continue;
+   const record=records.get(id);
+   if(record&&record.captured_at>=date)continue;
+   records.set(id,{
+    uid:id,governor_id:id,player_name:row.player_name||'Player ID '+id,
+    alliance_tag:destinationAlliances[i],captured_at:date,
+    rankings:{personal_power:{value:row.power,source:'saved_snapshot'}}
+   });
+  }
+ }
+ return [...records.values()];
+}
 $('loadInternal').onclick=async()=>{
  if(internalLoading)return;
  internalLoading=true;$('loadInternal').disabled=true;renderExternalIntel();
  try{
   const {data:{session},error}=await db.auth.getSession();
   if(error||!session?.access_token)throw Error('Sign in with your approved NEXUS account first.');
-  const response=await fetch(SUPABASE_URL+'/functions/v1/phalanx-transfer-intelligence-stage-20261031',{method:'GET',
-    headers:{apikey:KEY,Authorization:'Bearer '+session.access_token},cache:'no-store'});
-  const data=await response.json();
-  if(!response.ok)throw Error(data.error||'Protected intelligence unavailable.');
-  internalPlayers=Array.isArray(data.observations)?data.observations:[];
-  internalPowers=Array.isArray(data.power_references)?data.power_references:[];
-  internalSnapshot=data.snapshot_date||'';
+  let data;
+  try{
+   const response=await fetch(SUPABASE_URL+'/functions/v1/phalanx-transfer-intelligence-stage-20261031',{method:'GET',
+    headers:{apikey:KEY,Authorization:'Bearer '+session.access_token},cache:'no-store',signal:AbortSignal.timeout(12000)});
+   if(response.ok)data=await response.json();
+  }catch(_error){/* Staging origins can lack CORS for the ranked list. The protected roster is a separate source. */}
+  const historical=!Array.isArray(data?.observations)||!data.observations.length;
+  const records=historical?await loadHistoricalComparison():data.observations;
+  if(!records.length)throw Error('No verified #1885 records available. Compare by Kingshot Player ID.');
+  internalHistorical=historical;
+  internalPlayers=records;
+  internalSnapshot=internalHistorical?'':data.snapshot_date||'';
   $('loadInternal').textContent='Refresh #1885 players ('+internalPlayers.length+')';
   const previous=$('internalGovernor').value;
   refreshInternalFilters();
@@ -263,24 +291,33 @@ $('loadInternal').onclick=async()=>{
    :internalPlayers.find(p=>String(p.uid||p.player_name)===previous)||internalPlayers.find(p=>p.player_name==='FaQu')||internalPlayers[0];
   renderInternalChoices(selected?String(selected.uid||selected.player_name):'');
   if(!context)loadCandidateEvidence(players.find(p=>p.candidate_id===active));
-  if(!internalPlayers.length)throw Error('No verified internal player records available.');
- }catch(error){internalPlayers=null;internalPowers=[];$('externalIntelResult').textContent='Comparison data unavailable: '+(error?.message||'Unknown error');}
- finally{internalLoading=false;$('loadInternal').disabled=false;if(internalPlayers){lookupIntel?.refresh();renderExternalIntel();}}
+  internalLoading=false;
+  lookupIntel?.refresh();renderExternalIntel();
+  if(internalHistorical&&selected?.governor_id)void refreshInternalPlayer();
+ }catch(error){
+  const box=$('externalIntelResult'),message='Comparison list unavailable: '+(error?.message||'Unknown error');
+  internalLoading=false;
+  if(internalPlayers){renderExternalIntel();box.append(element('p',message));}
+  else box.textContent=message;
+ }finally{
+  $('loadInternal').disabled=false;
+ }
 };
-$('internalGovernor').onchange=async()=>{
+async function refreshInternalPlayer(){
  renderExternalIntel();const selected=internalPlayers?.find(p=>String(p.uid||p.player_name)===$('internalGovernor').value);
  if(!selected?.governor_id)return;
- const selectedKey=$('internalGovernor').value;
+ const stillSelected=()=>internalPlayers?.find(p=>String(p.uid||p.player_name)===$('internalGovernor').value)===selected;
  try{const payload=await readPlayer(String(selected.governor_id));if(payload.player?.kingdom!==1885)throw Error('Player kingdom has changed.');
  selected.rankings=rankingMap(payload.ranks?.values);selected.captured_at=formatPlayerUtc(payload.source?.cachedAt);selected.player_name=payload.player.name;
- if($('internalGovernor').value===selectedKey)renderExternalIntel();
- }catch(e){if($('internalGovernor').value===selectedKey){renderExternalIntel();const note=document.createElement('p');note.textContent='Current player refresh failed: '+e.message+'. Available ranking snapshot remains visible.';$('externalIntelResult').append(note);}}
-};
+ if(stillSelected())renderExternalIntel();
+ }catch(e){if(stillSelected()){renderExternalIntel();const note=document.createElement('p');note.textContent='Current player refresh failed: '+e.message+'. Available ranking snapshot remains visible.';$('externalIntelResult').append(note);}}
+}
+$('internalGovernor').onchange=refreshInternalPlayer;
 $('internalIdForm').onsubmit=async e=>{
  e.preventDefault();const button=$('loadInternalId');if(button.disabled)return;button.disabled=true;
  try{const id=$('internalPlayerId').value.trim(),payload=await readPlayer(id);if($('internalPlayerId').value.trim()!==id)throw Error('Kingshot Player ID changed. Load the player again.');if(payload.player?.kingdom!==1885)throw Error('This player is not in Kingdom #1885.');
  const record={uid:String(payload.uid||id),governor_id:id,player_name:payload.player.name,alliance_tag:payload.player.alliance,rankings:rankingMap(payload.ranks?.values)};
- internalPlayers=internalPlayers||[];const index=internalPlayers.findIndex(p=>p.uid===record.uid);if(index>=0)internalPlayers[index]=record;else internalPlayers.push(record);
+ internalPlayers=internalPlayers||[];const index=internalPlayers.findIndex(p=>p.uid===record.uid||p.governor_id===id);if(index>=0)internalPlayers[index]=record;else internalPlayers.push(record);
  refreshInternalFilters();renderInternalChoices(record.uid);
  record.captured_at=formatPlayerUtc(payload.source?.cachedAt);renderExternalIntel();loadCandidateEvidence(players.find(p=>p.candidate_id===active));
  }catch(error){$('externalIntelResult').textContent='Player comparison unavailable: '+error.message;}finally{button.disabled=false;}
@@ -629,14 +666,21 @@ function mountDecision(payload,id){
  lookupIntel={id,name,kingdom:p.kingdom,ranks:comparisonRanks,stamp,picker,compare,refresh:refreshTrueSample};
  const showComparison=()=>{
   if(!compare.open||lookupIntel?.compare!==compare)return;
-  if(comparisonPanel.parentNode!==compare){compare.append(comparisonPanel);chooseDefault();}
+  const moved=comparisonPanel.parentNode!==compare;
+  if(moved){compare.append(comparisonPanel);chooseDefault();}
   if(!internalPlayers&&!internalLoading)$('loadInternal').click();
-  else renderExternalIntel();
+  else {
+   renderExternalIntel();
+   if(moved&&internalHistorical&&!internalLoading)void refreshInternalPlayer();
+  }
  };
  lookupIntel.showComparison=showComparison;
  compare.addEventListener('toggle',showComparison);
  picker.addEventListener('change',()=>{
-  if(comparisonPanel.parentNode===compare&&internalPlayers){chooseDefault();renderExternalIntel();}
+  if(comparisonPanel.parentNode===compare&&internalPlayers){
+   chooseDefault();renderExternalIntel();
+   if(internalHistorical)void refreshInternalPlayer();
+  }
  });
  const heroes=payload.arenaSquad?.heroes||[];
  card.append(compare,roles,decisionDetails('Rankings & evidence · '+Object.keys(ranks).length+' metrics',graphs,all,
