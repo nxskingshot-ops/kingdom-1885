@@ -77,3 +77,13 @@ Die Wiederherstellung übernimmt die dokumentierte Quellansicht vom 04.11. aus `
 - **BESTANDEN** · Chromium mit dem bestehenden SDK und isolierten Testantworten bei 320, 390, 430 und 1280 CSS-Pixeln. Anmeldung, Leserechte, ID-Abruf, drei Kennzahlen, Orca-Badge, Dialog und Escape, Rangbalken, historischer Kader, #1885-Einzelvergleich mit und ohne Ranglistenrückweg, Kandidat hinzufügen, Dossier und Rücknavigation. Badge und True Power passen in die getesteten Breiten.
 - **BESTANDEN** · 23 automatische Entscheidungs- und Rankingtests, JS-Syntax und Cloudflare-Assetprüfung. Layout-Rückweg auf `55945cccba8c55cd73fd8eafe3acd770dd9df3e8` als Git-Bundle erstellt, Integrität geprüft und in einem leeren Repository wiederhergestellt.
 - **NICHT GETESTET** · Die wiederhergestellte Ansicht auf dem physischen Android-Gerät und die dort aufgeklappte Live-Spielerliste. Die früheren Android-Aufnahmen zeigen die ersetzte Ansicht, und die historische Quellversion dient als visueller Rückweg.
+
+## Mobiler Ergebnisbereich mit einem Außenrahmen
+
+Der Android-Screenshot vom 07.11.2026 zeigt im geöffneten Live-Einzelvergleich 258 verfügbare Spieler und 15 von 16 Kennzahlen für KomaR und A_S_S_A_U_L_T. Er bestätigt den zuvor offenen Einzelvergleich und zeigt überlagerte Rahmen von Arbeitsbereich, Scoutingsuche, Review, Spielerkarte und Vergleich.
+
+Bei geöffnetem Scoutingergebnis bis 700 CSS-Pixeln bleibt der Außenrahmen des Arbeitsbereichs sichtbar. Die inneren Container teilen sich diese Fläche. Ihre seitlichen Rahmen, Einzüge und dekorativen Schatten entfallen. Eingabefelder behalten ihre Konturen. Die Änderung besteht aus CSS und einer neuen CSS-Cachekennung.
+
+- **BESTANDEN** · Bei 390 CSS-Pixeln wuchs die Nutzbreite des Vergleichsergebnisses im Browser von 276 auf 340 CSS-Pixel. Geprüft wurden die Rahmenbreiten, Einzüge, Steuerelementkonturen und die Rückkehr zur Kandidatenansicht.
+- **BESTANDEN** · Browserprüfung bei 320, 390, 430 und 1280 CSS-Pixeln, 23 vorhandene Entscheidungs- und Rankingtests und Assetprüfung.
+- **NICHT GETESTET** · Sichtprüfung der Rahmenkorrektur auf dem physischen Android-Gerät.

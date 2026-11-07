@@ -146,3 +146,23 @@
 .phx-player-intel-card #externalIntelPanel > .panel-head { display: none; }
 .phx-player-intel-card #externalIntelPanel .panel-body { padding: 8px; }
 .phx-player-intel-card .phx-decision-rankings { max-height: 26rem; overflow: auto; }
+
+@media (max-width: 700px) {
+  #private:has(#phxIdPanel:not([hidden]) #phxReview:not([hidden])) {
+    box-shadow: 0 15px 38px #000a;
+  }
+  #private:has(#phxIdPanel:not([hidden]) #phxReview:not([hidden]))::before { display: none; }
+  #private #phxIdPanel:has(#phxReview:not([hidden])),
+  #private #phxReview,
+  #private #phxIdResult > .phx-player-intel-card,
+  #private #phxIdResult #externalIntelPanel {
+    border: 0;
+    box-shadow: none;
+    background: transparent;
+  }
+  #private #phxIdPanel:has(#phxReview:not([hidden])) > .panel-body,
+  #private #phxReview,
+  #private #phxIdResult > .phx-player-intel-card,
+  #private #phxIdResult #externalIntelPanel > .panel-body,
+  #private #phxIdResult #externalIntelResult { padding-inline: 0; }
+}
