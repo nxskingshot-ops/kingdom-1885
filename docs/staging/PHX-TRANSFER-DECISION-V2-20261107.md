@@ -96,4 +96,8 @@ Die bestehende Vergleichsansicht zeigt Paarung, stärksten Vorsprung und größt
 
 - **BESTANDEN** · 23 Entscheidungs- und Rankingtests, JS-Syntax, Asset-Preflight und `git diff --check`.
 - **BESTANDEN** · Chromium mit isolierten Testantworten bei 320, 390, 430 und 1280 CSS-Pixeln. Ergebnis vor Auswahl, einklappbare Filter, Paarungswechsel über Suche und ID, fehlerhafte ID, Listen-Refresh, historischer Rückweg, Balkenzuordnung, vollständiger Rankingvergleich, Kandidat speichern im Test und Dossier-Rückweg. Bei 390 CSS-Pixeln bleibt die Vergleichsbreite 340 CSS-Pixel. Kein horizontaler Seitenüberlauf in den geprüften Zuständen.
-- **NICHT GETESTET** · Diese Änderung auf einem physischen Android-Gerät oder in einer persönlichen Live-Sitzung.
+- **BESTANDEN** · Cloudflare-Staging. HTML, CSS und JavaScript wurden per HTTPS abgerufen und anhand der Git-Blob-SHAs bytegenau mit `6386e26ae1f2223f9869fc237edb9cffa3e337a8` abgeglichen.
+- **BESTANDEN** · Android-Liveanzeige, Screenshot `49070.png` vom 07.11.2026, 16:57 Uhr laut Gerätestatusleiste. Der geöffnete Vergleich KomaR ↔ MrMoe zeigt Namen und Kurzfazit vor der eingeklappten Spielerauswahl sowie farblich passende Balken in Gold und Blau. Ein Außenrahmen bleibt sichtbar. 15 von 16 Kennzahlen wurden verglichen. Aus KomaRs Sicht zeigt das Kurzfazit Research Power +1,7 % und Master Power −34,6 %. Die geöffneten Quellenhinweise nennen getrennte Erfassungszeiten (Kandidat 15:55:05 UTC, #1885-Daten 01:45:37 UTC).
+- **NICHT GETESTET** · Wechsel per Filter oder ID und Kandidatenspeicherung in dieser Android-Live-Sitzung. Diese Interaktionen wurden mit isolierten Testantworten geprüft.
+
+SHA-256 der Android-Aufnahme `49070.png`: `2fb592a3a122ff22b648a1a0346558cb1cbfc4f229616f8823c5785234bd2f22`.
