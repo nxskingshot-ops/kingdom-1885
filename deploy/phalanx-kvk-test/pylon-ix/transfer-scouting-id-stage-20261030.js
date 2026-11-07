@@ -1,5 +1,6 @@
 import { placeInAlliance, compareTopPeers } from './phx-transfer-alliance-placement-20261101.js?v=phx-transfer-evidence-20261107';
 import { assessAccount } from './phx-transfer-account-assessment-20261101.js?v=phx-transfer-evidence-20261107';
+import { strategicProfile } from './phx-transfer-strategic-profile-20261101.js';
 import { seaWorldVerdict, THRESHOLDS, WEIGHTS } from './phx-sea-world-v2-gate-20261101.js';
 import { candidateFromLookup, duplicateLookupFilter } from './transfer-id-candidate-20261030.js';
 import { forecast as phxTransferForecast, transferStatus as phxTransferStatus } from './phx-transfer-forecast-20261101.js';
@@ -616,21 +617,20 @@ function mountDecision(payload,id){
   scope:'top25_provisional',ranks:seaRanks,truePower:truePower.calculated?truePower.value:null
  }:null);
  const tierName=tier=>tier.replaceAll('_',' ').replace(/\b[a-z]/g,letter=>letter.toUpperCase());
- const rating=element('div',null,'phx-decision-rating');
+ const rating=element('div',null,'phx-intel-rating');
  const tierIndex=THRESHOLDS.findIndex(row=>row.tier===sea.tier);
  const nextThreshold=THRESHOLDS[tierIndex-1]?.min;
  const tier=sea.tier?tierName(sea.tier)+(sea.scoreLower>=nextThreshold-3?'+':''):'Rating unavailable';
  const tierStars=THRESHOLDS[tierIndex]?.stars;
- if(tierStars)rating.append(element('strong',tierStars.replace('+',' ◆'),'phx-decision-stars'));
- rating.append(element('span',tier,'phx-decision-tier'),
-  element('small',sea.status==='PROVISIONAL_RANGE'?'SEA WORLD V2 · Lower bound':sea.tier?'SEA WORLD V2 · Provisional':'SEA WORLD V2 · No reference'));
- const card=element('section',null,'phx-transfer-decision');
- const head=element('header',null,'phx-decision-head');
+ if(tierStars)rating.append(element('strong',tierStars.replace('+','')));
+ rating.append(element('span',(tierStars?.endsWith('+')?'◆ ':'')+tier,'phx-rating-shield'));
+ const card=element('section',null,'phx-scout-section phx-player-intel-card');
+ const head=element('header',null,'phx-intel-head');
  const identity=element('div');
  identity.append(element('small','PHALANX · PLAYER INTELLIGENCE'),element('h3',name),
   element('p',[p.alliance,'Kingdom #'+p.kingdom,'ID '+id].filter(Boolean).join(' · ')));
  head.append(identity,rating);
- const tiles=element('dl',null,'phx-decision-metrics');
+ const tiles=element('dl',null,'phx-intel-metrics');
  const metricEvidence=element('ul',null,'phx-decision-list');
  const trueSample=element('p');
  const trueHelp=element('dialog',null,'phx-decision-true-help');
@@ -638,15 +638,24 @@ function mountDecision(payload,id){
  const closeHelp=element('button','Close');
  const closeForm=element('form');closeForm.method='dialog';closeForm.append(closeHelp);
  trueHelp.append(element('h4','True Power · calculation and comparison'),element('p',truePower.details),trueSample,closeForm);
+ const profileRanks=assessment.rankingEvidence.filter(row=>row.key!=='pet_power'&&row.rank<=100);
+ const middle=Math.floor(profileRanks.length/2);
+ const profileMedian=profileRanks.length>=4?(profileRanks[Math.floor((profileRanks.length-1)/2)].rank+profileRanks[middle].rank)/2:null;
+ const profileColor=profileMedian===null?null:profileMedian<=10?'green':profileMedian<=25?'blue':profileMedian<=50?'yellow':'pink';
+ if(profileColor&&truePower.calculated){
+  trueHelp.insertBefore(element('p','Value color reflects the account’s kingdom-ranking profile · median #'+profileMedian+'.'),trueSample);
+ }
  for(const metric of [total,truePower,castle,...metrics.slice(2,-1)]){
   const label=metric.label.replace(' · score','').replace('Truegold','TG');
   metricEvidence.append(element('li',label+' · '+metric.details));
   if(metric!==total&&metric!==truePower&&metric!==castle)continue;
-  const tile=element('div');
+  const tile=element('div',null,'phx-intel-metric');
   tile.dataset.metric=metric.key;
-  const value=element('dd',metric.text==='Not available'?'—':metric.text);
+  const value=element('dd',null,metric===truePower?'phx-true-power-inline':null);
+  value.append(element('strong',metric.text==='Not available'?'—':metric.text));
   value.title=metric.details;
   if(metric===truePower){
+   if(profileColor&&truePower.calculated)value.dataset.profileColor=profileColor;
    const info=element('button','i','phx-decision-info');
    info.type='button';info.setAttribute('aria-label','True Power calculation and comparison');
    info.addEventListener('click',()=>trueHelp.showModal());
@@ -656,37 +665,47 @@ function mountDecision(payload,id){
   tiles.append(tile);
  }
 
- const facts=element('div',null,'phx-decision-facts');
+ const facts=element('div',null,'phx-intel-insights');
  const short=rows=>rows.map(row=>row.label+' #'+row.rank).join(' · ');
  for(const [label,content] of [
-  ['Strengths',short(assessment.strengths.slice(0,2))||'No Top-15 strength recorded'],
-  ['Development',short(assessment.development.slice(0,2))||'No relative gap recorded']
+  ['↗ Strengths',short(assessment.strengths.slice(0,2))||'No Top-15 strength recorded'],
+  ['◇ Development areas',short(assessment.development.slice(0,2))||'No relative gap recorded']
  ]){
   const cell=element('div');cell.append(element('strong',label),element('p',content));facts.append(cell);
  }
  const capture=formatPlayerUtc(stamp);
  const freshness=element('p',assessment.profile+' · '+assessment.coverage+'/'+assessment.expected
   +' kingdom categories'+(assessment.dated<assessment.coverage?' · Some dates unknown':assessment.oldest!==assessment.newest?' · Mixed capture dates':''),'phx-decision-source');
- const verdict=element('section',null,'phx-decision-verdict');
+ const body=element('div',null,'phx-intel-body');
+ const brand=element('div',null,'phx-dossier-brand');
+ brand.append(element('strong','⚔ PYLON IX'),element('small','CENTRAL ACCOUNT ASSESSMENT'));
+ const recommendation=element('div',null,'phx-achilles-recommendation');
  const primaryRole=assessment.priorities[0];
  const tiedRoles=primaryRole?assessment.priorities.filter(role=>role.evidence.length===primaryRole.evidence.length
   && role.evidence.reduce((sum,row)=>sum+row.rank,0)===primaryRole.evidence.reduce((sum,row)=>sum+row.rank,0)):[];
  const roleSummary=primaryRole?'Review '+tiedRoles.map(role=>role.label).join(' or ')+' potential'
   +(tiedRoles.length===1?' · '+short(primaryRole.evidence.slice(0,2)):'')
   :'More evidence needed before suggesting a KvK role';
- verdict.append(element('small','⚔ PYLON IX · CENTRAL ACCOUNT ASSESSMENT'),element('h4',assessment.level),freshness,facts,
-  element('p',roleSummary+'.','phx-decision-role-summary'));
- card.append(head,tiles,trueHelp,verdict);
+ recommendation.append(element('strong','Suggested KvK role · Provisional'),element('p',roleSummary+'. Combat buffs and battle reports are needed to confirm the role.'),
+  decisionDetails('Strengths & development areas',facts));
+ const overview=[
+  assessment.strengths.length?'Strengths: '+short(assessment.strengths.slice(0,3))+'.':'',
+  assessment.development.length?'Development area: '+short(assessment.development.slice(0,1))+'.':''
+ ].filter(Boolean).join(' ');
+ body.append(brand,element('h4',assessment.level));
+ if(overview)body.append(element('p',overview,'phx-intel-overview'));
+ body.append(recommendation);
+ card.append(head,tiles,trueHelp);
 
- const alliance=element('section',null,'phx-decision-alliance');
+ const alliance=element('section',null,'phx-placement-compact phx-decision-alliance');
  const controls=element('div',null,'phx-decision-alliance-controls');
  const label=element('label','Target alliance ');
- const picker=element('select');picker.id='phxDecisionAlliance';
+ const picker=element('select',null,'phx-alliance-picker');picker.id='phxDecisionAlliance';
  for(const tag of destinationAlliances){const option=element('option',tag);option.value=tag;picker.append(option);}
  picker.value=destinationAlliances.find(tag=>p.kingdom===1885&&allianceTag(tag)===allianceTag(p.alliance))||'NXS';
  label.append(picker);controls.append(label);
  const placement=element('div');placement.setAttribute('aria-live','polite');
- alliance.append(controls,placement);
+ alliance.append(element('h4','Alliance comparison'),controls,placement);
 
  const roleGrid=element('ul',null,'phx-decision-roles');
  for(const role of assessment.roles){
@@ -700,22 +719,24 @@ function mountDecision(payload,id){
  }
  const roles=decisionDetails('KvK roles & evidence',roleGrid,
   element('p','Review priority uses the number of role-related Top-15 indicators, then the sum of their ranks. Verify role-specific buffs and battle reports before assigning a role.'),roleEvidence);
- verdict.append(roles);
 
  const evidence=element('div');
  const method=element('p','Overall level uses the median of at least 4 of 9 category ranks (≤15 strong, ≤40 established, >40 developing). '
   +'Strengths are Top 15. Development lists the weakest documented positions outside that group. Missing metrics remain unknown. '
   +'With enough categories, a Top-15 strength and a rank beyond #30 indicate specialization; a spread of 15 places or less indicates a balanced profile.');
- evidence.append(method,element('p',(assessment.median===null?'Median unavailable':'Median kingdom rank #'+assessment.median)
+ evidence.append(freshness,method,element('p',(assessment.median===null?'Median unavailable':'Median kingdom rank #'+assessment.median)
   +' · '+assessment.dated+'/'+assessment.coverage+' ranked categories dated'
   +(assessment.oldest?' · '+assessment.oldest+(assessment.oldest===assessment.newest?'':' to '+assessment.newest):'')
   +'. Missing ranks: '+(assessment.missing.join(', ')||'none')+'.'));
- const seaTiers=THRESHOLDS.map(({tier,min})=>tier.replaceAll('_',' ')+' ≥'+min).join(' · ');
+ const ratingScale=element('ul',null,'phx-decision-list');
+ for(const row of THRESHOLDS)ratingScale.append(element('li',row.stars.replace('+',' ◆')+' · '+tierName(row.tier)+' · ≥'+row.min));
  const seaWeights=Object.entries(WEIGHTS).map(([key,value])=>(rankingLabels[key]||'True Power')+' '+value+'%').join(' · ');
- evidence.append(decisionDetails('SEA WORLD rating method',element('p',sea.detail),
+ const legend=decisionDetails('ⓘ View rating scale',ratingScale,element('p',sea.detail),
   ...(sea.status==='PROVISIONAL_RANGE'?[element('p','Possible upper tier with missing metrics: '+tierName(sea.upperTier)+'.')]:[]),
-  element('p','Provisional #1885 reference · '+seaTiers),element('p',seaWeights),
-  element('p','A + indicates a documented score within 3 points of the next tier. For other kingdoms the model uses the same provisional #1885 scale and local ranking positions.')));
+  element('p',seaWeights),
+  element('p','A + indicates a documented score within 3 points of the next tier. For other kingdoms the model uses the same provisional #1885 scale and local ranking positions.'));
+ legend.classList.add('phx-sea-world-legend');
+ card.append(legend,body);
  const candidateIds=[id,payload.uid,p.uid,p.governorId,p.governor_id].filter(Boolean).map(String);
  const refreshTrueSample=()=>{trueSample.textContent=verifiedTruePowerEvidence(truePower,castle,candidateIds);};
  refreshTrueSample();
@@ -724,21 +745,24 @@ function mountDecision(payload,id){
 
  const all=element('div',null,'phx-decision-rankings');
  appendRankingEntries(all,values,'');
- const graphs=element('div',null,'phx-decision-rank-bars');
- for(const row of assessment.rankingEvidence){
-  const line=element('div');
-  line.dataset.band=row.rank<=10?'top':row.rank<=20?'solid':'gap';
-  const meter=element('meter');meter.min=0;meter.max=100;meter.value=Math.max(1,101-row.rank);
-  meter.setAttribute('aria-label',row.label+' kingdom rank '+row.rank);
-  line.append(element('span',row.label+' #'+row.rank),meter);graphs.append(line);
+ const rankRows=strategicProfile(ranks).rows.filter(row=>assessment.rankingEvidence.some(item=>item.key===row.key));
+ if(rankRows.length){
+  const profile=element('section',null,'phx-intel-profile phx-profile-visible');
+  profile.append(element('h4','Strength profile · Kingdom rankings'),
+   element('p','Bars show kingdom rank. Rank 1 is best.','phx-scout-muted'));
+  for(const row of rankRows){
+   const line=element('div',null,'phx-intel-rank');
+   line.dataset.band=row.rank<=10?'good':row.rank<=20?'developing':'gap';
+   const title=element('div',null,'phx-intel-rank-head');
+   title.append(element('strong',row.label),element('b','Kingdom #'+row.rank));
+   const track=element('div',null,'phx-intel-track');
+   track.setAttribute('aria-hidden','true');
+   const fill=element('div',null,'phx-intel-fill');fill.style.width=Math.max(1,101-row.rank)+'%';
+   track.append(fill);line.append(title,track);profile.append(line);
+  }
+  body.append(profile);
  }
-
- if(assessment.rankingEvidence.length){
-  const profile=element('section',null,'phx-decision-profile');
-  profile.append(element('h4','Strength Profile · Kingdom Rankings'),graphs);
-  card.append(profile);
- }
- card.append(alliance);
+ body.append(alliance);
 
  const compare=decisionDetails('Compare with a #1885 player');
  const chooseDefault=()=>{
@@ -767,7 +791,8 @@ function mountDecision(payload,id){
   }
  });
  const heroes=payload.arenaSquad?.heroes||[];
- card.append(compare,decisionDetails('Rankings & evidence · '+Object.keys(ranks).length+' metrics',all,
+ body.append(compare);
+ card.append(roles,decisionDetails('Rankings & evidence · '+Object.keys(ranks).length+' metrics',all,
   decisionDetails('Sources, calculations & freshness',evidence),
   decisionDetails('Arena Squad · '+heroes.length+' · '+formatPlayerSection(payload.arenaSquad?.status),arenaList(heroes))));
  phxIdResult.replaceChildren(card);
