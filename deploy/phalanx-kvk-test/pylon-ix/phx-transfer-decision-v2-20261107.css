@@ -160,6 +160,46 @@
 .phx-player-intel-card #externalIntelPanel .panel-body { padding: 8px; }
 .phx-player-intel-card .phx-decision-rankings { max-height: 26rem; overflow: auto; }
 
+#phxIdResult :is(
+  .phx-intel-body > .phx-decision-fold,
+  .phx-decision-alliance .phx-decision-fold,
+  .phx-player-intel-card > .phx-decision-fold,
+  #externalIntelResult > .phx-decision-fold
+) > summary {
+  min-height: 44px;
+  padding: 10px 12px;
+  border-inline-start: 3px solid #b58a4c;
+  background: linear-gradient(100deg, #192d3c, #101d2a);
+  color: #f8d69b;
+  font-size: .94rem;
+  font-weight: 750;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+#phxIdResult :is(
+  .phx-intel-body > .phx-decision-fold,
+  .phx-decision-alliance .phx-decision-fold,
+  .phx-player-intel-card > .phx-decision-fold,
+  #externalIntelResult > .phx-decision-fold
+)[open] > summary {
+  border-inline-start-color: #f0bd71;
+  background: linear-gradient(100deg, #263a4b, #132433);
+}
+#phxIdResult #externalIntelPanel :is(.phx-comparison-controls, .comparison-method) > summary {
+  min-height: 44px;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  background: #142635;
+  color: #f2d29a;
+  font-size: .85rem;
+  font-weight: 650;
+  line-height: 1.45;
+}
+#phxIdResult #externalIntelResult .phx-comparison-bars > div > strong {
+  font-size: .85rem;
+  font-weight: 750;
+}
+
 @media (max-width: 700px) {
   #private:has(#phxIdPanel:not([hidden]) #phxReview:not([hidden])) {
     box-shadow: 0 15px 38px #000a;

@@ -104,3 +104,13 @@ Die bestehende Vergleichsansicht zeigt Paarung, stärksten Vorsprung und größt
 SHA-256 der Android-Aufnahme `49070.png`: `2fb592a3a122ff22b648a1a0346558cb1cbfc4f229616f8823c5785234bd2f22`.
 
 SHA-256 der Android-Aufnahme `49072.png`: `320800fd05e4c019d9b79e55022c1813c0dced98fc478f26c71c69daa684cc4b`.
+
+## Vergleichsüberschriften mit stärkerem Kontrast · 07.11.2026
+
+**Basis** · Staging-Register `58d23ec2cc3be28b5af5bb1ef4327ae88f62a520`, ausgelieferte Laufzeit `6386e26ae1f2223f9869fc237edb9cffa3e337a8`. Ausgeliefertes HTML und CSS waren bytegleich mit dieser Laufzeit. Das lokale Laufzeitäquivalent ist als Git-Bundle gesichert. Integrität und Abruf in ein leeres Repository wurden geprüft. Die CSS-Blob-SHA der Wiederherstellung stimmt mit der ausgelieferten Basis überein.
+
+Die aufklappbaren Hauptabschnitte im Scoutingergebnis erhalten dunkle Titelzeilen mit Goldakzent und sichtbar hellerem geöffneten Zustand. Spielerwechsel und Quellen erscheinen als dezenter abgesetzte Unterpunkte. Die Kennzahlenbeschriftungen im Balkenvergleich sind etwas größer und kräftiger. Geändert sind Decision-CSS und dessen Cachekennung in der Transfer-HTML.
+
+- **BESTANDEN** · Chromium mit isolierten Testdaten bei 320, 390, 430 und 1280 CSS-Pixeln. Hauptüberschriften mindestens 44 CSS-Pixel hoch, geöffneter Zustand unterscheidbar, sichtbarer Tastaturfokus und Öffnen per Enter. Spielerwechsel, Quellen und vollständiger Rankingvergleich funktionierten. In den geprüften Zuständen kein horizontaler Seitenüberlauf.
+- **BESTANDEN** · 23 Entscheidungs- und Rankingtests, Asset-Preflight und `git diff --check`.
+- **NICHT GETESTET** · Physisches Android-Gerät für diese Stiländerung. Die vorherigen Gerätebelege bleiben dem damaligen Laufzeitstand zugeordnet.
