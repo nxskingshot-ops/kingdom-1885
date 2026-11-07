@@ -120,3 +120,13 @@ Die aufklappbaren Hauptabschnitte im Scoutingergebnis erhalten dunkle Titelzeile
 SHA-256 `49075.png`: `242854e95e0a2fe1d472638a873d75c1139de3e3dab2cc0d33dc0e7d8c157a37`.
 
 SHA-256 `49076.png`: `9bebfedceb1f6fcefd3437017e37889215183a252593501da5834bca2db505a7`.
+
+## Vier Allianzen direkt vergleichen · 07.11.2026
+
+**Basis** · Staging-Register `33b1ba18abe8a3db17cc073bbb035a317a184eb1`, ausgelieferte Laufzeit `f54b3fd1abe987fcfebfa996cef230880e0b35ef`. HTML, CSS und JS stimmten bytegenau mit der HTTPS-Basis überein. Das lokale Laufzeitäquivalent wurde als Git-Bundle gesichert, geprüft und mit identischer Tree-SHA in ein leeres Repository eingelesen.
+
+Der Bereich Alliance comparison zeigt NXS, OoO, MYM und FRA gleichzeitig. Das Zielallianz-Menü entfällt. Die vier Kader laden unabhängig. Historischer Datenstand, Abdeckung, Platzierung und Abstand zur Top-15-Grenze bleiben je nach Datenlage sichtbar. Historische Top 15, Rangbalken, Kategoriebelege und die getrennte Kingdom-Teilstichprobe bleiben in den Details erreichbar. Der #1885-Einzelvergleich behält seinen eigenen Allianzfilter und wählt weiterhin standardmäßig die unterstützte Heimatallianz eines #1885-Spielers, sonst NXS. Der historische Rückweg kann laufende Kaderabfragen beim ersten Abruf wiederverwenden. Ein manueller Refresh fragt die Daten erneut ab.
+
+- **BESTANDEN** · Chromium mit isolierten Testantworten bei 320, 390, 430 und 1280 CSS-Pixeln. Vier sichtbare Allianzen ohne Zielallianz-Menü, unterschiedliche Rangplätze, Teildaten ohne exakten Gesamtplatz, fehlgeschlagener Einzelkader, unabhängiges Öffnen der Top 15, Einzelvergleich samt Allianzfilter, Spielerwechsel sowie historischer Rückweg und erneuter Abruf. Kein horizontaler Seitenüberlauf in den geprüften Zuständen.
+- **BESTANDEN** · 23 Entscheidungs- und Rankingtests, JS-Syntax, Asset-Preflight und `git diff --check`.
+- **NICHT GETESTET** · Neuer Laufzeitstand auf Cloudflare-Staging und auf einem physischen Android-Gerät.

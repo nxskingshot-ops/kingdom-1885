@@ -296,7 +296,8 @@ function renderExternalIntel(){
 
 }
 async function loadHistoricalComparison(){
- const snapshots=await Promise.allSettled(destinationAlliances.map(loadAllianceSnapshot));
+ const cached=!internalPlayers&&comparisonPanel.closest('#phxIdResult')?lookupIntel?.allianceSnapshots:null;
+ const snapshots=await Promise.allSettled(destinationAlliances.map(tag=>cached?.get(tag)??loadAllianceSnapshot(tag)));
  const records=new Map();
  for(let i=0;i<snapshots.length;i++){
   const snapshot=snapshots[i];
@@ -339,7 +340,7 @@ $('loadInternal').onclick=async()=>{
   refreshInternalFilters();
   const context=comparisonPanel.closest('#phxIdResult')?lookupIntel:null;
   const selected=context?(internalPlayers.find(p=>String(p.governor_id||p.uid)===context.manualPeer)
-   ||strongestInternalPlayer(context.picker.value,context.ids))
+   ||strongestInternalPlayer(context.preferredAlliance,context.ids))
    :internalPlayers.find(p=>String(p.uid||p.player_name)===previous)||internalPlayers.find(p=>p.player_name==='FaQu')||internalPlayers[0];
   renderInternalChoices(selected?String(selected.uid||selected.player_name):'');
   if(!context)loadCandidateEvidence(players.find(p=>p.candidate_id===active));
@@ -723,14 +724,9 @@ function mountDecision(payload,id){
  card.append(head,tiles,trueHelp);
 
  const alliance=element('section',null,'phx-placement-compact phx-decision-alliance');
- const controls=element('div',null,'phx-decision-alliance-controls');
- const label=element('label','Target alliance ');
- const picker=element('select',null,'phx-alliance-picker');picker.id='phxDecisionAlliance';
- for(const tag of destinationAlliances){const option=element('option',tag);option.value=tag;picker.append(option);}
- picker.value=destinationAlliances.find(tag=>p.kingdom===1885&&allianceTag(tag)===allianceTag(p.alliance))||'NXS';
- label.append(picker);controls.append(label);
- const placement=element('div');placement.setAttribute('aria-live','polite');
- alliance.append(element('h4','Alliance comparison'),controls,placement);
+ const preferredAlliance=destinationAlliances.find(tag=>p.kingdom===1885&&allianceTag(tag)===allianceTag(p.alliance))||'NXS';
+ const placement=element('div',null,'phx-alliance-results');placement.setAttribute('aria-live','polite');
+ alliance.append(element('h4','Alliance comparison'),placement);
 
  const roleGrid=element('ul',null,'phx-decision-roles');
  for(const role of assessment.roles){
@@ -792,10 +788,11 @@ function mountDecision(payload,id){
  const compare=decisionDetails('Compare with a #1885 player');
  const chooseDefault=()=>{
   const peer=internalPlayers?.find(player=>String(player.governor_id||player.uid)===lookupIntel.manualPeer)
-   ||strongestInternalPlayer(picker.value,candidateIds);
+   ||strongestInternalPlayer(preferredAlliance,candidateIds);
   renderInternalChoices(peer?String(peer.uid||peer.player_name):'');
  };
- lookupIntel={id,ids:candidateIds,name,kingdom:p.kingdom,ranks:comparisonRanks,stamp,picker,compare,refresh:refreshTrueSample};
+ const allianceSnapshots=new Map(destinationAlliances.map(tag=>[tag,loadAllianceSnapshot(tag)]));
+ lookupIntel={id,ids:candidateIds,name,kingdom:p.kingdom,ranks:comparisonRanks,stamp,preferredAlliance,allianceSnapshots,compare,refresh:refreshTrueSample};
  const showComparison=()=>{
   if(!compare.open||lookupIntel?.compare!==compare)return;
   const moved=comparisonPanel.parentNode!==compare;
@@ -808,20 +805,13 @@ function mountDecision(payload,id){
  };
  lookupIntel.showComparison=showComparison;
  compare.addEventListener('toggle',showComparison);
- picker.addEventListener('change',()=>{
-  lookupIntel.manualPeer='';
-  if(comparisonPanel.parentNode===compare&&internalPlayers){
-   chooseDefault();renderExternalIntel();
-   if(internalHistorical)void refreshInternalPlayer();
-  }
- });
  const heroes=payload.arenaSquad?.heroes||[];
  body.append(compare);
  card.append(roles,decisionDetails('Rankings & evidence · '+Object.keys(ranks).length+' metrics',all,
   decisionDetails('Sources, calculations & freshness',evidence),
   decisionDetails('Arena Squad · '+heroes.length+' · '+formatPlayerSection(payload.arenaSquad?.status),arenaList(heroes))));
  phxIdResult.replaceChildren(card);
- const refreshPlacement=mountAlliancePlacement(picker,placement,total,candidateIds,comparisonRanks);
+ const refreshPlacement=mountAlliancePlacement(placement,total,candidateIds,comparisonRanks,allianceSnapshots);
  lookupIntel.refresh=()=>{refreshTrueSample();refreshPlacement();};
 }
 
@@ -847,28 +837,24 @@ async function loadAllianceSnapshot(tag){
  return {date,rows};
 }
 
-function mountAlliancePlacement(picker,root,total,candidateIds,candidateRanks){
- const cache=new Map();
+function mountAlliancePlacement(root,total,candidateIds,candidateRanks,allianceSnapshots){
  const rpc=!Number.isSafeInteger(total.value)?Promise.resolve(null):Promise.resolve(db.rpc('phx_live_alliance_placement',{p_power:total.value}))
   .then(result=>result.error||!Array.isArray(result.data)?null:result.data,()=>null);
- let generation=0;
- let updatePeerEvidence=()=>{};
- const render=async()=>{
-  const request=++generation,tag=picker.value;
-  updatePeerEvidence=()=>{};
-  root.replaceChildren(element('p','Loading '+tag+' snapshots…'));
-  if(!cache.has(tag))cache.set(tag,loadAllianceSnapshot(tag).catch(error=>({error:error.message})));
-  const historical=await cache.get(tag);
-  if(!root.isConnected||picker.value!==tag||request!==generation)return;
+ const peerUpdates=[];
+ const render=async(tag,result,heading,status)=>{
+  const historical=await allianceSnapshots.get(tag).catch(error=>({error:error.message}));
+  if(!result.isConnected)return;
+  status.remove();
   const snapshot=placeInAlliance(total.value,historical.rows,historical.date,{
    candidateIds,members:historical.metadata?.members,totalPower:historical.metadata?.total_power
   });
-  const result=element('div');
+  const supporting=decisionDetails(snapshot.top15.length
+   ?(snapshot.complete?'Historical Top 15':'Top 15 recorded')+' · '+tag:'Alliance snapshot details · '+tag);
   if(snapshot.rankMin!==null){
    const position='#'+snapshot.rankMin+(snapshot.rankMin===snapshot.rankMax?'':'–'+snapshot.rankMax);
    const top=snapshot.top15Guaranteed?'Top 15':!snapshot.top15Possible?'Outside Top 15'
     :snapshot.complete?'Top-15 boundary tie':'Top 15 unverified';
-   result.append(element('strong',snapshot.complete?position+' · '+top:top,'phx-decision-placement'));
+   heading.append(element('strong',snapshot.complete?position+' · '+top:top,'phx-decision-placement'));
    result.append(element('p',(snapshot.complete?'Complete historical roster':'Partial historical roster')+' · '
     +snapshot.comparisonSize+' peers · '+snapshot.snapshotDate+' · Total Power','phx-decision-source'));
    if(!snapshot.complete)result.append(element('p',snapshot.ahead+' of '+snapshot.comparisonSize+' recorded peers have higher Total Power. Overall placement is unknown.'));
@@ -878,11 +864,9 @@ function mountAlliancePlacement(picker,root,total,candidateIds,candidateRanks){
      :compactPower(Math.abs(delta))+' '+(delta>0?'above':'below')+' the historical Top-15 cutoff.'));
     const bar=element('meter');bar.min=0;bar.max=snapshot.rosterSize+1;
     bar.value=snapshot.rosterSize+2-snapshot.rankMin;
-    bar.setAttribute('aria-label','Historical placement '+position);result.append(bar);
+    bar.setAttribute('aria-label','Historical placement '+position);supporting.append(bar);
    }
   }else result.append(element('p',historical.error||(total.value===null?'Candidate Total Power unavailable.':'Historical placement unavailable.')));
-  const supporting=decisionDetails(snapshot.top15.length
-   ?(snapshot.complete?'Historical Top 15':'Top 15 recorded')+' · '+tag:'Alliance snapshot details');
   if(snapshot.top15.length){
    const list=element('ol',null,'phx-decision-list');
    for(const peer of snapshot.top15){
@@ -891,11 +875,10 @@ function mountAlliancePlacement(picker,root,total,candidateIds,candidateRanks){
    }
    const gap='Gap above '+(snapshot.gapAbove==null?'—':compactPower(snapshot.gapAbove))
     +' · below '+(snapshot.gapBelow==null?'—':compactPower(snapshot.gapBelow));
-   supporting.append(list,element('p',gap+' · Candidate Total Power capture '+formatPlayerUtc(total.captured_at)+'.'));
-   result.append(supporting);
    const categories=element('div');
-   result.insertBefore(categories,supporting);
-   updatePeerEvidence=()=>{
+   supporting.append(categories,list,element('p',gap+' · Candidate Total Power capture '+formatPlayerUtc(total.captured_at)+'.'));
+   result.append(supporting);
+   const updatePeerEvidence=()=>{
     const evidence=compareTopPeers(candidateRanks,snapshot.top15,internalPlayers||[]);
     const summary=direction=>evidence.filter(row=>direction*(row.value-row.median)>0)
      .map(row=>rankingLabels[row.key]).join(', ');
@@ -911,9 +894,9 @@ function mountAlliancePlacement(picker,root,total,candidateIds,candidateRanks){
      categories.append(details);
     }
    };
+   peerUpdates.push(updatePeerEvidence);
    updatePeerEvidence();
   }
-  root.replaceChildren(result);
   const live=(await rpc)?.find(row=>allianceTag(row.alliance)===allianceTag(tag));
   if(!result.isConnected||!live||!Number.isSafeInteger(Number(live.rank))||Number(live.rank)<1
    ||!Number.isSafeInteger(Number(live.covered))||Number(live.covered)<1)return;
@@ -922,9 +905,16 @@ function mountAlliancePlacement(picker,root,total,candidateIds,candidateRanks){
    element('p',live.covered+' '+tag+' entries · '+formatPlayerUtc(live.sourceCapturedAt)
     +'. This board is a partial sample and can include the candidate’s earlier entry.')));
  };
- picker.addEventListener('change',render);
- render();
- return ()=>updatePeerEvidence();
+ for(const tag of destinationAlliances){
+  const result=element('section',null,'phx-alliance-result');
+  const heading=element('div',null,'phx-alliance-result-heading');
+  const status=element('p','Loading historical roster…','phx-decision-source');
+  heading.append(element('h5',tag));
+  result.append(heading,status);
+  root.append(result);
+  void render(tag,result,heading,status);
+ }
+ return ()=>peerUpdates.forEach(update=>update());
 }
 
 phxIdForm.addEventListener('submit',async e=>{
