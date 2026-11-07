@@ -573,19 +573,45 @@ function mountDecision(payload,id){
  const comparisonRanks=total.value===null?ranks:{...ranks,personal_power:{
   ...ranks.personal_power,value:total.value,captured_at:total.captured_at
  }};
+ const seaRanks=Object.fromEntries(assessment.rankingEvidence.filter(row=>row.rank<=100).map(row=>[row.key,row.rank]));
+ const sea=seaWorldVerdict({...p,governorId:id},p.kingdom===1885?{
+  scope:'top25_provisional',ranks:seaRanks,truePower:truePower.calculated?truePower.value:null
+ }:null);
+ const tierName=tier=>tier.replaceAll('_',' ').replace(/\b[a-z]/g,letter=>letter.toUpperCase());
+ const rating=element('div',null,'phx-decision-rating');
+ if(sea.stars)rating.append(element('strong',sea.stars.replace('+',' ◆'),'phx-decision-stars'));
+ const tier=sea.tier?tierName(sea.tier):'Rating unavailable';
+ rating.append(element('span',sea.status==='PROVISIONAL_RANGE'?tier+'–'+tierName(sea.upperTier):tier,'phx-decision-tier'),
+  element('small','SEA WORLD V2 · '+(sea.tier?'Provisional':'No reference')));
  const card=element('section',null,'phx-transfer-decision');
  const head=element('header',null,'phx-decision-head');
- head.append(element('small','⚔ PYLON IX · TRANSFER INTELLIGENCE'),element('h3',name),
-  element('strong',assessment.level,'phx-decision-tier'),
+ const identity=element('div');
+ identity.append(element('small','PHALANX · PLAYER INTELLIGENCE'),element('h3',name),
   element('p',[p.alliance,'Kingdom #'+p.kingdom,'ID '+id].filter(Boolean).join(' · ')));
+ head.append(identity,rating);
  const tiles=element('dl',null,'phx-decision-metrics');
+ const secondary=element('dl',null,'phx-decision-secondary');
  const metricEvidence=element('ul',null,'phx-decision-list');
- for(const metric of metrics){
+ const trueSample=element('p');
+ const trueHelp=element('dialog',null,'phx-decision-true-help');
+ trueHelp.setAttribute('aria-label','True Power calculation and comparison');
+ const closeHelp=element('button','Close');
+ const closeForm=element('form');closeForm.method='dialog';closeForm.append(closeHelp);
+ trueHelp.append(element('h4','True Power · calculation and comparison'),element('p',truePower.details),trueSample,closeForm);
+ for(const metric of [total,castle,truePower,...metrics.slice(2,-1)]){
   const tile=element('div');
   tile.dataset.metric=metric.key;
   const label=metric.label.replace(' · score','').replace('Truegold','TG');
-  tile.append(element('dt',label),element('dd',metric.text==='Not available'?'—':metric.text));
-  tiles.append(tile);
+  const value=element('dd',metric.text==='Not available'?'—':metric.text);
+  value.title=metric.details;
+  if(metric===truePower){
+   const info=element('button','i','phx-decision-info');
+   info.type='button';info.setAttribute('aria-label','True Power calculation and comparison');
+   info.addEventListener('click',()=>trueHelp.showModal());
+   value.append(info);
+  }
+  tile.append(element('dt',label),value);
+  (metric===total||metric===castle||metric===truePower?tiles:secondary).append(tile);
   metricEvidence.append(element('li',label+' · '+metric.details));
  }
 
@@ -600,7 +626,9 @@ function mountDecision(payload,id){
  const capture=formatPlayerUtc(stamp);
  const freshness=element('p',assessment.profile+' · '+assessment.coverage+'/'+assessment.expected
   +' categories · '+(capture==='Not available'?'Profile capture unknown':'Profile '+capture.slice(0,10)+' UTC'),'phx-decision-source');
- card.append(head,tiles,freshness,facts);
+ const verdict=element('section',null,'phx-decision-verdict');
+ verdict.append(element('small','⚔ PYLON IX · STRATEGIC VERDICT'),element('h4',assessment.level),freshness,facts);
+ card.append(head,tiles,secondary,trueHelp,verdict);
 
  const alliance=element('section',null,'phx-decision-alliance');
  const controls=element('div',null,'phx-decision-alliance-controls');
@@ -610,7 +638,7 @@ function mountDecision(payload,id){
  picker.value=destinationAlliances.find(tag=>p.kingdom===1885&&allianceTag(tag)===allianceTag(p.alliance))||'NXS';
  label.append(picker);controls.append(label);
  const placement=element('div');placement.setAttribute('aria-live','polite');
- alliance.append(controls,placement);card.append(alliance);
+ alliance.append(controls,placement);
 
  const roleGrid=element('ul',null,'phx-decision-roles');
  for(const role of assessment.roles){
@@ -633,19 +661,14 @@ function mountDecision(payload,id){
   +' · '+assessment.dated+'/'+assessment.coverage+' ranked categories dated'
   +(assessment.oldest?' · '+assessment.oldest+(assessment.oldest===assessment.newest?'':' to '+assessment.newest):'')
   +'. Missing ranks: '+(assessment.missing.join(', ')||'none')+'.'));
- const seaRanks=Object.fromEntries(assessment.rankingEvidence.filter(row=>row.rank<=100).map(row=>[row.key,row.rank]));
- const sea=seaWorldVerdict({...p,governorId:id},p.kingdom===1885?{
-  scope:'top25_provisional',ranks:seaRanks,truePower:truePower.calculated?truePower.value:null
- }:null);
  const seaTiers=THRESHOLDS.map(({tier,min})=>tier.replaceAll('_',' ')+' ≥'+min).join(' · ');
  const seaWeights=Object.entries(WEIGHTS).map(([key,value])=>(rankingLabels[key]||'True Power')+' '+value+'%').join(' · ');
  evidence.append(decisionDetails('SEA WORLD rating method',element('p',sea.detail),
   element('p','Provisional #1885 reference · '+seaTiers),element('p',seaWeights)));
  const candidateIds=[id,payload.uid,p.uid,p.governorId,p.governor_id].filter(Boolean).map(String);
- const trueSample=element('p');
  const refreshTrueSample=()=>{trueSample.textContent=verifiedTruePowerEvidence(truePower,castle,candidateIds);};
  refreshTrueSample();
- evidence.append(metricEvidence,trueSample,
+ evidence.append(metricEvidence,
   element('p','Profile source capture: '+capture+' · Lookup (UTC): '+formatPlayerUtc(payload.checkedAtUtc)));
 
  const all=element('div',null,'phx-decision-rankings');
@@ -653,10 +676,18 @@ function mountDecision(payload,id){
  const graphs=element('div',null,'phx-decision-rank-bars');
  for(const row of assessment.rankingEvidence){
   const line=element('div');
+  line.dataset.band=row.rank<=10?'top':row.rank<=20?'solid':'gap';
   const meter=element('meter');meter.min=0;meter.max=100;meter.value=Math.max(1,101-row.rank);
   meter.setAttribute('aria-label',row.label+' kingdom rank '+row.rank);
   line.append(element('span',row.label+' #'+row.rank),meter);graphs.append(line);
  }
+
+ if(assessment.rankingEvidence.length){
+  const profile=element('section',null,'phx-decision-profile');
+  profile.append(element('h4','Strength Profile · Kingdom Rankings'),graphs);
+  card.append(profile);
+ }
+ card.append(alliance);
 
  const compare=decisionDetails('Compare with a #1885 player');
  const chooseDefault=()=>{
@@ -683,7 +714,7 @@ function mountDecision(payload,id){
   }
  });
  const heroes=payload.arenaSquad?.heroes||[];
- card.append(compare,roles,decisionDetails('Rankings & evidence · '+Object.keys(ranks).length+' metrics',graphs,all,
+ card.append(compare,roles,decisionDetails('Rankings & evidence · '+Object.keys(ranks).length+' metrics',all,
   decisionDetails('Sources, calculations & freshness',evidence),
   decisionDetails('Arena Squad · '+heroes.length+' · '+formatPlayerSection(payload.arenaSquad?.status),arenaList(heroes))));
  phxIdResult.replaceChildren(card);

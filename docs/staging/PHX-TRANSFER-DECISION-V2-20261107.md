@@ -33,3 +33,12 @@ Die automatisierten Tests lassen sich wiederholen mit `node --test scripts/test_
 Zum Rückbau die V2-Änderungen auf dem Staging-Branch per Revert zurücknehmen. Der vorhandene Cloudflare-Testworkflow veröffentlicht den wiederhergestellten Stand. Die Basis-SHA identifiziert den geprüften Rücksprungpunkt.
 
 Beim HTTPS-Test erlaubte die Spieler-ID-Schnittstelle die Staging-Herkunft. Die CORS-Antwort für die separate #1885-Spielerliste gab eine andere Herkunft an und verhindert damit den Zugriff von dieser Staging-Adresse. Der Rückweg nutzt die bereits geschützten Allianz- und Spieler-ID-Abfragen mit derselben Sitzung.
+
+
+## Korrektur der mobilen Ergebnisansicht
+
+Der Android-Live-Test zeigte eine aktive FaQu-Admin-Sitzung. Ein erster Abruf endete im Browser mit einer Fehlermeldung, während der Server nach rund 62 Sekunden HTTP 200 protokollierte. Der nächste übermittelte Android-Screenshot zeigte KomaR (`290591005`) mit sechs Kennzahlen, 24 Rankingmetriken und der historischen NXS-Einordnung. Der Nutzer lehnte die dargestellte braune Ergebniskarte ab. Dieser Screenshot bestätigt den Abruf und die Anzeige im davor veröffentlichten Stand.
+
+Die Darstellung orientiert sich wieder am Staging-Stand vor V2 (`15a01d9`). Neben der Identität stehen SEA-WORLD-V2-Sterne und Kategorie, soweit die vorhandene Bewertungslogik sie stützt. Total Power, Castle/TG und True Power bilden die obere Reihe, gefolgt von Master, Pet und Hero Power. Das PYLON-IX-Urteil und die Rangbalken sind direkt sichtbar. True Power hat wieder einen eigenen Nachweisdialog. Die Datenabfrage, die V2-Auswertung und der Allianzvergleich mit historischem Rückweg sind dieselben wie im vorherigen Staging-Stand.
+
+Chromium mit Testdaten bei 320, 390, 430 und 1280 CSS-Pixeln prüfte Kennzahlenreihenfolge, SEA-WORLD-Kategorie und Sterne, fehlende Rangdaten, Dialog inklusive Escape, Rangbalken, Allianzplatzierung und Vergleichsrückweg. Bei geschlossenen Nachweisen trat kein horizontaler Überlauf auf. Die korrigierte Ergebnisansicht wurde noch nicht auf dem physischen Android-Gerät abgenommen.

@@ -1,45 +1,82 @@
 #phxIdResult { display: block; margin-top: 6px; }
 .phx-transfer-decision {
   --decision-gold: #f2ca84;
-  --decision-muted: #ddc9aa;
-  --decision-line: #785a3b;
+  --decision-muted: #b7c5d0;
+  --decision-line: #785e3b;
   min-width: 0;
-  border: 1px solid #b68a53;
+  border: 1px solid #a88450;
   border-radius: 12px;
   padding: clamp(9px, 2.5vw, 18px);
-  background: radial-gradient(ellipse at top right, #4e2224 0%, transparent 53%),
-    linear-gradient(155deg, #211b19, #151214 72%);
-  color: #f7e9d6;
-  box-shadow: inset 0 1px 0 #ffffff25, 0 5px 16px #0005;
+  background: #080b10;
+  color: #f3ead8;
+  box-shadow: inset 0 1px 0 #ffffff19, 0 5px 16px #0005;
   overflow-wrap: anywhere;
 }
 .phx-transfer-decision p { margin: 4px 0; }
-.phx-decision-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,auto); align-items: center; gap: 2px 8px; }
-.phx-decision-head > :is(small, p) { grid-column: 1 / -1; }
-.phx-decision-head small { color: var(--decision-gold); font-weight: 700; letter-spacing: .065em; font-size: .67rem; }
-.phx-decision-head h3 { color: var(--decision-gold); font: 700 clamp(1.25rem, 5vw, 2rem)/1.08 Georgia, serif; margin: 0; }
+.phx-decision-head { display: flex; justify-content: space-between; align-items: start; gap: 8px; }
+.phx-decision-head > div { min-width: 0; }
+.phx-decision-head small { color: var(--decision-muted); font-size: .67rem; letter-spacing: .05em; }
+.phx-decision-head h3 { color: var(--decision-gold); font: 700 clamp(1.25rem, 5vw, 2rem)/1.08 Georgia, serif; margin: 2px 0; }
 .phx-decision-head p, .phx-transfer-decision .phx-decision-source { color: var(--decision-muted); font-size: .75rem; }
+.phx-decision-rating { display: grid; justify-items: center; gap: 2px; flex: 0 1 auto; text-align: center; }
+.phx-decision-stars { color: var(--decision-gold); white-space: nowrap; font-size: .96rem; }
 .phx-decision-tier {
-  max-width: 10rem;
-  padding: 5px 7px;
-  border: 1px solid #a4774d;
-  border-radius: 6px;
-  background: #501e24;
-  color: #ffe0aa;
-  text-align: center;
-  font-size: .76rem;
-  line-height: 1.25;
+  padding: 4px 9px;
+  border: 1px solid #bd914a;
+  border-radius: 7px;
+  background: linear-gradient(135deg, #142536, #253041, #142536);
+  color: #f4cf88;
+  font: 700 .89rem/1.15 Georgia, serif;
 }
-.phx-decision-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; margin: 8px 0 5px; }
+.phx-decision-rating small { font-size: .58rem; }
+.phx-decision-metrics, .phx-decision-secondary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; margin: 8px 0 5px; }
 .phx-decision-metrics > div {
   min-width: 0;
-  padding: 5px 7px;
-  border: 1px solid var(--decision-line);
-  border-radius: 6px;
-  background: linear-gradient(150deg, #3d2c23, #242023 78%);
+  padding: 6px 5px;
+  border: 1px solid #a47d45;
+  border-radius: 8px;
+  background: linear-gradient(155deg, #172b3b, #0c1b2a 58%, #08121e);
+  box-shadow: inset 0 1px 0 #ffe19f26;
 }
-.phx-decision-metrics dt { font-size: .69rem; color: var(--decision-muted); }
-.phx-decision-metrics dd { margin: 1px 0 0; color: var(--decision-gold); font-weight: 750; font-size: clamp(.87rem, 3.5vw, 1.22rem); }
+.phx-decision-metrics > [data-metric="castle"] { background: linear-gradient(155deg, #302719, #192333 65%, #0c1725); }
+.phx-decision-metrics > [data-metric="true_power"] {
+  border-color: #459d7e;
+  background: linear-gradient(155deg, #12332e, #0b2329 60%, #08191f);
+}
+.phx-decision-metrics dt, .phx-decision-secondary dt { font-size: .69rem; color: var(--decision-muted); }
+.phx-decision-metrics dd, .phx-decision-secondary dd { margin: 1px 0 0; color: var(--decision-gold); font-weight: 750; }
+.phx-decision-metrics dd { font-size: clamp(.79rem, 3.3vw, 1.22rem); }
+.phx-decision-secondary { border-bottom: 1px solid var(--decision-line); padding-bottom: 6px; text-align: center; }
+.phx-decision-secondary dd { font-size: .78rem; }
+#phxIdResult .phx-decision-info {
+  display: inline-grid;
+  place-items: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  padding: 0;
+  border: 1px solid #4a8a7b;
+  border-radius: 50%;
+  margin-inline-start: 3px;
+  background: transparent;
+  box-shadow: none;
+  color: #b5ddd1;
+  font: 1rem/1 system-ui, sans-serif;
+}
+.phx-decision-true-help {
+  box-sizing: border-box;
+  width: min(88vw, 420px);
+  max-height: 70vh;
+  padding: 15px;
+  border: 1px solid #c39a54;
+  border-radius: 12px;
+  background: #102130;
+  color: #f3ead8;
+}
+.phx-decision-true-help::backdrop { background: #000b; }
+.phx-decision-verdict { margin: 8px 0; }
+.phx-decision-verdict > small { color: var(--decision-gold); font-size: .71rem; font-weight: 700; letter-spacing: .08em; }
+.phx-decision-verdict h4, .phx-decision-profile h4, .phx-decision-true-help h4 { margin: 3px 0; color: var(--decision-gold); font: 700 .99rem Georgia, serif; }
+.phx-decision-profile { margin: 6px 0; }
 .phx-decision-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; margin: 7px 0; }
 .phx-decision-facts > div { border-left: 2px solid #9d704d; padding: 3px 6px; background: #ffffff08; }
 .phx-decision-facts strong { color: var(--decision-gold); font-size: .76rem; }
@@ -62,6 +99,10 @@
 .phx-transfer-decision meter, .phx-comparison-bars meter { width: 100%; height: 8px; }
 .phx-transfer-decision meter::-webkit-meter-optimum-value, .phx-comparison-bars meter::-webkit-meter-optimum-value { background: #c38d52; }
 .phx-transfer-decision meter::-moz-meter-bar, .phx-comparison-bars meter::-moz-meter-bar { background: #c38d52; }
+.phx-decision-rank-bars [data-band="top"] meter::-webkit-meter-optimum-value { background: #59c596; }
+.phx-decision-rank-bars [data-band="top"] meter::-moz-meter-bar { background: #59c596; }
+.phx-decision-rank-bars [data-band="gap"] meter::-webkit-meter-optimum-value { background: #b27b72; }
+.phx-decision-rank-bars [data-band="gap"] meter::-moz-meter-bar { background: #b27b72; }
 .phx-comparison-bars small { margin-top: 3px; }
 .phx-comparison-bars meter:last-child::-webkit-meter-optimum-value { background: #ad5355; }
 .phx-comparison-bars meter:last-child::-moz-meter-bar { background: #ad5355; }
