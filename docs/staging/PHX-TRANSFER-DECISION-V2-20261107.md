@@ -113,4 +113,10 @@ Die aufklappbaren Hauptabschnitte im Scoutingergebnis erhalten dunkle Titelzeile
 
 - **BESTANDEN** · Chromium mit isolierten Testdaten bei 320, 390, 430 und 1280 CSS-Pixeln. Hauptüberschriften mindestens 44 CSS-Pixel hoch, geöffneter Zustand unterscheidbar, sichtbarer Tastaturfokus und Öffnen per Enter. Spielerwechsel, Quellen und vollständiger Rankingvergleich funktionierten. In den geprüften Zuständen kein horizontaler Seitenüberlauf.
 - **BESTANDEN** · 23 Entscheidungs- und Rankingtests, Asset-Preflight und `git diff --check`.
-- **NICHT GETESTET** · Physisches Android-Gerät für diese Stiländerung. Die vorherigen Gerätebelege bleiben dem damaligen Laufzeitstand zugeordnet.
+- **BESTANDEN** · Cloudflare-Staging liefert HTML und CSS bytegleich zu `f54b3fd1abe987fcfebfa996cef230880e0b35ef` aus.
+- **BESTANDEN** · Android-Sichtprüfung der eingeklappten Titelzeilen auf Staging. `49076.png` vom 07.11.2026, 17:13 Uhr laut Gerät, zeigt die abgesetzten Zeilen für Historical Top 15, Einzelvergleich, KvK-Rollen und Rankings. `49075.png` (17:12 Uhr) zeigt die Spielerübersicht und den Goldakzent auch bei „View rating scale“.
+- **NICHT GETESTET** · Sichtprüfung des geöffneten Zustands und der Unterpunkte für diese Stiländerung auf Android. Diese Zustände wurden in Chromium geprüft.
+
+SHA-256 `49075.png`: `242854e95e0a2fe1d472638a873d75c1139de3e3dab2cc0d33dc0e7d8c157a37`.
+
+SHA-256 `49076.png`: `9bebfedceb1f6fcefd3437017e37889215183a252593501da5834bca2db505a7`.
