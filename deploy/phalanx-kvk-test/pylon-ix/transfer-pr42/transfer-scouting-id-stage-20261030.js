@@ -26,9 +26,9 @@ $('contacted').textContent=players.filter(p=>['Contacted','Interested','Negotiat
 $('reviews').textContent=players.filter(p=>!p.contact_status||p.contact_status==='Needs Review').length;
 $('kingdoms').textContent=new Set(players.map(p=>p.kingdom).filter(Boolean)).size;
 const shown=filtered();$('count').textContent=shown.length+' of '+players.length+' saved candidates';$('compare').textContent='⚖ Compare selected ('+chosen.size+'/3)';
-$('rows').innerHTML=shown.map(p=>'<tr data-id="'+esc(p.candidate_id)+'" class="'+(active===p.candidate_id?'selected':'')+'"><td><input type="checkbox" data-check="'+esc(p.candidate_id)+'" '+(chosen.has(p.candidate_id)?'checked':'')+'></td><td><button type="button" class="scouting-name-button" data-dossier="'+esc(p.candidate_id)+'" aria-label="Open dossier for '+esc(p.player_name)+'">'+esc(p.player_name)+'</button></td><td>'+esc(p.kingdom||'–')+'</td><td>'+esc(p.alliance||'–')+'</td><td>'+esc(p.metadata?.role||'–')+'</td><td>'+esc(p.castle_level||'–')+'</td><td>'+fmt(p.power_m)+(p.power_m==null?'':'M')+'</td><td>'+esc(p.metadata?.fit==null?'–':p.metadata.fit+'%')+'</td><td>'+esc(invitationPreview(p))+'</td><td>'+esc(p.transfer_eligibility||'Unknown')+'</td><td>'+esc(p.contact_status||'–')+'</td></tr>').join('')||'<tr><td colspan="11" class="empty">'+(players.length?'No candidates match your current search. Clear the filter to see all saved candidates.':'No candidates saved yet. Use Find a Player to start your shortlist.')+'</td></tr>';
+$('rows').innerHTML=shown.map(p=>'<tr data-id="'+esc(p.candidate_id)+'" class="'+(active===p.candidate_id?'selected':'')+'"><td><input type="checkbox" data-check="'+esc(p.candidate_id)+'" '+(chosen.has(p.candidate_id)?'checked':'')+'></td><td><button type="button" class="scouting-name-button" data-dossier="'+esc(p.candidate_id)+'" aria-label="Open player profile for '+esc(p.player_name)+'">'+esc(p.player_name)+'</button></td><td>'+esc(p.kingdom||'–')+'</td><td>'+esc(p.alliance||'–')+'</td><td>'+esc(p.metadata?.role||'–')+'</td><td>'+esc(p.castle_level||'–')+'</td><td>'+fmt(p.power_m)+(p.power_m==null?'':'M')+'</td><td>'+esc(p.metadata?.fit==null?'–':p.metadata.fit+'%')+'</td><td>'+esc(invitationPreview(p))+'</td><td>'+esc(p.transfer_eligibility||'Unknown')+'</td><td>'+esc(p.contact_status||'–')+'</td></tr>').join('')||'<tr><td colspan="11" class="empty">'+(players.length?'No candidates match your current search. Clear the filter to see all saved candidates.':'No candidates saved yet. Use Find a Player to start your shortlist.')+'</td></tr>';
 $('rows').querySelectorAll('tr[data-id]').forEach(row=>row.onclick=()=>{active=row.dataset.id;render();void loadCandidateEvidence(players.find(p=>p.candidate_id===active),true);});
-$('rows').querySelectorAll('button[data-dossier]').forEach(btn=>btn.onclick=e=>{e.stopPropagation();active=btn.dataset.dossier;openDossier()});
+$('rows').querySelectorAll('button[data-dossier]').forEach(btn=>btn.onclick=e=>{e.stopPropagation();openSavedCandidate(btn.dataset.dossier)});
 $('rows').querySelectorAll('input[data-check]').forEach(box=>{box.onclick=e=>e.stopPropagation();box.onchange=()=>{if(box.checked){if(chosen.size>=3){box.checked=false;$('count').textContent='Select up to 3 candidates';return;}chosen.add(box.dataset.check)}else chosen.delete(box.dataset.check);$('compare').textContent='⚖ Compare selected ('+chosen.size+'/3)';}});
 const p=players.find(x=>x.candidate_id===active);$('profileTitle').textContent=p?p.player_name:'Candidate profile';$('editCandidate').hidden=!canEdit||!p;$('openDossier').hidden=!p;
 $('profile').replaceChildren();if(p){renderHeadlineMetrics($('profile'),evidenceFor(p));const notes=document.createElement('p');notes.textContent=p.notes||'No notes recorded.';$('profile').append(notes);}
@@ -220,10 +220,13 @@ const currentEvidence=new Map(),evidencePending=new Set(),evidenceErrors=new Map
 const boardLabels=rankingLabels;
 const evidenceKey=p=>String(p?.metadata?.governor_id||p?.metadata?.player_id||'');
 const evidenceFor=p=>currentEvidence.get(evidenceKey(p));
-async function readPlayer(id){
+async function readPlayer(id,signal=AbortSignal.timeout(125000)){
  if(!/^[1-9][0-9]{0,15}$/.test(id))throw Error('Enter a valid Kingshot Player ID.');
  const {data:{session},error}=await db.auth.getSession();if(error||!session?.access_token)throw Error('Please sign in again.');
- const response=await fetch(SUPABASE_URL+'/functions/v1/phalanx-transfer-id-snapshot-fallback-stage-20261031?governorId='+id,{headers:{apikey:KEY,Authorization:'Bearer '+session.access_token},cache:'no-store',signal:AbortSignal.timeout(125000)});
+ const endpoint=new URL(phxBridgeUrl);
+ if(endpoint.protocol!=='https:')throw Error('A secure HTTPS connection is required.');
+ endpoint.searchParams.set('governorId',id);
+ const response=await fetch(endpoint,{headers:{apikey:KEY,Authorization:'Bearer '+session.access_token},cache:'no-store',signal});
  if(!response.ok)throw Error(playerLookupError(response.status));const payload=await response.json();
  if(payload.ok!==true||String(payload.governorId)!==id||!Number.isSafeInteger(payload.player?.kingdom)||payload.player.kingdom<1)throw Error('Player identity could not be confirmed.');
  return payload;
@@ -558,13 +561,13 @@ function renderDossier(){
  }
  applySmartDossierNavigation();
 }
-function openDossier(){
+function openDossier(group='overview'){
  if(!players.some(p=>p.candidate_id===active))return;
- dossierOpen=true;dossierSmartGroup='overview';dossierTab='identity';$('scoutingBoard').hidden=true;$('candidateDossier').hidden=false;
+ dossierOpen=true;dossierSmartGroup=group;dossierTab='identity';$('scoutingBoard').hidden=true;$('candidateDossier').hidden=false;
  renderDossier();loadCandidateEvidence(players.find(p=>p.candidate_id===active),true);syncWorkspace();$('candidateDossier').scrollIntoView({block:'start',behavior:'auto'});
 }
 function closeDossier(){restoreComparisonPanel();dossierOpen=false;$('candidateDossier').hidden=true;$('scoutingBoard').hidden=false;syncWorkspace()}
-$('openDossier').onclick=openDossier;
+$('openDossier').onclick=()=>openDossier();
 $('backToBoard').onclick=()=>{closeDossier();$('openDossier').focus()};
 document.querySelectorAll('[data-dossier-tab]').forEach(b=>b.onclick=()=>{
  dossierSmartGroup=({identity:'overview',development:'development',recruitment:'recruitment',history:'comparison'})[b.dataset.dossierTab]||'overview';
@@ -993,31 +996,102 @@ function renderAlliancePlacement(root,source,total,candidateIds,candidateRanks,d
  root.replaceChildren(...tiles);
 }
 
-phxIdForm.addEventListener('submit',async e=>{
- e.preventDefault();if(phxIdForm.querySelector('button').disabled)return;restoreComparisonPanel();lookupIntel=null;phxIdResult.replaceChildren();$('phxReview').hidden=true;clearLookupCandidate();
- if($('private').hidden){phxIdStatus.textContent='Sign in to continue.';return;}
- const id=$('phxGovernorId').value.trim();
- if(!/^[1-9][0-9]{0,15}$/.test(id)){phxIdStatus.textContent='Enter a valid Kingshot Player ID.';return;}
- if(!phxBridgeUrl){phxIdStatus.textContent='Player lookup is not available yet.';return;}
- const button=phxIdForm.querySelector('button');button.disabled=true;setPhxLookupState('loading','Loading player data… Source refresh can take up to 90 seconds.');
+let candidateLookupId=null,lookupRequest=null;
+const candidateLookupContext=$('phxCandidateLookupContext');
+const lookupInput=$('phxGovernorId');
+const lookupButton=phxIdForm.querySelector('button');
+const lookupIntro=document.querySelector('#phxIdPanel .lookup-intro');
+const lookupHelp=document.querySelector('#phxIdPanel .lookup-help');
+
+function clearPlayerReview(){
+ restoreComparisonPanel();
+ lookupIntel=null;
+ phxIdResult.replaceChildren();
+ $('phxReview').hidden=true;
+ clearLookupCandidate();
+ phxSearchShell.hidden=true;
+ phxSearchShell.style.display='none';
+}
+
+function setCandidateLookupContext(candidateId){
+ candidateLookupId=candidateId;
+ const fromCandidate=candidateId!==null;
+ candidateLookupContext.hidden=!fromCandidate;
+ lookupIntro.hidden=fromCandidate;
+ lookupHelp.hidden=fromCandidate;
+ phxIdForm.hidden=fromCandidate;
+ phxIdForm.style.display=fromCandidate?'none':'';
+}
+
+async function runPlayerLookup(id,fromCandidate=false){
+ lookupRequest?.abort();
+ clearPlayerReview();
+ if($('private').hidden){setPhxLookupState('error','Sign in to continue.');return;}
+ const controller=new AbortController();
+ lookupRequest=controller;
+ lookupButton.disabled=true;
+ $('phxRetryCandidateLookup').hidden=true;
+ setPhxLookupState('loading','Loading player data… Source refresh can take up to 90 seconds.');
+ const timeout=setTimeout(()=>controller.abort(),125000);
  try{
-  const {data:{session},error}=await db.auth.getSession();
-  if(error||!session?.access_token)throw Error('Please sign in again.');
-  const endpoint=new URL(phxBridgeUrl);if(endpoint.protocol!=='https:')throw Error('A secure HTTPS connection is required.');
-  endpoint.searchParams.set('governorId',id);
-  const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),125000);
-  let response;try{response=await fetch(endpoint,{headers:{Authorization:'Bearer '+session.access_token,apikey:KEY},signal:controller.signal,cache:'no-store'});}finally{clearTimeout(timeout);}
-  if(!response.ok)throw Error(playerLookupError(response.status));
-  const payload=await response.json();if($('phxGovernorId').value.trim()!==id){phxIdStatus.textContent='Kingshot Player ID changed. Load player data again.';return;}if(payload.ok!==true||String(payload.governorId)!==id||!Number.isSafeInteger(payload.player?.kingdom)||payload.player.kingdom<1)throw Error('Player identity could not be confirmed.');const p=payload.player;$('phxReview').hidden=false;
+  const payload=await readPlayer(id,controller.signal);
+  if(lookupRequest!==controller)return;
+  if(!fromCandidate&&lookupInput.value.trim()!==id){
+   setPhxLookupState('error','Kingshot Player ID changed. Load player data again.');
+   return;
+  }
+  const p=payload.player;
   mountDecision(payload,id);
-  setPhxLookupState('success','✓ Player data loaded successfully. Review the details before adding this player to Candidates.');
-  offerLookupCandidate(payload,id);
-  phxSearchLabel.textContent=(p.name||p.player_name||p.nickname||'Player')+' · ID '+id;
-  phxIdForm.hidden=true;phxIdForm.style.display='none';phxSearchShell.hidden=false;phxSearchShell.style.display='flex';
-  $('phxReview').scrollIntoView({behavior:'smooth',block:'start'});
- }catch(error){setPhxLookupState('error',error.name==='AbortError'?'The lookup timed out. Please try again later.':error instanceof TypeError?'Could not connect to the player lookup service. Check your session and try again.':error.message);}
- finally{button.disabled=false;}
+  $('phxReview').hidden=false;
+  setPhxLookupState('success',fromCandidate?'✓ Player data loaded successfully.':'✓ Player data loaded successfully. Review the details before adding this player to Candidates.');
+  if(!fromCandidate){
+   offerLookupCandidate(payload,id);
+   phxSearchLabel.textContent=(p.name||p.player_name||p.nickname||'Player')+' · ID '+id;
+   phxIdForm.hidden=true;phxIdForm.style.display='none';
+   phxSearchShell.hidden=false;phxSearchShell.style.display='flex';
+   if(workspaceView==='phxIdPanel')$('phxReview').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+ }catch(error){
+  if(lookupRequest!==controller)return;
+  setPhxLookupState('error',error.name==='AbortError'?'The lookup timed out. Please try again later.':error instanceof TypeError?'Could not connect to the player lookup service. Check your session and try again.':error.message);
+  $('phxRetryCandidateLookup').hidden=!fromCandidate;
+ }finally{
+  clearTimeout(timeout);
+  if(lookupRequest===controller){lookupRequest=null;lookupButton.disabled=false;}
+ }
+}
+
+function openSavedCandidate(candidateId){
+ if(lookupSaving)return;
+ const candidate=players.find(p=>p.candidate_id===candidateId);
+ if(!candidate)return;
+ const id=evidenceKey(candidate);
+ active=candidateId;
+ if(!/^[1-9][0-9]{0,15}$/.test(id)){openDossier();return;}
+ if(candidateLookupId===null)showWorkspace('phxIdPanel');
+ setCandidateLookupContext(candidateId);
+ void runPlayerLookup(id,true);
+ $('phxBackToCandidates').focus({preventScroll:true});
+ candidateLookupContext.scrollIntoView({block:'start'});
+}
+
+phxIdForm.addEventListener('submit',e=>{
+ e.preventDefault();
+ if(!lookupButton.disabled)void runPlayerLookup(lookupInput.value.trim());
 });
+$('phxRetryCandidateLookup').onclick=()=>openSavedCandidate(candidateLookupId);
+$('phxBackToCandidates').onclick=()=>{
+ const candidateId=candidateLookupId;
+ showWorkspace('scoutingBoard');
+ render();
+ const button=$('rows').querySelector('button[data-dossier="'+CSS.escape(candidateId)+'"]');
+ (button||$('search')).focus();
+};
+$('phxOpenSavedDetails').onclick=()=>{
+ active=candidateLookupId;
+ showWorkspace('scoutingBoard');
+ openDossier('recruitment');
+};
 
 // Native section links; existing dossiers keep their own Back navigation.
 /* V5 progressive workspace adapted to protected cloud IDs. Source: 55f372d. */
@@ -1041,6 +1115,14 @@ function syncWorkspace(){
  $('addFirstCandidate').hidden=!canEdit;$('readOnlyNotice').hidden=canEdit;
 }
 function showWorkspace(view){
+ if(candidateLookupId!==null){
+  lookupRequest?.abort();
+  lookupRequest=null;
+  lookupButton.disabled=false;
+  clearPlayerReview();
+  setCandidateLookupContext(null);
+  setPhxLookupState('idle','Enter a Kingshot Player ID to look up a player.');
+ }
  if(dossierOpen)closeDossier();
  if(view!=='phxIdPanel')restoreComparisonPanel();
  workspaceView=view;
@@ -1075,7 +1157,7 @@ function clearLookupCandidate(){lookupCandidate=null;lookupSaved=null;$('phxAdop
 function offerLookupCandidate(payload,id){
  if($('phxGovernorId').value.trim()!==id)return;
  try{lookupCandidate=candidateFromLookup(payload,id);
- const alreadySaved=players.some(p=>String(p.metadata?.governor_id||'')===id);
+ const alreadySaved=players.some(p=>evidenceKey(p)===id);
  $('phxAdoptCandidate').hidden=!canEdit||alreadySaved;
  $('phxAdoptStatus').textContent=alreadySaved?'This player is already a candidate. Existing data remains unchanged.':canEdit?'Review these details, then select Add to Candidates.':'Read only. Recruiter permission is required to add candidates.';
  }catch(error){clearLookupCandidate();$('phxAdoptStatus').textContent=error.message;}
