@@ -824,7 +824,12 @@ function mountDecision(payload,id){
  const renderAlliances=data=>renderAlliancePlacement(placement,placementSource,total,candidateIds,comparisonRanks,data);
  lookupIntel.refresh=data=>{refreshTrueSample();if(data)renderAlliances(data);};
  renderAlliances(null);
- void requestCurrentRankings().then(renderAlliances,()=>renderAlliances({observations:[]}));
+ void requestCurrentRankings().then(data=>{
+  internalPlayers=attachVerifiedTruePower(data.observations);
+  internalSnapshot=data.snapshot_date||'';
+  refreshTrueSample();
+  renderAlliances(data);
+ },()=>renderAlliances({observations:[]}));
 }
 
 function renderAlliancePlacement(root,source,total,candidateIds,candidateRanks,data){
