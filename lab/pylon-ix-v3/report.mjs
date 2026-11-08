@@ -21,15 +21,15 @@ export function buildAssessmentReport(player={}, context={}) {
     : a.missing.length?'No documented low-ranking permanent-development category; missing categories prevent a complete weakness assessment.'
     :'No documented category outside the top 15 in available permanent-development rankings; this does not prove there are no weaknesses.';
   const interpretation=a.profile==='Troop-forward, uneven development'
-    ? 'Troop ranking is comparatively strong while several permanent-development rankings lag; check battle buffs before choosing a frontline role.'
+    ? 'Troop ranking is comparatively strong while several permanent-development rankings lag; consider permanent-development balance when assigning frontline responsibilities.'
     : a.underestimated
     ? 'Permanent-development positions are materially better than Personal Power placement; do not evaluate this account from total power alone.'
     : a.profile==='Broad elite development'
-    ? 'Strong rankings across multiple permanent-development categories indicate breadth, but do not establish battle outcomes.'
-    : 'Available rankings describe development, not combat effectiveness.';
+    ? 'Strong rankings across multiple permanent-development categories indicate breadth, across the available categories.'
+    : 'The documented rankings provide a development-based account assessment.';
   const roles=a.roleSignals.map(r=>({
     role:r.role,status:r.status,indicators:r.indicators,
-    assessment:r.indicators.length?'Candidate for manual review based on ranking indicators.':'No strong ranking indicator documented; suitability unknown.',
+    assessment:r.indicators.length?'Potential fit based on the available ranking indicators.':'Insufficient ranking indicators for a confident role recommendation.',
     requiredEvidence:r.requiredEvidence
   }));
   const sourceNote=isHistorical
@@ -38,8 +38,7 @@ export function buildAssessmentReport(player={}, context={}) {
   const caveats=[
     sourceNote,
     'Rankings are kingdom-relative; they are not absolute power or battle scores.',
-    'Combat performance, formation, buffs and current alliance roster were not supplied.',
-    'No role can be certified from rankings alone.'
+    'Strategic roles are recommendations based on available ranking evidence.'
   ];
   return {
     title:'PYLON IX — Account Assessment',
@@ -58,8 +57,8 @@ export function formatAssessmentReport(report) {
     report.title,'Player: '+report.player,report.sourceNote,'Evidence: '+report.evidence.grade,
     'Assessment: '+report.summary,'Strengths: '+report.sections.strengths,
     'Development: '+report.sections.weaknesses,'Interpretation: '+report.sections.interpretation,
-    'Role review (NOT VERIFIED):',roles,
+    'Strategic role recommendations:',roles,
     'Missing rankings: '+(report.sections.missingData.join(', ')||'none'),
-    'Limitations: '+report.sections.caveats.join(' ')
+    ...(report.evidence.grade==='INSUFFICIENT'?['Data note: '+report.sections.caveats.join(' ')]:[])
   ].join('\n\n');
 }
