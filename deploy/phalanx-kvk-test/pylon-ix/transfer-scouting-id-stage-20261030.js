@@ -700,10 +700,24 @@ function mountDecision(payload,id){
  const primaryRole=assessment.priorities[0];
  const tiedRoles=primaryRole?assessment.priorities.filter(role=>role.evidence.length===primaryRole.evidence.length
   && role.evidence.reduce((sum,row)=>sum+row.rank,0)===primaryRole.evidence.reduce((sum,row)=>sum+row.rank,0)):[];
- const roleSummary=primaryRole?'Review '+tiedRoles.map(role=>role.label).join(' or ')+' potential'
-  +(tiedRoles.length===1?' · '+short(primaryRole.evidence.slice(0,2)):'')
-  :'More evidence needed before suggesting a KvK role';
- recommendation.append(element('strong','Suggested KvK role · Provisional'),element('p',roleSummary+'. Combat buffs and battle reports are needed to confirm the role.'),
+ // ACHILLES: documented peer True Power and strong hero-related kingdom ranks
+ // justify a clear candidate recommendation, not an unverified combat assignment.
+ const rallySignals=['hero_equip','hero_total','research_power','gov_gear','gov_charm']
+  .map(key=>assessment.rankingEvidence.find(row=>row.key===key&&row.rank<=15)).filter(Boolean);
+ const sampleIds=[id,payload.uid,p.uid,p.governorId,p.governor_id].filter(Boolean).map(String);
+ const rallyPeers=verifiedTruePowerPeers(truePower,sampleIds);
+ const rallyPercentile=rallyPeers.length>=20
+  ?100*rallyPeers.filter(row=>row.true_power<=truePower.value).length/rallyPeers.length:null;
+ const rallyCandidate=rallyPercentile!==null&&rallyPercentile>=85
+  &&rallySignals.some(row=>row.key==='hero_equip'||row.key==='hero_total')
+  &&rallySignals.length>=2;
+ const roleSummary=rallyCandidate
+  ?'Strong Rally Leader candidate · '+short(rallySignals.slice(0,3))
+   +' · True Power Very strong ('+Math.round(rallyPercentile)+'th percentile of '+rallyPeers.length+' verified peers)'
+  :primaryRole?'Review '+tiedRoles.map(role=>role.label).join(' or ')+' potential'
+   +(tiedRoles.length===1?' · '+short(primaryRole.evidence.slice(0,2)):'')
+   :'More evidence needed before suggesting a KvK role';
+ recommendation.append(element('strong',rallyCandidate?'Suggested KvK role · Rally Leader candidate':'Suggested KvK role · Provisional'),element('p',roleSummary+'. Combat buffs and battle reports are needed to confirm the role.'),
   decisionDetails('Strengths & development areas',facts));
  const strongest=assessment.strengths.slice(0,3);
  const weakest=assessment.development.slice(0,2);
@@ -711,7 +725,7 @@ function mountDecision(payload,id){
   assessment.coverage<4?'Provisional account judgment: limited kingdom ranking coverage.':assessment.profile+' account profile based on '+assessment.coverage+' kingdom ranking categories.',
   strongest.length?'Documented strengths: '+short(strongest)+'.':'No verified Top-15 strengths in the available categories.',
   weakest.length?'Relative development gaps: '+short(weakest)+'.':assessment.coverage?'No further development gap established by available rankings.':'Development gaps unknown without ranking evidence.',
-  primaryRole?'Potential '+tiedRoles.map(role=>role.label).join(' or ')+' role merits review; not a verified combat assignment.':'No KvK role can be recommended from current ranking evidence.',
+  rallyCandidate?'Strategic verdict: strong Rally Leader candidate, supported by verified True Power peer standing and '+short(rallySignals.slice(0,3))+'. Combat assignment remains unverified.':primaryRole?'Potential '+tiedRoles.map(role=>role.label).join(' or ')+' role merits review; not a verified combat assignment.':'No KvK role can be recommended from current ranking evidence.',
   'Combat buffs and battle reports are still required for confirmation.'
  ].join(' ');
  body.append(brand,element('h4',assessment.level));
