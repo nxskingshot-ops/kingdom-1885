@@ -706,26 +706,36 @@ function mountDecision(payload,id){
   .map(key=>assessment.rankingEvidence.find(row=>row.key===key&&row.rank<=15)).filter(Boolean);
  const defaultRole=primaryRole?'Review '+tiedRoles.map(role=>role.label).join(' or ')+' potential'
   :'Insufficient evidence for a specific KvK role';
- const roleTitle=element('strong','KvK recommendation · Provisional');
- const roleText=element('p',defaultRole+'.');
- const verification=element('p','To confirm: combat buffs and battle reports.','phx-decision-source');
- recommendation.append(roleTitle,roleText,verification,decisionDetails('Strengths & development areas',facts));
  const strongest=assessment.strengths.slice(0,3);
  const weakest=assessment.development.slice(0,2);
- // ACHILLES: one interpretation, not a repetition of all ranking rows.
  const hero=assessment.rankingEvidence.find(row=>row.key==='hero_equip');
  const research=assessment.rankingEvidence.find(row=>row.key==='research_power');
  const master=assessment.rankingEvidence.find(row=>row.key==='master_power');
  const specialized=hero?.rank<=15&&research?.rank<=15&&master?.rank>30;
  const dna=specialized
-  ?'Specialized account: hero equipment and research rank in the top 15, while master power is outside the top 30. This suggests focused development rather than uniformly high rankings.'
-  :assessment.profile==='Balanced'?'Balanced development across the available ranking categories.'
-  :assessment.coverage>=4?'Development is uneven across the documented ranking categories.'
-  :'Account DNA remains provisional: too few ranking categories.';
+  ?'Hero equipment and research are among the top 15, while master power ranks outside the top 30. This points to focused account development.'
+  :assessment.profile==='Balanced'?'Development is balanced across the available kingdom rankings.'
+  :assessment.coverage>=4?'The available rankings show uneven development across categories.'
+  :'Account development cannot yet be classified reliably.';
+ const roleTitle=element('strong','KvK recommendation · Provisional');
+ const roleText=element('p',defaultRole+'.','phx-intel-overview');
+ const verification=element('p','To confirm: combat buffs and battle reports.','phx-decision-source');
  const overviewText=element('p',dna,'phx-intel-overview');
- body.append(brand,element('h4',assessment.level));
- body.append(overviewText);
- body.append(recommendation);
+ const evidenceDetails=decisionDetails('Evidence · strengths and development',
+  element('strong','Documented strengths'),element('p',short(strongest)||'No documented Top-15 strengths'),
+  element('strong','Relative development gaps'),element('p',short(weakest)||'No documented relative gaps'),
+  element('p','Ranking gaps do not automatically imply combat weaknesses.','phx-decision-source'));
+ recommendation.append(roleTitle,roleText,verification,evidenceDetails);
+ brand.querySelector('strong').textContent='⚔ PYLON IX · STRATEGIC VERDICT';
+ brand.querySelector('small').textContent='';
+ const levelTitle=element('h4',assessment.level);
+ levelTitle.style.cssText='margin:4px 0 8px;font-size:clamp(17px,4.5vw,23px)';
+ brand.style.cssText='margin-bottom:4px';
+ overviewText.style.cssText='margin:0 0 10px;line-height:1.45';
+ recommendation.style.cssText='margin:0 0 12px';
+ roleText.style.cssText='margin:6px 0;line-height:1.45';
+ verification.style.cssText='margin:4px 0 8px;line-height:1.4';
+ body.append(brand,levelTitle,overviewText,recommendation);
  card.append(head,tiles,trueHelp);
 
  const alliance=element('section',null,'phx-placement-compact phx-decision-alliance');
@@ -784,12 +794,12 @@ function mountDecision(payload,id){
    &&rallySignals.some(row=>row.key==='hero_equip'||row.key==='hero_total');
   roleTitle.textContent=rallyCandidate?'KvK recommendation · Rally Leader candidate':'KvK recommendation · Provisional';
   roleText.textContent=rallyCandidate
-   ?'Strong candidate: verified True Power is in the top 15% of the matched sample, supported by top-15 hero-related development.'
+   ?'Strong Rally Leader candidate: very strong verified True Power and leading hero development justify priority review for rally leadership.'
    :defaultRole+'.';
   verification.textContent=rallyCandidate
    ?'Next check: lead combat buffs, rally capacity and battle reports before confirming a Rally Leader assignment.'
    :'Next check: role-specific combat buffs and battle reports.';
-  overviewText.textContent=dna+(rallyCandidate?' True Power independently supports the account strength.':'');
+  overviewText.textContent=dna;
 
 
  };
