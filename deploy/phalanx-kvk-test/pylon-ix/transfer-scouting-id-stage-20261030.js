@@ -598,7 +598,8 @@ function verifiedTruePowerEvidence(metric, castle, candidateIds){
   if(!groups.has(time))groups.set(time,new Map());
   groups.get(time).set(id,row);
  }
- const cohort=[...groups].sort(([a,first],[b,second])=>second.size-first.size||b.localeCompare(a))[0];
+ const candidateCapture=formatPlayerUtc(metric.captured_at);
+ const cohort=metric.calculated&&candidateCapture!=='Not available'&&groups.has(candidateCapture)?[candidateCapture,groups.get(candidateCapture)]:null;
  if(!metric.calculated||!cohort||cohort[1].size<5)return 'Comparable True Power sample unavailable.';
  const [capture, members]=cohort;
  const rank=rows=>1+rows.filter(row=>Number(row.true_power)>metric.value).length;
@@ -652,11 +653,12 @@ function mountDecision(payload,id){
  const tiles=element('dl',null,'phx-intel-metrics');
  const metricEvidence=element('ul',null,'phx-decision-list');
  const trueSample=element('p');
+ const trueVerdict=element('p',null,'phx-intel-overview');
  const trueHelp=element('dialog',null,'phx-decision-true-help');
  trueHelp.setAttribute('aria-label','True Power calculation and comparison');
  const closeHelp=element('button','Close');
  const closeForm=element('form');closeForm.method='dialog';closeForm.append(closeHelp);
- trueHelp.append(element('h4','True Power · calculation and comparison'),element('p',truePower.details),trueSample,closeForm);
+ trueHelp.append(element('h4','True Power · calculation and comparison'),trueVerdict,element('p',truePower.details),trueSample,closeForm);
  const profileRanks=assessment.rankingEvidence.filter(row=>row.key!=='pet_power'&&row.rank<=100);
  const middle=Math.floor(profileRanks.length/2);
  const profileMedian=profileRanks.length>=4?(profileRanks[Math.floor((profileRanks.length-1)/2)].rank+profileRanks[middle].rank)/2:null;
@@ -674,7 +676,7 @@ function mountDecision(payload,id){
   value.append(element('strong',metric.text==='Not available'?'—':metric.text));
   value.title=metric.details;
   if(metric===truePower){
-   if(profileColor&&truePower.calculated)value.dataset.profileColor=profileColor;
+   // The True Power rating is assigned only after verified same-capture TG peer evaluation or labeled fallback.
    const info=element('button','i','phx-decision-info');
    info.type='button';info.setAttribute('aria-label','True Power calculation and comparison');
    info.addEventListener('click',()=>trueHelp.showModal());
@@ -707,10 +709,15 @@ function mountDecision(payload,id){
   :'More evidence needed before suggesting a KvK role';
  recommendation.append(element('strong','Suggested KvK role · Provisional'),element('p',roleSummary+'. Combat buffs and battle reports are needed to confirm the role.'),
   decisionDetails('Strengths & development areas',facts));
+ const strongest=assessment.strengths.slice(0,3);
+ const weakest=assessment.development.slice(0,2);
  const overview=[
-  assessment.strengths.length?'Strengths: '+short(assessment.strengths.slice(0,3))+'.':'',
-  assessment.development.length?'Development area: '+short(assessment.development.slice(0,1))+'.':''
- ].filter(Boolean).join(' ');
+  assessment.coverage<4?'Provisional account judgment: limited kingdom ranking coverage.':assessment.profile+' account profile based on '+assessment.coverage+' kingdom ranking categories.',
+  strongest.length?'Documented strengths: '+short(strongest)+'.':'No verified Top-15 strengths in the available categories.',
+  weakest.length?'Relative development gaps: '+short(weakest)+'.':'No documented development gaps outside the Top 15.',
+  primaryRole?'Potential '+primaryRole.label+' role merits review; not a verified combat assignment.':'No KvK role can be recommended from current ranking evidence.',
+  'Combat buffs and battle reports are still required for confirmation.'
+ ].join(' ');
  body.append(brand,element('h4',assessment.level));
  if(overview)body.append(element('p',overview,'phx-intel-overview'));
  body.append(recommendation);
@@ -753,7 +760,28 @@ function mountDecision(payload,id){
  legend.classList.add('phx-sea-world-legend');
  card.append(legend,body);
  const candidateIds=[id,payload.uid,p.uid,p.governorId,p.governor_id].filter(Boolean).map(String);
- const refreshTrueSample=()=>{trueSample.textContent=verifiedTruePowerEvidence(truePower,castle,candidateIds);};
+ const refreshTrueSample=()=>{
+  const evidence=verifiedTruePowerEvidence(truePower,castle,candidateIds);
+  trueSample.textContent=evidence;
+  const candidateCapture=formatPlayerUtc(truePower.captured_at);
+  const verifiedPeers=(internalPlayers||[]).filter(row=>row.true_power_verified===true
+   && formatPlayerUtc(row.captured_at)===candidateCapture
+   && Number.isFinite(Number(row.true_power))&&row.true_power!==null&&String(row.true_power).trim()!==''
+   && !candidateIds.includes(String(row.governor_id??row.player_id??row.uid??'')));
+  const exact=verifiedPeers.filter(row=>String(row.castle_level)===castle.text);
+  const tier=castle.text.match(/^TG(\d+) /)?.[1];
+  const mainTier=tier?verifiedPeers.filter(row=>String(row.castle_level||'').startsWith('TG'+tier+' ')):[];
+  const peers=exact.length>=5?exact:mainTier.length>=5?mainTier:[];
+  const percentile=peers.length?100*peers.filter(row=>Number(row.true_power)<=truePower.value).length/peers.length:null;
+  const fallback=profileMedian===null?null:profileMedian<=10?'Very strong':profileMedian<=25?'Strong':profileMedian<=50?'Average':'Needs development';
+  const label=percentile!==null?(percentile>=85?'Very strong':percentile>=60?'Strong':percentile>=20?'Average':'Needs development'):fallback;
+  const color=label==='Very strong'?'green':label==='Strong'?'blue':label==='Average'?'yellow':label==='Needs development'?'pink':null;
+  const tile=tiles.querySelector('[data-metric="true_power"] dd');
+  if(tile){delete tile.dataset.profileColor;if(color&&truePower.calculated)tile.dataset.profileColor=color;}
+  const provenance=percentile!==null?'Direct '+(exact.length>=5?'same TG upgrade':'same TG tier')+' peer comparison ('+peers.length+' verified peers'+(peers.length<20?', provisional':'')+')':'Kingdom ranking profile fallback (not a direct True Power peer rating)';
+  trueVerdict.textContent=truePower.calculated&&label?label+' · '+provenance+'.': 'True Power cannot be rated: matched Total Power and Troop Power are missing.';
+  trueSample.textContent+=' Rating legend: green Very strong (≥85th percentile), blue Strong (≥60th), yellow Average (≥20th), pink Needs development (<20th). Fallback uses kingdom median ranks ≤10 / ≤25 / ≤50 / >50.';
+ };
  refreshTrueSample();
  evidence.append(metricEvidence,
   element('p','Profile source capture: '+capture+' · Lookup (UTC): '+formatPlayerUtc(payload.checkedAtUtc)));
