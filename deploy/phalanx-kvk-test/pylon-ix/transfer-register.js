@@ -1,7 +1,7 @@
 // PHALANX registration — isolated review branch only.
 // Never grant membership or privileged roles from self-supplied player IDs.
 const SUPABASE_URL='https://hcjrdofkdkasznywvcxo.supabase.co';
-const SUPABASE_ANON_KEY=''; // Inject the existing reviewed public anon key from the frozen app before any browser deployment.
+const SUPABASE_ANON_KEY="sb_publishable_hkqBaMme70g2f3wcxvaTKg_FczqkpCh"; // Existing public/publishable client key; not a service-role secret.
 const form=document.getElementById('register');
 const status=document.getElementById('status');
 const show=document.getElementById('show');
