@@ -366,6 +366,7 @@ async function refreshInternalPlayer(){
  }catch(e){if(stillSelected()){renderExternalIntel();const note=document.createElement('p');note.textContent='Current player refresh failed: '+e.message+'. Available ranking snapshot remains visible.';$('externalIntelResult').append(note);}}
 }
 $('internalGovernor').onchange=()=>{
+ renderInternalChoices();
  const selected=internalPlayers?.find(p=>String(p.uid||p.player_name)===$('internalGovernor').value);
  if(lookupIntel&&comparisonPanel.parentNode===lookupIntel.compare)lookupIntel.manualPeer=String(selected?.governor_id||selected?.uid||'');
  void refreshInternalPlayer();
