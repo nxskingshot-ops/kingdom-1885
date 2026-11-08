@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><title>PHALANX — Discord Security Test</title><style>body{background:#071521;color:#e6d2a4;font:16px system-ui;margin:0;padding:24px}main{max-width:560px;margin:30px auto;border:1px solid #a8803b;border-radius:12px;padding:24px;background:#0e2330}h1{font:30px Georgia;color:#f0cb80}button{background:#9a4929;color:white;border:2px solid #d9ae66;padding:14px;border-radius:8px;font-size:16px;cursor:pointer}button:disabled{opacity:.5}p{line-height:1.5}#result{white-space:pre-wrap;overflow-wrap:anywhere}a{color:#f2cb82}</style></head><body><main><h1>⚔ PHALANX Security</h1><p>Isolated Discord delivery test. This does not modify scouting data, membership, or GOD mode.</p><p id="status">Checking your existing PHALANX session…</p><button id="send" disabled>Send one Discord test message</button><p id="result" role="status"></p><p><a href="./transfer-scouting-id-stage-20261030.html">Back to Transfer Scouting</a></p></main><script type="module">
+const URL='https://hcjrdofkdkasznywvcxo.supabase.co';
+const KEY='sb_publishable_hkqBaMme70g2f3wcxvaTKg_FczqkpCh';
+const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2');
+const db=createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true}});
+const status=document.getElementById('status'),send=document.getElementById('send'),result=document.getElementById('result');
+try{
+const {data:{session},error}=await db.auth.getSession();
+if(error||!session?.access_token){status.textContent='No active session. Sign in to Transfer Scouting on this same site first.';}
+else{
+const {data:membership,error:membershipError}=await db.from('nxs_memberships').select('role,active,expires_at').eq('user_id',session.user.id).maybeSingle();
+if(membershipError||!membership||membership.role!=='admin'||!membership.active||(membership.expires_at&&Date.parse(membership.expires_at)<=Date.now())){status.textContent='An active PHALANX admin membership is required.';}
+else{status.textContent='Active admin session found. Click once to send a test message.';send.disabled=false;}
+}
+}catch{status.textContent='Session verification failed. No message sent.';}
+send.addEventListener('click',async()=>{
+send.disabled=true;result.textContent='Sending test message…';
+try{
+const {data:{session}}=await db.auth.getSession();
+if(!session?.access_token)throw Error('Session expired. Please sign in again.');
+const res=await fetch(URL+'/functions/v1/phalanx-discord-security-test',{method:'POST',headers:{'Content-Type':'application/json','apikey':KEY,'Authorization':'Bearer '+session.access_token},body:'{}'});
+const body=await res.json().catch(()=>({}));
+result.textContent=res.ok?'Discord accepted the test (HTTP '+res.status+'). Please check #nexus-feedback for the PHALANX SECURITY message.':'Test failed (HTTP '+res.status+'): '+String(body.error||'Unknown error');
+}catch(e){result.textContent='Test request failed: '+String(e.message||e);}
+});
+</script></body></html>
