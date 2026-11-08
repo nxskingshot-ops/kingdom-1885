@@ -6,7 +6,7 @@ const items=[
 ['Transfer Planning','Event window, group and evidence',tools.querySelector('.phx-planning-context')],
 ['Calculate Transfer Power','Non-binding scenario calculation',document.getElementById('phxPowerScenario')],
 ['Compare Kingdom #1885','Compare players and alliances',document.getElementById('externalIntelPanel')],
-['Alliance Needs & Kingdoms','Needs and notes',tools.querySelector('details.sub-disclosure')],
+['Alliance Needs & Kingdoms','Needs and notes',document.getElementById('phxAllianceNeeds')],
 ['Export Data','Save candidates as CSV',document.getElementById('toolsCsv')]
 ];
 if(items.some(([, ,el])=>!el||!tools.contains(el))){document.documentElement.dataset.phxToolsMenu='waiting-for-module';return;}
