@@ -81,6 +81,31 @@ export function matchedTruePower(total,troop){
  return {value:a-b,captured_at:total.captured_at,source:total.source};
 }
 
+export const truePowerPeerMinimum=20;
+export const truePowerComparisonHours=24;
+
+export function selectTruePowerCohort(metric,players,candidateIds){
+ const candidateCapture=captureKey(metric.captured_at);
+ if(!metric.calculated||!candidateCapture)return null;
+ const candidateTime=Date.parse(candidateCapture);
+ const groups=new Map();
+ for(const row of players){
+  const ids=[row.uid,row.governor_id].filter(Boolean).map(String);
+  if(row.true_power_verified!==true||!Number.isFinite(row.true_power)||row.true_power<0
+    ||!ids.length||ids.some(id=>candidateIds.includes(id)))continue;
+  const capture=captureKey(row.true_power_captured_at);
+  const gapMs=Math.abs(Date.parse(capture)-candidateTime);
+  if(!Number.isFinite(gapMs)||gapMs>truePowerComparisonHours*3600000)continue;
+  if(!groups.has(capture))groups.set(capture,{capture,gapMs,players:new Map()});
+  groups.get(capture).players.set(ids[0],row);
+ }
+ const cohorts=[...groups.values()].map(({capture,gapMs,players})=>({capture,gapMs,peers:[...players.values()]}));
+ const eligible=cohorts.filter(cohort=>cohort.peers.length>=truePowerPeerMinimum);
+ eligible.sort((a,b)=>Number(b.capture===candidateCapture)-Number(a.capture===candidateCapture)
+  ||a.gapMs-b.gapMs||b.capture.localeCompare(a.capture));
+ return eligible[0]||cohorts.reduce((largest,cohort)=>cohort.peers.length>(largest?.peers.length||0)?cohort:largest,null);
+}
+
 // Reuse PHX-TC-TRUEGOLD-INTERPRETATION-20261021; do not extrapolate TG tiers.
 export function formatCastle(value){
  if(value===null||value===undefined||value==='')return 'Not available';

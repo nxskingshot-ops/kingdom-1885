@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { assessAccount } from '../deploy/phalanx-kvk-test/pylon-ix/phx-transfer-account-assessment-20261101.js';
 import { placeInAlliance, compareTopPeers } from '../deploy/phalanx-kvk-test/pylon-ix/phx-transfer-alliance-placement-20261101.js';
-import { playerRankingMap, playerSummaryMetrics } from '../deploy/phalanx-kvk-test/pylon-ix/transfer-id-display-20261030.js';
+import { playerRankingMap, playerSummaryMetrics, selectTruePowerCohort } from '../deploy/phalanx-kvk-test/pylon-ix/transfer-id-display-20261030.js';
 
 const date = '2026-10-13';
 const capture = '2026-11-06T07:00:00Z';
@@ -163,4 +163,34 @@ test('rejects cross-source and different-instant True Power pairs and accepts eq
  assert.equal(score({...troop,captured_at:'2026-11-08T11:00:00.100002+01:00'}),null);
  assert.equal(score({...troop,captured_at:null}),null);
  assert.equal(playerSummaryMetrics({leaderboards:[troop]},{power:300,captured_at:troop.captured_at})[1].value,null);
+});
+
+const truePowerCandidate={calculated:true,captured_at:'2026-11-08T12:00:00Z'};
+const truePowerPeers=(capture,count)=>Array.from({length:count},(_,i)=>({
+ uid:String(i+1),true_power_verified:true,true_power:1_000_000+i,true_power_captured_at:capture
+}));
+
+test('uses the closest eligible #1885 capture and prefers an eligible exact match', () => {
+ const exact=truePowerPeers(truePowerCandidate.captured_at,20);
+ const nearby=truePowerPeers('2026-11-08T11:30:00Z',21);
+ const older=truePowerPeers('2026-11-08T01:14:33.348Z',30);
+ const all=[...older,...nearby,...exact];
+ assert.equal(selectTruePowerCohort(truePowerCandidate,all,[]).gapMs,0);
+ const closest=selectTruePowerCohort(truePowerCandidate,all,['1']);
+ assert.equal(closest.gapMs,30*60000);
+ assert.equal(closest.peers.length,20);
+ assert.equal(closest.peers.some(row=>row.uid==='1'),false);
+});
+
+test('includes the 24-hour limit without pooling captures or counting duplicate or unverified players', () => {
+ const boundary=truePowerPeers('2026-11-07T12:00:00Z',20);
+ const outside=truePowerPeers('2026-11-07T11:59:59Z',20);
+ assert.equal(selectTruePowerCohort(truePowerCandidate,boundary,[]).peers.length,20);
+ assert.equal(selectTruePowerCohort(truePowerCandidate,outside,[]),null);
+ const nearby=truePowerPeers('2026-11-08T11:30:00Z',15);
+ const duplicate={...nearby[0]};
+ const unverified={...nearby[0],uid:'99',true_power_verified:false};
+ const partial=selectTruePowerCohort(truePowerCandidate,[...boundary.slice(0,15),...nearby,duplicate,unverified],[]);
+ assert.equal(partial.peers.length,15);
+ assert.equal(selectTruePowerCohort({...truePowerCandidate,calculated:false},boundary,[]),null);
 });

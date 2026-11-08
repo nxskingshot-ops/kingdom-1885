@@ -6,7 +6,7 @@ import { seaWorldVerdict, THRESHOLDS, WEIGHTS } from './phx-sea-world-v2-gate-20
 import { candidateFromLookup, duplicateLookupFilter } from './transfer-id-candidate-20261030.js';
 import { forecast as phxTransferForecast, transferStatus as phxTransferStatus } from './phx-transfer-forecast-20261101.js';
 import { mountRuleDraftEditor } from './phx-transfer-rules-editor-20261101.js';
-import { formatPlayerNumber, formatPlayerUtc, formatPlayerSection, playerLookupError, rankingLabels, canonicalRankingName, playerRankingMap, rankingSourceText, playerSummaryMetrics, compactPower, captureKey, matchedTruePower } from './transfer-id-display-20261030.js?build=phx-queen-an-20261108';
+import { formatPlayerNumber, formatPlayerUtc, formatPlayerSection, playerLookupError, rankingLabels, canonicalRankingName, playerRankingMap, rankingSourceText, playerSummaryMetrics, compactPower, captureKey, matchedTruePower, selectTruePowerCohort, truePowerComparisonHours, truePowerPeerMinimum } from './transfer-id-display-20261030.js?build=phx-truepower-window-20261108';
 const SUPABASE_URL='https://hcjrdofkdkasznywvcxo.supabase.co';
 const KEY='sb_publishable_hkqBaMme70g2f3wcxvaTKg_FczqkpCh';
 const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2');
@@ -642,23 +642,20 @@ function strongestInternalPlayer(preferred, ownIds){
   ||ordered[0];
 }
 
-function verifiedTruePowerEvidence(metric, castle, candidateIds){
- const peers=verifiedTruePowerPeers(metric,candidateIds);
- if(!metric.calculated||peers.length<20)return 'True Power comparison not yet reliable ('+peers.length+' matched peers; at least 20 required).';
+function verifiedTruePowerEvidence(metric,cohort){
+ if(!metric.calculated)return 'A verified candidate True Power value is required for comparison.';
+ if(!cohort)return 'No verified #1885 comparison capture within '+truePowerComparisonHours+' hours.';
+ const {peers,capture,gapMs}=cohort;
+ const minutes=Math.floor(gapMs/60000);
+ const gap=capture===captureKey(metric.captured_at)?'same instant':minutes===0?'less than 1 min':
+  (minutes>=60?Math.floor(minutes/60)+' h ':'')+minutes%60+' min';
+ const timing='Candidate capture '+formatPlayerUtc(metric.captured_at)+' · #1885 capture '+formatPlayerUtc(capture)+' · '+gap+'.';
+ if(peers.length<truePowerPeerMinimum)return timing;
  const rank=1+peers.filter(row=>row.true_power>metric.value).length;
  const nxs=peers.filter(row=>allianceTag(row.alliance_tag)==='NXS');
  const nxsRank=1+nxs.filter(row=>row.true_power>metric.value).length;
  return 'True Power comparison: #'+rank+' of '+(peers.length+1)+' in the verified sample'
-  +(nxs.length?' · NXS #'+nxsRank+' of '+(nxs.length+1):'')
-  +' · same capture '+formatPlayerUtc(metric.captured_at)+'. Top-100 board overlap, not a full kingdom ranking.';
-}
-function verifiedTruePowerPeers(metric,candidateIds){
- const capture=captureKey(metric.captured_at);
- if(!metric.calculated||!capture)return [];
- return (internalPlayers||[]).filter(row=>row.true_power_verified===true
-  && captureKey(row.true_power_captured_at)===capture
-  && Number.isFinite(row.true_power)&&row.true_power>=0
-  && !candidateIds.includes(String(row.governor_id??row.uid??'')));
+  +(nxs.length?' · NXS #'+nxsRank+' of '+(nxs.length+1):'')+'. '+timing+' Sample based on overlapping Top-100 boards.';
 }
 function attachVerifiedTruePower(data){
  const source=({provider_request:'provider_kingdom',saved_snapshot:'saved_snapshot'})[data.source_mode];
@@ -715,7 +712,7 @@ function mountDecision(payload,id){
  const middle=Math.floor(profileRanks.length/2);
  const profileMedian=profileRanks.length>=4?(profileRanks[Math.floor((profileRanks.length-1)/2)].rank+profileRanks[middle].rank)/2:null;
  const profileColor=profileMedian===null?null:profileMedian<=10?'green':profileMedian<=25?'blue':profileMedian<=50?'yellow':'pink';
- // The dialog verdict labels direct TG evidence separately from the kingdom-profile fallback.
+ // The dialog explains the True Power result and its comparison sample.
  for(const metric of [total,truePower,castle,...metrics.slice(2,-1)]){
   const label=metric.label.replace(' · score','').replace('Truegold','TG');
   metricEvidence.append(element('li',label+' · '+metric.details));
@@ -726,7 +723,6 @@ function mountDecision(payload,id){
   value.append(element('strong',metric.text==='Not available'?'—':metric.text));
   value.title=metric.details;
   if(metric===truePower){
-   // The True Power rating is assigned only after verified same-capture TG peer evaluation or labeled fallback.
    const info=element('button','i','phx-decision-info');
    info.type='button';info.setAttribute('aria-label','True Power calculation and comparison');
    info.addEventListener('click',()=>trueHelp.showModal());
@@ -845,10 +841,10 @@ function mountDecision(payload,id){
  card.append(legend,body);
  const candidateIds=[id,payload.uid,p.uid,p.governorId,p.governor_id].filter(Boolean).map(String);
  const refreshTrueSample=()=>{
-  const evidence=verifiedTruePowerEvidence(truePower,castle,candidateIds);
-  trueSample.textContent=evidence;
-  const peers=verifiedTruePowerPeers(truePower,candidateIds);
-  const reliable=peers.length>=20;
+  const cohort=selectTruePowerCohort(truePower,internalPlayers||[],candidateIds);
+  const peers=cohort?.peers||[];
+  const reliable=peers.length>=truePowerPeerMinimum;
+  trueSample.textContent=verifiedTruePowerEvidence(truePower,cohort);
   const percentile=reliable?100*peers.filter(row=>row.true_power<=truePower.value).length/peers.length:null;
   const label=percentile===null?null:percentile>=85?'Very strong':percentile>=60?'Strong':percentile>=20?'Average':'Needs development';
   const color=label==='Very strong'?'green':label==='Strong'?'blue':label==='Average'?'yellow':'pink';
@@ -860,8 +856,8 @@ function mountDecision(payload,id){
    if(value){delete value.dataset.profileColor;if(label)value.dataset.profileColor=color;}
   }
   trueVerdict.textContent=label?label+' · True Power percentile '+Math.round(percentile)+' among '+peers.length+' verified peers (partial kingdom sample).'
-   :'Not yet rateable · '+peers.length+' comparable True Power values; at least 20 required.';
-  trueSample.textContent+=' The comparison uses matching capture times for Total and Troop Power. A newer Total Power headline may differ from this matched calculation; it is not silently substituted. Rating: green top 15%, blue next 25%, yellow next 40%, pink bottom 20%. No TG or other ranking fallback.';
+   :'Not yet rateable · '+peers.length+' comparable True Power values; at least '+truePowerPeerMinimum+' required.';
+  trueSample.textContent+=' Each True Power value uses Total and Troop Power from the same source and capture. The comparison uses one #1885 capture within '+truePowerComparisonHours+' hours of the candidate capture. Rating: green top 15%, blue next 25%, yellow next 40%, pink bottom 20%.';
   // Live peer rankings arrive asynchronously; update the strategic verdict with them.
   const suggested=suggestProvisionalRole(assessment,label);
   const rallyCandidate=suggested.role==='Rally Leader candidate';
