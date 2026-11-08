@@ -11,6 +11,20 @@ const KEY='sb_publishable_hkqBaMme70g2f3wcxvaTKg_FczqkpCh';
 const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2');
 const db=createClient(SUPABASE_URL,KEY,{auth:{persistSession:true,autoRefreshToken:true}});
 const $=id=>document.getElementById(id);
+const discordTestButton=document.getElementById('phxDiscordTest');
+if(discordTestButton)discordTestButton.addEventListener('click',async()=>{
+ const status=document.getElementById('phxDiscordTestStatus');
+ discordTestButton.disabled=true;status.textContent='Sending authenticated test…';
+ try{
+  const {data:{session},error}=await db.auth.getSession();
+  if(error||!session?.access_token)throw Error('Please sign in first.');
+  const res=await fetch(SUPABASE_URL+'/functions/v1/phalanx-discord-security-test',{method:'POST',headers:{apikey:KEY,Authorization:'Bearer '+session.access_token,'content-type':'application/json'},body:'{}',cache:'no-store',signal:AbortSignal.timeout(12000)});
+  const body=await res.json().catch(()=>({}));
+  if(!res.ok)throw Error(body.error||'HTTP '+res.status);
+  status.textContent='Discord accepted the test. Please verify the message in #nexus-feedback.';
+ }catch(e){status.textContent='Test failed: '+(e?.message||'Unknown error');}
+ finally{discordTestButton.disabled=false;}
+});
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=x=>x==null?'–':Number(x).toLocaleString('en-US',{maximumFractionDigits:1});
 let players=[],chosen=new Set(),active=null,canEdit=false;
