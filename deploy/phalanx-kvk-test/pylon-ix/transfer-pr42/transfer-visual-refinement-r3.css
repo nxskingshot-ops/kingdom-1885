@@ -1,0 +1,14 @@
+/* PHALANX R5 — compact war-council dossier, presentation only.
+   Retains original assets, rankings, disclosure and permissions. */
+#phxReview{background:linear-gradient(150deg,#132632,#091723 76%,#231d1c);border:1px solid #98784a;padding:clamp(10px,2vw,18px)}
+.phx-hero-name{font-variant:small-caps;letter-spacing:.02em;text-shadow:0 2px 8px #000b;overflow-wrap:anywhere;font-size:clamp(26px,5vw,43px)}
+#phxIdResult>.phx-verdict-card{border:1px solid #9c7946!important;border-top:2px solid #d8ac65!important;background:linear-gradient(145deg,#0d202b,#111d26)!important;box-shadow:inset 0 1px #e2bc7640!important}
+#phxIdResult>.phx-event-intelligence{position:relative;grid-column:1/-1!important;border:1px solid #a9834e!important;border-top:2px solid #d8ae68!important;border-radius:3px!important;background:linear-gradient(115deg,#0d1e2b,#1c1a20 75%,#301d1b)!important;box-shadow:inset 0 1px #f3c77e33,0 6px 16px #0005!important;padding:clamp(12px,2.5vw,18px)!important}
+#phxIdResult>.phx-event-intelligence h4{font-family:Georgia,serif!important;font-size:clamp(18px,3.8vw,25px)!important;line-height:1.2!important;letter-spacing:.015em!important;color:#e9c183!important;border:0!important;border-bottom:1px solid #9d7d4c66!important;padding:0 0 9px!important;margin:0 0 10px!important;text-shadow:none!important}
+#phxIdResult>.phx-event-intelligence .phx-pylon-summary{font-size:clamp(13px,2.5vw,15px)!important;color:#dfc69e!important;line-height:1.4!important;margin:0 0 9px!important}
+#phxIdResult>.phx-event-intelligence>.phx-scout-module-details{margin-top:6px;border-top:1px solid #9e80504a;padding-top:5px}
+#phxIdResult>.phx-event-intelligence>.phx-scout-module-details>summary{font-family:inherit!important;font-size:clamp(13px,2.5vw,15px)!important;letter-spacing:.025em!important;color:#cdb185!important;padding:5px 0!important;text-shadow:none!important;cursor:pointer}
+#phxIdResult>.phx-event-intelligence>.phx-scout-module-details[open]>p{padding:7px 0;margin:0;border-bottom:1px solid #9e805036;line-height:1.45}
+#phxIdResult>.phx-verdict-card .phx-scout-facts>div,#phxIdResult>.phx-verdict-card .phx-scout-roles>div{background:transparent!important;border:0!important;border-left:2px solid #9d7a4d!important;border-radius:0!important;box-shadow:none!important;padding:7px 10px!important}
+#phxIdResult>.phx-verdict-card .phx-scout-facts,#phxIdResult>.phx-verdict-card .phx-scout-roles{gap:4px!important}
+@media(max-width:500px){#phxIdResult>.phx-event-intelligence{padding:12px!important}#phxIdResult>.phx-event-intelligence h4{font-size:19px!important}}

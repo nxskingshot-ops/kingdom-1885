@@ -1,0 +1,106 @@
+/* PHX Transfer Command Surface — isolated UI override 2026-11-01.
+   Original header, navigation SVG assets, JS, IDs and protected data flows untouched. */
+@media screen {
+body{background:radial-gradient(ellipse at 50% 15%,#34404a 0%,#101d27 42%,#040b12 100%) fixed}
+main{padding-top:0}
+.phx-original-header{margin-bottom:0!important}
+#private{position:relative;margin-top:-1px;padding:12px clamp(9px,2vw,22px) 24px;background:linear-gradient(145deg,#28333b 0%,#0c1c28 24%,#07121e 75%,#17232b 100%);border:1px solid #76674d;box-shadow:inset 0 1px #d7bd82,inset 0 0 0 5px #1c2930,0 15px 38px #000a}
+#private:before{content:"";position:absolute;inset:6px;pointer-events:none;border:1px solid #b7a47a22}
+#private .panel,#private .utility-panel{border:1px solid #665c48;border-radius:3px;box-shadow:0 7px 20px #0005,inset 0 1px #b8a47b36;margin-bottom:12px}
+#private .panel:before,#private .panel:after,#private .utility-panel:before,#private .utility-panel:after{display:none}
+#private .panel-head{min-height:56px;padding:10px 15px;border-bottom:1px solid #6c614a66;background:linear-gradient(100deg,#152a38,#0a1a27)}
+#private .panel-head:has(.reference-scene){min-height:76px}
+#private .panel-head .reference-scene{opacity:.3}
+#private .panel-head .section-emblem{width:46px;height:46px}
+#private .panel-head h2{font-size:clamp(18px,3.5vw,23px)}
+#private .panel-body{padding:12px 15px}
+.workspace-nav{display:flex;justify-content:center;gap:0;padding:2px;margin:2px 0 12px;border:1px solid #776448;clip-path:none;box-shadow:inset 0 1px #b7a17a44;background:linear-gradient(#1b2a33,#07131e)}
+.workspace-nav a{min-height:46px;flex:1;max-width:300px;flex-direction:row;gap:9px;padding:5px 12px;font:clamp(12px,2.6vw,15px) Georgia,serif;border-right:1px solid #79684955}
+.workspace-nav .nav-emblem{width:34px;height:34px}
+.workspace-nav a[data-view="phxIdPanel"]{display:none!important}
+.workspace-nav a.active{box-shadow:inset 0 -2px #d9b16c;background:linear-gradient(#293b43,#12202b)}
+#phxIdPanel .lookup-intro{margin:0 0 9px;font-size:12px;line-height:1.4}
+#phxIdForm{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;align-items:center;margin:0}
+#phxIdForm label{font-size:12px}
+#phxIdForm input{min-height:42px;width:100%;font-size:16px}
+#phxIdForm button{min-height:42px;padding:8px 14px;white-space:nowrap}
+#phxIdPanel .lookup-help{margin:8px 0 0}
+#phxIdPanel .lookup-help:not([open]){padding:0;border:0}
+#phxIdPanel #phxIdStatus{margin:6px 0}
+#private .stage-actions{margin-bottom:6px;padding:4px 0}
+}
+@media(max-width:600px){
+main{padding:0 5px 24px}
+#private{padding:8px 8px 16px}
+.workspace-nav a{min-height:43px;padding:3px 7px}
+.workspace-nav .nav-emblem{width:29px;height:29px}
+#private .panel-head:has(.reference-scene){min-height:64px}
+#private .panel-head .section-emblem{width:39px;height:39px}
+#private .panel-body{padding:10px}
+#phxIdForm{grid-template-columns:1fr auto;gap:6px}
+#phxIdForm label{grid-column:1/-1}
+#phxIdForm button{font-size:12px;padding:7px 10px}
+#private .panel-head .reference-scene{opacity:.22}
+}
+
+/* R2: mobile-first intelligence report; additive, presentation-only. */
+#phxReview .review-heading{margin:4px 0 8px}
+#phxReview .review-heading h3{font-size:clamp(21px,4vw,29px);margin:2px 0}
+#phxReview .review-heading p{font-size:12px;line-height:1.35;margin:2px 0 8px}
+#phxIdResult{gap:9px!important}
+#phxIdResult>.player-identity{font-size:clamp(17px,3.5vw,22px);margin:0}
+#phxIdResult>.detail{min-height:0;padding:8px 12px}
+#phxIdResult>.headline-metrics{gap:0!important;margin:0!important}
+#phxIdResult>.headline-metrics .detail{min-width:0!important;padding:9px 10px!important}
+#phxIdResult>.headline-metrics .detail b{font-size:clamp(17px,3.5vw,23px)!important;line-height:1.25}
+#phxIdResult>.phx-scout-section{padding:11px!important;margin:0!important;min-width:0!important;overflow-wrap:anywhere}
+#phxIdResult>.phx-scout-section h4{font-size:clamp(17px,3.4vw,21px)!important;margin:0 0 6px!important;line-height:1.3}
+#phxIdResult .phx-scout-muted{font-size:12px!important;line-height:1.45!important;margin:5px 0!important}
+#phxIdResult .phx-scout-facts{gap:7px!important}
+#phxIdResult .phx-scout-facts>div{padding:8px!important;min-width:0}
+#phxIdResult .phx-scout-roles{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}
+#phxIdResult .phx-scout-roles>div{min-width:0!important;padding:9px!important;overflow-wrap:normal;word-break:normal}
+#phxIdResult .phx-scout-roles strong{font-size:clamp(12px,2.6vw,15px)!important;hyphens:none}
+#phxIdResult .phx-scout-placement{font-size:12px!important;line-height:1.5!important;overflow-wrap:break-word}
+#phxIdPanel .lookup-intro{font-size:12px!important;line-height:1.35!important;margin:0 0 6px!important}
+#phxIdPanel .panel-body{padding-bottom:9px!important}
+@media(max-width:600px){
+#phxIdResult>.phx-scout-section{width:100%!important}
+#phxIdResult .phx-scout-roles>div{padding:8px!important}
+#phxIdResult>.headline-metrics .detail{padding:8px!important}
+#phxReview .review-heading{margin-bottom:5px}
+}
+
+/* Scout verdict and dated alliance ranking comparison */
+#phxIdResult>.phx-verdict-card{border-color:#c89c55!important;background:linear-gradient(135deg,#172b35,#071722)!important}
+#phxIdResult .phx-scout-decision{color:#f0d7a7;font-size:clamp(13px,2.8vw,16px);line-height:1.45;margin:5px 0 8px}
+#phxIdResult .phx-alliance-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}
+#phxIdResult .phx-alliance-row{border:1px solid rgba(197,153,76,.38);padding:9px;display:flex;flex-direction:column;gap:3px;min-width:0}
+#phxIdResult .phx-alliance-row strong{color:#f0ce8b;font-size:14px}
+#phxIdResult .phx-alliance-row span{font-weight:700;color:#f3ddae;font-size:clamp(14px,3vw,18px)}
+#phxIdResult .phx-alliance-row small{font-size:11px;color:#aebfca;line-height:1.3}
+
+/* Evidence-based strategic profile: PHALANX mobile-first ranking bars. */
+.phx-intel-profile{color:#f1e4cf}
+.phx-intel-rank{margin:12px 0 18px}
+.phx-intel-rank-head{display:flex;justify-content:space-between;gap:10px;align-items:baseline;font-size:clamp(14px,2.8vw,21px);margin-bottom:9px}
+.phx-intel-rank-head b{white-space:nowrap}
+.phx-intel-track{height:12px;border-radius:999px;background:#35383d;overflow:hidden}
+.phx-intel-fill{height:100%;border-radius:999px;background:#3b986a}
+.phx-intel-rank[data-band=good] .phx-intel-rank-head b,.phx-intel-good{color:#68df9f}
+.phx-intel-rank[data-band=developing] .phx-intel-rank-head b,.phx-intel-developing{color:#f2b650}
+.phx-intel-rank[data-band=developing] .phx-intel-fill{background:#d39b42}
+.phx-intel-rank[data-band=gap] .phx-intel-rank-head b,.phx-intel-gap{color:#ef776e}
+.phx-intel-rank[data-band=gap] .phx-intel-fill{background:#bd5d4e}
+.phx-intel-profile p{line-height:1.65}
+@media(max-width:420px){.phx-intel-rank-head{font-size:13px}.phx-intel-track{height:10px}}
+
+/* SEA WORLD mobile review correction: verdict must span the entire dossier grid. */
+#phxIdResult>.phx-verdict-card{grid-column:1/-1!important;width:100%!important;max-width:none!important;min-width:0!important;box-sizing:border-box!important}
+@media(max-width:600px){#phxIdResult>.phx-verdict-card{padding:12px!important}#phxIdResult>.phx-verdict-card .phx-scout-facts{grid-template-columns:repeat(2,minmax(0,1fr))!important}#phxIdResult>.phx-verdict-card .phx-scout-muted{max-width:100%;overflow-wrap:break-word}}
+
+/* PHALANX player identity: name, gold castle, provenance */
+#phxIdResult>.phx-player-hero{grid-column:1/-1!important;width:100%;box-sizing:border-box;text-align:center;padding:14px 8px;color:#e9c184}
+.phx-hero-name{font-family:Georgia,serif;font-size:clamp(32px,7vw,48px);font-weight:800;line-height:1.15;color:#f2c77b}
+.phx-hero-castle{font-size:clamp(20px,4.5vw,29px);font-weight:800;color:#f4c46b;margin:8px 0}
+.phx-hero-meta{font-size:clamp(13px,3vw,17px);color:#b9c7d1;font-weight:500}
