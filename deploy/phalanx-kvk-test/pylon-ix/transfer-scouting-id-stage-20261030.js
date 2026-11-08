@@ -1,5 +1,5 @@
 import { placeInAlliance, compareTopPeers } from './phx-transfer-alliance-placement-20261101.js?v=phx-transfer-evidence-20261107';
-import { assessAccount } from './phx-transfer-account-assessment-20261101.js?v=phx-transfer-evidence-20261107';
+import { assessAccount, suggestProvisionalRole } from './phx-transfer-account-assessment-20261101.js?v=phx-achilles-roles-20261108';
 import { strategicProfile } from './phx-transfer-strategic-profile-20261101.js';
 import { seaWorldVerdict, THRESHOLDS, WEIGHTS } from './phx-sea-world-v2-gate-20261101.js';
 import { candidateFromLookup, duplicateLookupFilter } from './transfer-id-candidate-20261030.js';
@@ -803,15 +803,11 @@ function mountDecision(payload,id){
    :'Not yet rateable · '+peers.length+' comparable True Power values; at least 20 required.';
   trueSample.textContent+=' Rating: green top 15%, blue next 25%, yellow next 40%, pink bottom 20%. Based only on actual True Power values; no TG or other ranking fallback.';
   // Live peer rankings arrive asynchronously; update the strategic verdict with them.
-  const rallyCandidate=label==='Very strong'&&rallySignals.length>=2
-   &&rallySignals.some(row=>row.key==='hero_equip'||row.key==='hero_total');
-  roleTitle.textContent=rallyCandidate?'KvK recommendation · Rally Leader candidate':'KvK recommendation · Provisional';
-  roleText.textContent=rallyCandidate
-   ?'Strong Rally Leader candidate: very strong verified True Power and leading hero development justify priority review for rally leadership.'
-   :defaultRole+'.';
-  verification.textContent=rallyCandidate
-   ?'Next check: lead combat buffs, rally capacity and battle reports before confirming a Rally Leader assignment.'
-   :'Next check: role-specific combat buffs and battle reports.';
+  const suggested=suggestProvisionalRole(assessment,label);
+  const rallyCandidate=suggested.role==='Rally Leader candidate';
+  roleTitle.textContent='KvK recommendation · '+(suggested.role||'Unconfirmed');
+  roleText.textContent=suggested.reason+'.';
+  verification.textContent='Next check: '+suggested.verify+'.';
   overviewText.textContent=dna;
 
 
