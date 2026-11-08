@@ -333,7 +333,7 @@ $('loadInternal').onclick=async()=>{
  internalLoading=true;$('loadInternal').disabled=true;renderExternalIntel();
  try{
   const data=await requestCurrentRankings();
-  internalPlayers=data.observations;
+  internalPlayers=attachVerifiedTruePower(data.observations);
   internalSnapshot=data.snapshot_date||'';
   $('loadInternal').textContent='Refresh #1885 players ('+internalPlayers.length+')';
   const previous=$('internalGovernor').value;
@@ -587,35 +587,33 @@ function strongestInternalPlayer(preferred, ownIds){
 }
 
 function verifiedTruePowerEvidence(metric, castle, candidateIds){
- const list=(internalPlayers||[]).filter(row=>row.true_power_verified===true
-  && row.true_power!=null && String(row.true_power).trim()!=='' && Number.isFinite(Number(row.true_power))
-  && Number(row.true_power)>=0 && formatPlayerUtc(row.captured_at)!=='Not available');
- const groups=new Map();
- for(const row of list){
-  const id=String(row.governor_id??row.player_id??row.uid??'');
-  if(!id||candidateIds.includes(id))continue;
-  const time=formatPlayerUtc(row.captured_at);
-  if(!groups.has(time))groups.set(time,new Map());
-  groups.get(time).set(id,row);
- }
- const candidateCapture=formatPlayerUtc(metric.captured_at);
- const cohort=metric.calculated&&candidateCapture!=='Not available'&&groups.has(candidateCapture)?[candidateCapture,groups.get(candidateCapture)]:null;
- if(!metric.calculated||!cohort||cohort[1].size<5)return 'Comparable True Power sample unavailable.';
- const [capture, members]=cohort;
- const rank=rows=>1+rows.filter(row=>Number(row.true_power)>metric.value).length;
- const peers=[...members.values()];
- const nxs=peers.filter(row=>allianceTag(row.alliance_tag??row.alliance_abbr)==='NXS');
- const tier=castle.text.match(/^TG(\d+) /)?.[1];
- const exact=peers.filter(row=>row.castle_level===castle.text);
- const tg=tier?peers.filter(row=>String(row.castle_level||'').startsWith('TG'+tier+' ')):[];
- const matched=exact.length>=5?exact:tg;
- const percentile=matched.length?Math.round(100*matched.filter(row=>Number(row.true_power)<=metric.value).length/matched.length):null;
- const tgNote=matched.length>=5?' · '+(exact.length>=5?'Same TG upgrade':'Same main TG tier')
-  +' #'+rank(matched)+' of '+(matched.length+1)+' · sample percentile '+percentile:'';
-
- return 'Verified sample insertion #'+rank(peers)+' of '+(peers.length+1)
-  +(nxs.length?' · NXS #'+rank(nxs)+' of '+(nxs.length+1):'')+tgNote+'. Peer capture '+capture
-  +' · Candidate capture '+formatPlayerUtc(metric.captured_at)+'. Partial comparison sample.';
+ const peers=verifiedTruePowerPeers(metric,candidateIds);
+ if(!metric.calculated||peers.length<20)return 'True Power comparison not yet reliable ('+peers.length+' matched peers; at least 20 required).';
+ const rank=1+peers.filter(row=>row.true_power>metric.value).length;
+ const nxs=peers.filter(row=>allianceTag(row.alliance_tag)==='NXS');
+ const nxsRank=1+nxs.filter(row=>row.true_power>metric.value).length;
+ return 'True Power comparison: #'+rank+' of '+(peers.length+1)+' in the verified sample'
+  +(nxs.length?' · NXS #'+nxsRank+' of '+(nxs.length+1):'')
+  +' · same capture '+formatPlayerUtc(metric.captured_at)+'. Top-100 board overlap, not a full kingdom ranking.';
+}
+function verifiedTruePowerPeers(metric,candidateIds){
+ const capture=formatPlayerUtc(metric.captured_at);
+ if(!metric.calculated||capture==='Not available')return [];
+ return (internalPlayers||[]).filter(row=>row.true_power_verified===true
+  && formatPlayerUtc(row.captured_at)===capture
+  && Number.isFinite(row.true_power)&&row.true_power>=0
+  && !candidateIds.includes(String(row.governor_id??row.uid??'')));
+}
+function attachVerifiedTruePower(rows){
+ return rows.map(row=>{
+  const total=row.rankings?.personal_power, troop=row.rankings?.troop_power;
+  const a=Number(total?.value),b=Number(troop?.value);
+  const capture=formatPlayerUtc(total?.captured_at);
+  const verified=total?.value!=null&&troop?.value!=null
+   && Number.isFinite(a)&&Number.isFinite(b)&&a>=b&&b>=0
+   && capture!=='Not available'&&String(total.captured_at)===String(troop.captured_at);
+  return {...row,true_power_verified:verified,true_power:verified?a-b:null,captured_at:verified?total.captured_at:null};
+ });
 }
 
 function mountDecision(payload,id){
@@ -762,24 +760,17 @@ function mountDecision(payload,id){
   const evidence=verifiedTruePowerEvidence(truePower,castle,candidateIds);
   trueSample.textContent=evidence;
   const candidateCapture=formatPlayerUtc(truePower.captured_at);
-  const verifiedPeers=(internalPlayers||[]).filter(row=>row.true_power_verified===true
-   && formatPlayerUtc(row.captured_at)===candidateCapture
-   && Number.isFinite(Number(row.true_power))&&row.true_power!==null&&String(row.true_power).trim()!==''
-   && !candidateIds.includes(String(row.governor_id??row.player_id??row.uid??'')));
-  const castleCaptureVerified=formatPlayerUtc(castle.captured_at)===candidateCapture;
-  const exact=castleCaptureVerified?verifiedPeers.filter(row=>String(row.castle_level)===castle.text):[];
-  const tier=castle.text.match(/^TG(\d+) /)?.[1];
-  const mainTier=castleCaptureVerified&&tier?verifiedPeers.filter(row=>String(row.castle_level||'').startsWith('TG'+tier+' ')):[];
-  const peers=exact.length>=5?exact:mainTier.length>=5?mainTier:[];
-  const percentile=truePower.calculated&&peers.length?100*peers.filter(row=>Number(row.true_power)<=truePower.value).length/peers.length:null;
-  const fallback=profileMedian===null?null:profileMedian<=10?'Very strong':profileMedian<=25?'Strong':profileMedian<=50?'Average':'Needs development';
-  const label=percentile!==null?(percentile>=85?'Very strong':percentile>=60?'Strong':percentile>=20?'Average':'Needs development'):fallback;
-  const color=label==='Very strong'?'green':label==='Strong'?'blue':label==='Average'?'yellow':label==='Needs development'?'pink':null;
+  const peers=verifiedTruePowerPeers(truePower,candidateIds);
+  const reliable=peers.length>=20;
+  const percentile=reliable?100*peers.filter(row=>row.true_power<=truePower.value).length/peers.length:null;
+  const label=percentile===null?null:percentile>=85?'Very strong':percentile>=60?'Strong':percentile>=20?'Average':'Needs development';
+  const color=label==='Very strong'?'green':label==='Strong'?'blue':label==='Average'?'yellow':'pink';
   const tile=tiles.querySelector('[data-metric="true_power"] dd');
-  if(tile){delete tile.dataset.profileColor;if(color&&truePower.calculated)tile.dataset.profileColor=color;}
-  const provenance=percentile!==null?'Direct '+(exact.length>=5?'same TG upgrade':'same TG tier')+' peer comparison ('+peers.length+' verified peers'+(peers.length<20?', provisional':'')+')':'Kingdom ranking profile fallback (not a direct True Power peer rating; median '+(profileMedian===null?'unavailable':'#'+profileMedian)+')';
-  trueVerdict.textContent=truePower.calculated&&label?label+' · '+provenance+'.': 'True Power cannot be rated: matched Total Power and Troop Power are missing.';
-  trueSample.textContent+=' Rating legend: green Very strong (≥85th percentile), blue Strong (≥60th), yellow Average (≥20th), pink Needs development (<20th). Fallback uses kingdom median ranks ≤10 / ≤25 / ≤50 / >50.';
+  if(tile){delete tile.dataset.profileColor;if(label)tile.dataset.profileColor=color;}
+  trueVerdict.textContent=label?label+' · True Power percentile '+Math.round(percentile)+' among '+peers.length+' verified peers (partial kingdom sample).'
+   :'Not yet rateable · '+peers.length+' comparable True Power values; at least 20 required.';
+  trueSample.textContent+=' Rating: green top 15%, blue next 25%, yellow next 40%, pink bottom 20%. Based only on actual True Power values; no TG or other ranking fallback.';
+
  };
  refreshTrueSample();
  evidence.append(metricEvidence,
