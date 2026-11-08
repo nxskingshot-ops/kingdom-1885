@@ -39,3 +39,15 @@ test('invalid and missing ranks never become zeros',()=>{
  assert.equal(a.decision,'NEEDS_MORE_DATA');
  assert(a.roleCandidates.every(r=>r.evidence.length===0));
 });
+
+test('historical benchmarks cannot manufacture NXS placement even with 15 peers',()=>{
+ const peers=Array.from({length:15},(_,i)=>({ranking_evidence:{personal_power_rank:i+1}}));
+ const a=adviseRecruitment(player('Achilles'),{...fixture,alliance:{kingdom:1913,snapshot_date:fixture.snapshot_date,top15:peers}});
+ assert.equal(a.alliancePlacement.status,'INSUFFICIENT_COMPARABLE_PEERS');
+});
+test('cross-kingdom or mismatched snapshots block alliance placement',()=>{
+ const peers=Array.from({length:15},(_,i)=>({ranking_evidence:{personal_power_rank:i+1}}));
+ const base={type:'LIVE_CANDIDATE',kingdom:1885,snapshot_date:'2026-11-08',alliance:{kingdom:1913,snapshot_date:'2026-11-08',top15:peers}};
+ assert.equal(adviseRecruitment(player('Achilles'),base).alliancePlacement.status,'INSUFFICIENT_COMPARABLE_PEERS');
+ assert.equal(adviseRecruitment(player('Achilles'),{...base,alliance:{...base.alliance,kingdom:1885,snapshot_date:'2026-11-07'}}).alliancePlacement.status,'INSUFFICIENT_COMPARABLE_PEERS');
+});
