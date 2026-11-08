@@ -59,6 +59,18 @@
 .phx-intel-metric::after { content: ''; position: absolute; right: -22px; top: -28px; width: 78px; height: 78px; border: 1px solid rgba(216,169,85,.13); border-radius: 50%; pointer-events: none; }
 .phx-intel-metric[data-metric="true_power"] { border-color: rgba(78,207,139,.65); background: linear-gradient(155deg,#12332e,#0b2329 60%,#08191f); }
 .phx-intel-metric[data-metric="true_power"]::before { background: linear-gradient(90deg,transparent,#48d98b,transparent); }
+/* ACHILLES: color the complete True Power tile from verified peer percentile. */
+.phx-intel-metric[data-metric="true_power"][data-profile-color="green"] { border-color: #38c981; background: linear-gradient(155deg,#12382e,#0a2527 65%,#08191f); }
+.phx-intel-metric[data-metric="true_power"][data-profile-color="green"]::before { background: linear-gradient(90deg,transparent,#4ade80,transparent); }
+.phx-intel-metric[data-metric="true_power"][data-profile-color="blue"] { border-color: #38bdf8; background: linear-gradient(155deg,#102f43,#0c2535 65%,#081923); }
+.phx-intel-metric[data-metric="true_power"][data-profile-color="blue"]::before { background: linear-gradient(90deg,transparent,#38bdf8,transparent); }
+.phx-intel-metric[data-metric="true_power"][data-profile-color="yellow"] { border-color: #facc15; background: linear-gradient(155deg,#40351a,#2b281b 65%,#171d21); }
+.phx-intel-metric[data-metric="true_power"][data-profile-color="yellow"]::before { background: linear-gradient(90deg,transparent,#facc15,transparent); }
+.phx-intel-metric[data-metric="true_power"][data-profile-color="pink"] { border-color: #fb7185; background: linear-gradient(155deg,#40202c,#2d1b2a 65%,#171820); }
+.phx-intel-metric[data-metric="true_power"][data-profile-color="pink"]::before { background: linear-gradient(90deg,transparent,#fb7185,transparent); }
+.phx-intel-metric[data-metric="true_power"]:not([data-profile-color]) { border-color: #788797; background: linear-gradient(155deg,#1a2835,#11212c 65%,#0b1823); }
+.phx-intel-metric[data-metric="true_power"]:not([data-profile-color])::before { background: linear-gradient(90deg,transparent,#788797,transparent); }
+
 .phx-intel-metric[data-metric="castle"] { background: linear-gradient(155deg,#302719,#192333 65%,#0c1725); }
 .phx-intel-metric dt { color: var(--decision-muted); font-size: .72rem; font-weight: 650; letter-spacing: .03em; }
 .phx-intel-metric dd { margin: 0; min-width: 0; }
