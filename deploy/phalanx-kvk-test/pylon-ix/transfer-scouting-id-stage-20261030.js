@@ -806,7 +806,7 @@ function mountDecision(payload,id){
   }
   trueVerdict.textContent=label?label+' · True Power percentile '+Math.round(percentile)+' among '+peers.length+' verified peers (partial kingdom sample).'
    :'Not yet rateable · '+peers.length+' comparable True Power values; at least 20 required.';
-  trueSample.textContent+=' Rating: green top 15%, blue next 25%, yellow next 40%, pink bottom 20%. Based only on actual True Power values; no TG or other ranking fallback.';
+  trueSample.textContent+=' The comparison uses matching capture times for Total and Troop Power. A newer Total Power headline may differ from this matched calculation; it is not silently substituted. Rating: green top 15%, blue next 25%, yellow next 40%, pink bottom 20%. No TG or other ranking fallback.';
   // Live peer rankings arrive asynchronously; update the strategic verdict with them.
   const suggested=suggestProvisionalRole(assessment,label);
   const rallyCandidate=suggested.role==='Rally Leader candidate';
@@ -824,7 +824,14 @@ function mountDecision(payload,id){
    :label
    ?'True Power is '+label.toLowerCase()+' in the verified comparison sample; the account profile separately evaluates the available kingdom rankings.'
    :'True Power cannot currently be compared reliably. The account profile uses only the available kingdom rankings.';
-  overviewText.textContent=dna+' '+contrast;
+  // Lead with the most useful interpretation; retain the account-DNA explanation
+  // for other profiles without presenting a partial ranking as a full census.
+  const headline=label==='Average'&&weakNames.length>=2
+   ?'Average True Power, but weaker hero and research rankings.'
+   :label==='Very strong'&&weakNames.length>=2
+   ?'Very strong True Power, with important development gaps.'
+   :null;
+  overviewText.textContent=headline?headline+' '+contrast:dna+' '+contrast;
  };
  refreshTrueSample();
  evidence.append(metricEvidence,
