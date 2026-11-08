@@ -711,12 +711,23 @@ function mountDecision(payload,id){
  const hero=assessment.rankingEvidence.find(row=>row.key==='hero_equip');
  const research=assessment.rankingEvidence.find(row=>row.key==='research_power');
  const master=assessment.rankingEvidence.find(row=>row.key==='master_power');
+ const troop=assessment.rankingEvidence.find(row=>row.key==='troop_power');
+ const heroPower=assessment.rankingEvidence.find(row=>row.key==='hero_total');
  const specialized=hero?.rank<=15&&research?.rank<=15&&master?.rank>30;
- const dna=specialized
-  ?'Hero equipment and research are among the top 15, while master power ranks outside the top 30. This points to focused account development.'
-  :assessment.profile==='Balanced'?'Development is balanced across the available kingdom rankings.'
-  :assessment.coverage>=4?'The available rankings show uneven development across categories.'
-  :'Account development cannot yet be classified reliably.';
+ const heroFocused=[hero,heroPower].some(row=>row?.rank<=15);
+ const troopFocused=troop?.rank<=15&&!heroFocused;
+ const missing=assessment.coverage<4;
+ const dna=missing
+  ?'Account DNA is provisional: only '+assessment.coverage+' of '+assessment.expected+' kingdom ranking categories are available.'
+  :specialized
+  ?'Hero equipment and research rank in the top 15, while master power is outside the top 30. This suggests focused account development.'
+  :troopFocused
+  ?'Troop power is a documented top-15 strength, while comparable hero rankings are not. This suggests a troop-focused profile; combat performance remains unverified.'
+  :heroFocused
+  ?'Hero development is a documented top-15 strength. Its impact depends on the remaining account profile and combat buffs.'
+  :assessment.profile==='Balanced'
+  ?'The available kingdom rankings indicate balanced development without a single dominant specialization.'
+  :'The available rankings show mixed development; no single combat specialization is confirmed.';
  const roleTitle=element('strong','KvK recommendation · Provisional');
  const roleText=element('p',defaultRole+'.','phx-intel-overview');
  const verification=element('p','To confirm: combat buffs and battle reports.','phx-decision-source');
@@ -726,11 +737,13 @@ function mountDecision(payload,id){
   element('strong','Relative development gaps'),element('p',short(weakest)||'No documented relative gaps'),
   element('p','Ranking gaps do not automatically imply combat weaknesses.','phx-decision-source'));
  recommendation.append(roleTitle,roleText,verification,evidenceDetails);
- brand.querySelector('strong').textContent='⚔ PYLON IX · STRATEGIC VERDICT';
- brand.querySelector('small').textContent='';
+ brand.querySelector('strong').textContent='⚔ PYLON IX';
+ brand.querySelector('small').textContent='STRATEGIC VERDICT';
+ brand.style.cssText='display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 10px;margin-bottom:4px';
+ brand.querySelector('strong').style.cssText='font-size:clamp(16px,4.2vw,22px);white-space:nowrap;letter-spacing:.02em';
+ brand.querySelector('small').style.cssText='font-size:clamp(9px,2.4vw,12px);letter-spacing:.1em';
  const levelTitle=element('h4',assessment.level);
  levelTitle.style.cssText='margin:4px 0 8px;font-size:clamp(17px,4.5vw,23px)';
- brand.style.cssText='margin-bottom:4px';
  overviewText.style.cssText='margin:0 0 10px;line-height:1.45';
  recommendation.style.cssText='margin:0 0 12px';
  roleText.style.cssText='margin:6px 0;line-height:1.45';
