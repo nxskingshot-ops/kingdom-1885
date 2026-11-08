@@ -28,13 +28,16 @@ export function adviseRecruitment(player={},context={}) {
   const alliance=context.alliance??null;
   const peers=Array.isArray(alliance?.top15)?alliance.top15.filter(p=>p&&typeof p==='object'):null;
   const comparable=peers?.filter(p=>valid(p.ranking_evidence?.personal_power_rank))??[];
+  const sameKingdom=valid(context.kingdom)&&context.alliance?.kingdom===context.kingdom;
+  const sameSnapshot=typeof context.snapshot_date==='string'&&context.alliance?.snapshot_date===context.snapshot_date;
+  const verifiedComparable=sameKingdom&&sameSnapshot&&context.type!=='HISTORICAL_READ_ONLY_BENCHMARK';
   const personal=valid(ranks.personal_power_rank)?ranks.personal_power_rank:null;
   const betterOrEqual=personal===null?null:comparable.filter(p=>p.ranking_evidence.personal_power_rank<=personal).length;
-  const placement=personal!==null&&comparable.length>=10
+  const placement=verifiedComparable&&personal!==null&&comparable.length>=10
     ?{status:'PARTIAL_RANK_COMPARISON',peerCount:comparable.length,betterOrEqual,
        note:'Kingdom-wide Personal Power ranking comparison only; not a verified alliance power placement.'}
     :{status:'INSUFFICIENT_COMPARABLE_PEERS',peerCount:comparable.length,
-       note:'No reliable alliance placement without comparable current player data.'};
+       note:'No reliable alliance placement without at least 10 same-kingdom, same-snapshot comparable players; historical benchmarks are excluded.'};
   const strength=a.strengths[0]??null;
   const gap=a.development[0]??null;
   const decision=a.confidence==='INSUFFICIENT'?'NEEDS_MORE_DATA'
