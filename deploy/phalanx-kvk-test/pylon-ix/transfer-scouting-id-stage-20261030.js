@@ -1,3 +1,4 @@
+import { describeTransferPlan, readTransferPlan } from './phx-transfer-event-plan-20261108.js';
 import { placeInAlliance, compareTopPeers } from './phx-transfer-alliance-placement-20261101.js?v=phx-transfer-evidence-20261107';
 import { assessAccount, suggestProvisionalRole } from './phx-transfer-account-assessment-20261101.js?v=phx-achilles-roles-20261108';
 import { strategicProfile } from './phx-transfer-strategic-profile-20261101.js';
@@ -538,11 +539,12 @@ function renderDossier(){
  forecastPanel.className='dossier-report';
  forecastPanel.setAttribute('aria-label','Expected transfer rules');
  const forecastHeading=document.createElement('h3');
- forecastHeading.textContent='PYLON IX · Transfer Intelligence — FORECAST';
+ const manualPlan=describeTransferPlan(readTransferPlan());
+ forecastHeading.textContent=manualPlan?'PYLON IX · Manuelle Transferplanung':'PYLON IX · Transfer Intelligence — FORECAST';
  const forecastBody=document.createElement('p');
- forecastBody.textContent='Expected Group '+phxTransferForecast.group+' · Kingdoms '+phxTransferForecast.range.join('–')+' · Ordinary reference '+phxTransferForecast.ordinaryReferenceM+'M · Leading reference '+phxTransferForecast.leadingReferenceM+'M · '+phxTransferForecast.window+'.';
+ forecastBody.textContent=manualPlan||'Expected Group '+phxTransferForecast.group+' · Kingdoms '+phxTransferForecast.range.join('–')+' · Ordinary reference '+phxTransferForecast.ordinaryReferenceM+'M · Leading reference '+phxTransferForecast.leadingReferenceM+'M · '+phxTransferForecast.window+'.';
  const forecastNotice=document.createElement('p');
- forecastNotice.textContent=phxTransferStatus(null)+'. Community forecast only; #1885 classification, official power metric, active cap, invitations and final rules are unconfirmed. Source: '+phxTransferForecast.source+' (checked '+phxTransferForecast.checked+').';
+ forecastNotice.textContent=manualPlan?'Auf diesem Gerät eingetragene Planungswerte. Einladungsberechtigung und Power-Metrik im Spiel prüfen.':phxTransferStatus(null)+'. Community forecast only; #1885 classification, official power metric, active cap, invitations and final rules are unconfirmed. Source: '+phxTransferForecast.source+' (checked '+phxTransferForecast.checked+').';
  forecastPanel.append(forecastHeading,forecastBody,forecastNotice);
  root.prepend(forecastPanel);
  mountRuleDraftEditor(forecastPanel,{canEdit:false}); // Fail closed until a server-verified transfer_admin role exists.
@@ -1049,6 +1051,13 @@ function showWorkspace(view){
  syncWorkspace();
  if(view==='phxIdPanel')lookupIntel?.showComparison();
 }
+$('phxOpenEventPlan').onclick=()=>{
+ showWorkspace('workspace-tools');
+ const editor=$('phxEventPlan');
+ const tool=editor?.closest('details');
+ if(tool)tool.open=true;
+ $('phxEventCap')?.focus();
+};
 document.querySelectorAll('[data-view]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();showWorkspace(el.dataset.view);}));
 $('addFirstCandidate').onclick=()=>$('newCandidate').click();
 $('toolsCsv').onclick=()=>$('csv').click();
