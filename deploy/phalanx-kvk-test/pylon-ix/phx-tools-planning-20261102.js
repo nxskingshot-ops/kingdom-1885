@@ -9,13 +9,14 @@ if (tools && scenario) {
  panel.id = 'phxEventPlan';
  panel.innerHTML = `
   <style id="phx-tools-mobile-layout">
-   .phx-planning-context,.phx-planning-context .panel-body,.phx-planning-context .form-grid,.phx-planning-context label{min-width:0;max-width:100%;box-sizing:border-box}
+   .phx-planning-context{border:0!important;box-shadow:none!important;background:transparent!important;margin:0!important}.phx-planning-context,.phx-planning-context .panel-body,.phx-planning-context .form-grid,.phx-planning-context label{min-width:0;max-width:100%;box-sizing:border-box}
    .phx-planning-context .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
    .phx-planning-context .form-grid>label{display:block;overflow-wrap:anywhere}
-   .phx-planning-context .form-grid input:not([type=checkbox]){display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;margin-top:6px}
+   .phx-planning-context .form-grid input:not([type=checkbox]),.phx-planning-context .form-grid select{display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;margin-top:6px}
    .phx-planning-context label:has(#phxEventCapVerified){display:flex;align-items:flex-start;gap:10px;line-height:1.4}
    .phx-planning-context #phxEventCapVerified{flex:none;margin:4px 0 0}
    .phx-planning-context #phxSaveEvent{max-width:100%;white-space:normal;overflow-wrap:anywhere}
+   .phx-planning-context .form-grid select:focus,.phx-planning-context .form-grid select:focus-visible{outline:none!important;outline-offset:0!important;box-shadow:none!important;border-color:#e7bb72!important}
    @media(max-width:760px){.phx-planning-context .form-grid{grid-template-columns:minmax(0,1fr)!important}.phx-planning-context .panel-body{padding:12px}.phx-planning-context .form-grid>label{width:100%}}
   </style>
   <div class="panel-head"><h2>Transfer Settings</h2><small>Manual planning on this device</small></div>
