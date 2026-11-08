@@ -24,3 +24,15 @@ Use isolated preview only as an explicitly labeled TEST / operational preview, s
 
 ## Isolated preview
 https://phalanx-r11-atlas-preview-git-work-truepo-13a8b9-matze4428-6040.vercel.app/deploy/phalanx-kvk-test/pylon-ix/transfer-scouting-id-stage-20261030.html
+
+## Additional static functional audit (2026-11-08, pre-release)
+- Frontend module JS syntax: PASS using AsyncFunction after stripping ES imports/exports for parsing only. Assessment and display helper JS syntax: PASS.
+- DOM contract: PASS for 68 unique `$('id')` references; all resolve to one of 87 HTML IDs in the deployed HTML source. This does not prove runtime handler success.
+- Forms identified: authForm, phxIdForm, internalIdForm, candidateForm; all four have registered submit handlers in source: PASS static wiring.
+- Candidate save path: source calls Supabase `transfer_candidates` insert/update and then `load()`; actual authorization, RLS, persistence and reload: NOT TESTED.
+- CSV export: source constructs Blob and browser download; actual Android download and file contents: NOT TESTED.
+- Protected #1885 rankings: source fetches Edge Function with session bearer token, no-store; access for Queen An: NOT TESTED.
+- Latest saved rankings: all inspected boards have source capture 2026-11-08T01:14:33.348Z, while database `created_at` was 2026-11-08T10:00:08.986985Z. The latter must never be represented as the capture time.
+- Freshness risk: intelligence Edge Function uses `created_at desc` to choose saved fallback, rather than `source_captured_at desc`; later reingestion of older captures could supersede newer measurements. This is a concrete LIVE DATA FIRST release risk; no production function change performed.
+- Deployment check: READY commit bb21ac76c4f0f71841c7b85f6c554462f7a18797; five directly fetched preview assets HTTP 200.
+- This is source/static and read-only integration auditing, NOT a complete user-journey test. Release gate remains CLOSED.
