@@ -34,7 +34,7 @@ const p=players.find(x=>x.candidate_id===active);$('profileTitle').textContent=p
 $('profile').replaceChildren();if(p){renderHeadlineMetrics($('profile'),evidenceFor(p));const notes=document.createElement('p');notes.textContent=p.notes||'No notes recorded.';$('profile').append(notes);}
 $('needs').innerHTML=['Rally Lead','Fighter','Joiner','R4 / R5 Potential'].map(role=>'<div><b>'+esc(role)+'</b><strong>'+players.filter(p=>p.metadata?.role===role).length+' recorded</strong></div>').join('');
 const kds=new Map();for(const p of players){const kd=p.kingdom||'Unspecified';kds.set(kd,(kds.get(kd)||0)+1);}
-$('kingdomNotes').innerHTML=[...kds].sort((a,b)=>b[1]-a[1]).slice(0,5).map(([kd,n])=>'<div><b>Kingdom #'+esc(kd)+'</b><span>'+n+' candidates</span></div>').join('')||'<p class="empty">No saved kingdom records yet.</p>';
+$('kingdomNotes').innerHTML=[...kds].sort((a,b)=>b[1]-a[1]).slice(0,5).map(([kd,n])=>'<div><b>Kingdom #'+esc(kd)+'</b><span>'+n+(n===1?' candidate':' candidates')+'</span></div>').join('')||'<p class="empty">No saved kingdom records yet.</p>';
  renderExternalIntel();
 }
 let candidateLoadRevision=0;
@@ -72,7 +72,7 @@ if(!membership.active){showLogin('Signed in, but this NXS membership is inactive
 if(membership.expires_at&&Date.parse(membership.expires_at)<=Date.now()){showLogin('Signed in, but this NXS membership has expired.');return;}
 if(!['member','r4','r5','admin'].includes(membership.role)){showLogin('Signed in, but this account role is not approved for Transfer Scouting.');return;}
 const badge=document.getElementById('phxIdentity');if(badge){const display=user.id==='d4da222e-8aac-4950-a6df-46c88972458c'?'FaQu':(user.email||'Signed-in account');const n=document.getElementById('phxIdentityName'),m=document.getElementById('phxIdentityMeta');badge.classList.add('is-online');if(n)n.textContent=display;if(m)m.textContent=membership.role.toUpperCase()+' · ACTIVE';const online=document.getElementById('phxIdentityOnline');if(online)online.textContent='ONLINE';}
-canEdit=['r4','r5','admin'].includes(membership.role);$('newCandidate').hidden=!canEdit;$('login').hidden=true;$('private').hidden=false;await load();
+canEdit=['r4','r5','admin'].includes(membership.role);$('login').hidden=true;$('private').hidden=false;await load();
 }catch(e){showLogin('Unable to verify access: '+(e?.message||'Unknown error'));}}
 $('authForm').onsubmit=async e=>{
 e.preventDefault();const submit=$('authForm').querySelector('button[type="submit"]');if(submit.disabled)return;
@@ -133,7 +133,8 @@ function openEditor(p){
  $('candidateForm').elements.namedItem('trial_source').value=p?.metadata?.mystic_trial_source??'';
  $('modal').hidden=false;
 }
-$('newCandidate').onclick=()=>{showWorkspace('phxIdPanel');$('phxGovernorId').focus();};
+function openCandidateLookup(){showWorkspace('phxIdPanel');$('phxGovernorId').focus();}
+$('newCandidate').onclick=openCandidateLookup;
 $('editCandidate').onclick=()=>openEditor(players.find(p=>p.candidate_id===active));
 // Protected removal: explicit confirmation, R4/R5/admin UI gate, exact record ID and verified response.
 const removeCandidateButton=document.createElement('button');
@@ -463,7 +464,8 @@ const dossierGroups={
 let dossierSmartGroup='overview';
 const comparisonPanel=$('externalIntelPanel'),comparisonHome=comparisonPanel.parentNode;
 function restoreComparisonPanel(){
- if(comparisonPanel.parentNode!==comparisonHome)comparisonHome.append(comparisonPanel);
+ const home=$('phxToolsComparisonContent')||comparisonHome;
+ if(comparisonPanel.parentNode!==home)home.append(comparisonPanel);
 }
 function applySmartDossierNavigation(){
  const names={identity:'Overview',development:'Strengths & limits',recruitment:'Recruitment',history:'Compare #1885'};
@@ -1035,6 +1037,7 @@ function syncWorkspace(){
  $('candidate-profile').hidden=!candidateView||!profileOpen||!players.some(p=>p.candidate_id===active);
  $('scoutingBoard').classList.toggle('profile-open',!$('candidate-profile').hidden);
  $('compare').disabled=chosen.size<2;$('compare').hidden=total<2;$('csv').hidden=!total;
+ $('nextCandidateAction').hidden=!canEdit||!total;
  $('addFirstCandidate').hidden=!canEdit;$('readOnlyNotice').hidden=canEdit;
 }
 function showWorkspace(view){
@@ -1055,7 +1058,7 @@ $('phxOpenEventPlan').onclick=()=>{
  $('phxEventCap')?.focus();
 };
 document.querySelectorAll('[data-view]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();showWorkspace(el.dataset.view);}));
-$('addFirstCandidate').onclick=()=>$('newCandidate').click();
+$('addFirstCandidate').onclick=openCandidateLookup;
 $('toolsCsv').onclick=()=>$('csv').click();
 $('closeProfile').onclick=()=>{profileOpen=false;syncWorkspace();};
 $('rows').addEventListener('click',e=>{if(e.target.closest('tr[data-id]')&&!e.target.closest('input,button')){profileOpen=true;syncWorkspace();}});

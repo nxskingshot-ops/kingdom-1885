@@ -37,6 +37,7 @@ if (tools && scenario) {
     <p id="phxEventStatus" class="smallprint" role="status">Use these settings for planning.</p>
     <button type="submit" id="phxSaveEvent">Save plan on this device</button>
    </form>
+   <p class="smallprint">Check invitation eligibility in-game using the event's applicable power metric.</p>
   </div>`;
  tools.prepend(panel);
  scenario.removeAttribute('style');
@@ -115,7 +116,7 @@ if (tools && scenario) {
 
  showSavedPlan(saved);
  showRange();
- const needs = tools.querySelector('details.sub-disclosure');
+ const needs = field('phxAllianceNeeds');
  const comparison = field('externalIntelPanel');
  const exportButton = field('toolsCsv');
  if (comparison && needs) needs.before(comparison);

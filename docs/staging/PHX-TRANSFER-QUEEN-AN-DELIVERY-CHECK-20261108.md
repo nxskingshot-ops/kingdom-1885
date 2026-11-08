@@ -81,3 +81,10 @@ https://phalanx-r11-atlas-preview-git-work-truepo-13a8b9-matze4428-6040.vercel.a
 - The Transfer Scouting preview uses English for the tools, planning forms, saved-plan summary, candidate removal prompts, and lookup errors. The summary uses English decimal formatting. Existing saved plans retain their values.
 - **PASS** · Browser checks with isolated API responses covered lookup and True Power colors, candidate management and removal prompts, the tools menu, CSV, and plan validation. Saved plans and English formatting were verified in a German browser locale at 390 and 1280 CSS pixels. All 27 automated tests and the asset preflight passed.
 - **NOT TESTED** · This revision on an Android device or with Queen An's authenticated session.
+
+## Follow-up · Transfer menu audit · 2026-11-08
+
+- One **Alliance Needs & Kingdoms** menu opens both **NXS Needs** and **Kingdom Notes**. The event-rule note now appears directly in **Plan Transfers**. The Kingdom #1885 comparison returns to its Tools menu when leaving the player lookup or dossier.
+- The access view has one registration link. The candidate board shows one player lookup button for recruiters, with a separate empty-state button used only when the board is empty. Shortlist comparison, player comparison and CSV remain available from their existing contexts.
+- **BESTANDEN** · All five Tools menus, workspace navigation, comparison panel placement, registration links and candidate lookup controls in Chromium at 390 and 1280 CSS pixels with isolated API responses. Transfer, candidate, ranking and CSV browser regressions, 27 automated tests and the asset preflight passed.
+- **NICHT GETESTET** · Physical Android device and Queen An's authenticated preview session for this revision.
