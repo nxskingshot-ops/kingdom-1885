@@ -21,7 +21,8 @@ export function assessHistoricalProfile(player={}, context={}) {
   const gaps=coverage>=4 && lag.length>=2;
   const troopForward=!!troop && troop.rank<=7 && (gaps || coverage<4);
   const underestimated=coverage>=5 && strong.length>=4 && valid(player.ranking_evidence?.personal_power_rank)
-    && player.ranking_evidence.personal_power_rank>=8;
+    && player.ranking_evidence.personal_power_rank>=8
+    && player.ranking_evidence.personal_power_rank - median(permanent.map(e=>e.rank)) >= 5;
   let profile='Insufficient evidence';
   if(coverage>=5 && underestimated) profile='Underestimated permanent-development strength';
   else if(coverage>=5 && allStrong) profile='Broad elite development';
