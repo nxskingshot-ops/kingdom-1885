@@ -1074,8 +1074,10 @@ let lookupCandidate=null,lookupSaving=false,lookupSaved=null;
 function clearLookupCandidate(){lookupCandidate=null;lookupSaved=null;$('phxAdoptCandidate').textContent='Add to Candidates';$('workspaceNotice').textContent='';$('phxAdoptCandidate').hidden=true;$('phxAdoptStatus').textContent='';}
 function offerLookupCandidate(payload,id){
  if($('phxGovernorId').value.trim()!==id)return;
- try{lookupCandidate=candidateFromLookup(payload,id);$('phxAdoptCandidate').hidden=!canEdit;
- $('phxAdoptStatus').textContent=canEdit?'Review these details, then select Add to Candidates.':'Read only. Recruiter permission is required to add candidates.';
+ try{lookupCandidate=candidateFromLookup(payload,id);
+ const alreadySaved=players.some(p=>String(p.metadata?.governor_id||'')===id);
+ $('phxAdoptCandidate').hidden=!canEdit||alreadySaved;
+ $('phxAdoptStatus').textContent=alreadySaved?'This player is already a candidate. Existing data remains unchanged.':canEdit?'Review these details, then select Add to Candidates.':'Read only. Recruiter permission is required to add candidates.';
  }catch(error){clearLookupCandidate();$('phxAdoptStatus').textContent=error.message;}
 }
 $('phxGovernorId').addEventListener('input',clearLookupCandidate);
@@ -1089,7 +1091,7 @@ $('phxAdoptCandidate').onclick=async()=>{
    $('phxAdoptStatus').textContent='Checking existing candidates…';
    const {data:duplicates,error:readError}=await db.from('transfer_candidates').select('candidate_id,player_name').or(duplicateLookupFilter(id)).limit(1);
    if(readError)throw Error('Existing candidates could not be checked. Nothing was saved.');
-   if(duplicates?.length){$('phxAdoptStatus').textContent='This player is already a candidate. Existing data remains unchanged.';return;}
+   if(duplicates?.length){$('phxAdoptCandidate').hidden=true;$('phxAdoptStatus').textContent='This player is already a candidate. Existing data remains unchanged.';return;}
    const {data:saved,error}=await db.from('transfer_candidates').insert({...draft,updated_at:new Date().toISOString()}).select('candidate_id,updated_at').maybeSingle();
    if(error){if(error.code==='23505')throw Error('This player was already added. No duplicate was created.');throw Error('Could not add candidate: '+error.message);}
    if(!saved?.candidate_id)throw Error('Save not confirmed. Refresh Candidates before trying again.');
