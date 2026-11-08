@@ -1,0 +1,165 @@
+{
+  "fixture_id": "PHX-PYLON-V3-1913-20261004",
+  "type": "HISTORICAL_READ_ONLY_BENCHMARK",
+  "source_path": "data/kvk-opponent-intelligence-current.json",
+  "source_blob_sha": "1a7c46f20030663a2fdc7ac53faa0c803942d88f",
+  "snapshot_date": "2026-10-04",
+  "kingdom": 1913,
+  "disclaimer": "Historical rankings, not live. Existing qualitative profile_type is a reference label, not verified combat-role ground truth.",
+  "players": [
+    {
+      "player_name": "goo 대박",
+      "personal_power_m": 315.3,
+      "reference_profile": "All-round powerhouse",
+      "ranking_evidence": {
+        "personal_power_rank": 1,
+        "mystic_rank": 3,
+        "troop_power_rank": 2,
+        "governor_gear_rank": 1,
+        "governor_charm_rank": 1,
+        "hero_no_equip_rank": 2,
+        "hero_equip_rank": 2,
+        "pet_power_rank": 13,
+        "research_rank": 14
+      }
+    },
+    {
+      "player_name": "Dovik",
+      "personal_power_m": 281.8,
+      "reference_profile": "Troop-heavy whale",
+      "ranking_evidence": {
+        "personal_power_rank": 2,
+        "mystic_rank": 28,
+        "troop_power_rank": 1,
+        "governor_gear_rank": 28,
+        "governor_charm_rank": 19,
+        "hero_no_equip_rank": 20,
+        "hero_equip_rank": 17
+      }
+    },
+    {
+      "player_name": "Achilles",
+      "personal_power_m": 268.6,
+      "reference_profile": "Balanced elite combat account",
+      "ranking_evidence": {
+        "personal_power_rank": 3,
+        "mystic_rank": 2,
+        "troop_power_rank": 3,
+        "governor_gear_rank": 4,
+        "governor_charm_rank": 3,
+        "hero_no_equip_rank": 5,
+        "hero_equip_rank": 3,
+        "pet_power_rank": 3,
+        "research_rank": 6
+      }
+    },
+    {
+      "player_name": "Greyjoy",
+      "personal_power_m": 245.5,
+      "reference_profile": "Permanent-power monster",
+      "ranking_evidence": {
+        "personal_power_rank": 4,
+        "mystic_rank": 1,
+        "troop_power_rank": 9,
+        "governor_gear_rank": 3,
+        "governor_charm_rank": 2,
+        "hero_no_equip_rank": 1,
+        "hero_equip_rank": 1,
+        "pet_power_rank": 1,
+        "research_rank": 1
+      }
+    },
+    {
+      "player_name": "Inigo Montoya",
+      "personal_power_m": 244.8,
+      "reference_profile": "High-value balanced threat",
+      "ranking_evidence": {
+        "personal_power_rank": 5,
+        "mystic_rank": 5,
+        "troop_power_rank": 6,
+        "governor_gear_rank": 10,
+        "governor_charm_rank": 4,
+        "hero_no_equip_rank": 3,
+        "hero_equip_rank": 5,
+        "pet_power_rank": 8,
+        "research_rank": 5
+      }
+    },
+    {
+      "player_name": "CoCo sNOW",
+      "personal_power_m": 241.3,
+      "reference_profile": "Balanced secondary elite",
+      "ranking_evidence": {
+        "personal_power_rank": 6,
+        "troop_power_rank": 4,
+        "governor_gear_rank": 13,
+        "governor_charm_rank": 8,
+        "hero_no_equip_rank": 6,
+        "hero_equip_rank": 8,
+        "pet_power_rank": 4,
+        "mystic_rank": 10
+      }
+    },
+    {
+      "player_name": "Applerari",
+      "personal_power_m": 233.4,
+      "reference_profile": "Troop-forward secondary threat",
+      "ranking_evidence": {
+        "personal_power_rank": 7,
+        "troop_power_rank": 5,
+        "governor_gear_rank": 17,
+        "governor_charm_rank": 16,
+        "hero_no_equip_rank": 15,
+        "hero_equip_rank": 12,
+        "pet_power_rank": 12,
+        "research_rank": 20,
+        "mystic_rank": 21
+      }
+    },
+    {
+      "player_name": "iSureHopeItDoes",
+      "personal_power_m": 229.5,
+      "reference_profile": "Development-heavy elite",
+      "ranking_evidence": {
+        "personal_power_rank": 8,
+        "governor_gear_rank": 12,
+        "governor_charm_rank": 12,
+        "hero_no_equip_rank": 4,
+        "hero_equip_rank": 7,
+        "pet_power_rank": 2,
+        "research_rank": 4,
+        "mystic_rank": 7
+      }
+    },
+    {
+      "player_name": "Psychostick0",
+      "personal_power_m": 224.1,
+      "reference_profile": "Underrated permanent-power threat",
+      "ranking_evidence": {
+        "personal_power_rank": 9,
+        "troop_power_rank": 11,
+        "governor_gear_rank": 2,
+        "governor_charm_rank": 7,
+        "hero_no_equip_rank": 8,
+        "hero_equip_rank": 4,
+        "pet_power_rank": 6,
+        "research_rank": 3,
+        "mystic_rank": 4
+      }
+    },
+    {
+      "player_name": "KIA BONGO³",
+      "personal_power_m": 218.9,
+      "reference_profile": "Troop-forward high-power account",
+      "ranking_evidence": {
+        "personal_power_rank": 10,
+        "troop_power_rank": 7,
+        "governor_gear_rank": 16,
+        "governor_charm_rank": 18,
+        "hero_no_equip_rank": 17,
+        "hero_equip_rank": 20,
+        "mystic_rank": 18
+      }
+    }
+  ]
+}
