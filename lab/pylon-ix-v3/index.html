@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><title>PYLON IX V3 | Assessment Lab</title>
+<style>
+:root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#f0e9d9;background:#100f12}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% 0,#32201d 0,#100f12 48%);min-height:100vh}main{max-width:940px;margin:auto;padding:16px 14px 60px}.top{display:flex;align-items:center;gap:12px;border-bottom:1px solid #7e5335;padding:8px 0 16px}.emblem{width:53px;height:53px;display:grid;place-items:center;border:3px solid #b8924d;border-radius:50%;background:#631b23;color:#f5d48c;font-weight:900;font-size:23px}.eyebrow{font-size:10px;color:#d6ae72;letter-spacing:.16em;font-weight:800}h1{font-size:21px;margin:3px 0}h2{font-size:15px;color:#e6bd78;margin:0 0 10px;letter-spacing:.04em}p{line-height:1.55;margin:7px 0}.muted{color:#b4a89b;font-size:12px}.warn{background:#37241d;border:1px solid #90633a;padding:10px 12px;border-radius:9px;color:#eac79a;font-size:12px;margin:14px 0}.controls{display:flex;gap:8px;align-items:end;flex-wrap:wrap;margin:16px 0}.controls label{font-size:12px;color:#e4c58d;flex:1;min-width:180px}select{display:block;margin-top:6px;width:100%;background:#221c1b;color:#f6e7d3;border:1px solid #846443;padding:12px;border-radius:8px;font-size:15px}button{border:1px solid #ad7b45;background:#3a2923;color:#ffe1aa;padding:12px 14px;border-radius:8px;font-weight:700;cursor:pointer}button:focus-visible,select:focus-visible{outline:3px solid #f4c879;outline-offset:2px}.panel{border:1px solid #5d4736;border-radius:12px;background:linear-gradient(155deg,#241d1c,#171519);padding:15px;margin:12px 0;box-shadow:0 4px 20px #0004}.hero{border-color:#ab7d43}.name{font-size:27px;font-weight:800;letter-spacing:.02em}.subtitle{color:#f2c987;font-size:13px;font-weight:700;margin-top:5px}.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}.chip{font-size:11px;border:1px solid #785c3d;border-radius:99px;padding:5px 9px;color:#f4d7a9}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.stat{background:#1b1719;border:1px solid #48362e;border-radius:9px;padding:12px 8px}.stat b{display:block;font-size:19px;margin-top:4px}.stat small{font-size:10px;color:#b8a697}.sections{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.sections .panel{margin:0}.roles{display:grid;gap:8px}.role{border:1px solid #4e4036;background:#191619;border-radius:8px;padding:12px}.role strong{display:block;color:#e7c18a}.role small{color:#b8a79c}.footer{color:#a99a8c;font-size:12px;margin-top:20px}#status{color:#f4c58d}pre{white-space:pre-wrap;overflow-wrap:anywhere}@media(max-width:600px){.sections{grid-template-columns:1fr}main{padding:12px 10px 40px}.name{font-size:24px}.grid{gap:5px}.stat{padding:9px 6px}.stat b{font-size:17px}.panel{padding:12px}.top h1{font-size:19px}}
+</style></head><body><main>
+<header class="top"><div class="emblem" aria-hidden="true">IX</div><div><div class="eyebrow">NEXUS PHALANX · ISOLATED LAB</div><h1>PYLON IX · Assessment V3</h1><div class="muted">Evidence-led account intelligence</div></div></header>
+<div class="warn" role="note"><strong>HISTORICAL TEST DATA · NOT LIVE</strong><br>Kingdom #1913 · 04 October 2026 · No login, database writes or live player lookup. This laboratory is not Queen An's application.</div>
+<div class="controls"><label for="player">Reference player<select id="player" aria-label="Reference player"><option>Loading historical reference data…</option></select></label><button id="copy" type="button">Copy report</button></div>
+<div id="status" role="status" aria-live="polite"></div>
+<div id="output" hidden>
+<section class="panel hero"><div class="eyebrow">ACCOUNT INTELLIGENCE</div><div id="name" class="name"></div><div id="profile" class="subtitle"></div><div class="chips"><span class="chip">HISTORICAL · NOT LIVE</span><span id="confidence" class="chip"></span><span class="chip">ROLES NOT VERIFIED</span></div><p id="summary"></p></section>
+<div class="grid"><div class="stat"><small>PERSONAL RANK</small><b id="personal"></b></div><div class="stat"><small>TROOP RANK</small><b id="troop"></b></div><div class="stat"><small>PERMANENT DATA</small><b id="coverage"></b></div></div>
+<div class="sections"><section class="panel"><h2>Strengths</h2><p id="strengths"></p></section><section class="panel"><h2>Development gaps</h2><p id="weaknesses"></p></section></div>
+<section class="panel"><h2>Strategic interpretation</h2><p id="interpretation"></p></section>
+<section class="panel"><h2>Potential roles · review only</h2><div id="roles" class="roles"></div></section>
+<section class="panel"><h2>Evidence & limitations</h2><p id="missing"></p><div id="caveats" class="muted"></div></section>
+</div><div class="footer">PHALANX LAB · Standalone historical benchmark · No production changes</div>
+</main>
+<script type="module">
+import {buildAssessmentReport,formatAssessmentReport} from './report.mjs';
+const $=id=>document.getElementById(id);
+const set=(id,value)=>$(id).textContent=value;
+let fixture=null,latest=null;
+function render(index){
+ const p=fixture.players[index];if(!p)return;
+ const r=buildAssessmentReport(p,fixture);latest=r;
+ set('name',r.player);set('profile',r.summary.split('. ')[0]);set('summary',r.summary);
+ set('confidence',r.evidence.grade.replaceAll('_',' '));
+ set('personal',r.evidence.personalPowerRank?'#'+r.evidence.personalPowerRank:'—');
+ set('troop',r.evidence.troopPowerRank?'#'+r.evidence.troopPowerRank:'—');
+ set('coverage',r.evidence.permanentCategories.known+'/'+r.evidence.permanentCategories.expected);
+ set('strengths',r.sections.strengths);set('weaknesses',r.sections.weaknesses);
+ set('interpretation',r.sections.interpretation);
+ set('missing','Missing rankings: '+(r.sections.missingData.join(', ')||'none'));
+ set('caveats',r.sections.caveats.join(' '));
+ $('roles').replaceChildren(...r.sections.roleRecommendations.map(role=>{
+   const el=document.createElement('div');el.className='role';
+   const heading=document.createElement('strong');heading.textContent=role.role+' · REVIEW ONLY';
+   const body=document.createElement('p');body.textContent=role.assessment;
+   const indicators=document.createElement('small');indicators.textContent='Indicators: '+(role.indicators.join(', ')||'none')+' · Needed: '+role.requiredEvidence;
+   el.append(heading,body,indicators);return el;
+ }));
+ $('output').hidden=false;set('status','');
+}
+$('player').addEventListener('change',e=>render(Number(e.target.value)));
+$('copy').addEventListener('click',async()=>{
+ if(!latest)return;
+ try{await navigator.clipboard.writeText(formatAssessmentReport(latest));set('status','Report copied.');}
+ catch{set('status','Clipboard unavailable; use browser copy instead.');}
+});
+try{
+ const response=await fetch('../../tests/fixtures/pylon-ix-v3-1913-20261004.json',{cache:'no-store'});
+ if(!response.ok)throw Error('Fixture HTTP '+response.status);
+ fixture=await response.json();
+ if(fixture.type!=='HISTORICAL_READ_ONLY_BENCHMARK'||!Array.isArray(fixture.players))throw Error('Invalid historical fixture');
+ $('player').replaceChildren(...fixture.players.map((p,i)=>{const o=document.createElement('option');o.value=String(i);o.textContent=p.player_name;return o;}));
+ render(0);
+}catch(error){set('status','Historical fixture could not be loaded: '+error.message);}
+</script></body></html>
