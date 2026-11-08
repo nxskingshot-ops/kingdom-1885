@@ -36,3 +36,13 @@ https://phalanx-r11-atlas-preview-git-work-truepo-13a8b9-matze4428-6040.vercel.a
 - Freshness risk: intelligence Edge Function uses `created_at desc` to choose saved fallback, rather than `source_captured_at desc`; later reingestion of older captures could supersede newer measurements. This is a concrete LIVE DATA FIRST release risk; no production function change performed.
 - Deployment check: READY commit bb21ac76c4f0f71841c7b85f6c554462f7a18797; five directly fetched preview assets HTTP 200.
 - This is source/static and read-only integration auditing, NOT a complete user-journey test. Release gate remains CLOSED.
+
+## Additional read-only data and permission audit
+- public.transfer_candidates table exists with candidate_id, player_name, kingdom, alliance, power_m, castle_level, contact_status, transfer_eligibility, recruiter, notes, metadata, updated_at: PASS schema check.
+- Existing candidate rows: 4; no rows were added, modified or deleted during this audit.
+- RLS enabled: PASS.
+- SELECT policy: authenticated member or higher. INSERT, UPDATE, DELETE policies: authenticated NXS R4 or higher. PASS policy existence and role separation; Queen An's actual user membership and sign-in are NOT TESTED.
+- Candidate editor submits Supabase insert/update and reloads records from the table: PASS static path inspection; live write/reload remains NOT TESTED to protect existing records.
+- Four alliance tiles generated from destinationAlliances, with source-capture grouping: PASS static code inspection; UI rendering with a real session NOT TESTED.
+- Open issue: saveCandidate closes the editor before checking whether subsequent load() succeeded. This can mask a read-back failure. Not changed during this read-only audit.
+- Open issue: latest fallback ranking is ordered by saved row creation time, not source capture time. No Edge Function redeploy authorized or performed.
