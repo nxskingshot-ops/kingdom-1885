@@ -664,7 +664,7 @@ function mountDecision(payload,id){
  const profileMedian=profileRanks.length>=4?(profileRanks[Math.floor((profileRanks.length-1)/2)].rank+profileRanks[middle].rank)/2:null;
  const profileColor=profileMedian===null?null:profileMedian<=10?'green':profileMedian<=25?'blue':profileMedian<=50?'yellow':'pink';
  if(profileColor&&truePower.calculated){
-  trueHelp.insertBefore(element('p','Value color reflects the account’s kingdom-ranking profile · median #'+profileMedian+'.'),trueSample);
+  trueHelp.insertBefore(element('p','Fallback reference: kingdom-ranking profile median #'+profileMedian+'.'),trueSample);
  }
  for(const metric of [total,truePower,castle,...metrics.slice(2,-1)]){
   const label=metric.label.replace(' · score','').replace('Truegold','TG');
