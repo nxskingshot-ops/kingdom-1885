@@ -1,3 +1,4 @@
+import { mountAccessManagement } from './phx-access-management-20261109.js';
 import { describeTransferPlan, readTransferPlan } from './phx-transfer-event-plan-20261108.js?v=phx-transfer-en-20261108';
 import { placeInAlliance, compareTopPeers } from './phx-transfer-alliance-placement-20261101.js?v=phx-transfer-evidence-20261107';
 import { assessAccount, suggestProvisionalRole } from './phx-transfer-account-assessment-20261101.js?v=phx-achilles-roles-20261108';
@@ -15,9 +16,10 @@ const $=id=>document.getElementById(id);
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=x=>x==null?'–':Number(x).toLocaleString('en-US',{maximumFractionDigits:1});
 let players=[],chosen=new Set(),active=null,canEdit=false;
+let accessManagementSession;
 // The event-specific cap and metric have not been verified. Never classify invitations from account power.
 function invitationPreview(p){return 'Verify event rules';}
-function showLogin(message=''){const badge=document.getElementById('phxIdentity');if(badge){badge.classList.remove('is-online');const n=document.getElementById('phxIdentityName'),m=document.getElementById('phxIdentityMeta');if(n)n.textContent='Session not verified';if(m)m.textContent='Please sign in';const online=document.getElementById('phxIdentityOnline');if(online)online.textContent='OFFLINE';}canEdit=false;$('login').hidden=false;$('private').hidden=true;$('message').textContent=message||'Please sign in with your approved NXS account.';$('message').setAttribute('role','status');}
+function showLogin(message=''){accessManagementSession?.abort();const badge=document.getElementById('phxIdentity');if(badge){badge.classList.remove('is-online');const n=document.getElementById('phxIdentityName'),m=document.getElementById('phxIdentityMeta');if(n)n.textContent='Session not verified';if(m)m.textContent='Please sign in';const online=document.getElementById('phxIdentityOnline');if(online)online.textContent='OFFLINE';}canEdit=false;$('login').hidden=false;$('private').hidden=true;$('message').textContent=message||'Please sign in with your approved NXS account.';$('message').setAttribute('role','status');}
 function chosenPlayers(){return [...chosen].map(id=>players.find(p=>p.candidate_id===id)).filter(Boolean);}
 function filtered(){const q=$('search').value.trim().toLowerCase();const list=players.filter(p=>[p.player_name,p.kingdom,p.alliance,p.contact_status,p.metadata?.role].some(v=>String(v??'').toLowerCase().includes(q)));const s=$('sort').value;return list.sort((a,b)=>s==='name'?a.player_name.localeCompare(b.player_name):s==='power'?Number(b.power_m||0)-Number(a.power_m||0):Date.parse(b.updated_at)-Date.parse(a.updated_at));}
 function render(){
@@ -72,7 +74,13 @@ if(!membership.active){showLogin('Signed in, but this NXS membership is inactive
 if(membership.expires_at&&Date.parse(membership.expires_at)<=Date.now()){showLogin('Signed in, but this NXS membership has expired.');return;}
 if(!['member','r4','r5','admin'].includes(membership.role)){showLogin('Signed in, but this account role is not approved for Transfer Scouting.');return;}
 const badge=document.getElementById('phxIdentity');if(badge){const display=user.id==='d4da222e-8aac-4950-a6df-46c88972458c'?'FaQu':(user.email||'Signed-in account');const n=document.getElementById('phxIdentityName'),m=document.getElementById('phxIdentityMeta');badge.classList.add('is-online');if(n)n.textContent=display;if(m)m.textContent=membership.role.toUpperCase()+' · ACTIVE';const online=document.getElementById('phxIdentityOnline');if(online)online.textContent='ONLINE';}
-canEdit=['r4','r5','admin'].includes(membership.role);$('login').hidden=true;$('private').hidden=false;await load();
+canEdit=['r4','r5','admin'].includes(membership.role);$('login').hidden=true;$('private').hidden=false;
+accessManagementSession?.abort();
+if(['r5','admin'].includes(membership.role)){
+ accessManagementSession=new AbortController();
+ void mountAccessManagement(db,accessManagementSession.signal).catch(()=>{});
+}
+await load();
 }catch(e){showLogin('Unable to verify access: '+(e?.message||'Unknown error'));}}
 $('authForm').onsubmit=async e=>{
 e.preventDefault();const submit=$('authForm').querySelector('button[type="submit"]');if(submit.disabled)return;
