@@ -84,3 +84,29 @@ export function classifyCombatProfile(player = {}, rankings = {}) {
   roleAssessment:'Combat role not verified without battle reports, formation and comparable roster data',
   evidenceLevel:coverage>=4?'MULTI_RANKING':coverage?'PARTIAL':'INSUFFICIENT'};
 }
+
+/**
+ * ACHILLES: role suggestions from current documented rank evidence.
+ * No average account is automatically a Rally Joiner; a role needs relevant
+ * observations and remains provisional without combat reports/buffs.
+ */
+export function suggestProvisionalRole(assessment = {}, truePowerBand = null) {
+ const rows = assessment.rankingEvidence || [];
+ const get = key => rows.find(row => row.key === key)?.rank ?? null;
+ const coverage = assessment.coverage ?? rows.length;
+ if (coverage < 4) return {role:null,reason:'Insufficient comparable kingdom ranking evidence',verify:'Obtain current rankings and combat evidence'};
+ const hero = [get('hero_equip'),get('hero_total')].filter(Number.isFinite);
+ const troop = get('troop_power');
+ const research = get('research_power');
+ const gear = [get('gov_gear'),get('gov_charm')].filter(Number.isFinite);
+ if (truePowerBand === 'Very strong' && hero.some(x => x <= 15)
+   && [get('hero_equip'),get('hero_total'),research,...gear].filter(x=>x!==null&&x<=15).length>=2)
+  return {role:'Rally Leader candidate',reason:'Very strong verified True Power and leading hero-related development',verify:'Lead buffs, rally capacity and battle reports'};
+ if (gear.length===2 && gear.every(x=>x<=25) && troop!==null && troop<=40)
+  return {role:'Garrison Holder candidate',reason:'Documented governor equipment and charm strengths alongside troop development',verify:'Garrison buffs, defense reports and formations'};
+ if (troop!==null && troop<=40 && research!==null && research<=40)
+  return {role:'Rally Joiner candidate',reason:'Comparable troop and research rankings support a provisional joiner review',verify:'Troop tiers, march size, joiner heroes and battle reports'};
+ if (hero.length && hero.some(x=>x<=25))
+  return {role:'Specialist review',reason:'Hero-related development is a relative strength, but a specific combat assignment is not established',verify:'Combat buffs, hero lineup and battle reports'};
+ return {role:null,reason:'No role-specific combination is established by the available rankings',verify:'Current role-specific stats and battle reports'};
+}

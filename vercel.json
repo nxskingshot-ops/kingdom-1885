@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/pylon-ix/:path*",
+      "destination": "/deploy/phalanx-kvk-test/pylon-ix/:path*"
+    }
+  ]
+}

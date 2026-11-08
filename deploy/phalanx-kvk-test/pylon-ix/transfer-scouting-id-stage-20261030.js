@@ -1,11 +1,12 @@
+import { describeTransferPlan, readTransferPlan } from './phx-transfer-event-plan-20261108.js?v=phx-transfer-en-20261108';
 import { placeInAlliance, compareTopPeers } from './phx-transfer-alliance-placement-20261101.js?v=phx-transfer-evidence-20261107';
-import { assessAccount } from './phx-transfer-account-assessment-20261101.js?v=phx-transfer-evidence-20261107';
+import { assessAccount, suggestProvisionalRole } from './phx-transfer-account-assessment-20261101.js?v=phx-achilles-roles-20261108';
 import { strategicProfile } from './phx-transfer-strategic-profile-20261101.js';
 import { seaWorldVerdict, THRESHOLDS, WEIGHTS } from './phx-sea-world-v2-gate-20261101.js';
 import { candidateFromLookup, duplicateLookupFilter } from './transfer-id-candidate-20261030.js';
 import { forecast as phxTransferForecast, transferStatus as phxTransferStatus } from './phx-transfer-forecast-20261101.js';
 import { mountRuleDraftEditor } from './phx-transfer-rules-editor-20261101.js';
-import { formatPlayerNumber, formatPlayerUtc, formatPlayerSection, playerLookupError, rankingLabels, canonicalRankingName, playerRankingMap, rankingSourceText, playerSummaryMetrics, compactPower } from './transfer-id-display-20261030.js';
+import { formatPlayerNumber, formatPlayerUtc, formatPlayerSection, playerLookupError, rankingLabels, canonicalRankingName, playerRankingMap, rankingSourceText, playerSummaryMetrics, compactPower, captureKey, matchedTruePower, selectTruePowerCohort, truePowerComparisonHours, truePowerPeerMinimum } from './transfer-id-display-20261030.js?build=phx-truepower-window-20261108';
 const SUPABASE_URL='https://hcjrdofkdkasznywvcxo.supabase.co';
 const KEY='sb_publishable_hkqBaMme70g2f3wcxvaTKg_FczqkpCh';
 const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2');
@@ -33,11 +34,33 @@ const p=players.find(x=>x.candidate_id===active);$('profileTitle').textContent=p
 $('profile').replaceChildren();if(p){renderHeadlineMetrics($('profile'),evidenceFor(p));const notes=document.createElement('p');notes.textContent=p.notes||'No notes recorded.';$('profile').append(notes);}
 $('needs').innerHTML=['Rally Lead','Fighter','Joiner','R4 / R5 Potential'].map(role=>'<div><b>'+esc(role)+'</b><strong>'+players.filter(p=>p.metadata?.role===role).length+' recorded</strong></div>').join('');
 const kds=new Map();for(const p of players){const kd=p.kingdom||'Unspecified';kds.set(kd,(kds.get(kd)||0)+1);}
-$('kingdomNotes').innerHTML=[...kds].sort((a,b)=>b[1]-a[1]).slice(0,5).map(([kd,n])=>'<div><b>Kingdom #'+esc(kd)+'</b><span>'+n+' candidates</span></div>').join('')||'<p class="empty">No saved kingdom records yet.</p>';
+$('kingdomNotes').innerHTML=[...kds].sort((a,b)=>b[1]-a[1]).slice(0,5).map(([kd,n])=>'<div><b>Kingdom #'+esc(kd)+'</b><span>'+n+(n===1?' candidate':' candidates')+'</span></div>').join('')||'<p class="empty">No saved kingdom records yet.</p>';
  renderExternalIntel();
 }
-async function load(){const {data,error}=await db.from('transfer_candidates').select('*').order('updated_at',{ascending:false}).limit(1000);
-if(error){$('count').textContent='Access or database error: '+error.message;return false;}players=data||[];chosen=new Set([...chosen].filter(id=>players.some(p=>p.candidate_id===id)));if(!players.some(p=>p.candidate_id===active))active=players[0]?.candidate_id||null;render();if(dossierOpen)renderDossier();return true;}
+let candidateLoadRevision=0;
+async function load(saved){
+ const revision=++candidateLoadRevision;
+ try{
+  const {data,error}=await db.from('transfer_candidates').select('*').order('updated_at',{ascending:false}).limit(1000);
+  if(revision!==candidateLoadRevision)return false;
+  if(error)throw error;
+  if(!Array.isArray(data))throw Error('The candidate list was not returned.');
+  if(saved&&!data.some(p=>p.candidate_id===saved.candidate_id
+    && captureKey(saved.updated_at)&&captureKey(p.updated_at)===captureKey(saved.updated_at))){
+   throw Error('The saved version is not visible in the candidate list.');
+  }
+  players=data;
+  chosen=new Set([...chosen].filter(id=>players.some(p=>p.candidate_id===id)));
+  if(saved)active=saved.candidate_id;
+  else if(!players.some(p=>p.candidate_id===active))active=players[0]?.candidate_id||null;
+  render();if(dossierOpen)renderDossier();
+  return true;
+ }catch(error){
+  if(revision!==candidateLoadRevision)return false;
+  $('count').textContent='Could not reload candidates: '+(error?.message||'Please try again.');
+  return false;
+ }
+}
 async function check(){try{
 const {data:{user},error}=await db.auth.getUser();
 if(error){showLogin('Session verification failed: '+error.message+'. Please sign in again.');return;}
@@ -49,7 +72,7 @@ if(!membership.active){showLogin('Signed in, but this NXS membership is inactive
 if(membership.expires_at&&Date.parse(membership.expires_at)<=Date.now()){showLogin('Signed in, but this NXS membership has expired.');return;}
 if(!['member','r4','r5','admin'].includes(membership.role)){showLogin('Signed in, but this account role is not approved for Transfer Scouting.');return;}
 const badge=document.getElementById('phxIdentity');if(badge){const display=user.id==='d4da222e-8aac-4950-a6df-46c88972458c'?'FaQu':(user.email||'Signed-in account');const n=document.getElementById('phxIdentityName'),m=document.getElementById('phxIdentityMeta');badge.classList.add('is-online');if(n)n.textContent=display;if(m)m.textContent=membership.role.toUpperCase()+' · ACTIVE';const online=document.getElementById('phxIdentityOnline');if(online)online.textContent='ONLINE';}
-canEdit=['r4','r5','admin'].includes(membership.role);$('newCandidate').hidden=!canEdit;$('login').hidden=true;$('private').hidden=false;await load();
+canEdit=['r4','r5','admin'].includes(membership.role);$('login').hidden=true;$('private').hidden=false;await load();
 }catch(e){showLogin('Unable to verify access: '+(e?.message||'Unknown error'));}}
 $('authForm').onsubmit=async e=>{
 e.preventDefault();const submit=$('authForm').querySelector('button[type="submit"]');if(submit.disabled)return;
@@ -85,14 +108,23 @@ $('compare').onclick=async()=>{
 };
 $('csv').onclick=()=>{const columns=['candidate_id','player_name','kingdom','alliance','power_m','castle_level','contact_status','invitation_preview','transfer_eligibility','recruiter','notes','updated_at'];const csv=[columns.join(','),...filtered().map(p=>columns.map(k=>'"'+String(k==='invitation_preview'?invitationPreview(p):p[k]??'').replace(/"/g,'""')+'"').join(','))].join('\r\n');const url=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='nxs-real-transfer-records.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),4000);};
 
-let editingId=null;
+let editingCandidate=null,editorSaved=null,editorSaving=false;
 function openEditor(p){
- if(!canEdit)return;
- editingId=p?.candidate_id||null;
+ if(!canEdit||editorSaving||!p)return;
+ editingCandidate=p;editorSaved=null;
+ $('saveCandidate').textContent='Save to NXS';
  $('candidateForm').reset();$('editError').textContent='';
+ for(const control of $('candidateForm').elements)if(control.name)control.disabled=false;
  $('editTitle').textContent=p?'Edit '+p.player_name:'Add candidate';
  for(const name of ['player_name','kingdom','alliance','power_m','castle_level','recruiter','contact_status','transfer_eligibility','notes']){
-  const input=$('candidateForm').elements.namedItem(name);if(p&&p[name]!=null)input.value=p[name];
+  const input=$('candidateForm').elements.namedItem(name);
+  if(name==='contact_status'){
+   input.querySelector('[data-legacy]')?.remove();
+   if(p[name]!=null&&![...input.options].some(option=>option.value===p[name])){
+    const option=new Option(p[name],p[name]);option.dataset.legacy='';input.add(option);
+   }
+  }
+  if(p[name]!=null)input.value=p[name];
  }
  $('candidateForm').elements.namedItem('role').value=p?.metadata?.role||'';
  $('candidateForm').elements.namedItem('fit').value=p?.metadata?.fit??'';
@@ -101,7 +133,8 @@ function openEditor(p){
  $('candidateForm').elements.namedItem('trial_source').value=p?.metadata?.mystic_trial_source??'';
  $('modal').hidden=false;
 }
-$('newCandidate').onclick=()=>{showWorkspace('phxIdPanel');$('phxGovernorId').focus();};
+function openCandidateLookup(){showWorkspace('phxIdPanel');$('phxGovernorId').focus();}
+$('newCandidate').onclick=openCandidateLookup;
 $('editCandidate').onclick=()=>openEditor(players.find(p=>p.candidate_id===active));
 // Protected removal: explicit confirmation, R4/R5/admin UI gate, exact record ID and verified response.
 const removeCandidateButton=document.createElement('button');
@@ -112,42 +145,65 @@ removeCandidateButton.onclick=async()=>{
  const candidate=players.find(p=>p.candidate_id===active);
  if(!canEdit||!candidate||removeCandidateButton.disabled)return;
  const id=candidate.candidate_id;
- if(!window.confirm('Kandidat '+candidate.player_name+' aus der gespeicherten Liste entfernen? Dieser Vorgang kann nicht rückgängig gemacht werden.'))return;
+ if(!window.confirm('Remove '+candidate.player_name+' from saved candidates? This action is permanent.'))return;
  removeCandidateButton.disabled=true;
  try{
   const {data,error}=await db.from('transfer_candidates').delete().eq('candidate_id',id).select('candidate_id');
   if(error)throw error;
-  if(!Array.isArray(data)||data.length!==1||data[0].candidate_id!==id)throw Error('Löschung nicht bestätigt.');
+  if(!Array.isArray(data)||data.length!==1||data[0].candidate_id!==id)throw Error('Could not confirm removal.');
   chosen.delete(id);if(active===id)active=null;
   if(dossierOpen)closeDossier();
   await load();
- }catch(error){window.alert('Kandidat konnte nicht entfernt werden: '+error.message);}
+ }catch(error){window.alert('Could not remove the candidate: '+error.message);}
  finally{removeCandidateButton.disabled=false;}
 };
 const originalRenderCandidate=render;
 render=function(){originalRenderCandidate();removeCandidateButton.hidden=!canEdit||!players.some(p=>p.candidate_id===active);};
 
 
-function closeEditor(){$('modal').hidden=true}
+function closeEditor(){if(!editorSaving)$('modal').hidden=true;}
 $('cancelEdit').onclick=closeEditor;$('closeEdit').onclick=closeEditor;
 
 $('candidateForm').onsubmit=async e=>{
-e.preventDefault();if(!canEdit)return;
-const v=Object.fromEntries(new FormData(e.currentTarget).entries());
-if(!v.player_name.trim()){$('editError').textContent='Player name required';return;}
-const old=players.find(x=>x.candidate_id===editingId);
-const data={player_name:v.player_name.trim(),kingdom:v.kingdom||null,alliance:v.alliance||null,power_m:v.power_m?Number(v.power_m):null,castle_level:v.castle_level||null,recruiter:v.recruiter||null,transfer_eligibility:v.transfer_eligibility||null,contact_status:v.contact_status,notes:v.notes||null,metadata:{...(old?.metadata||{}),role:v.role||null,fit:v.fit?Number(v.fit):null,mystic_trials:Object.fromEntries(externalTrials.map(key=>[key,v['trial_'+key]?.trim()||null])),mystic_trial_snapshot:v.trial_snapshot||null,mystic_trial_source:v.trial_source?.trim()||null},updated_at:new Date().toISOString()};
-await saveCandidate(data);
+ e.preventDefault();if(!canEdit||!editingCandidate||editorSaving)return;
+ if(editorSaved){await saveCandidate();return;}
+ const v=Object.fromEntries(new FormData(e.currentTarget).entries());
+ if(!v.player_name.trim()){$('editError').textContent='Player name required';return;}
+ const old=editingCandidate;
+ const updatedAt=new Date(Math.max(Date.now(),(Date.parse(old.updated_at)||0)+1)).toISOString();
+ const data={player_name:v.player_name.trim(),kingdom:v.kingdom||null,alliance:v.alliance||null,power_m:v.power_m?Number(v.power_m):null,castle_level:v.castle_level||null,recruiter:v.recruiter||null,transfer_eligibility:v.transfer_eligibility||null,contact_status:v.contact_status,notes:v.notes||null,metadata:{...(old.metadata||{}),role:v.role||null,fit:v.fit?Number(v.fit):null,mystic_trials:{...old.metadata?.mystic_trials,...Object.fromEntries(externalTrials.map(key=>[key,v['trial_'+key]?.trim()||null]))},mystic_trial_snapshot:v.trial_snapshot||null,mystic_trial_source:v.trial_source?.trim()||null},updated_at:updatedAt};
+ await saveCandidate(data);
 };
 
 async function saveCandidate(data){
-$('saveCandidate').disabled=true;$('editError').textContent='Saving…';
-try{
-const q=editingId?await db.from('transfer_candidates').update(data).eq('candidate_id',editingId).select('candidate_id').maybeSingle():await db.from('transfer_candidates').insert({...data,candidate_id:'NXS-'+crypto.randomUUID()}).select('candidate_id').maybeSingle();
-if(q.error)throw q.error;if(!q.data)throw Error('Save not authorized.');
-active=q.data.candidate_id;closeEditor();await load();
-}catch(err){$('editError').textContent='Save failed: '+err.message}
-finally{$('saveCandidate').disabled=false;}
+ const button=$('saveCandidate'),status=$('editError');
+ editorSaving=true;button.disabled=true;
+ $('cancelEdit').disabled=true;$('closeEdit').disabled=true;
+ try{
+  if(!editorSaved){
+   status.textContent='Saving…';
+   const {candidate_id,updated_at}=editingCandidate;
+   const update=db.from('transfer_candidates').update(data).eq('candidate_id',candidate_id);
+   const guarded=updated_at==null?update.is('updated_at',null):update.eq('updated_at',updated_at);
+   const {data:saved,error}=await guarded.select('candidate_id,updated_at').maybeSingle();
+   if(error)throw error;
+   if(!saved)throw Error('The record has changed or your account cannot edit it. Close the editor and refresh Candidates before trying again.');
+   editorSaved=saved;
+  }
+  status.textContent='Saved. Checking the candidate list…';
+  if(!await load(editorSaved)){
+   status.textContent='The save was confirmed, but the candidate could not be reloaded. Select Retry reload to check again without saving twice.';
+   button.textContent='Retry reload';
+   for(const control of $('candidateForm').elements)if(control.name)control.disabled=true;
+   return;
+  }
+  $('modal').hidden=true;
+ }catch(error){
+  status.textContent='Save could not be confirmed: '+(error?.message||'Check your connection and refresh Candidates.');
+ }finally{
+  editorSaving=false;button.disabled=false;
+  $('cancelEdit').disabled=false;$('closeEdit').disabled=false;
+ }
 }
 
 /* Optional external scouting evidence and protected read-only internal comparison. */
@@ -225,13 +281,13 @@ function comparisonBrief(external,inside){
   higher&&'Biggest lead: '+describe(higher)+'.',
   lower&&'Biggest gap: '+describe(lower)+'.'
  ].filter(Boolean);
- const stamps=new Set(pairs.flatMap(({key})=>[external[key].captured_at,inside[key].captured_at]).map(formatPlayerUtc));
+ const stamps=new Set(pairs.flatMap(({key})=>[external[key].captured_at,inside[key].captured_at]).map(captureKey));
  return {
   summary: pairs.length
    ? highlights.join(' ')||'Shared values are equal.'
    : 'No comparable values are available.',
   coverage: pairs.length+' of '+keys.length+' metrics compared'
-   +(pairs.length&&(stamps.size>1||stamps.has('Not available'))?' · Capture times differ or are unknown':'')
+   +(pairs.length&&(stamps.size>1||stamps.has(''))?' · Capture times differ or are unknown':'')
  };
 }
 function lookupComparisonRanks(payload,ranks=rankingMap(payload.ranks?.values),metrics){
@@ -241,7 +297,7 @@ function lookupComparisonRanks(payload,ranks=rankingMap(payload.ranks?.values),m
  });
  const entries={...ranks};
  if(total.value!==null)entries.personal_power={value:total.value,captured_at:total.captured_at,kingdom_rank:total.rank,
-  source:total.captured_at===ranks.personal_power?.captured_at?ranks.personal_power?.source:undefined};
+  source:total.source};
  if(truePower.calculated)entries.true_power={value:truePower.value,captured_at:truePower.captured_at,source:'calculated'};
  return entries;
 }
@@ -333,7 +389,7 @@ $('loadInternal').onclick=async()=>{
  internalLoading=true;$('loadInternal').disabled=true;renderExternalIntel();
  try{
   const data=await requestCurrentRankings();
-  internalPlayers=data.observations;
+  internalPlayers=attachVerifiedTruePower(data);
   internalSnapshot=data.snapshot_date||'';
   $('loadInternal').textContent='Refresh #1885 players ('+internalPlayers.length+')';
   const previous=$('internalGovernor').value;
@@ -408,7 +464,8 @@ const dossierGroups={
 let dossierSmartGroup='overview';
 const comparisonPanel=$('externalIntelPanel'),comparisonHome=comparisonPanel.parentNode;
 function restoreComparisonPanel(){
- if(comparisonPanel.parentNode!==comparisonHome)comparisonHome.append(comparisonPanel);
+ const home=$('phxToolsComparisonContent')||comparisonHome;
+ if(comparisonPanel.parentNode!==home)home.append(comparisonPanel);
 }
 function applySmartDossierNavigation(){
  const names={identity:'Overview',development:'Strengths & limits',recruitment:'Recruitment',history:'Compare #1885'};
@@ -484,11 +541,12 @@ function renderDossier(){
  forecastPanel.className='dossier-report';
  forecastPanel.setAttribute('aria-label','Expected transfer rules');
  const forecastHeading=document.createElement('h3');
- forecastHeading.textContent='PYLON IX · Transfer Intelligence — FORECAST';
+ const manualPlan=describeTransferPlan(readTransferPlan());
+ forecastHeading.textContent=manualPlan?'PYLON IX · Manual Transfer Plan':'PYLON IX · Transfer Intelligence — FORECAST';
  const forecastBody=document.createElement('p');
- forecastBody.textContent='Expected Group '+phxTransferForecast.group+' · Kingdoms '+phxTransferForecast.range.join('–')+' · Ordinary reference '+phxTransferForecast.ordinaryReferenceM+'M · Leading reference '+phxTransferForecast.leadingReferenceM+'M · '+phxTransferForecast.window+'.';
+ forecastBody.textContent=manualPlan||'Expected Group '+phxTransferForecast.group+' · Kingdoms '+phxTransferForecast.range.join('–')+' · Ordinary reference '+phxTransferForecast.ordinaryReferenceM+'M · Leading reference '+phxTransferForecast.leadingReferenceM+'M · '+phxTransferForecast.window+'.';
  const forecastNotice=document.createElement('p');
- forecastNotice.textContent=phxTransferStatus(null)+'. Community forecast only; #1885 classification, official power metric, active cap, invitations and final rules are unconfirmed. Source: '+phxTransferForecast.source+' (checked '+phxTransferForecast.checked+').';
+ forecastNotice.textContent=manualPlan?'Plan saved on this device. Check invitation eligibility and the applicable power metric in-game.':phxTransferStatus(null)+'. Community forecast only; #1885 classification, official power metric, active cap, invitations and final rules are unconfirmed. Source: '+phxTransferForecast.source+' (checked '+phxTransferForecast.checked+').';
  forecastPanel.append(forecastHeading,forecastBody,forecastNotice);
  root.prepend(forecastPanel);
  mountRuleDraftEditor(forecastPanel,{canEdit:false}); // Fail closed until a server-verified transfer_admin role exists.
@@ -586,35 +644,28 @@ function strongestInternalPlayer(preferred, ownIds){
   ||ordered[0];
 }
 
-function verifiedTruePowerEvidence(metric, castle, candidateIds){
- const list=(internalPlayers||[]).filter(row=>row.true_power_verified===true
-  && row.true_power!=null && String(row.true_power).trim()!=='' && Number.isFinite(Number(row.true_power))
-  && Number(row.true_power)>=0 && formatPlayerUtc(row.captured_at)!=='Not available');
- const groups=new Map();
- for(const row of list){
-  const id=String(row.governor_id??row.player_id??row.uid??'');
-  if(!id||candidateIds.includes(id))continue;
-  const time=formatPlayerUtc(row.captured_at);
-  if(!groups.has(time))groups.set(time,new Map());
-  groups.get(time).set(id,row);
- }
- const cohort=[...groups].sort(([a,first],[b,second])=>second.size-first.size||b.localeCompare(a))[0];
- if(!metric.calculated||!cohort||cohort[1].size<5)return 'Comparable True Power sample unavailable.';
- const [capture, members]=cohort;
- const rank=rows=>1+rows.filter(row=>Number(row.true_power)>metric.value).length;
- const peers=[...members.values()];
- const nxs=peers.filter(row=>allianceTag(row.alliance_tag??row.alliance_abbr)==='NXS');
- const tier=castle.text.match(/^TG(\d+) /)?.[1];
- const exact=peers.filter(row=>row.castle_level===castle.text);
- const tg=tier?peers.filter(row=>String(row.castle_level||'').startsWith('TG'+tier+' ')):[];
- const matched=exact.length>=5?exact:tg;
- const percentile=matched.length?Math.round(100*matched.filter(row=>Number(row.true_power)<=metric.value).length/matched.length):null;
- const tgNote=matched.length>=5?' · '+(exact.length>=5?'Same TG upgrade':'Same main TG tier')
-  +' #'+rank(matched)+' of '+(matched.length+1)+' · sample percentile '+percentile:'';
-
- return 'Verified sample insertion #'+rank(peers)+' of '+(peers.length+1)
-  +(nxs.length?' · NXS #'+rank(nxs)+' of '+(nxs.length+1):'')+tgNote+'. Peer capture '+capture
-  +' · Candidate capture '+formatPlayerUtc(metric.captured_at)+'. Partial comparison sample.';
+function verifiedTruePowerEvidence(metric,cohort){
+ if(!metric.calculated)return 'A verified candidate True Power value is required for comparison.';
+ if(!cohort)return 'No verified #1885 comparison capture within '+truePowerComparisonHours+' hours.';
+ const {peers,capture,gapMs}=cohort;
+ const minutes=Math.floor(gapMs/60000);
+ const gap=capture===captureKey(metric.captured_at)?'same instant':minutes===0?'less than 1 min':
+  (minutes>=60?Math.floor(minutes/60)+' h ':'')+minutes%60+' min';
+ const timing='Candidate capture '+formatPlayerUtc(metric.captured_at)+' · #1885 capture '+formatPlayerUtc(capture)+' · '+gap+'.';
+ if(peers.length<truePowerPeerMinimum)return timing;
+ const rank=1+peers.filter(row=>row.true_power>metric.value).length;
+ const nxs=peers.filter(row=>allianceTag(row.alliance_tag)==='NXS');
+ const nxsRank=1+nxs.filter(row=>row.true_power>metric.value).length;
+ return 'True Power comparison: #'+rank+' of '+(peers.length+1)+' in the verified sample'
+  +(nxs.length?' · NXS #'+nxsRank+' of '+(nxs.length+1):'')+'. '+timing+' Sample based on overlapping Top-100 boards.';
+}
+function attachVerifiedTruePower(data){
+ const source=({provider_request:'provider_kingdom',saved_snapshot:'saved_snapshot'})[data.source_mode];
+ return data.observations.map(row=>{
+  const total=row.rankings?.personal_power,troop=row.rankings?.troop_power;
+  const pair=matchedTruePower({...total,source:total?.source||source},{...troop,source:troop?.source||source});
+  return {...row,true_power_verified:pair!==null,true_power:pair?.value??null,true_power_captured_at:pair?.captured_at??null};
+ });
 }
 
 function mountDecision(payload,id){
@@ -627,6 +678,7 @@ function mountDecision(payload,id){
  });
  const assessment=assessAccount(p,ranks);
  const [total,truePower]=metrics;
+ const mixedCaptures=new Set(metrics.map(metric=>captureKey(metric.captured_at)).filter(Boolean)).size>1;
  const castle=metrics.at(-1);
  if(castle.value===null&&castle.text!=='Not available')castle.details='Profile field · '+formatPlayerUtc(stamp);
  const comparisonRanks=lookupComparisonRanks(payload,ranks,metrics);
@@ -652,18 +704,17 @@ function mountDecision(payload,id){
  const tiles=element('dl',null,'phx-intel-metrics');
  const metricEvidence=element('ul',null,'phx-decision-list');
  const trueSample=element('p');
+ const trueVerdict=element('p',null,'phx-intel-overview');
  const trueHelp=element('dialog',null,'phx-decision-true-help');
  trueHelp.setAttribute('aria-label','True Power calculation and comparison');
  const closeHelp=element('button','Close');
  const closeForm=element('form');closeForm.method='dialog';closeForm.append(closeHelp);
- trueHelp.append(element('h4','True Power · calculation and comparison'),element('p',truePower.details),trueSample,closeForm);
+ trueHelp.append(element('h4','True Power · calculation and comparison'),trueVerdict,element('p',truePower.details),trueSample,closeForm);
  const profileRanks=assessment.rankingEvidence.filter(row=>row.key!=='pet_power'&&row.rank<=100);
  const middle=Math.floor(profileRanks.length/2);
  const profileMedian=profileRanks.length>=4?(profileRanks[Math.floor((profileRanks.length-1)/2)].rank+profileRanks[middle].rank)/2:null;
  const profileColor=profileMedian===null?null:profileMedian<=10?'green':profileMedian<=25?'blue':profileMedian<=50?'yellow':'pink';
- if(profileColor&&truePower.calculated){
-  trueHelp.insertBefore(element('p','Value color reflects the account’s kingdom-ranking profile · median #'+profileMedian+'.'),trueSample);
- }
+ // The dialog explains the True Power result and its comparison sample.
  for(const metric of [total,truePower,castle,...metrics.slice(2,-1)]){
   const label=metric.label.replace(' · score','').replace('Truegold','TG');
   metricEvidence.append(element('li',label+' · '+metric.details));
@@ -674,13 +725,13 @@ function mountDecision(payload,id){
   value.append(element('strong',metric.text==='Not available'?'—':metric.text));
   value.title=metric.details;
   if(metric===truePower){
-   if(profileColor&&truePower.calculated)value.dataset.profileColor=profileColor;
    const info=element('button','i','phx-decision-info');
    info.type='button';info.setAttribute('aria-label','True Power calculation and comparison');
    info.addEventListener('click',()=>trueHelp.showModal());
    value.append(info);
   }
   tile.append(element('dt',label),value);
+  if(metric.captured_at&&mixedCaptures)tile.append(element('small',formatPlayerUtc(metric.captured_at)+(metric.source==='saved_snapshot'?' · Stored':''),'phx-decision-source'));
   tiles.append(tile);
  }
 
@@ -693,6 +744,7 @@ function mountDecision(payload,id){
   const cell=element('div');cell.append(element('strong',label),element('p',content));facts.append(cell);
  }
  const capture=formatPlayerUtc(stamp);
+ const profileCapture=payload.source?.fresh===false?'Cached provider profile':'Provider profile';
  const freshness=element('p',assessment.profile+' · '+assessment.coverage+'/'+assessment.expected
   +' kingdom categories'+(assessment.dated<assessment.coverage?' · Some dates unknown':assessment.oldest!==assessment.newest?' · Mixed capture dates':''),'phx-decision-source');
  const body=element('div',null,'phx-intel-body');
@@ -702,18 +754,55 @@ function mountDecision(payload,id){
  const primaryRole=assessment.priorities[0];
  const tiedRoles=primaryRole?assessment.priorities.filter(role=>role.evidence.length===primaryRole.evidence.length
   && role.evidence.reduce((sum,row)=>sum+row.rank,0)===primaryRole.evidence.reduce((sum,row)=>sum+row.rank,0)):[];
- const roleSummary=primaryRole?'Review '+tiedRoles.map(role=>role.label).join(' or ')+' potential'
-  +(tiedRoles.length===1?' · '+short(primaryRole.evidence.slice(0,2)):'')
-  :'More evidence needed before suggesting a KvK role';
- recommendation.append(element('strong','Suggested KvK role · Provisional'),element('p',roleSummary+'. Combat buffs and battle reports are needed to confirm the role.'),
-  decisionDetails('Strengths & development areas',facts));
- const overview=[
-  assessment.strengths.length?'Strengths: '+short(assessment.strengths.slice(0,3))+'.':'',
-  assessment.development.length?'Development area: '+short(assessment.development.slice(0,1))+'.':''
- ].filter(Boolean).join(' ');
- body.append(brand,element('h4',assessment.level));
- if(overview)body.append(element('p',overview,'phx-intel-overview'));
- body.append(recommendation);
+ // ACHILLES: documented peer True Power and strong hero-related kingdom ranks
+ // justify a clear candidate recommendation, not an unverified combat assignment.
+ const rallySignals=['hero_equip','hero_total','research_power','gov_gear','gov_charm']
+  .map(key=>assessment.rankingEvidence.find(row=>row.key===key&&row.rank<=15)).filter(Boolean);
+ const defaultRole=primaryRole?'Review '+tiedRoles.map(role=>role.label).join(' or ')+' potential'
+  :'Insufficient evidence for a specific KvK role';
+ const strongest=assessment.strengths.slice(0,3);
+ const weakest=assessment.development.slice(0,2);
+ const hero=assessment.rankingEvidence.find(row=>row.key==='hero_equip');
+ const research=assessment.rankingEvidence.find(row=>row.key==='research_power');
+ const master=assessment.rankingEvidence.find(row=>row.key==='master_power');
+ const troop=assessment.rankingEvidence.find(row=>row.key==='troop_power');
+ const heroPower=assessment.rankingEvidence.find(row=>row.key==='hero_total');
+ const specialized=hero?.rank<=15&&research?.rank<=15&&master?.rank>30;
+ const heroFocused=[hero,heroPower].some(row=>row?.rank<=15);
+ const troopFocused=troop?.rank<=15&&!heroFocused;
+ const missing=assessment.coverage<4;
+ const dna=missing
+  ?'Account DNA is provisional: only '+assessment.coverage+' of '+assessment.expected+' kingdom ranking categories are available.'
+  :specialized
+  ?'Hero equipment and research rank in the top 15, while master power is outside the top 30. This suggests focused account development.'
+  :troopFocused
+  ?'Troop power is a documented top-15 strength, while comparable hero rankings are not. This suggests a troop-focused profile; combat performance remains unverified.'
+  :heroFocused
+  ?'Hero development is a documented top-15 strength. Its impact depends on the remaining account profile and combat buffs.'
+  :assessment.profile==='Balanced'
+  ?'The available kingdom rankings indicate balanced development without a single dominant specialization.'
+  :'The available rankings show mixed development; no single combat specialization is confirmed.';
+ const roleTitle=element('strong','KvK recommendation · Provisional');
+ const roleText=element('p',defaultRole+'.','phx-intel-overview');
+ const verification=element('p','To confirm: combat buffs and battle reports.','phx-decision-source');
+ const overviewText=element('p',dna,'phx-intel-overview');
+ const evidenceDetails=decisionDetails('Evidence · strengths and development',
+  element('strong','Documented strengths'),element('p',short(strongest)||'No documented Top-15 strengths'),
+  element('strong','Relative development gaps'),element('p',short(weakest)||'No documented relative gaps'),
+  element('p','Ranking gaps do not automatically imply combat weaknesses.','phx-decision-source'));
+ recommendation.append(roleTitle,roleText,verification,evidenceDetails);
+ brand.querySelector('strong').textContent='⚔ PYLON IX';
+ brand.querySelector('small').textContent='STRATEGIC VERDICT';
+ brand.style.cssText='display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 10px;margin-bottom:4px';
+ brand.querySelector('strong').style.cssText='font-size:clamp(16px,4.2vw,22px);white-space:nowrap;letter-spacing:.02em';
+ brand.querySelector('small').style.cssText='font-size:clamp(9px,2.4vw,12px);letter-spacing:.1em';
+ const levelTitle=element('h4',assessment.level);
+ levelTitle.style.cssText='margin:4px 0 8px;font-size:clamp(17px,4.5vw,23px)';
+ overviewText.style.cssText='margin:0 0 10px;line-height:1.45';
+ recommendation.style.cssText='margin:0 0 12px';
+ roleText.style.cssText='margin:6px 0;line-height:1.45';
+ verification.style.cssText='margin:4px 0 8px;line-height:1.4';
+ body.append(brand,levelTitle,overviewText,recommendation,facts);
  card.append(head,tiles,trueHelp);
 
  const alliance=element('section',null,'phx-placement-compact phx-decision-alliance');
@@ -753,10 +842,53 @@ function mountDecision(payload,id){
  legend.classList.add('phx-sea-world-legend');
  card.append(legend,body);
  const candidateIds=[id,payload.uid,p.uid,p.governorId,p.governor_id].filter(Boolean).map(String);
- const refreshTrueSample=()=>{trueSample.textContent=verifiedTruePowerEvidence(truePower,castle,candidateIds);};
+ const refreshTrueSample=()=>{
+  const cohort=selectTruePowerCohort(truePower,internalPlayers||[],candidateIds);
+  const peers=cohort?.peers||[];
+  const reliable=peers.length>=truePowerPeerMinimum;
+  trueSample.textContent=verifiedTruePowerEvidence(truePower,cohort);
+  const percentile=reliable?100*peers.filter(row=>row.true_power<=truePower.value).length/peers.length:null;
+  const label=percentile===null?null:percentile>=85?'Very strong':percentile>=60?'Strong':percentile>=20?'Average':'Needs development';
+  const color=label==='Very strong'?'green':label==='Strong'?'blue':label==='Average'?'yellow':'pink';
+  const tile=tiles.querySelector('[data-metric="true_power"]');
+  if(tile){
+   delete tile.dataset.profileColor;
+   if(label)tile.dataset.profileColor=color;
+   const value=tile.querySelector('dd');
+   if(value){delete value.dataset.profileColor;if(label)value.dataset.profileColor=color;}
+  }
+  trueVerdict.textContent=label?label+' · True Power percentile '+Math.round(percentile)+' among '+peers.length+' verified peers (partial kingdom sample).'
+   :'Not yet rateable · '+peers.length+' comparable True Power values; at least '+truePowerPeerMinimum+' required.';
+  trueSample.textContent+=' Each True Power value uses Total and Troop Power from the same source and capture. The comparison uses one #1885 capture within '+truePowerComparisonHours+' hours of the candidate capture. Rating: green top 15%, blue next 25%, yellow next 40%, pink bottom 20%.';
+  // Live peer rankings arrive asynchronously; update the strategic verdict with them.
+  const suggested=suggestProvisionalRole(assessment,label);
+  const rallyCandidate=suggested.role==='Rally Leader candidate';
+  roleTitle.textContent='KvK recommendation · '+(suggested.role||'Unconfirmed');
+  roleText.textContent=suggested.reason+'.';
+  verification.textContent='Next check: '+suggested.verify+'.';
+  // Explain why a player's relative True Power can differ from their
+  // overall account development. Never treat a partial sample as a full census.
+  const weakCategories=[hero,research,heroPower].filter(row=>Number.isFinite(row?.rank)&&row.rank>50);
+  const weakNames=weakCategories.map(row=>row.label+' #'+row.rank);
+  const contrast=label==='Average'&&weakNames.length>=2
+   ?'True Power is average within '+peers.length+' verified comparable players, but '+weakNames.join(' and ')+' rank lower in the available kingdom boards. This indicates relative development gaps, not proven combat weakness.'
+   :label==='Very strong'&&weakNames.length>=2
+   ?'True Power is very strong within the verified sample, but '+weakNames.join(' and ')+' rank lower in the available kingdom boards. High non-troop power alone does not establish combat leadership.'
+   :label
+   ?'True Power is '+label.toLowerCase()+' in the verified comparison sample; the account profile separately evaluates the available kingdom rankings.'
+   :'True Power cannot currently be compared reliably. The account profile uses only the available kingdom rankings.';
+  // Lead with the most useful interpretation; retain the account-DNA explanation
+  // for other profiles without presenting a partial ranking as a full census.
+  const headline=label==='Average'&&weakNames.length>=2
+   ?'Average True Power, but weaker hero and research rankings.'
+   :label==='Very strong'&&weakNames.length>=2
+   ?'Very strong True Power, with important development gaps.'
+   :null;
+  overviewText.textContent=headline?headline+' '+contrast:dna+' '+contrast;
+ };
  refreshTrueSample();
  evidence.append(metricEvidence,
-  element('p','Profile source capture: '+capture+' · Lookup (UTC): '+formatPlayerUtc(payload.checkedAtUtc)));
+  element('p',profileCapture+' capture: '+capture+' · Lookup (UTC): '+formatPlayerUtc(payload.checkedAtUtc)));
 
  const all=element('div',null,'phx-decision-rankings');
  appendRankingEntries(all,values,'');
@@ -806,7 +938,12 @@ function mountDecision(payload,id){
  const renderAlliances=data=>renderAlliancePlacement(placement,placementSource,total,candidateIds,comparisonRanks,data);
  lookupIntel.refresh=data=>{refreshTrueSample();if(data)renderAlliances(data);};
  renderAlliances(null);
- void requestCurrentRankings().then(renderAlliances,()=>renderAlliances({observations:[]}));
+ void requestCurrentRankings().then(data=>{
+  internalPlayers=attachVerifiedTruePower(data);
+  internalSnapshot=data.snapshot_date||'';
+  refreshTrueSample();
+  renderAlliances(data);
+ },()=>renderAlliances({observations:[]}));
 }
 
 function renderAlliancePlacement(root,source,total,candidateIds,candidateRanks,data){
@@ -817,6 +954,8 @@ function renderAlliancePlacement(root,source,total,candidateIds,candidateRanks,d
   return Number.isFinite(time)&&time>latest?time:latest;
  },-Infinity);
  const timestamp=Number.isFinite(capture)?new Date(capture).toISOString():'';
+ const storedTotal=rows.some(row=>Date.parse(row.rankings?.personal_power?.captured_at)===capture
+  &&row.rankings.personal_power.source==='saved_snapshot')||data?.source_mode==='saved_snapshot';
  const cohort=rows.filter(row=>Date.parse(row.rankings?.personal_power?.captured_at)===capture
   && ![row.uid,row.governor_id].some(id=>candidateIds.includes(String(id))));
  const opened=new Set([...root.querySelectorAll('details[open]')].map(node=>node.parentElement.dataset.alliance));
@@ -835,7 +974,7 @@ function renderAlliancePlacement(root,source,total,candidateIds,candidateRanks,d
   tile.append(element('strong',rank+' in sample','phx-decision-placement'),
    element('p',sample.comparisonSize+(sample.comparisonSize===1?' ranked peer':' ranked peers'),'phx-decision-source'));
   const details=decisionDetails('Ranking details',
-   element('p',(data.source_mode==='saved_snapshot'?'Latest stored ranking':'Latest provider ranking')
+   element('p',(storedTotal?'Stored ranking capture':'Provider ranking capture')
     +' · '+formatPlayerUtc(timestamp)+' · Kingdom Top 100, partial alliance coverage.'),
    element('p','Player Total Power · '+compactPower(total.value)+' · '+formatPlayerUtc(total.captured_at)+'.'));
   details.open=opened.has(tag);
@@ -849,7 +988,7 @@ function renderAlliancePlacement(root,source,total,candidateIds,candidateRanks,d
   tile.append(details);
   return tile;
  });
- source.textContent=timestamp?'Total Power · '+formatPlayerUtc(timestamp)+(data.source_mode==='saved_snapshot'?' · Stored capture':' · Provider capture'):'';
+ source.textContent=timestamp?'Total Power · '+formatPlayerUtc(timestamp)+(storedTotal?' · Stored capture':' · Provider capture'):'';
  source.hidden=!timestamp;
  root.replaceChildren(...tiles);
 }
@@ -876,7 +1015,7 @@ phxIdForm.addEventListener('submit',async e=>{
   phxSearchLabel.textContent=(p.name||p.player_name||p.nickname||'Player')+' · ID '+id;
   phxIdForm.hidden=true;phxIdForm.style.display='none';phxSearchShell.hidden=false;phxSearchShell.style.display='flex';
   $('phxReview').scrollIntoView({behavior:'smooth',block:'start'});
- }catch(error){setPhxLookupState('error',error.name==='AbortError'?'The lookup timed out. Please try again later.':error instanceof TypeError?'Player lookup unavailable. Bitte die Freigabe der Testadresse (CORS), Anmeldung und API-Verbindung prüfen; deine Internetverbindung ist nicht zwingend die Ursache.':error.message);}
+ }catch(error){setPhxLookupState('error',error.name==='AbortError'?'The lookup timed out. Please try again later.':error instanceof TypeError?'Could not connect to the player lookup service. Check your session and try again.':error.message);}
  finally{button.disabled=false;}
 });
 
@@ -898,6 +1037,7 @@ function syncWorkspace(){
  $('candidate-profile').hidden=!candidateView||!profileOpen||!players.some(p=>p.candidate_id===active);
  $('scoutingBoard').classList.toggle('profile-open',!$('candidate-profile').hidden);
  $('compare').disabled=chosen.size<2;$('compare').hidden=total<2;$('csv').hidden=!total;
+ $('nextCandidateAction').hidden=!canEdit||!total;
  $('addFirstCandidate').hidden=!canEdit;$('readOnlyNotice').hidden=canEdit;
 }
 function showWorkspace(view){
@@ -910,8 +1050,15 @@ function showWorkspace(view){
  syncWorkspace();
  if(view==='phxIdPanel')lookupIntel?.showComparison();
 }
+$('phxOpenEventPlan').onclick=()=>{
+ showWorkspace('workspace-tools');
+ const editor=$('phxEventPlan');
+ const tool=editor?.closest('details');
+ if(tool)tool.open=true;
+ $('phxEventCap')?.focus();
+};
 document.querySelectorAll('[data-view]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();showWorkspace(el.dataset.view);}));
-$('addFirstCandidate').onclick=()=>$('newCandidate').click();
+$('addFirstCandidate').onclick=openCandidateLookup;
 $('toolsCsv').onclick=()=>$('csv').click();
 $('closeProfile').onclick=()=>{profileOpen=false;syncWorkspace();};
 $('rows').addEventListener('click',e=>{if(e.target.closest('tr[data-id]')&&!e.target.closest('input,button')){profileOpen=true;syncWorkspace();}});
@@ -923,12 +1070,14 @@ for(const label of [...$('candidateForm').querySelectorAll('.form-grid>label')])
 advanced.append($('candidateForm').querySelector('fieldset'));$('candidateForm').insertBefore(advanced,$('candidateForm').querySelector('label:has(textarea)'));
 
 /* ID-first candidate onboarding. Lookup stays read-only; the explicit button is the write action. */
-let lookupCandidate=null,lookupSaving=false;
-function clearLookupCandidate(){lookupCandidate=null;$('workspaceNotice').textContent='';$('phxAdoptCandidate').hidden=true;$('phxAdoptStatus').textContent='';}
+let lookupCandidate=null,lookupSaving=false,lookupSaved=null;
+function clearLookupCandidate(){lookupCandidate=null;lookupSaved=null;$('phxAdoptCandidate').textContent='Add to Candidates';$('workspaceNotice').textContent='';$('phxAdoptCandidate').hidden=true;$('phxAdoptStatus').textContent='';}
 function offerLookupCandidate(payload,id){
  if($('phxGovernorId').value.trim()!==id)return;
- try{lookupCandidate=candidateFromLookup(payload,id);$('phxAdoptCandidate').hidden=!canEdit;
- $('phxAdoptStatus').textContent=canEdit?'Review these details, then select Add to Candidates.':'Read only. Recruiter permission is required to add candidates.';
+ try{lookupCandidate=candidateFromLookup(payload,id);
+ const alreadySaved=players.some(p=>String(p.metadata?.governor_id||'')===id);
+ $('phxAdoptCandidate').hidden=!canEdit||alreadySaved;
+ $('phxAdoptStatus').textContent=alreadySaved?'This player is already a candidate. Existing data remains unchanged.':canEdit?'Review these details, then select Add to Candidates.':'Read only. Recruiter permission is required to add candidates.';
  }catch(error){clearLookupCandidate();$('phxAdoptStatus').textContent=error.message;}
 }
 $('phxGovernorId').addEventListener('input',clearLookupCandidate);
@@ -937,17 +1086,25 @@ $('phxAdoptCandidate').onclick=async()=>{
  const draft=lookupCandidate,id=draft?.metadata.governor_id;
  if(!canEdit||$('private').hidden||!draft||$('phxGovernorId').value.trim()!==id){clearLookupCandidate();return;}
  lookupSaving=true;$('phxAdoptCandidate').disabled=true;$('phxGovernorId').disabled=true;phxIdForm.querySelector('button').disabled=true;
- $('phxAdoptStatus').textContent='Checking existing candidates…';
  try{
-  const {data:duplicates,error:readError}=await db.from('transfer_candidates').select('candidate_id,player_name').or(duplicateLookupFilter(id)).limit(1);
-  if(readError)throw Error('Existing candidates could not be checked. Nothing was saved.');
-  if(duplicates?.length){$('phxAdoptStatus').textContent='This player is already a candidate. Existing data remains unchanged.';return;}
-  const {data:saved,error}=await db.from('transfer_candidates').insert({...draft,updated_at:new Date().toISOString()}).select('candidate_id').maybeSingle();
-  if(error){if(error.code==='23505')throw Error('This player was already added. No duplicate was created.');throw Error('Could not add candidate: '+error.message);}
-  if(!saved?.candidate_id)throw Error('Save not confirmed. Refresh Candidates before trying again.');
-  active=saved.candidate_id;clearLookupCandidate();
-  $('search').value=''; // Clear only the shortlist filter after confirmed insert; never on error.
-  const loaded=await load();$('workspaceNotice').textContent=loaded?'Candidate added. Player data saved.':'Candidate saved. The list could not reload; please refresh.';
+  if(!lookupSaved){
+   $('phxAdoptStatus').textContent='Checking existing candidates…';
+   const {data:duplicates,error:readError}=await db.from('transfer_candidates').select('candidate_id,player_name').or(duplicateLookupFilter(id)).limit(1);
+   if(readError)throw Error('Existing candidates could not be checked. Nothing was saved.');
+   if(duplicates?.length){$('phxAdoptCandidate').hidden=true;$('phxAdoptStatus').textContent='This player is already a candidate. Existing data remains unchanged.';return;}
+   const {data:saved,error}=await db.from('transfer_candidates').insert({...draft,updated_at:new Date().toISOString()}).select('candidate_id,updated_at').maybeSingle();
+   if(error){if(error.code==='23505')throw Error('This player was already added. No duplicate was created.');throw Error('Could not add candidate: '+error.message);}
+   if(!saved?.candidate_id)throw Error('Save not confirmed. Refresh Candidates before trying again.');
+   lookupSaved=saved;
+  }
+  $('phxAdoptStatus').textContent='Saved. Checking the candidate list…';
+  if(!await load(lookupSaved)){
+   $('phxAdoptCandidate').textContent='Retry reload';
+   $('phxAdoptStatus').textContent='The save was confirmed, but the candidate could not be reloaded. Select Retry reload to check again.';
+   return;
+  }
+  clearLookupCandidate();$('search').value='';render();
+  $('workspaceNotice').textContent='Candidate added. Player data saved.';
   showWorkspace('scoutingBoard');
  }catch(error){$('phxAdoptStatus').textContent=error.message||'Save not confirmed. Refresh Candidates before trying again.';}
  finally{lookupSaving=false;$('phxAdoptCandidate').disabled=false;$('phxGovernorId').disabled=false;phxIdForm.querySelector('button').disabled=false;}
