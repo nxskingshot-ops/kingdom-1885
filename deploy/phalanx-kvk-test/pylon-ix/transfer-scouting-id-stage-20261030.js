@@ -797,8 +797,13 @@ function mountDecision(payload,id){
   const percentile=reliable?100*peers.filter(row=>row.true_power<=truePower.value).length/peers.length:null;
   const label=percentile===null?null:percentile>=85?'Very strong':percentile>=60?'Strong':percentile>=20?'Average':'Needs development';
   const color=label==='Very strong'?'green':label==='Strong'?'blue':label==='Average'?'yellow':'pink';
-  const tile=tiles.querySelector('[data-metric="true_power"] dd');
-  if(tile){delete tile.dataset.profileColor;if(label)tile.dataset.profileColor=color;}
+  const tile=tiles.querySelector('[data-metric="true_power"]');
+  if(tile){
+   delete tile.dataset.profileColor;
+   if(label)tile.dataset.profileColor=color;
+   const value=tile.querySelector('dd');
+   if(value){delete value.dataset.profileColor;if(label)value.dataset.profileColor=color;}
+  }
   trueVerdict.textContent=label?label+' · True Power percentile '+Math.round(percentile)+' among '+peers.length+' verified peers (partial kingdom sample).'
    :'Not yet rateable · '+peers.length+' comparable True Power values; at least 20 required.';
   trueSample.textContent+=' Rating: green top 15%, blue next 25%, yellow next 40%, pink bottom 20%. Based only on actual True Power values; no TG or other ranking fallback.';
