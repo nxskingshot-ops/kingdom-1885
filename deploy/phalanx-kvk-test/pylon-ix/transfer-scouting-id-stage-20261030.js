@@ -705,21 +705,24 @@ function mountDecision(payload,id){
  const rallySignals=['hero_equip','hero_total','research_power','gov_gear','gov_charm']
   .map(key=>assessment.rankingEvidence.find(row=>row.key===key&&row.rank<=15)).filter(Boolean);
  const defaultRole=primaryRole?'Review '+tiedRoles.map(role=>role.label).join(' or ')+' potential'
-  +(tiedRoles.length===1?' · '+short(primaryRole.evidence.slice(0,2)):'')
-  :'More evidence needed before suggesting a KvK role';
- const roleTitle=element('strong','Suggested KvK role · Provisional');
- const roleText=element('p',defaultRole+'. Combat buffs and battle reports are needed to confirm the role.');
- recommendation.append(roleTitle,roleText,
-  decisionDetails('Strengths & development areas',facts));
+  :'Insufficient evidence for a specific KvK role';
+ const roleTitle=element('strong','KvK recommendation · Provisional');
+ const roleText=element('p',defaultRole+'.');
+ const verification=element('p','To confirm: combat buffs and battle reports.','phx-decision-source');
+ recommendation.append(roleTitle,roleText,verification,decisionDetails('Strengths & development areas',facts));
  const strongest=assessment.strengths.slice(0,3);
  const weakest=assessment.development.slice(0,2);
- const overview=[
-  assessment.coverage<4?'Provisional account judgment: limited kingdom ranking coverage.':assessment.profile+' account profile based on '+assessment.coverage+' kingdom ranking categories.',
-  strongest.length?'Documented strengths: '+short(strongest)+'.':'No verified Top-15 strengths in the available categories.',
-  weakest.length?'Relative development gaps: '+short(weakest)+'.':assessment.coverage?'No further development gap established by available rankings.':'Development gaps unknown without ranking evidence.',
-  defaultRole+'. Combat buffs and battle reports are still required for confirmation.'
- ];
- const overviewText=element('p',overview.join(' '),'phx-intel-overview');
+ // ACHILLES: one interpretation, not a repetition of all ranking rows.
+ const hero=assessment.rankingEvidence.find(row=>row.key==='hero_equip');
+ const research=assessment.rankingEvidence.find(row=>row.key==='research_power');
+ const master=assessment.rankingEvidence.find(row=>row.key==='master_power');
+ const specialized=hero?.rank<=15&&research?.rank<=15&&master?.rank>30;
+ const dna=specialized
+  ?'Specialized account: hero equipment and research rank in the top 15, while master power is outside the top 30. This suggests focused development rather than uniformly high rankings.'
+  :assessment.profile==='Balanced'?'Balanced development across the available ranking categories.'
+  :assessment.coverage>=4?'Development is uneven across the documented ranking categories.'
+  :'Account DNA remains provisional: too few ranking categories.';
+ const overviewText=element('p',dna,'phx-intel-overview');
  body.append(brand,element('h4',assessment.level));
  body.append(overviewText);
  body.append(recommendation);
@@ -779,16 +782,14 @@ function mountDecision(payload,id){
   // Live peer rankings arrive asynchronously; update the strategic verdict with them.
   const rallyCandidate=label==='Very strong'&&rallySignals.length>=2
    &&rallySignals.some(row=>row.key==='hero_equip'||row.key==='hero_total');
-  const rallySummary=rallyCandidate
-   ?'Strong Rally Leader candidate · '+short(rallySignals.slice(0,3))
-    +' · True Power Very strong ('+Math.round(percentile)+'th percentile of '+peers.length+' verified peers)'
-   :defaultRole;
-  roleTitle.textContent=rallyCandidate?'Suggested KvK role · Rally Leader candidate':'Suggested KvK role · Provisional';
-  roleText.textContent=rallySummary+'. Combat buffs and battle reports are needed to confirm the role.';
-  overview[3]=rallyCandidate
-   ?'Strategic verdict: strong Rally Leader candidate, supported by verified True Power peer standing and '+short(rallySignals.slice(0,3))+'. Combat assignment remains unverified.'
-   :defaultRole+'. Combat buffs and battle reports are still required for confirmation.';
-  overviewText.textContent=overview.join(' ');
+  roleTitle.textContent=rallyCandidate?'KvK recommendation · Rally Leader candidate':'KvK recommendation · Provisional';
+  roleText.textContent=rallyCandidate
+   ?'Strong candidate: verified True Power is in the top 15% of the matched sample, supported by top-15 hero-related development.'
+   :defaultRole+'.';
+  verification.textContent=rallyCandidate
+   ?'Next check: lead combat buffs, rally capacity and battle reports before confirming a Rally Leader assignment.'
+   :'Next check: role-specific combat buffs and battle reports.';
+  overviewText.textContent=dna+(rallyCandidate?' True Power independently supports the account strength.':'');
 
 
  };
