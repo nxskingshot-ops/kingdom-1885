@@ -813,9 +813,18 @@ function mountDecision(payload,id){
   roleTitle.textContent='KvK recommendation · '+(suggested.role||'Unconfirmed');
   roleText.textContent=suggested.reason+'.';
   verification.textContent='Next check: '+suggested.verify+'.';
-  overviewText.textContent=dna;
-
-
+  // Explain why a player's relative True Power can differ from their
+  // overall account development. Never treat a partial sample as a full census.
+  const weakCategories=[hero,research,heroPower].filter(row=>Number.isFinite(row?.rank)&&row.rank>50);
+  const weakNames=weakCategories.map(row=>row.label+' #'+row.rank);
+  const contrast=label==='Average'&&weakNames.length>=2
+   ?'True Power is average within '+peers.length+' verified comparable players, but '+weakNames.join(' and ')+' rank lower in the available kingdom boards. This indicates relative development gaps, not proven combat weakness.'
+   :label==='Very strong'&&weakNames.length>=2
+   ?'True Power is very strong within the verified sample, but '+weakNames.join(' and ')+' rank lower in the available kingdom boards. High non-troop power alone does not establish combat leadership.'
+   :label
+   ?'True Power is '+label.toLowerCase()+' in the verified comparison sample; the account profile separately evaluates the available kingdom rankings.'
+   :'True Power cannot currently be compared reliably. The account profile uses only the available kingdom rankings.';
+  overviewText.textContent=dna+' '+contrast;
  };
  refreshTrueSample();
  evidence.append(metricEvidence,
