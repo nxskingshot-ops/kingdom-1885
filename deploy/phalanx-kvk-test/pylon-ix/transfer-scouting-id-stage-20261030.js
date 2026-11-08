@@ -712,8 +712,8 @@ function mountDecision(payload,id){
  const overview=[
   assessment.coverage<4?'Provisional account judgment: limited kingdom ranking coverage.':assessment.profile+' account profile based on '+assessment.coverage+' kingdom ranking categories.',
   strongest.length?'Documented strengths: '+short(strongest)+'.':'No verified Top-15 strengths in the available categories.',
-  weakest.length?'Relative development gaps: '+short(weakest)+'.':'No documented development gaps outside the Top 15.',
-  primaryRole?'Potential '+primaryRole.label+' role merits review; not a verified combat assignment.':'No KvK role can be recommended from current ranking evidence.',
+  weakest.length?'Relative development gaps: '+short(weakest)+'.':assessment.coverage?'No further development gap established by available rankings.':'Development gaps unknown without ranking evidence.',
+  primaryRole?'Potential '+tiedRoles.map(role=>role.label).join(' or ')+' role merits review; not a verified combat assignment.':'No KvK role can be recommended from current ranking evidence.',
   'Combat buffs and battle reports are still required for confirmation.'
  ].join(' ');
  body.append(brand,element('h4',assessment.level));
