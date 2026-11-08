@@ -16,14 +16,14 @@ export function describeTransferPlan(plan) {
  const {phxEventGroup: group, phxTargetKingdom: target, phxEventCap: cap, phxGroupMin: from, phxGroupMax: to,
   phxEventStart: start, phxEventEnd: end} = plan;
  const parts = [];
- if (positiveInteger(group)) parts.push('Gruppe ' + Number(group));
+ if (positiveInteger(group)) parts.push('Group ' + Number(group));
  if (positiveInteger(from) && positiveInteger(to) && Number(from) <= Number(to)) parts.push('Kingdoms #' + Number(from) + '–#' + Number(to));
- if (positiveInteger(target)) parts.push('Ziel #' + Number(target));
+ if (positiveInteger(target)) parts.push('Target #' + Number(target));
  if (Number.isFinite(Number(cap)) && Number(cap) > 0) {
-  parts.push('Max. Transfer-Power ' + Number(cap).toLocaleString('de-DE', {maximumFractionDigits: 6}) + ' M');
+  parts.push('Max. Transfer Power ' + Number(cap).toLocaleString('en-US', {maximumFractionDigits: 6}) + ' M');
  }
- if (start && end) parts.push(start + ' bis ' + end);
- else if (start) parts.push('Ab ' + start);
- else if (end) parts.push('Bis ' + end);
+ if (start && end) parts.push(start + ' to ' + end);
+ else if (start) parts.push('From ' + start);
+ else if (end) parts.push('Until ' + end);
  return parts.join(' · ');
 }

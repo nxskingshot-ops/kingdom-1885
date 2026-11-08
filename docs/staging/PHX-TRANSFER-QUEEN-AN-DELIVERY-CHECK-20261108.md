@@ -75,3 +75,9 @@ https://phalanx-r11-atlas-preview-git-work-truepo-13a8b9-matze4428-6040.vercel.a
 - Total und Troop Power müssen pro Spieler weiter aus derselben Quelle und Messung stammen. Der Infodialog zeigt beide Messzeiten und ihren Abstand. Ohne geeignete Stichprobe bleibt die Anzeige neutral. Die vorhandene Farbskala bleibt maßgeblich.
 - **BESTANDEN** · 27 automatisierte Tests inklusive 24-Stunden-Grenze, Vorrang der zeitgleichen Stichprobe, getrennten Messungen, Duplikaten und Selbstausschluss. Chromium mit Testdaten zeigte alle vier Farben, darunter die Farbe bei einem Stundenversatz, beide Zeitstempel im Dialog und den neutralen Zustand außerhalb des Fensters. Kandidatenabläufe, Rollen und manuelle Transferplanung wurden erneut mit isolierten API-Antworten geprüft.
 - **NICHT GETESTET** · LadyBeth23 am neuen Stand auf Android mit authentifizierter Live-Antwort. Backend-Patch zur Snapshot-Auswahl ist davon getrennt.
+
+## Follow-up · English transfer scouting interface · 2026-11-08
+
+- The Transfer Scouting preview uses English for the tools, planning forms, saved-plan summary, candidate removal prompts, and lookup errors. The summary uses English decimal formatting. Existing saved plans retain their values.
+- **PASS** · Browser checks with isolated API responses covered lookup and True Power colors, candidate management and removal prompts, the tools menu, CSV, and plan validation. Saved plans and English formatting were verified in a German browser locale at 390 and 1280 CSS pixels. All 27 automated tests and the asset preflight passed.
+- **NOT TESTED** · This revision on an Android device or with Queen An's authenticated session.

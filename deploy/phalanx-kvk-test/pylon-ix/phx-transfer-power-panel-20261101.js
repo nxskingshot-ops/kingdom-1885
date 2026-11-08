@@ -1,4 +1,4 @@
-import {readTransferPlan, transferPlanUpdated} from './phx-transfer-event-plan-20261108.js';
+import {readTransferPlan, transferPlanUpdated} from './phx-transfer-event-plan-20261108.js?v=phx-transfer-en-20261108';
 import {simulateTransferPower} from './phx-transfer-power-simulator-20261101.js';
 const byId=id=>document.getElementById(id);
 const panel=byId('phxPowerScenario');

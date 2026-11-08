@@ -1,4 +1,4 @@
-import {describeTransferPlan, readTransferPlan, transferPlanKey, transferPlanUpdated} from './phx-transfer-event-plan-20261108.js';
+import {describeTransferPlan, readTransferPlan, transferPlanKey, transferPlanUpdated} from './phx-transfer-event-plan-20261108.js?v=phx-transfer-en-20261108';
 
 const tools = document.querySelector('.tools-body');
 const scenario = document.getElementById('phxPowerScenario');
@@ -18,24 +18,24 @@ if (tools && scenario) {
    .phx-planning-context #phxSaveEvent{max-width:100%;white-space:normal;overflow-wrap:anywhere}
    @media(max-width:760px){.phx-planning-context .form-grid{grid-template-columns:minmax(0,1fr)!important}.phx-planning-context .panel-body{padding:12px}.phx-planning-context .form-grid>label{width:100%}}
   </style>
-  <div class="panel-head"><h2>Transfer-Einstellungen</h2><small>Manuelle Planung auf diesem Gerät</small></div>
+  <div class="panel-head"><h2>Transfer Settings</h2><small>Manual planning on this device</small></div>
   <div class="panel-body">
    <form id="phxEventPlanForm">
     <div class="form-grid">
-     <label>Max. Transfer-Power (M)<input id="phxEventCap" type="number" min="0.000001" step="any" inputmode="decimal" placeholder="z. B. 175,5"></label>
-     <label>Transfergruppe<input id="phxEventGroup" type="number" min="1" step="1" inputmode="numeric" placeholder="z. B. 7"></label>
-     <label>Gruppe · erstes Kingdom<input id="phxGroupMin" type="number" min="1" step="1" inputmode="numeric"></label>
-     <label>Gruppe · letztes Kingdom<input id="phxGroupMax" type="number" min="1" step="1" inputmode="numeric"></label>
-     <label>Zielkönigreich<input id="phxTargetKingdom" type="number" min="1" step="1" inputmode="numeric" value="1885"></label>
-     <label>Transferfenster · Beginn<input id="phxEventStart" type="date"></label>
-     <label>Transferfenster · Ende<input id="phxEventEnd" type="date"></label>
-     <label>Quelle / Beleg<input id="phxEventCapSource" type="text" maxlength="500" placeholder="Event-Regel / Screenshot-Nachweis"></label>
-     <label>Belegdatum<input id="phxEventCapVerifiedAt" type="date"></label>
-     <label><input type="checkbox" id="phxEventCapVerified"> Quelle für das Power-Limit dokumentiert</label>
+     <label>Max. Transfer Power (M)<input id="phxEventCap" type="number" min="0.000001" step="any" inputmode="decimal" placeholder="e.g. 175.5"></label>
+     <label>Transfer group<input id="phxEventGroup" type="number" min="1" step="1" inputmode="numeric" placeholder="e.g. 7"></label>
+     <label>First kingdom in the group<input id="phxGroupMin" type="number" min="1" step="1" inputmode="numeric"></label>
+     <label>Last kingdom in the group<input id="phxGroupMax" type="number" min="1" step="1" inputmode="numeric"></label>
+     <label>Target kingdom<input id="phxTargetKingdom" type="number" min="1" step="1" inputmode="numeric" value="1885"></label>
+     <label>Transfer window starts<input id="phxEventStart" type="date"></label>
+     <label>Transfer window ends<input id="phxEventEnd" type="date"></label>
+     <label>Source or evidence<input id="phxEventCapSource" type="text" maxlength="500" placeholder="Event rule or screenshot"></label>
+     <label>Evidence date<input id="phxEventCapVerifiedAt" type="date"></label>
+     <label><input type="checkbox" id="phxEventCapVerified"> Power limit source documented</label>
     </div>
     <p id="phxGroupRange" class="smallprint" role="status"></p>
-    <p id="phxEventStatus" class="smallprint" role="status">Manuelle Werte dienen der Planung.</p>
-    <button type="submit" id="phxSaveEvent">Planung auf diesem Gerät speichern</button>
+    <p id="phxEventStatus" class="smallprint" role="status">Use these settings for planning.</p>
+    <button type="submit" id="phxSaveEvent">Save plan on this device</button>
    </form>
   </div>`;
  tools.prepend(panel);
@@ -55,19 +55,19 @@ if (tools && scenario) {
  documented.checked = saved?.phxEventCapVerified === true;
 
  const showSavedPlan = plan => {
-  summary.textContent = describeTransferPlan(plan) || 'Transfergruppe und Power-Limit eingeben';
+  summary.textContent = describeTransferPlan(plan) || 'Enter the transfer group and power limit';
  };
  const showRange = () => {
   const from = field('phxGroupMin').value;
   const to = field('phxGroupMax').value;
   rangeStatus.textContent = from && to
-   ? 'Manuell eingetragener Bereich · Kingdoms #' + from + '–#' + to
-   : 'Die Kingdom-Grenzen der Gruppe sind optional.';
+   ? 'Manually entered range · Kingdoms #' + from + '–#' + to
+   : 'The kingdom range is optional.';
  };
  const form = field('phxEventPlanForm');
  form.addEventListener('input', () => {
   showRange();
-  status.textContent = 'Ungespeicherte Änderungen.';
+  status.textContent = 'Unsaved changes.';
  });
  form.addEventListener('submit', event => {
   event.preventDefault();
@@ -76,7 +76,7 @@ if (tools && scenario) {
    if (!plan[id]) continue;
    const value = field(id).valueAsNumber;
    if (!Number.isSafeInteger(value) || value < 1) {
-    status.textContent = 'Transfergruppe und Kingdom-Nummern müssen positive Ganzzahlen sein.';
+    status.textContent = 'The transfer group and kingdom numbers must be positive whole numbers.';
     return;
    }
    plan[id] = String(value);
@@ -87,30 +87,30 @@ if (tools && scenario) {
   const to = Number(plan.phxGroupMax);
   const target = Number(plan.phxTargetKingdom);
   if (Boolean(from) !== Boolean(to) || from > to) {
-   status.textContent = 'Bitte beide Kingdom-Grenzen in aufsteigender Reihenfolge eingeben.';
+   status.textContent = 'Enter both kingdom limits in ascending order.';
    return;
   }
   if (from && target && (target < from || target > to)) {
-   status.textContent = 'Das Zielkönigreich liegt außerhalb des eingetragenen Gruppenbereichs.';
+   status.textContent = 'The target kingdom is outside the entered group range.';
    return;
   }
   if (plan.phxEventStart && plan.phxEventEnd && plan.phxEventEnd < plan.phxEventStart) {
-   status.textContent = 'Das Transferfenster endet vor seinem Beginn.';
+   status.textContent = 'The transfer window ends before it starts.';
    return;
   }
   if (plan.phxEventCapVerified && (!plan.phxEventCap || !plan.phxEventCapSource || !plan.phxEventCapVerifiedAt)) {
-   status.textContent = 'Für den dokumentierten Beleg bitte Power-Limit, Quelle und Belegdatum eingeben.';
+   status.textContent = 'Enter the power limit, source, and evidence date.';
    return;
   }
   try {
    localStorage.setItem(transferPlanKey, JSON.stringify(plan));
   } catch {
-   status.textContent = 'Speichern auf diesem Gerät fehlgeschlagen.';
+   status.textContent = 'Could not save the plan on this device.';
    return;
   }
   showSavedPlan(plan);
   window.dispatchEvent(new Event(transferPlanUpdated));
-  status.textContent = 'Auf diesem Gerät gespeichert · manuelle Planung.';
+  status.textContent = 'Plan saved on this device.';
  });
 
  showSavedPlan(saved);

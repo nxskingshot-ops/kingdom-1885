@@ -1,4 +1,4 @@
-import { describeTransferPlan, readTransferPlan } from './phx-transfer-event-plan-20261108.js';
+import { describeTransferPlan, readTransferPlan } from './phx-transfer-event-plan-20261108.js?v=phx-transfer-en-20261108';
 import { placeInAlliance, compareTopPeers } from './phx-transfer-alliance-placement-20261101.js?v=phx-transfer-evidence-20261107';
 import { assessAccount, suggestProvisionalRole } from './phx-transfer-account-assessment-20261101.js?v=phx-achilles-roles-20261108';
 import { strategicProfile } from './phx-transfer-strategic-profile-20261101.js';
@@ -144,16 +144,16 @@ removeCandidateButton.onclick=async()=>{
  const candidate=players.find(p=>p.candidate_id===active);
  if(!canEdit||!candidate||removeCandidateButton.disabled)return;
  const id=candidate.candidate_id;
- if(!window.confirm('Kandidat '+candidate.player_name+' aus der gespeicherten Liste entfernen? Dieser Vorgang kann nicht rückgängig gemacht werden.'))return;
+ if(!window.confirm('Remove '+candidate.player_name+' from saved candidates? This action is permanent.'))return;
  removeCandidateButton.disabled=true;
  try{
   const {data,error}=await db.from('transfer_candidates').delete().eq('candidate_id',id).select('candidate_id');
   if(error)throw error;
-  if(!Array.isArray(data)||data.length!==1||data[0].candidate_id!==id)throw Error('Löschung nicht bestätigt.');
+  if(!Array.isArray(data)||data.length!==1||data[0].candidate_id!==id)throw Error('Could not confirm removal.');
   chosen.delete(id);if(active===id)active=null;
   if(dossierOpen)closeDossier();
   await load();
- }catch(error){window.alert('Kandidat konnte nicht entfernt werden: '+error.message);}
+ }catch(error){window.alert('Could not remove the candidate: '+error.message);}
  finally{removeCandidateButton.disabled=false;}
 };
 const originalRenderCandidate=render;
@@ -540,11 +540,11 @@ function renderDossier(){
  forecastPanel.setAttribute('aria-label','Expected transfer rules');
  const forecastHeading=document.createElement('h3');
  const manualPlan=describeTransferPlan(readTransferPlan());
- forecastHeading.textContent=manualPlan?'PYLON IX · Manuelle Transferplanung':'PYLON IX · Transfer Intelligence — FORECAST';
+ forecastHeading.textContent=manualPlan?'PYLON IX · Manual Transfer Plan':'PYLON IX · Transfer Intelligence — FORECAST';
  const forecastBody=document.createElement('p');
  forecastBody.textContent=manualPlan||'Expected Group '+phxTransferForecast.group+' · Kingdoms '+phxTransferForecast.range.join('–')+' · Ordinary reference '+phxTransferForecast.ordinaryReferenceM+'M · Leading reference '+phxTransferForecast.leadingReferenceM+'M · '+phxTransferForecast.window+'.';
  const forecastNotice=document.createElement('p');
- forecastNotice.textContent=manualPlan?'Auf diesem Gerät eingetragene Planungswerte. Einladungsberechtigung und Power-Metrik im Spiel prüfen.':phxTransferStatus(null)+'. Community forecast only; #1885 classification, official power metric, active cap, invitations and final rules are unconfirmed. Source: '+phxTransferForecast.source+' (checked '+phxTransferForecast.checked+').';
+ forecastNotice.textContent=manualPlan?'Plan saved on this device. Check invitation eligibility and the applicable power metric in-game.':phxTransferStatus(null)+'. Community forecast only; #1885 classification, official power metric, active cap, invitations and final rules are unconfirmed. Source: '+phxTransferForecast.source+' (checked '+phxTransferForecast.checked+').';
  forecastPanel.append(forecastHeading,forecastBody,forecastNotice);
  root.prepend(forecastPanel);
  mountRuleDraftEditor(forecastPanel,{canEdit:false}); // Fail closed until a server-verified transfer_admin role exists.
@@ -1013,7 +1013,7 @@ phxIdForm.addEventListener('submit',async e=>{
   phxSearchLabel.textContent=(p.name||p.player_name||p.nickname||'Player')+' · ID '+id;
   phxIdForm.hidden=true;phxIdForm.style.display='none';phxSearchShell.hidden=false;phxSearchShell.style.display='flex';
   $('phxReview').scrollIntoView({behavior:'smooth',block:'start'});
- }catch(error){setPhxLookupState('error',error.name==='AbortError'?'The lookup timed out. Please try again later.':error instanceof TypeError?'Player lookup unavailable. Bitte die Freigabe der Testadresse (CORS), Anmeldung und API-Verbindung prüfen; deine Internetverbindung ist nicht zwingend die Ursache.':error.message);}
+ }catch(error){setPhxLookupState('error',error.name==='AbortError'?'The lookup timed out. Please try again later.':error instanceof TypeError?'Could not connect to the player lookup service. Check your session and try again.':error.message);}
  finally{button.disabled=false;}
 });
 
