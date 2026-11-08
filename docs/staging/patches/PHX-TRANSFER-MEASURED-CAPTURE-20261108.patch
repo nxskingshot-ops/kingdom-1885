@@ -1,0 +1,123 @@
+diff --git a/supabase/functions/_shared/phx-transfer-capture.ts b/supabase/functions/_shared/phx-transfer-capture.ts
+new file mode 100644
+--- /dev/null
++++ b/supabase/functions/_shared/phx-transfer-capture.ts
+@@ -0,0 +1,17 @@
++// Provider capture stamps are UTC epoch seconds or ISO; saved captures are ISO.
++export function captureIso(value: unknown): string | null {
++  const numeric = typeof value === "number" || (typeof value === "string" && /^\d+(?:\.\d+)?$/.test(value));
++  const date = numeric
++    ? new Date(Number(value) * (Number(value) >= 1e12 ? 1 : 1000))
++    : typeof value === "string" && /^\d{4}-\d{2}-\d{2}T/.test(value) && /(?:Z|[+-]\d{2}:\d{2})$/.test(value)
++      ? new Date(value)
++      : null;
++  if (!date || !Number.isFinite(date.getTime()) || date.getTime() < 0) return null;
++  const fraction = typeof value === "string" ? value.match(/T\d{2}:\d{2}:\d{2}\.(\d+)/)?.[1] : undefined;
++  return date.toISOString().replace(/Z$/, (fraction ?? "").slice(3, 9).padEnd(6, "0") + "Z");
++}
++
++export function preferStoredCapture(provider: unknown, stored: unknown): boolean {
++  const saved = captureIso(stored);
++  return saved !== null && saved > (captureIso(provider) ?? "");
++}
+diff --git a/supabase/functions/phalanx-transfer-id-snapshot-fallback-stage-20261031/index.ts b/supabase/functions/phalanx-transfer-id-snapshot-fallback-stage-20261031/index.ts
+--- a/supabase/functions/phalanx-transfer-id-snapshot-fallback-stage-20261031/index.ts
++++ b/supabase/functions/phalanx-transfer-id-snapshot-fallback-stage-20261031/index.ts
+@@ -3,0 +4 @@
++import { captureIso, preferStoredCapture } from "../_shared/phx-transfer-capture.ts";
+@@ -47 +48 @@
+-  if(ranks)ranks.leaderboards=Array.isArray(d.ranks.leaderboards)?d.ranks.leaderboards.slice(0,100).map(b=>({name:scalar(b?.name),value:scalar(b?.value),kingdom_rank:scalar(b?.kingdom_rank),captured_at:scalar(d.cached_at)})):null;
++  if(ranks)ranks.leaderboards=Array.isArray(d.ranks.leaderboards)?d.ranks.leaderboards.slice(0,100).map(b=>({name:scalar(b?.name),value:scalar(b?.value),kingdom_rank:scalar(b?.kingdom_rank),captured_at:scalar(b?.captured_at??d.cached_at),source:"provider_player"})):null;
+@@ -55,0 +57 @@
++    const byBoard=new Map();
+@@ -57,0 +60,5 @@
++     const previous=byBoard.get(board.key);
++     if(previous&&(captureIso(previous.captured_at)??"")>=(captureIso(board.captured_at)??""))continue;
++     byBoard.set(board.key,board);
++    }
++    for(const board of byBoard.values()){
+@@ -59,3 +66,3 @@
+-     const captured=scalar(board.captured_at);
+-     ranks.boards.push({name:board.key,captured_at:captured,status:found?'listed':'not_listed'});
+-     if(found)ranks.leaderboards.push({name:board.key,value:scalar(found.score),kingdom_rank:scalar(found.rank),captured_at:captured});
++     const captured=captureIso(board.captured_at);
++     ranks.boards.push({name:board.key,captured_at:captured,status:found?'listed':'not_listed',source:'provider_kingdom'});
++     if(found)ranks.leaderboards.push({name:board.key,value:scalar(found.score),kingdom_rank:scalar(found.rank),captured_at:captured,source:'provider_kingdom'});
+@@ -66,2 +73 @@
+-  // Supplement only absent boards with the newest saved Top-100 snapshot.
+-  // Never replace a live board, never infer a zero, and never join by player name.
++  // Use the newest measured Top-100 board. Prefer the provider on ties; join only by verified IDs.
+@@ -70,2 +76,2 @@
+-   const existing=new Set((ranks?.boards||[]).map(b=>b.name));
+-   const saved=await Promise.all(boardKeys.filter(b=>!existing.has(b)).map(async board=>{
++   const existing=new Map((ranks?.boards||[]).map(b=>[b.name,b]));
++   const saved=await Promise.all(boardKeys.map(async board=>{
+@@ -73,0 +80 @@
++     .order('source_captured_at',{ascending:false,nullsFirst:false})
+@@ -78,0 +86,6 @@
++    const direct=existing.get(b.board);
++    if(direct&&!preferStoredCapture(direct.captured_at,b.source_captured_at))continue;
++    if(direct){
++     ranks.boards=ranks.boards.filter(board=>board.name!==b.board);
++     ranks.leaderboards=ranks.leaderboards.filter(entry=>entry.name!==b.board||entry.source!=='provider_kingdom');
++    }
+diff --git a/supabase/functions/phalanx-transfer-intelligence-stage-20261031/index.ts b/supabase/functions/phalanx-transfer-intelligence-stage-20261031/index.ts
+--- a/supabase/functions/phalanx-transfer-intelligence-stage-20261031/index.ts
++++ b/supabase/functions/phalanx-transfer-intelligence-stage-20261031/index.ts
+@@ -1,0 +2 @@
++import { captureIso, preferStoredCapture } from "../_shared/phx-transfer-capture.ts";
+@@ -40,10 +41,19 @@
+-  let results=[],sourceMode='saved_snapshot';
+-  const key=Deno.env.get("MIGHTPULSE_API_KEY");
+-  if(key)try{
+-    const res=await fetch('https://api.mightpulse.com/v1/kingdoms/1885/ranks?limit=100',{headers:{'X-Api-Key':key},redirect:'error',signal:AbortSignal.timeout(8000)});
+-    if(res.ok){const raw=await res.json();if(Array.isArray(raw?.boards)){
+-      results=raw.boards.filter(b=>boards.includes(b?.key)&&Array.isArray(b.rows)&&b.rows.length<=100).map(b=>({board:b.key,data:{entries:b.rows,entry_count:b.rows.length,source_captured_at:typeof b.captured_at==='number'?new Date(b.captured_at*1000).toISOString():null,created_at:null},error:null}));
+-      if(results.length)sourceMode='provider_request';
+-    }}
+-  }catch{/* Read-only saved snapshots are the documented fallback. */}
+-  if(!results.length)results=await Promise.all(boards.map(async board=>{
++  const provider = new Map();
++  const fetchProvider = async () => {
++    const key=Deno.env.get("MIGHTPULSE_API_KEY");
++    if(!key)return;
++    try{
++      const res=await fetch('https://api.mightpulse.com/v1/kingdoms/1885/ranks?limit=100',{headers:{'X-Api-Key':key},redirect:'error',signal:AbortSignal.timeout(8000)});
++      if(!res.ok)return;
++      const raw=await res.json();
++      if(!Array.isArray(raw?.boards))return;
++      for(const board of raw.boards){
++        if(!boards.includes(board?.key)||!Array.isArray(board.rows)||board.rows.length>100)continue;
++        const captured=captureIso(board.captured_at);
++        const previous=provider.get(board.key);
++        if(previous&&(previous.source_captured_at??"")>=(captured??""))continue;
++        provider.set(board.key,{entries:board.rows,entry_count:board.rows.length,source_captured_at:captured,created_at:null});
++      }
++    }catch{/* Read-only saved snapshots remain available when the provider fails. */}
++  };
++  const [saved] = await Promise.all([Promise.all(boards.map(async board=>{
+@@ -51,0 +62 @@
++      .order("source_captured_at",{ascending:false,nullsFirst:false})
+@@ -53,2 +64,7 @@
+-    return {board,data,error};
+-  }));
++    return error||!data||!Array.isArray(data.entries)||data.entries.length>1000||data.entry_count!==data.entries.length?null:data;
++  })),fetchProvider()]);
++  const results=boards.map((board,index)=>{
++    const direct=provider.get(board),stored=saved[index];
++    const useStored=stored&&(!direct||preferStoredCapture(direct.source_captured_at,stored.source_captured_at));
++    return {board,data:useStored?stored:direct,source:useStored?'saved_snapshot':'provider_kingdom'};
++  });
+@@ -56,3 +72,3 @@
+-  for(const {board,data,error} of results){
+-    if(error||!data||!Array.isArray(data.entries)||data.entries.length>1000||data.entry_count!==data.entries.length)continue;
+-    sources.push({board,captured_at:data.source_captured_at,saved_at:data.created_at,entry_count:data.entry_count});
++  for(const {board,data,source} of results){
++    if(!data)continue;
++    sources.push({board,captured_at:data.source_captured_at,saved_at:data.created_at,entry_count:data.entry_count,source});
+@@ -66 +82 @@
+-      p.rankings[board]={value,kingdom_rank:rank,captured_at:data.source_captured_at};
++      p.rankings[board]={value,kingdom_rank:rank,captured_at:data.source_captured_at,source};
+@@ -70,0 +87,2 @@
++  const sourceTypes=new Set(sources.map(s=>s.source));
++  const sourceMode=sourceTypes.size>1?'mixed':sourceTypes.has('saved_snapshot')?'saved_snapshot':'provider_request';

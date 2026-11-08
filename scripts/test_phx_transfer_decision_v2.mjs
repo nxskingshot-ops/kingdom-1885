@@ -143,3 +143,24 @@ test('only computes True Power from matched source and capture, with Castle/TG m
  v.leaderboards[1].captured_at='2026-11-07T07:00:00Z';
  assert.equal(playerSummaryMetrics(v).find(row=>row.key==='true_power').value,null);
 });
+
+test('selects a measured capture within a second and prefers the provider on a capture tie', () => {
+ const older = '2026-11-08T10:00:00.100001Z';
+ const newer = '2026-11-08T10:00:00.100002Z';
+ const direct = {name:'personal_power',value:300,captured_at:newer,source:'provider_kingdom'};
+ const stored = {name:'personal_power',value:200,captured_at:older,source:'saved_snapshot'};
+ assert.equal(playerRankingMap({leaderboards:[direct,stored]}).personal_power.value,300);
+ assert.equal(playerRankingMap({leaderboards:[direct,{...stored,captured_at:newer}]}).personal_power.value,300);
+ assert.equal(playerRankingMap({leaderboards:[{...direct,captured_at:older},{...stored,captured_at:newer}]}).personal_power.value,200);
+});
+
+test('rejects cross-source and different-instant True Power pairs and accepts equivalent time representations', () => {
+ const total = {name:'personal_power',value:300,captured_at:'2026-11-08T10:00:00.100001Z',source:'provider_kingdom'};
+ const troop = {name:'troop_power',value:200,captured_at:'2026-11-08T11:00:00.100001+01:00',source:'provider_kingdom'};
+ const score = entry=>playerSummaryMetrics({leaderboards:[total,entry]})[1].value;
+ assert.equal(score(troop),100);
+ assert.equal(score({...troop,source:'saved_snapshot'}),null);
+ assert.equal(score({...troop,captured_at:'2026-11-08T11:00:00.100002+01:00'}),null);
+ assert.equal(score({...troop,captured_at:null}),null);
+ assert.equal(playerSummaryMetrics({leaderboards:[troop]},{power:300,captured_at:troop.captured_at})[1].value,null);
+});

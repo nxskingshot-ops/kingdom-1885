@@ -5,7 +5,7 @@ import { seaWorldVerdict, THRESHOLDS, WEIGHTS } from './phx-sea-world-v2-gate-20
 import { candidateFromLookup, duplicateLookupFilter } from './transfer-id-candidate-20261030.js';
 import { forecast as phxTransferForecast, transferStatus as phxTransferStatus } from './phx-transfer-forecast-20261101.js';
 import { mountRuleDraftEditor } from './phx-transfer-rules-editor-20261101.js';
-import { formatPlayerNumber, formatPlayerUtc, formatPlayerSection, playerLookupError, rankingLabels, canonicalRankingName, playerRankingMap, rankingSourceText, playerSummaryMetrics, compactPower } from './transfer-id-display-20261030.js';
+import { formatPlayerNumber, formatPlayerUtc, formatPlayerSection, playerLookupError, rankingLabels, canonicalRankingName, playerRankingMap, rankingSourceText, playerSummaryMetrics, compactPower, captureKey, matchedTruePower } from './transfer-id-display-20261030.js?build=phx-queen-an-20261108';
 const SUPABASE_URL='https://hcjrdofkdkasznywvcxo.supabase.co';
 const KEY='sb_publishable_hkqBaMme70g2f3wcxvaTKg_FczqkpCh';
 const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2');
@@ -36,8 +36,30 @@ const kds=new Map();for(const p of players){const kd=p.kingdom||'Unspecified';kd
 $('kingdomNotes').innerHTML=[...kds].sort((a,b)=>b[1]-a[1]).slice(0,5).map(([kd,n])=>'<div><b>Kingdom #'+esc(kd)+'</b><span>'+n+' candidates</span></div>').join('')||'<p class="empty">No saved kingdom records yet.</p>';
  renderExternalIntel();
 }
-async function load(){const {data,error}=await db.from('transfer_candidates').select('*').order('updated_at',{ascending:false}).limit(1000);
-if(error){$('count').textContent='Access or database error: '+error.message;return false;}players=data||[];chosen=new Set([...chosen].filter(id=>players.some(p=>p.candidate_id===id)));if(!players.some(p=>p.candidate_id===active))active=players[0]?.candidate_id||null;render();if(dossierOpen)renderDossier();return true;}
+let candidateLoadRevision=0;
+async function load(saved){
+ const revision=++candidateLoadRevision;
+ try{
+  const {data,error}=await db.from('transfer_candidates').select('*').order('updated_at',{ascending:false}).limit(1000);
+  if(revision!==candidateLoadRevision)return false;
+  if(error)throw error;
+  if(!Array.isArray(data))throw Error('The candidate list was not returned.');
+  if(saved&&!data.some(p=>p.candidate_id===saved.candidate_id
+    && captureKey(saved.updated_at)&&captureKey(p.updated_at)===captureKey(saved.updated_at))){
+   throw Error('The saved version is not visible in the candidate list.');
+  }
+  players=data;
+  chosen=new Set([...chosen].filter(id=>players.some(p=>p.candidate_id===id)));
+  if(saved)active=saved.candidate_id;
+  else if(!players.some(p=>p.candidate_id===active))active=players[0]?.candidate_id||null;
+  render();if(dossierOpen)renderDossier();
+  return true;
+ }catch(error){
+  if(revision!==candidateLoadRevision)return false;
+  $('count').textContent='Could not reload candidates: '+(error?.message||'Please try again.');
+  return false;
+ }
+}
 async function check(){try{
 const {data:{user},error}=await db.auth.getUser();
 if(error){showLogin('Session verification failed: '+error.message+'. Please sign in again.');return;}
@@ -85,14 +107,23 @@ $('compare').onclick=async()=>{
 };
 $('csv').onclick=()=>{const columns=['candidate_id','player_name','kingdom','alliance','power_m','castle_level','contact_status','invitation_preview','transfer_eligibility','recruiter','notes','updated_at'];const csv=[columns.join(','),...filtered().map(p=>columns.map(k=>'"'+String(k==='invitation_preview'?invitationPreview(p):p[k]??'').replace(/"/g,'""')+'"').join(','))].join('\r\n');const url=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='nxs-real-transfer-records.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),4000);};
 
-let editingId=null;
+let editingCandidate=null,editorSaved=null,editorSaving=false;
 function openEditor(p){
- if(!canEdit)return;
- editingId=p?.candidate_id||null;
+ if(!canEdit||editorSaving||!p)return;
+ editingCandidate=p;editorSaved=null;
+ $('saveCandidate').textContent='Save to NXS';
  $('candidateForm').reset();$('editError').textContent='';
+ for(const control of $('candidateForm').elements)if(control.name)control.disabled=false;
  $('editTitle').textContent=p?'Edit '+p.player_name:'Add candidate';
  for(const name of ['player_name','kingdom','alliance','power_m','castle_level','recruiter','contact_status','transfer_eligibility','notes']){
-  const input=$('candidateForm').elements.namedItem(name);if(p&&p[name]!=null)input.value=p[name];
+  const input=$('candidateForm').elements.namedItem(name);
+  if(name==='contact_status'){
+   input.querySelector('[data-legacy]')?.remove();
+   if(p[name]!=null&&![...input.options].some(option=>option.value===p[name])){
+    const option=new Option(p[name],p[name]);option.dataset.legacy='';input.add(option);
+   }
+  }
+  if(p[name]!=null)input.value=p[name];
  }
  $('candidateForm').elements.namedItem('role').value=p?.metadata?.role||'';
  $('candidateForm').elements.namedItem('fit').value=p?.metadata?.fit??'';
@@ -128,26 +159,49 @@ const originalRenderCandidate=render;
 render=function(){originalRenderCandidate();removeCandidateButton.hidden=!canEdit||!players.some(p=>p.candidate_id===active);};
 
 
-function closeEditor(){$('modal').hidden=true}
+function closeEditor(){if(!editorSaving)$('modal').hidden=true;}
 $('cancelEdit').onclick=closeEditor;$('closeEdit').onclick=closeEditor;
 
 $('candidateForm').onsubmit=async e=>{
-e.preventDefault();if(!canEdit)return;
-const v=Object.fromEntries(new FormData(e.currentTarget).entries());
-if(!v.player_name.trim()){$('editError').textContent='Player name required';return;}
-const old=players.find(x=>x.candidate_id===editingId);
-const data={player_name:v.player_name.trim(),kingdom:v.kingdom||null,alliance:v.alliance||null,power_m:v.power_m?Number(v.power_m):null,castle_level:v.castle_level||null,recruiter:v.recruiter||null,transfer_eligibility:v.transfer_eligibility||null,contact_status:v.contact_status,notes:v.notes||null,metadata:{...(old?.metadata||{}),role:v.role||null,fit:v.fit?Number(v.fit):null,mystic_trials:Object.fromEntries(externalTrials.map(key=>[key,v['trial_'+key]?.trim()||null])),mystic_trial_snapshot:v.trial_snapshot||null,mystic_trial_source:v.trial_source?.trim()||null},updated_at:new Date().toISOString()};
-await saveCandidate(data);
+ e.preventDefault();if(!canEdit||!editingCandidate||editorSaving)return;
+ if(editorSaved){await saveCandidate();return;}
+ const v=Object.fromEntries(new FormData(e.currentTarget).entries());
+ if(!v.player_name.trim()){$('editError').textContent='Player name required';return;}
+ const old=editingCandidate;
+ const updatedAt=new Date(Math.max(Date.now(),(Date.parse(old.updated_at)||0)+1)).toISOString();
+ const data={player_name:v.player_name.trim(),kingdom:v.kingdom||null,alliance:v.alliance||null,power_m:v.power_m?Number(v.power_m):null,castle_level:v.castle_level||null,recruiter:v.recruiter||null,transfer_eligibility:v.transfer_eligibility||null,contact_status:v.contact_status,notes:v.notes||null,metadata:{...(old.metadata||{}),role:v.role||null,fit:v.fit?Number(v.fit):null,mystic_trials:{...old.metadata?.mystic_trials,...Object.fromEntries(externalTrials.map(key=>[key,v['trial_'+key]?.trim()||null]))},mystic_trial_snapshot:v.trial_snapshot||null,mystic_trial_source:v.trial_source?.trim()||null},updated_at:updatedAt};
+ await saveCandidate(data);
 };
 
 async function saveCandidate(data){
-$('saveCandidate').disabled=true;$('editError').textContent='Saving…';
-try{
-const q=editingId?await db.from('transfer_candidates').update(data).eq('candidate_id',editingId).select('candidate_id').maybeSingle():await db.from('transfer_candidates').insert({...data,candidate_id:'NXS-'+crypto.randomUUID()}).select('candidate_id').maybeSingle();
-if(q.error)throw q.error;if(!q.data)throw Error('Save not authorized.');
-active=q.data.candidate_id;closeEditor();await load();
-}catch(err){$('editError').textContent='Save failed: '+err.message}
-finally{$('saveCandidate').disabled=false;}
+ const button=$('saveCandidate'),status=$('editError');
+ editorSaving=true;button.disabled=true;
+ $('cancelEdit').disabled=true;$('closeEdit').disabled=true;
+ try{
+  if(!editorSaved){
+   status.textContent='Saving…';
+   const {candidate_id,updated_at}=editingCandidate;
+   const update=db.from('transfer_candidates').update(data).eq('candidate_id',candidate_id);
+   const guarded=updated_at==null?update.is('updated_at',null):update.eq('updated_at',updated_at);
+   const {data:saved,error}=await guarded.select('candidate_id,updated_at').maybeSingle();
+   if(error)throw error;
+   if(!saved)throw Error('The record has changed or your account cannot edit it. Close the editor and refresh Candidates before trying again.');
+   editorSaved=saved;
+  }
+  status.textContent='Saved. Checking the candidate list…';
+  if(!await load(editorSaved)){
+   status.textContent='The save was confirmed, but the candidate could not be reloaded. Select Retry reload to check again without saving twice.';
+   button.textContent='Retry reload';
+   for(const control of $('candidateForm').elements)if(control.name)control.disabled=true;
+   return;
+  }
+  $('modal').hidden=true;
+ }catch(error){
+  status.textContent='Save could not be confirmed: '+(error?.message||'Check your connection and refresh Candidates.');
+ }finally{
+  editorSaving=false;button.disabled=false;
+  $('cancelEdit').disabled=false;$('closeEdit').disabled=false;
+ }
 }
 
 /* Optional external scouting evidence and protected read-only internal comparison. */
@@ -225,13 +279,13 @@ function comparisonBrief(external,inside){
   higher&&'Biggest lead: '+describe(higher)+'.',
   lower&&'Biggest gap: '+describe(lower)+'.'
  ].filter(Boolean);
- const stamps=new Set(pairs.flatMap(({key})=>[external[key].captured_at,inside[key].captured_at]).map(formatPlayerUtc));
+ const stamps=new Set(pairs.flatMap(({key})=>[external[key].captured_at,inside[key].captured_at]).map(captureKey));
  return {
   summary: pairs.length
    ? highlights.join(' ')||'Shared values are equal.'
    : 'No comparable values are available.',
   coverage: pairs.length+' of '+keys.length+' metrics compared'
-   +(pairs.length&&(stamps.size>1||stamps.has('Not available'))?' · Capture times differ or are unknown':'')
+   +(pairs.length&&(stamps.size>1||stamps.has(''))?' · Capture times differ or are unknown':'')
  };
 }
 function lookupComparisonRanks(payload,ranks=rankingMap(payload.ranks?.values),metrics){
@@ -241,7 +295,7 @@ function lookupComparisonRanks(payload,ranks=rankingMap(payload.ranks?.values),m
  });
  const entries={...ranks};
  if(total.value!==null)entries.personal_power={value:total.value,captured_at:total.captured_at,kingdom_rank:total.rank,
-  source:total.captured_at===ranks.personal_power?.captured_at?ranks.personal_power?.source:undefined};
+  source:total.source};
  if(truePower.calculated)entries.true_power={value:truePower.value,captured_at:truePower.captured_at,source:'calculated'};
  return entries;
 }
@@ -333,7 +387,7 @@ $('loadInternal').onclick=async()=>{
  internalLoading=true;$('loadInternal').disabled=true;renderExternalIntel();
  try{
   const data=await requestCurrentRankings();
-  internalPlayers=attachVerifiedTruePower(data.observations);
+  internalPlayers=attachVerifiedTruePower(data);
   internalSnapshot=data.snapshot_date||'';
   $('loadInternal').textContent='Refresh #1885 players ('+internalPlayers.length+')';
   const previous=$('internalGovernor').value;
@@ -597,22 +651,19 @@ function verifiedTruePowerEvidence(metric, castle, candidateIds){
   +' · same capture '+formatPlayerUtc(metric.captured_at)+'. Top-100 board overlap, not a full kingdom ranking.';
 }
 function verifiedTruePowerPeers(metric,candidateIds){
- const capture=formatPlayerUtc(metric.captured_at);
- if(!metric.calculated||capture==='Not available')return [];
+ const capture=captureKey(metric.captured_at);
+ if(!metric.calculated||!capture)return [];
  return (internalPlayers||[]).filter(row=>row.true_power_verified===true
-  && formatPlayerUtc(row.captured_at)===capture
+  && captureKey(row.true_power_captured_at)===capture
   && Number.isFinite(row.true_power)&&row.true_power>=0
   && !candidateIds.includes(String(row.governor_id??row.uid??'')));
 }
-function attachVerifiedTruePower(rows){
- return rows.map(row=>{
-  const total=row.rankings?.personal_power, troop=row.rankings?.troop_power;
-  const a=Number(total?.value),b=Number(troop?.value);
-  const capture=formatPlayerUtc(total?.captured_at);
-  const verified=total?.value!=null&&troop?.value!=null
-   && Number.isFinite(a)&&Number.isFinite(b)&&a>=b&&b>=0
-   && capture!=='Not available'&&String(total.captured_at)===String(troop.captured_at);
-  return {...row,true_power_verified:verified,true_power:verified?a-b:null,captured_at:verified?total.captured_at:null};
+function attachVerifiedTruePower(data){
+ const source=({provider_request:'provider_kingdom',saved_snapshot:'saved_snapshot'})[data.source_mode];
+ return data.observations.map(row=>{
+  const total=row.rankings?.personal_power,troop=row.rankings?.troop_power;
+  const pair=matchedTruePower({...total,source:total?.source||source},{...troop,source:troop?.source||source});
+  return {...row,true_power_verified:pair!==null,true_power:pair?.value??null,true_power_captured_at:pair?.captured_at??null};
  });
 }
 
@@ -626,6 +677,7 @@ function mountDecision(payload,id){
  });
  const assessment=assessAccount(p,ranks);
  const [total,truePower]=metrics;
+ const mixedCaptures=new Set(metrics.map(metric=>captureKey(metric.captured_at)).filter(Boolean)).size>1;
  const castle=metrics.at(-1);
  if(castle.value===null&&castle.text!=='Not available')castle.details='Profile field · '+formatPlayerUtc(stamp);
  const comparisonRanks=lookupComparisonRanks(payload,ranks,metrics);
@@ -679,6 +731,7 @@ function mountDecision(payload,id){
    value.append(info);
   }
   tile.append(element('dt',label),value);
+  if(metric.captured_at&&mixedCaptures)tile.append(element('small',formatPlayerUtc(metric.captured_at)+(metric.source==='saved_snapshot'?' · Stored':''),'phx-decision-source'));
   tiles.append(tile);
  }
 
@@ -691,6 +744,7 @@ function mountDecision(payload,id){
   const cell=element('div');cell.append(element('strong',label),element('p',content));facts.append(cell);
  }
  const capture=formatPlayerUtc(stamp);
+ const profileCapture=payload.source?.fresh===false?'Cached provider profile':'Provider profile';
  const freshness=element('p',assessment.profile+' · '+assessment.coverage+'/'+assessment.expected
   +' kingdom categories'+(assessment.dated<assessment.coverage?' · Some dates unknown':assessment.oldest!==assessment.newest?' · Mixed capture dates':''),'phx-decision-source');
  const body=element('div',null,'phx-intel-body');
@@ -748,7 +802,7 @@ function mountDecision(payload,id){
  recommendation.style.cssText='margin:0 0 12px';
  roleText.style.cssText='margin:6px 0;line-height:1.45';
  verification.style.cssText='margin:4px 0 8px;line-height:1.4';
- body.append(brand,levelTitle,overviewText,recommendation);
+ body.append(brand,levelTitle,overviewText,recommendation,facts);
  card.append(head,tiles,trueHelp);
 
  const alliance=element('section',null,'phx-placement-compact phx-decision-alliance');
@@ -791,7 +845,6 @@ function mountDecision(payload,id){
  const refreshTrueSample=()=>{
   const evidence=verifiedTruePowerEvidence(truePower,castle,candidateIds);
   trueSample.textContent=evidence;
-  const candidateCapture=formatPlayerUtc(truePower.captured_at);
   const peers=verifiedTruePowerPeers(truePower,candidateIds);
   const reliable=peers.length>=20;
   const percentile=reliable?100*peers.filter(row=>row.true_power<=truePower.value).length/peers.length:null;
@@ -835,7 +888,7 @@ function mountDecision(payload,id){
  };
  refreshTrueSample();
  evidence.append(metricEvidence,
-  element('p','Profile source capture: '+capture+' · Lookup (UTC): '+formatPlayerUtc(payload.checkedAtUtc)));
+  element('p',profileCapture+' capture: '+capture+' · Lookup (UTC): '+formatPlayerUtc(payload.checkedAtUtc)));
 
  const all=element('div',null,'phx-decision-rankings');
  appendRankingEntries(all,values,'');
@@ -886,7 +939,7 @@ function mountDecision(payload,id){
  lookupIntel.refresh=data=>{refreshTrueSample();if(data)renderAlliances(data);};
  renderAlliances(null);
  void requestCurrentRankings().then(data=>{
-  internalPlayers=attachVerifiedTruePower(data.observations);
+  internalPlayers=attachVerifiedTruePower(data);
   internalSnapshot=data.snapshot_date||'';
   refreshTrueSample();
   renderAlliances(data);
@@ -901,6 +954,8 @@ function renderAlliancePlacement(root,source,total,candidateIds,candidateRanks,d
   return Number.isFinite(time)&&time>latest?time:latest;
  },-Infinity);
  const timestamp=Number.isFinite(capture)?new Date(capture).toISOString():'';
+ const storedTotal=rows.some(row=>Date.parse(row.rankings?.personal_power?.captured_at)===capture
+  &&row.rankings.personal_power.source==='saved_snapshot')||data?.source_mode==='saved_snapshot';
  const cohort=rows.filter(row=>Date.parse(row.rankings?.personal_power?.captured_at)===capture
   && ![row.uid,row.governor_id].some(id=>candidateIds.includes(String(id))));
  const opened=new Set([...root.querySelectorAll('details[open]')].map(node=>node.parentElement.dataset.alliance));
@@ -919,7 +974,7 @@ function renderAlliancePlacement(root,source,total,candidateIds,candidateRanks,d
   tile.append(element('strong',rank+' in sample','phx-decision-placement'),
    element('p',sample.comparisonSize+(sample.comparisonSize===1?' ranked peer':' ranked peers'),'phx-decision-source'));
   const details=decisionDetails('Ranking details',
-   element('p',(data.source_mode==='saved_snapshot'?'Latest stored ranking':'Latest provider ranking')
+   element('p',(storedTotal?'Stored ranking capture':'Provider ranking capture')
     +' · '+formatPlayerUtc(timestamp)+' · Kingdom Top 100, partial alliance coverage.'),
    element('p','Player Total Power · '+compactPower(total.value)+' · '+formatPlayerUtc(total.captured_at)+'.'));
   details.open=opened.has(tag);
@@ -933,7 +988,7 @@ function renderAlliancePlacement(root,source,total,candidateIds,candidateRanks,d
   tile.append(details);
   return tile;
  });
- source.textContent=timestamp?'Total Power · '+formatPlayerUtc(timestamp)+(data.source_mode==='saved_snapshot'?' · Stored capture':' · Provider capture'):'';
+ source.textContent=timestamp?'Total Power · '+formatPlayerUtc(timestamp)+(storedTotal?' · Stored capture':' · Provider capture'):'';
  source.hidden=!timestamp;
  root.replaceChildren(...tiles);
 }
@@ -1007,8 +1062,8 @@ for(const label of [...$('candidateForm').querySelectorAll('.form-grid>label')])
 advanced.append($('candidateForm').querySelector('fieldset'));$('candidateForm').insertBefore(advanced,$('candidateForm').querySelector('label:has(textarea)'));
 
 /* ID-first candidate onboarding. Lookup stays read-only; the explicit button is the write action. */
-let lookupCandidate=null,lookupSaving=false;
-function clearLookupCandidate(){lookupCandidate=null;$('workspaceNotice').textContent='';$('phxAdoptCandidate').hidden=true;$('phxAdoptStatus').textContent='';}
+let lookupCandidate=null,lookupSaving=false,lookupSaved=null;
+function clearLookupCandidate(){lookupCandidate=null;lookupSaved=null;$('phxAdoptCandidate').textContent='Add to Candidates';$('workspaceNotice').textContent='';$('phxAdoptCandidate').hidden=true;$('phxAdoptStatus').textContent='';}
 function offerLookupCandidate(payload,id){
  if($('phxGovernorId').value.trim()!==id)return;
  try{lookupCandidate=candidateFromLookup(payload,id);$('phxAdoptCandidate').hidden=!canEdit;
@@ -1021,17 +1076,25 @@ $('phxAdoptCandidate').onclick=async()=>{
  const draft=lookupCandidate,id=draft?.metadata.governor_id;
  if(!canEdit||$('private').hidden||!draft||$('phxGovernorId').value.trim()!==id){clearLookupCandidate();return;}
  lookupSaving=true;$('phxAdoptCandidate').disabled=true;$('phxGovernorId').disabled=true;phxIdForm.querySelector('button').disabled=true;
- $('phxAdoptStatus').textContent='Checking existing candidates…';
  try{
-  const {data:duplicates,error:readError}=await db.from('transfer_candidates').select('candidate_id,player_name').or(duplicateLookupFilter(id)).limit(1);
-  if(readError)throw Error('Existing candidates could not be checked. Nothing was saved.');
-  if(duplicates?.length){$('phxAdoptStatus').textContent='This player is already a candidate. Existing data remains unchanged.';return;}
-  const {data:saved,error}=await db.from('transfer_candidates').insert({...draft,updated_at:new Date().toISOString()}).select('candidate_id').maybeSingle();
-  if(error){if(error.code==='23505')throw Error('This player was already added. No duplicate was created.');throw Error('Could not add candidate: '+error.message);}
-  if(!saved?.candidate_id)throw Error('Save not confirmed. Refresh Candidates before trying again.');
-  active=saved.candidate_id;clearLookupCandidate();
-  $('search').value=''; // Clear only the shortlist filter after confirmed insert; never on error.
-  const loaded=await load();$('workspaceNotice').textContent=loaded?'Candidate added. Player data saved.':'Candidate saved. The list could not reload; please refresh.';
+  if(!lookupSaved){
+   $('phxAdoptStatus').textContent='Checking existing candidates…';
+   const {data:duplicates,error:readError}=await db.from('transfer_candidates').select('candidate_id,player_name').or(duplicateLookupFilter(id)).limit(1);
+   if(readError)throw Error('Existing candidates could not be checked. Nothing was saved.');
+   if(duplicates?.length){$('phxAdoptStatus').textContent='This player is already a candidate. Existing data remains unchanged.';return;}
+   const {data:saved,error}=await db.from('transfer_candidates').insert({...draft,updated_at:new Date().toISOString()}).select('candidate_id,updated_at').maybeSingle();
+   if(error){if(error.code==='23505')throw Error('This player was already added. No duplicate was created.');throw Error('Could not add candidate: '+error.message);}
+   if(!saved?.candidate_id)throw Error('Save not confirmed. Refresh Candidates before trying again.');
+   lookupSaved=saved;
+  }
+  $('phxAdoptStatus').textContent='Saved. Checking the candidate list…';
+  if(!await load(lookupSaved)){
+   $('phxAdoptCandidate').textContent='Retry reload';
+   $('phxAdoptStatus').textContent='The save was confirmed, but the candidate could not be reloaded. Select Retry reload to check again.';
+   return;
+  }
+  clearLookupCandidate();$('search').value='';render();
+  $('workspaceNotice').textContent='Candidate added. Player data saved.';
   showWorkspace('scoutingBoard');
  }catch(error){$('phxAdoptStatus').textContent=error.message||'Save not confirmed. Refresh Candidates before trying again.';}
  finally{lookupSaving=false;$('phxAdoptCandidate').disabled=false;$('phxGovernorId').disabled=false;phxIdForm.querySelector('button').disabled=false;}
