@@ -44,7 +44,7 @@ Deno.serve(async (request) => {
     // A user who already has an active membership must not create a second
     // registration workflow that could later be mistaken for a privilege grant.
     const { data: membership, error: membershipError } = await admin.from('nxs_memberships')
-      .select('user_id,active,expires_at').eq('user_id',user.id).eq('active',true).limit(1);
+      .select('user_id,active,expires_at').eq('user_id',user.id).eq('active',true).limit(100);
     if (membershipError) return json({ error: 'Membership check unavailable' }, 503);
     if ((membership??[]).some((m: { expires_at: string | null }) =>
       !m.expires_at || new Date(m.expires_at).getTime() > Date.now()))
