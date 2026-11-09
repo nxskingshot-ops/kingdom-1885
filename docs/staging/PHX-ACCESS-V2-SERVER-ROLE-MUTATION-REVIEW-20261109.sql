@@ -33,8 +33,15 @@ begin
  if not v_target_exists then
   raise exception 'Target auth account not found' using errcode='22023';
  end if;
- -- Owner accounts must be independently identified and protected before rollout.
- -- Until that control is integrated, refuse changes to existing administrators.
+ -- GOD owner must be independently identified, not inferred from app role.
+ -- This function fails closed until a separately approved owner registry exists.
+ if to_regclass('public.phx_owner_registry_v2') is null then
+  raise exception 'Owner protection not initialized' using errcode='42501';
+ end if;
+ if exists (select 1 from public.phx_owner_registry_v2 o where o.user_id=p_target_user_id) then
+  raise exception 'GOD owner is protected' using errcode='42501';
+ end if;
+ -- Existing administrators remain protected independently.
  perform pg_advisory_xact_lock(pg_catalog.hashtextextended(p_target_user_id::text,0));
  select r.app_role into v_old from public.phx_app_roles_v2 r
  where r.user_id=p_target_user_id and r.active=true for update;
