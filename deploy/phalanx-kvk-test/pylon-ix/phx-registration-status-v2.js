@@ -2,6 +2,8 @@
 const URL='https://hcjrdofkdkasznywvcxo.supabase.co';
 const KEY='sb_publishable_hkqBaMme70g2f3wcxvaTKg_FczqkpCh';
 const state=document.getElementById('state'),details=document.getElementById('details'),refresh=document.getElementById('refresh'),requestButton=document.getElementById('request-access');
+const playerInput=document.getElementById('player-id'),playerLabel=document.getElementById('player-label');
+const showRequest=(visible)=>{requestButton.hidden=!visible;playerInput.hidden=!visible;playerLabel.hidden=!visible;};
 const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2');
 const db=createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true}});
 async function endpoint(action,token,extra={}){
@@ -11,7 +13,7 @@ async function endpoint(action,token,extra={}){
  return data;
 }
 async function check(){
- refresh.disabled=true;requestButton.hidden=true;state.textContent='Checking your account…';details.textContent='';
+ refresh.disabled=true;showRequest(false);state.textContent='Checking your account…';details.textContent='';
  try{
   const {data:{user},error:userError}=await db.auth.getUser();
   if(userError)throw userError;
@@ -24,16 +26,15 @@ async function check(){
    const status=result.application.status;
    state.textContent=status==='pending'?'Awaiting administrator review':status==='approved'?'Approved — access pending':status==='rejected'?'Request declined':'Registration status unavailable';
    details.textContent=result.application.public_message|| (status==='approved'?'Approval was recorded, but an active module membership is not yet confirmed.':status==='pending'?'Your request has been submitted. Refresh to check for a decision.':'Contact an administrator if you need help.');
-   if(status==='rejected')requestButton.hidden=false;
+   if(status==='rejected')showRequest(true);
   }else{
-   state.textContent='No access request submitted';details.textContent='Your account exists, but you have not submitted a PHALANX access request.';requestButton.hidden=false;
+   state.textContent='No access request submitted';details.textContent='Your account exists, but you have not submitted a PHALANX access request.';showRequest(true);
   }
  }catch(e){state.textContent='Status temporarily unavailable';details.textContent='The registration service could not be reached. No access decision can be inferred. Please try again later.';console.error('PHALANX status check failed',e?.name||'error');}
  finally{refresh.disabled=false;}
 }
 requestButton.addEventListener('click',async()=>{
- const playerId=window.prompt('Enter your numeric Kingshot Player ID');
- if(playerId===null)return;
+ const playerId=playerInput.value.trim();
  if(!/^[0-9]{1,20}$/.test(playerId)){state.textContent='Invalid player ID';details.textContent='Enter 1–20 digits only.';return;}
  requestButton.disabled=true;
  try{
