@@ -31,3 +31,8 @@ Database read-only baseline: PASS.
 Branch creation: PASS.
 Migration, RLS, registration, integration, Android, backup, restore: NOT TESTED.
 No production changes performed.
+
+## Role selection decision — 2026-11-09
+Admin approval dropdown V1: **Member** (`member`), **R4 – Officer** (`r4`), **R5 – Alliance Leader** (`r5`). No role selection by applicants. The approving administrator must explicitly select exactly one role; no preselected privileged default. Persist assignment and approval together server-side and audit approver/time/role. **PHALANX Admin** (`admin`) and **GOD/System Owner** must NOT appear in ordinary registration approval. Existing memberships are unchanged. Exact permissions per role remain to be decided and verified; do not infer app admin rights from Kingshot R5. Preserve governance security FREEZE (21 Oct 2026): GOD MODE is not proven implemented; owner guard cannot be assumed live.
+
+Verification: GitHub document update only; registration UI, database enforcement, RLS, integration and Android NOT TESTED.
