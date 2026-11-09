@@ -2,13 +2,20 @@ import {PHX_PRODUCTION_SUPABASE_URL as URL,PHX_PRODUCTION_PUBLISHABLE_KEY as KEY
 const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2.49.8');
 const db=createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true}});
 const $=id=>document.getElementById(id), status=$('status'), list=$('members');
+const login=$('login'), email=$('email'), password=$('password');
+login.addEventListener('submit',async event=>{
+ event.preventDefault();const button=$('sign-in');button.disabled=true;
+ try{const {error}=await db.auth.signInWithPassword({email:email.value.trim(),password:password.value});if(error)throw error;password.value='';await load()}
+ catch(e){say('Sign-in failed: '+e.message)}finally{button.disabled=false}
+});
 function say(s){status.textContent=s}
 function node(tag,text){const e=document.createElement(tag);e.textContent=text;return e}
 async function rpc(action,params={}){const {data,error}=await db.rpc('phx_access_management',{p_action:action,p_user_id:null,p_email:null,p_player_id:null,p_role:null,...params});if(error)throw error;return data}
 async function load(){
  list.replaceChildren();say('Checking existing account…');
  try{
-  const {data:{user},error}=await db.auth.getUser();if(error)throw error;if(!user)throw Error('Sign in to your existing PHALANX account first.');
+  const {data:{user},error}=await db.auth.getUser();if(error)throw error;if(!user){login.hidden=false;throw Error('Sign in to your existing PHALANX account.');}
+  login.hidden=true;
   const access=await rpc('check');if(!access?.allowed)throw Error('Your current session is not authorized to manage accounts.');
   const result=await rpc('list');const accounts=result?.accounts||[];
   say(accounts.length+' eligible account(s). Existing PHALANX access management — legacy roles only.');
