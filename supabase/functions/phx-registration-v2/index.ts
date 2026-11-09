@@ -36,6 +36,14 @@ Deno.serve(async (request) => {
     return json({ application: data ? publicRow(data) : null });
   }
   if (action === 'submit') {
+    // A user who already has an active membership must not create a second
+    // registration workflow that could later be mistaken for a privilege grant.
+    const { data: membership, error: membershipError } = await admin.from('nxs_memberships')
+      .select('user_id,active,expires_at').eq('user_id',user.id).eq('active',true).limit(1);
+    if (membershipError) return json({ error: 'Membership check unavailable' }, 503);
+    if ((membership??[]).some((m: { expires_at: string | null }) =>
+      !m.expires_at || new Date(m.expires_at).getTime() > Date.now()))
+      return json({ error: 'Account already has an active membership' }, 409);
     if (!user.email_confirmed_at) return json({ error: 'Confirm email first' }, 403);
     const playerId = String(payload.player_id ?? '');
     if (!/^[0-9]{1,20}$/.test(playerId)) return json({ error: 'Invalid Kingshot Player ID' }, 400);
@@ -61,7 +69,7 @@ Deno.serve(async (request) => {
     if (permissionError) return json({ error: 'Review queue unavailable' }, 503);
     if (reviewer?.enabled !== true) return json({ error: 'Review permission denied' }, 403);
     const { data: rows, error: queueError } = await admin.from('phx_registration_applications')
-      .select('id,requester_user_id,player_id,gamer_tag,status,submitted_at')
+      .select('id,player_id,gamer_tag,status,submitted_at')
       .eq('status', 'pending').order('submitted_at', { ascending: true }).limit(100);
     if (queueError) return json({ error: 'Review queue unavailable' }, 503);
     return json({ applications: rows ?? [] });
