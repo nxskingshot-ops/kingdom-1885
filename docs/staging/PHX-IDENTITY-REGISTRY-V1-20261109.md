@@ -45,3 +45,28 @@ R4 inherits all Member read-only search/analysis/comparison capabilities and add
 
 ## R5 permissions — approved 2026-11-09 (binding)
 R5 inherits **exactly** the R4 scouting permissions, with **no additional permissions**. R5 may search players, view analyses/comparisons, create/edit candidates, edit notes/evaluations, export reports/comparisons. R5 must not delete candidates, view registration requests, approve/reject registrations, assign/change roles, deactivate accounts or access Admin/GOD functions. All unselected rights are explicitly excluded. Only a separately authorized PHALANX administrator may review/approve registrations and select the Member/R4/R5 role at approval. The in-game R5 title must not grant PHALANX admin permissions. Implement this matrix in backend/RLS and frontend; current production access has not been modified or tested. This decision supersedes any earlier draft suggesting R5 approval privileges.
+
+## Binding PHALANX Admin decision — 2026-11-09
+The user explicitly approved the **admin** role: inherits all R4/R5 scouting permissions plus (1) inspect registration requests, (2) approve or reject registrations, (3) assign member/r4/r5 at approval, (4) change existing member/r4/r5 roles, (5) deactivate/reactivate accounts without deletion, (6) delete scouting candidates with confirmation and audit, (7) view security/change audit logs. No other administrative permissions are implied. Admin/GOD role assignment and GOD owner management remain outside ordinary workflows. Admin may not grant or change Admin/GOD via the standard UI. For existing-role changes, protect Admin/GOD accounts and prevent self-escalation. Authorization must be enforced server-side and logged.
+
+## PHALANX permissions matrix V1 — binding
+| Capability | Member | R4 | R5 | Admin |
+|---|:---:|:---:|:---:|:---:|
+| Search players | Yes | Yes | Yes | Yes |
+| View analyses and comparisons | Yes | Yes | Yes | Yes |
+| Create/edit candidates | No | Yes | Yes | Yes |
+| Edit notes and evaluations | No | Yes | Yes | Yes |
+| Export reports and comparisons | No | Yes | Yes | Yes |
+| Review registration requests | No | No | No | Yes |
+| Approve/reject registrations | No | No | No | Yes |
+| Assign member/r4/r5 at approval | No | No | No | Yes |
+| Change existing member/r4/r5 roles | No | No | No | Yes |
+| Deactivate/reactivate non-admin accounts | No | No | No | Yes |
+| Delete scouting candidates | No | No | No | Yes |
+| View security/change audit logs | No | No | No | Yes |
+| Assign Admin or GOD; manage GOD owner | No | No | No | No |
+
+Approval dropdown is **Member / R4 / R5 only**; no self-selected role, no implicit role on signup. Admin role is assigned only through a separate protected governance procedure. This matrix governs the Transfer Scouting/Identity Registry scope; it must not silently replace other existing PHALANX module permission models or FREEZEs.
+
+## Verification for this decision
+Documented on isolated GitHub branch only. No database or production role changes. Database migration, RLS/API authorization, UI integration, audit logging, backup integrity, restore and mobile regression: **NOT TESTED**.
