@@ -25,7 +25,10 @@ export function mountPhxRoleEditor({root,db,member}) {
   opt.value=role.value;opt.textContent=role.label;
   select.append(opt);
  }
- select.value=PHX_APP_ROLES.some(r=>r.value===member.app_role)?member.app_role:'observer';
+ const hasKnownRole=PHX_APP_ROLES.some(r=>r.value===member.app_role);
+ const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent=hasKnownRole?'Select role':'No app role assigned — select a role';placeholder.disabled=true;
+ select.prepend(placeholder);
+ select.value=hasKnownRole?member.app_role:'';
  const reason=document.createElement('textarea');
  reason.maxLength=500;reason.placeholder='Reason for role change (required)';
  const save=document.createElement('button');
@@ -35,6 +38,7 @@ export function mountPhxRoleEditor({root,db,member}) {
  save.addEventListener('click',async()=>{
   const role=select.value;
   const explanation=reason.value.trim();
+  if(!PHX_APP_ROLES.some(r=>r.value===role)){feedback.textContent='Select a valid app role.';return;}
   if(explanation.length<3){feedback.textContent='Please enter a reason (at least 3 characters).';return;}
   if(member.protected_owner){feedback.textContent='Protected owner: role changes disabled.';return;}
   if(!window.confirm('Change PHALANX app role to '+role+' for '+identity.textContent+'?'))return;
@@ -51,6 +55,7 @@ export function mountPhxRoleEditor({root,db,member}) {
   } finally {save.disabled=false;}
  });
  if(member.protected_owner){select.disabled=true;save.disabled=true;}
+ // An unassigned member must never silently default to Observer.
  root.append(heading,identity,gameRank,label,select,reason,save,feedback);
  return {destroy(){root.replaceChildren();}};
 }
