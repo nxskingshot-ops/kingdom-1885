@@ -16,8 +16,11 @@ create or replace function public.phx_review_registration(
 ) returns jsonb
 language plpgsql security definer set search_path = ''
 as $$
-declare v_actor uuid := auth.uid(); v_request public.phx_registration_applications%rowtype;
-declare v_event bigint; v_version bigint;
+declare
+ v_actor uuid := auth.uid();
+ v_request public.phx_registration_applications%rowtype;
+ v_event bigint;
+ v_version bigint;
 begin
  if v_actor is null then raise exception 'Authentication required' using errcode='28000'; end if;
  if not exists(select 1 from public.phx_registration_reviewers where user_id=v_actor and enabled) then
