@@ -1,0 +1,41 @@
+name: PHALANX registration isolated checks
+on:
+  push:
+    branches: [work/phx-registration-status-ui-20261109]
+  workflow_dispatch:
+jobs:
+  static-regression:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: JavaScript syntax
+        run: |
+          node --check deploy/phalanx-kvk-test/pylon-ix/transfer-register.js
+          node --check deploy/phalanx-kvk-test/pylon-ix/phx-registration-status-v2.js
+          node --check deploy/phalanx-kvk-test/pylon-ix/phx-registration-review-v2.js
+      - name: HTML integration references and safety invariants
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          root=Path('deploy/phalanx-kvk-test/pylon-ix')
+          pairs={
+            'transfer-register.html': ('transfer-register.js',['register','email','playerId','password','confirm','show','status']),
+            'phx-registration-status-v2.html': ('phx-registration-status-v2.js',['state','details','refresh','request-access','player-id','player-label']),
+            'phx-registration-review-v2.html': ('phx-registration-review-v2.js',['queue','status','reload']),
+          }
+          for page,(script,ids) in pairs.items():
+            html=(root/page).read_text()
+            js=(root/script).read_text()
+            assert 'src="./'+script+'"' in html,(page,'script reference')
+            for id in ids:
+              assert 'id="'+id+'"' in html,(page,id)
+            assert 'SERVICE_ROLE_KEY' not in js,(script,'privileged secret')
+          server=Path('supabase/functions/phx-registration-v2/index.ts').read_text()
+          assert 'authClient.auth.getUser(jwt)' in server
+          assert 'phx_registration_reviewers' in server
+          assert "caller.rpc('phx_review_registration'" in server
+          print('PASS: 3 page integrations, auth and reviewer guards')
+          PY
