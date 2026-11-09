@@ -89,23 +89,36 @@ table{border-collapse:collapse;width:100%;min-width:680px;font-size:12px}th{text
 .phx-identity.is-online .phx-identity-online{border-color:#2d9955;color:#a6f0b5;background:#10321e}
 .phx-identity.is-online .phx-identity-dot{background:#39e66e;box-shadow:0 0 0 3px #39e66e20,0 0 9px #39e66e}
 @media(max-width:480px){.phx-identity{gap:9px;margin:8px 10px 12px;padding:11px 10px;min-height:80px}.phx-identity-crest{flex-basis:37px;width:37px;height:37px;font-size:19px}.phx-identity-name{font-size:21px}.phx-identity-online{padding:5px 7px;font-size:9px}.phx-identity-meta{font-size:10px}.phx-identity-god{font-size:9px}}
-</style><style id="phx-access-management-style" data-theme="navy-gold-v1">
-#phxToolsMenu>#phxAccessManagement>summary{padding:8px 10px;min-height:44px;font-size:1rem}
-#phxAccessManagement[open]>summary small{display:none}
-#phxAccessManagement .phx-tool-content{display:grid;gap:8px;padding:10px;overflow-wrap:anywhere}
+</style><style id="phx-access-management-style" data-theme="navy-gold-v1" data-layout="compact-tools-v1">
+#workspace-tools #phxToolsMenu{gap:8px}
+#workspace-tools #phxToolsMenu>.phx-tool-item>summary{padding:10px 12px;min-height:44px;font-size:clamp(1rem,4.2vw,1.1875rem);line-height:1.25}
+#workspace-tools #phxToolsMenu>.phx-tool-item>summary small{margin-top:3px;line-height:1.3}
+#workspace-tools #phxToolsMenu>.phx-tool-item>summary:focus-visible{outline-width:2px;outline-offset:-2px}
+#phxAllianceNeeds{display:grid;gap:8px}
+#phxAllianceNeeds>.panel{margin:0;min-width:0}
+#phxAllianceNeeds .panel-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:3px 8px;padding:8px 10px;min-height:0}
+#phxAllianceNeeds .panel-head h2{margin:0;font-size:1.0625rem;line-height:1.25}
+#phxAllianceNeeds .panel-head small{font:400 .8125rem/1.3 system-ui,sans-serif;letter-spacing:normal}
+#phxAllianceNeeds :is(#needs,#kingdomNotes){display:grid;gap:6px;padding:8px}
+#phxAllianceNeeds #needs{grid-template-columns:repeat(2,minmax(0,1fr))}
+#phxAllianceNeeds #kingdomNotes{grid-template-columns:minmax(0,1fr)}
+#phxAllianceNeeds :is(#needs,#kingdomNotes)>div{min-width:0;padding:6px 8px;border-radius:4px;font:400 .875rem/1.3 system-ui,sans-serif;overflow-wrap:anywhere}
+#phxAllianceNeeds :is(#needs,#kingdomNotes) :is(b,strong,span){font:inherit;margin:0}
+#phxAllianceNeeds :is(#needs,#kingdomNotes) b{font-weight:650}
+#phxAllianceNeeds #kingdomNotes>.empty{min-height:0;margin:0;padding:6px 0;text-align:left}
+#phxAllianceNeeds #kingdomNotes>div{display:flex;flex-wrap:wrap;justify-content:space-between;gap:3px 8px;align-items:baseline}
+#phxAccessManagement .phx-access-header{display:none}
+#phxAccessManagement .phx-tool-content{display:grid;gap:8px;padding:8px 10px;overflow-wrap:anywhere;font:400 .875rem/1.4 system-ui,sans-serif}
 #phxAccessManagement :is(label,input,select,button){min-width:0;max-width:100%}
 #phxAccessManagement :is(input,select){width:100%;min-height:44px}
 #phxAccessManagement :is(button,summary){white-space:normal}
-#phxAccessManagement .phx-access-header{border-left:3px solid #ae8349;padding-left:8px}
-#phxAccessManagement .phx-access-header span{color:#e5ba76;font-size:.68rem;font-weight:700;letter-spacing:.12em}
-#phxAccessManagement .phx-access-header h3{margin:0;color:#ffe1ad;font-size:1.125rem;line-height:1.2}
 #phxAccessManagement :is(.phx-access-metrics,.phx-access-sections){display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;margin:0}
-#phxAccessManagement .phx-access-metrics div{padding:5px 2px;text-align:center;background:#112633;border-top:2px solid #776448;border-radius:4px}
-#phxAccessManagement .phx-access-metrics dt{font-size:.72rem;color:#f3cf99}
-#phxAccessManagement .phx-access-metrics dd{margin:0;color:#fff2d9;font-size:1.1rem;font-weight:700;line-height:1.25}
-#phxAccessManagement .phx-access-scope{margin:0;color:#c8bfb2;font-size:.72rem}
+#phxAccessManagement .phx-access-metrics div{padding:4px 2px;text-align:center;background:#112633;border-top:2px solid #776448;border-radius:4px}
+#phxAccessManagement .phx-access-metrics dt{font-size:.8125rem;color:#f3cf99}
+#phxAccessManagement .phx-access-metrics dd{margin:0;color:#fff2d9;font-size:1rem;font-weight:700;line-height:1.2}
+#phxAccessManagement .phx-access-scope{margin:0;color:#c8bfb2;font-size:.8125rem}
 #phxAccessManagement .phx-access-invite{margin:0}
-#phxAccessManagement .phx-access-invite>summary{padding:9px 10px;min-height:44px;cursor:pointer;color:#ffe1ad;font-weight:700;background:#172b35;border:1px solid #ae8349;border-radius:5px}
+#phxAccessManagement .phx-access-invite>summary{padding:10px;min-height:44px;cursor:pointer;color:#ffe1ad;font-weight:700;background:#172b35;border:1px solid #ae8349;border-radius:5px}
 #phxAccessManagement .phx-access-invite>p:not(:empty){margin:6px 0}
 #phxAccessManagement .form-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0}
 #phxAccessRoleHint{display:block;margin-top:4px;color:#c8bfb2}
@@ -113,7 +126,7 @@ table{border-collapse:collapse;width:100%;min-width:680px;font-size:12px}th{text
 #phxAccessManagement .phx-access-registration div{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px}
 #phxAccessManagement .phx-access-registration a{display:inline-flex;align-items:center;min-height:44px}
 #phxAccessManagement .phx-access-search{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:6px;margin:0}
-#phxAccessManagement :is(.phx-access-search,.phx-access-sections) button{margin:0;padding-inline:6px;min-height:44px;font-size:.8rem;background:#112633;color:#e5d0b5;border:1px solid #776448;box-shadow:none;text-shadow:none}
+#phxAccessManagement :is(.phx-access-search,.phx-access-sections) button{margin:0;padding-inline:6px;min-height:44px;font:600 .8125rem/1.2 system-ui,sans-serif;background:#112633;color:#e5d0b5;border:1px solid #776448;box-shadow:none;text-shadow:none}
 #phxAccessManagement .phx-access-sections button[aria-pressed=true]{background:#203440;color:#ffe1ad;border-color:#c59454}
 #phxAccessManagement .phx-access-status{margin:0;font-size:.85rem}
 #phxAccessManagement .phx-access-status:empty{position:absolute}
@@ -127,9 +140,8 @@ table{border-collapse:collapse;width:100%;min-width:680px;font-size:12px}th{text
 #phxAccessManagement .phx-access-badge{border:1px solid #8e6a43;border-radius:4px;padding:2px 5px;color:#ffe1ad;font-size:.72rem}
 #phxAccessManagement .phx-access-badge[data-status=active]{border-color:#548367;color:#abdeb5}
 #phxAccessManagement .phx-access-badge:is([data-status=suspended],[data-status=rejected]){border-color:#a55458;color:#ffb9ba}
-#phxAccessManagement :is(.form-grid,.phx-access-card-actions,.phx-access-registration) button{margin:0;padding:6px 8px;min-height:44px;font-size:.8rem}
+#phxAccessManagement :is(.form-grid,.phx-access-card-actions,.phx-access-registration) button{margin:0;padding:6px 8px;min-height:44px;font:600 .8125rem/1.2 system-ui,sans-serif}
 @media(max-width:650px){#phxAccessManagement .form-grid{grid-template-columns:minmax(0,1fr)}}
-#phxToolsMenu>#phxAccessManagement>summary:focus-visible{outline-width:2px;outline-offset:2px}
 </style></head><body><main>
 <header class="phx-original-header"><div class="original-art" role="img" aria-label="PHALANX gold Spartan helmet with red and blue banners, from the approved original reference"></div><div class="module-title"><span class="title-rule" aria-hidden="true"></span><div><p>AN’S RECRUITMENT ROOM · NXS #1885</p><h1 id="stage-title">TRANSFER SCOUTING</h1></div><span class="title-rule" aria-hidden="true"></span></div></header><button id="refresh" type="button" hidden aria-hidden="true" tabindex="-1">Refresh session</button>
 <section class="panel" id="login"><div class="panel-head"><h2>PHALANX ACCESS</h2></div><div class="panel-body"><p class="smallprint">Choose how to access Transfer Scouting. Registration requires approval before protected records become available.</p><form id="authForm"><label>E-mail <input required id="email" type="email" autocomplete="username"></label><label>Password <input required id="password" type="password" autocomplete="current-password"></label><button type="button" id="togglePassword" aria-controls="password" aria-pressed="false" aria-label="Show password" style="margin:0 0 12px">Show password</button><button type="submit">Sign in</button></form><p id="message" class="smallprint" role="status"></p><p class="smallprint"><a href="../password-recovery.html">Forgot password?</a> · <a href="../transfer-pr42/transfer-register.html">Register</a></p></div></section>
