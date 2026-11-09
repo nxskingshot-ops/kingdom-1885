@@ -54,6 +54,18 @@ Deno.serve(async (request) => {
     }
     return json({ application: publicRow(data) }, 201);
   }
+  if (action === 'review_queue') {
+    // Only explicitly provisioned PHALANX reviewers, never Kingshot R5 by inference.
+    const { data: reviewer, error: permissionError } = await admin.from('phx_registration_reviewers')
+      .select('enabled').eq('user_id', user.id).maybeSingle();
+    if (permissionError) return json({ error: 'Review queue unavailable' }, 503);
+    if (reviewer?.enabled !== true) return json({ error: 'Review permission denied' }, 403);
+    const { data: rows, error: queueError } = await admin.from('phx_registration_applications')
+      .select('id,requester_user_id,player_id,gamer_tag,status,submitted_at')
+      .eq('status', 'pending').order('submitted_at', { ascending: true }).limit(100);
+    if (queueError) return json({ error: 'Review queue unavailable' }, 503);
+    return json({ applications: rows ?? [] });
+  }
   if (action === 'review') {
     if (typeof payload.application_id !== 'string' || !/^[0-9a-f-]{36}$/i.test(payload.application_id))
       return json({ error: 'Invalid application ID' }, 400);
