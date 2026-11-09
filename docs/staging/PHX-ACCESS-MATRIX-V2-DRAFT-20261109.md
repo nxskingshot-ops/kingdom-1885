@@ -32,3 +32,6 @@ Supabase policies permit r4/r5 to review access requests and delete transfer can
 
 ## Verification
 Project handoff snapshots dated 2026-10-21 inspected. GitHub and Supabase prior read-only findings recorded in PHX-IDENTITY-RLS-GAP-20261109.md. This file is a planning artifact only. No migration, backup, restore, frontend integration, API or mobile test executed.
+
+## Approved governance workflow — 2026-11-09
+User decision: Do NOT pre-approve module/function permission details globally. Review and decide authorization **module by module, function by function, when that module/function is actually worked on**. Observer, Operator, Administrator remain the app-role names; GOD remains separately protected. The table above is an unapproved discussion aid, NOT a grant of access. Preserve current behavior, data and FREEZEs until each change is inspected, approved, implemented and tested. For each module record current implementation, data sensitivity, read/write/delete/export/admin actions, server-side authorization, role tests, rollback and release status. Do not treat an Administrator as automatically entitled to every operational write without that module's review.
