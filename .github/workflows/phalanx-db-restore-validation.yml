@@ -7,6 +7,7 @@ on:
       - work/phx-access-v2-safe-plan-20261109
     paths:
       - '.github/workflows/phalanx-db-restore-validation.yml'
+      - 'security/tests/phx-access-v2-private-restore*-20261109.*'
 
 permissions:
   contents: read

@@ -14,40 +14,64 @@ fail() {
   exit 1
 }
 
-export POSTGRES_PASSWORD
-POSTGRES_PASSWORD=$(openssl rand -hex 40)
-docker run -d --name "$RESTORE_CONTAINER" --network none --log-driver none \
-  -e POSTGRES_PASSWORD -e POSTGRES_USER=supabase_admin -e POSTGRES_DB=postgres \
-  "$RESTORE_IMAGE" postgres -D /etc/postgresql -c listen_addresses= -c cron.launch_active_jobs=off \
-  > "$restore_log" 2>&1 || fail 'starting the isolated image'
-unset POSTGRES_PASSWORD
+# Initialize PostgreSQL directly so the restore starts with an empty database.
+# The Docker network namespace and unpublished local socket isolate trust auth.
+docker run -d --name "$RESTORE_CONTAINER" --network none --log-driver local \
+  --user postgres --entrypoint bash "$RESTORE_IMAGE" -c '
+    set -eu
+    initdb -D /tmp/phx-pgdata -U supabase_admin --auth-local=trust \
+      --auth-host=scram-sha-256 --no-locale --encoding=UTF8
+    exec postgres -D /tmp/phx-pgdata -c listen_addresses= -c unix_socket_directories=/tmp \
+      -c shared_preload_libraries=pg_cron,pg_net,pg_stat_statements -c cron.launch_active_jobs=off
+  ' > "$restore_log" 2>&1 || fail 'starting the isolated image'
 
 db() {
   local database=$1
   shift
   docker exec -i --user postgres "$RESTORE_CONTAINER" \
-    psql -X --set ON_ERROR_STOP=1 --username supabase_admin --dbname "$database" "$@"
+    psql -X --set ON_ERROR_STOP=1 --set VERBOSITY=verbose --host /tmp \
+      --username supabase_admin --dbname "$database" "$@"
 }
 
-for attempt in $(seq 1 90); do
-  if docker exec "$RESTORE_CONTAINER" sh -c 'test "$(cat /proc/1/comm)" = postgres' >> "$restore_log" 2>&1 &&
-    db template1 -qAt -c "SELECT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'authenticator')" \
-    > "$PHX_RESTORE_TEMP/ready" 2>> "$restore_log" && grep -qx t "$PHX_RESTORE_TEMP/ready"; then
+ready=false
+for attempt in $(seq 1 60); do
+  if db postgres -qAt -c 'SELECT 1' > "$PHX_RESTORE_TEMP/ready" 2>> "$restore_log" &&
+    grep -qx 1 "$PHX_RESTORE_TEMP/ready"; then
+    ready=true
+    break
+  fi
+  if [[ "$(docker inspect -f '{{.State.Status}}' "$RESTORE_CONTAINER")" == exited ]]; then
     break
   fi
   sleep 1
 done
-grep -qx t "$PHX_RESTORE_TEMP/ready" || fail 'waiting for Supabase bootstrap roles'
+if [[ "$ready" != true ]]; then
+  docker logs "$RESTORE_CONTAINER" > "$PHX_RESTORE_TEMP/postgres-init.log" 2>&1 || true
+  for issue in 'could not access file' 'Permission denied' 'initdb: error' 'unrecognized configuration parameter'; do
+    if grep -Fq "$issue" "$PHX_RESTORE_TEMP/postgres-init.log"; then
+      printf 'Database initialization diagnostic category: %s\n' "$issue"
+    fi
+  done
+  fail 'waiting for the empty PostgreSQL target'
+fi
 [[ "$(docker inspect -f '{{.HostConfig.NetworkMode}}' "$RESTORE_CONTAINER")" == none ]] || fail 'verifying network isolation'
-db template1 -q >> "$restore_log" 2>&1 <<'SQL' || fail 'creating an empty restore target'
-ALTER DATABASE postgres WITH ALLOW_CONNECTIONS false;
-SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = 'postgres';
-ALTER DATABASE postgres RENAME TO phx_bootstrap;
-CREATE DATABASE postgres WITH TEMPLATE template0;
+db postgres -q >> "$restore_log" 2>&1 <<'SQL' || fail 'creating baseline roles in the empty target'
+CREATE ROLE postgres NOLOGIN BYPASSRLS;
+CREATE ROLE anon NOLOGIN;
+CREATE ROLE authenticated NOLOGIN;
+CREATE ROLE service_role NOLOGIN BYPASSRLS;
+CREATE ROLE authenticator NOLOGIN NOINHERIT;
+CREATE ROLE dashboard_user NOLOGIN;
+CREATE ROLE supabase_auth_admin NOLOGIN;
+CREATE ROLE supabase_privileged_role NOLOGIN;
+CREATE ROLE supabase_realtime_admin NOLOGIN;
+GRANT anon, authenticated, service_role TO authenticator;
 SQL
 
 if ! /usr/lib/postgresql/18/bin/pg_restore --no-owner --no-acl --file=- "$PHX_RESTORE_TEMP/restore.dump" 2>> "$restore_log" \
   | db postgres -q --single-transaction >> "$restore_log" 2>&1; then
+  # Emit SQLSTATEs only. Raw errors can contain restored row data.
+  grep -Eo 'ERROR:  [A-Z0-9]{5}:' "$restore_log" | sort -u || true
   fail 'restoring the complete custom archive'
 fi
 
