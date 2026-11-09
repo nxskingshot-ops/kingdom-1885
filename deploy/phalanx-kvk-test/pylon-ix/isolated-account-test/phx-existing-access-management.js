@@ -3,7 +3,10 @@ const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2.49.8')
 const db=createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true}});
 const $=id=>document.getElementById(id), status=$('status'), list=$('members');
 const login=$('login'), email=$('email'), password=$('password');
+// Access V2 is not provisioned in production. Keep all legacy mutation controls disabled.
+const ROLE_V2_READY=false;
 $('invite').addEventListener('submit',async event=>{
+ if(!ROLE_V2_READY){event.preventDefault();say('Invitations are paused until Observer, Operator and Administrator are secured server-side.');return;}
  event.preventDefault();const button=$('send-invite');button.disabled=true;
  try{const role=$('invite-role').value;if(!['kingdom','member'].includes(role))throw Error('Choose a supported legacy role.');
  await rpc('invite',{p_email:$('invite-email').value.trim(),p_player_id:$('invite-player').value.trim(),p_role:role});
@@ -25,15 +28,15 @@ async function load(){
   login.hidden=true;
   const access=await rpc('check');if(!access?.allowed)throw Error('Your current session is not authorized to manage accounts.');
   const result=await rpc('list');const accounts=result?.accounts||[];
-  say(accounts.length+' eligible account(s). Existing PHALANX access management — legacy roles only.');
-  $('invite').hidden=false;
+  say(accounts.length+' manageable regular account(s) returned. Protected administrators and other roles are intentionally excluded. Access V2 role changes are not enabled.');
+  $('invite').hidden=true;
   const invites=result?.invitations||[];
   $('invitations').replaceChildren();
   for(const i of invites){$('invitations').append(node('p',i.email+' · Player ID '+i.player_id+' · '+i.role+' · expires '+new Date(i.expires_at).toLocaleDateString()));}
   for(const a of accounts){
    const section=node('section','');section.className='card';
    section.append(node('h3',a.email||'Account'),node('p','Player ID: '+(a.player_id||'—')+' · Status: '+(a.status||'unknown')+' · Legacy role: '+(a.role||'not assigned')));
-   if(['active','suspended'].includes(a.status)){
+   if(ROLE_V2_READY && ['active','suspended'].includes(a.status)){
     const action=a.status==='active'?'suspend':'reactivate';
     const button=node('button',action==='suspend'?'Suspend account':'Reactivate account');
     button.addEventListener('click',async()=>{
@@ -42,7 +45,7 @@ async function load(){
      try{await rpc(action,{p_user_id:a.user_id});await load()}catch(e){say('No change: '+e.message);button.disabled=false}
     });section.append(button);
    }
-   if(a.status==='pending' && a.invited_role && ['kingdom','member'].includes(a.invited_role)){
+   if(ROLE_V2_READY && a.status==='pending' && a.invited_role && ['kingdom','member'].includes(a.invited_role)){
     for(const action of ['approve','reject']){
       const button=node('button',action==='approve'?'Approve registration':'Reject registration');
       button.addEventListener('click',async()=>{
