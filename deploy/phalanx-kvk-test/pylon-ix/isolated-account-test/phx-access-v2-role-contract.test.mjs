@@ -1,4 +1,4 @@
-// Run: node --test phx-access-v2-role-contract.test.mjs
+// Run: node --experimental-default-type=module --test phx-access-v2-role-contract.test.mjs
 // No network, credentials, or production writes.
 import test from 'node:test';
 import assert from 'node:assert/strict';
