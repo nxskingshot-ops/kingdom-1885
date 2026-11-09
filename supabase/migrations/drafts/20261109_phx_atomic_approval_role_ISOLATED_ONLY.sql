@@ -1,0 +1,44 @@
+-- PHALANX V2 isolated-only atomic approval + role grant.
+-- Preserve phx_review_registration as review-only legacy path.
+-- Requires explicitly bootstrapped administrator AND registration reviewer.
+begin;
+create or replace function public.phx_approve_registration_with_role_v2(
+ p_application_id uuid, p_app_role text, p_public_message text default null
+) returns jsonb
+language plpgsql security definer set search_path=''
+as $fn$
+declare
+ v_actor uuid := auth.uid();
+ v_target uuid;
+ v_status text;
+ v_result jsonb;
+begin
+ if v_actor is null then raise exception 'Authentication required' using errcode='28000'; end if;
+ if not exists(select 1 from public.phx_app_roles where user_id=v_actor and app_role='administrator' and active)
+ then raise exception 'PHALANX administrator required' using errcode='42501'; end if;
+ if not exists(select 1 from public.phx_registration_reviewers where user_id=v_actor and enabled)
+ then raise exception 'Registration reviewer required' using errcode='42501'; end if;
+ if p_app_role is null or p_app_role not in ('observer','operator','administrator')
+ then raise exception 'Invalid PHALANX role' using errcode='22023'; end if;
+ if length(coalesce(p_public_message,''))>500 then raise exception 'Message too long' using errcode='22023'; end if;
+ select requester_user_id,status into v_target,v_status
+ from public.phx_registration_applications where id=p_application_id for update;
+ if not found then raise exception 'Application not found' using errcode='P0002'; end if;
+ if v_status<>'pending' then raise exception 'Application already reviewed' using errcode='23505'; end if;
+ if v_target=v_actor then raise exception 'Self approval forbidden' using errcode='42501'; end if;
+ if exists(select 1 from public.phx_app_roles where user_id=v_target)
+ then raise exception 'Account already has PHALANX role' using errcode='23505'; end if;
+ -- The existing function creates decision/event/outbox; this entire call
+ -- is one PostgreSQL transaction and rolls back if the role grant fails.
+ v_result := public.phx_review_registration(p_application_id,'approved',p_public_message);
+ insert into public.phx_app_roles(user_id,app_role,active,assigned_by,source)
+ values(v_target,p_app_role,true,v_actor,'registration');
+ insert into public.phx_app_role_events(target_user_id,actor_user_id,previous_role,next_role,reason)
+ values(v_target,v_actor,null,p_app_role,'Approved registration '||p_application_id::text);
+ return jsonb_build_object('id',p_application_id,'status','approved',
+  'access_granted',true,'app_role',p_app_role);
+end;
+$fn$;
+revoke all on function public.phx_approve_registration_with_role_v2(uuid,text,text) from public,anon;
+grant execute on function public.phx_approve_registration_with_role_v2(uuid,text,text) to authenticated;
+commit;
