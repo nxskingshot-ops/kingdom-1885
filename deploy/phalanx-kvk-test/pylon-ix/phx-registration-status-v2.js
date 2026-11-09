@@ -22,6 +22,11 @@ async function check(){
   const {data:{session}}=await db.auth.getSession();
   if(!session?.access_token){state.textContent='Sign in required';details.textContent='Please sign in again.';return;}
   const result=await endpoint('status',session.access_token);
+  if(result.legacy_membership_active){
+   state.textContent='Existing alliance membership';
+   details.textContent='Your existing alliance membership is active. PHALANX module permissions are managed separately; no new registration request is needed.';
+   return;
+  }
   if(result.application){
    const status=result.application.status;
    state.textContent=status==='pending'?'Awaiting administrator review':status==='approved'?'Approved — access pending':status==='rejected'?'Request declined':'Registration status unavailable';
