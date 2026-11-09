@@ -33,3 +33,9 @@ Read GitHub branch stage/transfer-live-rankings-20261103:
 - This proves current staging still couples game-like legacy membership labels to authorization. Do NOT simply rename role values in DB: doing so would break current staging access and potentially other modules. Implement compatibility and capability migration with tests.
 - Need to inspect ./transfer-register.html, ./password-recovery.html and current Access Management surface and their actual deployment mapping. These files were not yet inspected in this pass.
 - Current staging source verified; deployed asset parity and runtime behavior NOT TESTED. No production changes.
+
+## Registration source inspection (2026-11-09)
+- stage/transfer-live-rankings-20261103 deploy/phalanx-kvk-test/pylon-ix/transfer-register.html blob b37f05e10376ebd390eeffc3c71aa296a5f57c9f contains email, numeric Kingshot Player ID, password/confirm; script ./transfer-register.js.
+- transfer-register.js blob 67de3cd636191807fb188ecf3183c05f375af491 calls Supabase auth.signUp({email,password,options:{data:{kingshot_player_id:playerId}}}); no direct nexus_access_requests insert or approval API call. Player ID stored as user-supplied metadata, NOT verified authorization evidence.
+- The legacy nexus-access-review v8 approves nexus_access_requests and creates a new technical-email auth user. Thus the reviewed signUp path and legacy approval path are NOT proven connected. This is a concrete integration gap requiring investigation of triggers/functions and current Access Management UI before any role migration or duplicate-user fix.
+- The HTML states approval is required; whether a signup creates a reviewable queue item is NOT VERIFIED. Do not claim registration approval works end-to-end.
