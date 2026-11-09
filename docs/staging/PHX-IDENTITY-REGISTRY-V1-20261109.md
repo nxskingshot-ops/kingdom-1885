@@ -70,3 +70,6 @@ Approval dropdown is **Member / R4 / R5 only**; no self-selected role, no implic
 
 ## Verification for this decision
 Documented on isolated GitHub branch only. No database or production role changes. Database migration, RLS/API authorization, UI integration, audit logging, backup integrity, restore and mobile regression: **NOT TESTED**.
+
+## Amendment — Admin in registration role list (2026-11-09)
+The user approved adding **Admin** as a fourth role option in the registration approval list, with the restriction that **only an already authorized PHALANX Admin may assign the Admin role**. The registration applicant never selects their own role. Thus approval dropdown: Member / R4 / R5 / Admin, but Admin selection is visible/actionable only to verified authorized Admin approvers; all role grants require server-side authorization, identity verification, atomic approval+role assignment and audit. GOD/System Owner remains excluded. This amendment **supersedes** earlier text in this register excluding Admin from the ordinary approval list. Do not infer permission to modify the GOD owner or to bypass governance FREEZEs. The technical implementation and effective admin-to-admin delegation controls require verification before release. Existing accounts/roles unchanged.
