@@ -1,0 +1,38 @@
+name: PHALANX isolated Auth configuration access check
+on:
+  push:
+    branches: ['work/phalanx-exact-restore-20261109']
+    paths: ['.github/workflows/phalanx-isolated-auth-config-check-20261109.yml']
+permissions:
+  contents: read
+jobs:
+  inspect:
+    if: github.ref == 'refs/heads/work/phalanx-exact-restore-20261109'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Read only redirect metadata for isolated Supabase project
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'JS'
+          const token = process.env.SUPABASE_ACCESS_TOKEN;
+          if (!token) { console.log('No management credential is available to this job.'); process.exit(1); }
+          (async () => {
+            const response = await fetch('https://api.supabase.com/v1/projects/yuyvmbdybwpwpqsipfjt/config/auth', {
+              headers: {Authorization: 'Bearer ' + token},
+              redirect: 'error',
+              signal: AbortSignal.timeout(20000)
+            });
+            console.log('Isolated Auth management response: HTTP ' + response.status);
+            if (!response.ok) { process.exitCode = 1; return; }
+            const config = await response.json();
+            const site = new URL(config.site_url);
+            const entries = String(config.uri_allow_list || '').split(',').map(s => s.trim()).filter(Boolean);
+            console.log('Default destination is localhost: ' + (site.hostname === 'localhost'));
+            console.log('Default destination uses HTTPS: ' + (site.protocol === 'https:'));
+            console.log('Explicit redirect entry count: ' + entries.length);
+          })().catch(() => { console.log('Could not read isolated Auth management settings.'); process.exitCode = 1; });
+          JS
