@@ -80,3 +80,6 @@ The user approved adding **Admin** as a fourth role option in the registration a
 **Proposed names (not yet approved):** game_rank = Kingshot R1–R5; app_access_role = Observer (read-only), Operator (scouting edit/export), Administrator (account administration and candidate deletion), GOD (separate protected owner). Naming, exact capabilities, and existing legacy role migration remain OPEN pending approval. Display game rank and app role separately. Existing legacy role identifiers in DB are NOT to be renamed or migrated blindly.
 
 **Status:** Governance decision documented only; implementation, DB migration, backup, restore, role tests and deployment NOT TESTED.
+
+## V2 application role names — approved 2026-11-09
+User confirmed the proposed PHALANX app role names and separation rationale: **Observer**, **Operator**, **Administrator**; **GOD** remains a separate protected owner status. Kingshot game rank (R1–R5) is an independent attribute, not an access role. Exact V2 permissions, migration mapping for existing legacy roles and rollout remain pending review; no production changes or tests claimed.
