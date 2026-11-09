@@ -97,3 +97,18 @@ The production backup workflow uses `--no-owner --no-acl`. In the synthetic rest
 - Copy the [smoke test](../../security/tests/phx-access-v2-native-smoke-20261109.mjs) and [schema fixture](../../security/tests/phx-access-v2-native-baseline-20261109.sql) into that working directory. Run `node phx-access-v2-native-smoke-20261109.mjs /absolute/path/to/repo`.
 
 The next release gate is a real restore of the current private production archive into an authorized disposable target. Use the existing private backup access and keep the target isolated until ownership, grants and RLS have been checked. Then connect the existing app to that target and run hosted Auth, Android, Queen An and the protected navigation regressions before requesting production authorization.
+
+## Continuation · actual private production archive restore · 2026-11-09
+
+The [scheduled backup 42596466758](https://github.com/nxskingshot-ops/kingdom-1885/actions/runs/42596466758) was replayed from private storage in the [successful restore run 42706066276](https://github.com/nxskingshot-ops/kingdom-1885/actions/runs/42706066276), work-branch commit `7f4d4f5bda537560f8e88bbe9930e1150d128afb`. This supersedes earlier “not tested” status for the current PostgreSQL archive restore.
+
+| Check | Status | Evidence |
+|---|---|---|
+| Actual encrypted archive and integrity | BESTANDEN | Runner found the single archive for backup run 42596466758, verified its SHA-256, decrypted it and checked its Transfer Scouting table of contents. |
+| First rehearsal start | FEHLGESCHLAGEN | [Run 42705343165](https://github.com/nxskingshot-ops/kingdom-1885/actions/runs/42705343165) verified the archive and failed at Supabase image bootstrap readiness. The retry initializes an empty PostgreSQL cluster directly using the same reviewed image. |
+| Actual complete PostgreSQL archive restore | BESTANDEN | Run 42706066276 replayed the archive transactionally into a disposable container with Docker network mode `none`, PostgreSQL TCP listening disabled and no app connected. |
+| Scoped ownership, grants and RLS | BESTANDEN | Replayed separately captured Access Management ownership and ACLs and verified candidate/member access boundaries. PostgreSQL archive format omits owners and ACLs. |
+| V2 migration rehearsal and legacy row integrity | BESTANDEN | Applied as the database `postgres` role inside the disposable copy. The flag remained disabled, anonymous execute was denied, unauthenticated app context was rejected and pre/post fingerprints matched for memberships, invitations, candidates, settings and audit. |
+| Full-project ownership and ACL parity, hosted Auth, Android, Queen An, production deploy | NICHT GETESTET | The rehearsal covers the complete PostgreSQL archive and the scoped Access V2 grants. It does not verify every project ACL or rebuild platform settings, Edge Functions, or Storage object contents. |
+
+The cleanup step completed and the workflow uploads no restore artifacts. Access to private backup credentials is confined to the download step. The work-branch workflow is scoped to this rehearsal. The production and Cloudflare branches were not used by it. The next gate remains a separately configured hosted test target with a verified test identity, followed by the existing application's hosted Auth, Android and protected navigation regressions. Production authorization is separate.
