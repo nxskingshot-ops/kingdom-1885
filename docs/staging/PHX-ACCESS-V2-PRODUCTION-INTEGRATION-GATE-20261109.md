@@ -67,3 +67,33 @@ Version `phx-scouting-roles-20261109`. Implemented in the existing `transfer-pr4
 | Production integration, full PHALANX regression and release | NICHT GETESTET | No production migration or role change. Real sign-in, candidate operations, HOME/Territory Control/Outpost Map 2.0 and 74-outpost export regressions, Queen An's actual account and a specifically authorized rollout remain gated. |
 
 Reproduce from the work branch with `@electric-sql/pglite@0.3.14`, Playwright and Chromium. Run `node security/tests/phx-access-v2-transfer-scouting-20261109.mjs`, then `PHX_TEST_ACCESS_V2=1 node security/tests/phx-access-management-browser-20261109.mjs` and repeat the browser test without the environment flag to exercise fallback.
+
+## Continuation · native Auth and restore rehearsal · 2026-11-09
+
+Application source `5207ccaaf1b956a965519862dbaea493c79c2ea0`. This pass added test evidence only. The existing application was served locally with its Supabase URL and client key pointed at an isolated loopback stack. External browser requests were blocked. GoTrue 2.197.0, PostgREST 16.5, PostgreSQL 17.9, supabase-js 2.119.0 and Chromium used synthetic data and an in-memory SMTP inbox.
+
+| Check | Status | Evidence |
+|---|---|---|
+| Browser registration and real Auth confirmation | BESTANDEN | Registered three accounts through the existing form, verified password sign-in was denied before confirmation, followed three actual test mail links, verified sign-in succeeded and the app still gated access until approval. |
+| Delegate role grants and access readback | BESTANDEN | The synthetic delegated R5 used the existing browser screens to invite and approve Observer, Operator and Administrator. Each approved identity signed in and loaded its assigned role after reload. |
+| Candidate data and authority | BESTANDEN | Real authenticated PostgREST. Observer read the two test candidates and could neither write nor list access records. Operator and Administrator created and edited candidates; candidate deletion returned no rows. Scoped admin role mutations on protected owner/delegate and self suspension were denied. |
+| Member edit and audit | BESTANDEN | Changed Observer to Operator and back in the browser. Actual RPC readback and audit reasons matched. The fixture recorded three invites, three approvals, two role changes, two candidate inserts and two candidate updates. |
+| Password recovery and logout | BESTANDEN | Received a GoTrue recovery message in the local inbox, set a new password through a real recovery session, confirmed old-password denial and new-password sign-in. After global logout the previous token could no longer establish the scoped role. |
+| Native backup created | BESTANDEN | PostgreSQL client 18.6 produced a custom-format, encrypted synthetic archive with the same relevant dump and encryption options as the scheduled workflow. |
+| Native backup integrity | BESTANDEN | Parsed the archive, verified the encrypted SHA-256 and byte-compared the decrypted archive with the original. |
+| Native restore | BESTANDEN | Used `pg_restore --exit-on-error --single-transaction --no-owner --no-acl` against a second PostgreSQL instance. Fingerprints and counts matched for 5 Auth accounts, 5 memberships, 3 invitations, 2 candidates, 12 audit events, settings and candidate policies. Reapplied and verified the scoped ACLs separately. |
+| Current production archive restored | NICHT GETESTET | The successful scheduled backup was verified from its workflow. It publishes no downloadable artifact. The encrypted copy remains in private backup storage. The existing hosted test project already contains test accounts and lacks the candidate schema. It was not overwritten. |
+| Hosted Auth, physical Android and Queen An | NICHT GETESTET | Native browser test used a 390 CSS-pixel viewport. The historical hosted login failure was not retried. |
+| Production deploy and whole-app regression | NICHT GETESTET | Production and both existing test deployments were untouched. |
+
+### Access grants after restore
+
+The production backup workflow uses `--no-owner --no-acl`. In the synthetic restore, the access RPC inherited default PUBLIC execute privileges until the reviewed grants were replayed. The normal application guard still applied. Before attaching any restored target to the Data API, restore the required database roles and object ownership, replay reviewed schema, table and function grants, and compare policies and direct access from both authorized and unauthorized roles. A successful archive parse and matching rows cannot verify this step.
+
+### Reproducing the native smoke test
+
+- Run a fresh, disposable PostgreSQL 17 cluster bound to loopback port 53911 with the database `phx_access_fixture`. The fixture creates roles, so use a dedicated cluster. The smoke test rejects a populated database.
+- In an isolated working directory place the GoTrue 2.197.0 executable as `auth` with its `migrations/` directory and PostgREST 16.5 as `postgrest`. Install Node dependencies `pg@8.23.1`, `smtp-server@3.19.0`, `mailparser@3.9.4`, `esbuild@0.27.2` and `@supabase/supabase-js@2.119.0`. Set `PHX_PLAYWRIGHT` to the installed Playwright ESM entry and `PHX_CHROMIUM` to the Chromium executable.
+- Copy the [smoke test](../../security/tests/phx-access-v2-native-smoke-20261109.mjs) and [schema fixture](../../security/tests/phx-access-v2-native-baseline-20261109.sql) into that working directory. Run `node phx-access-v2-native-smoke-20261109.mjs /absolute/path/to/repo`.
+
+The next release gate is a real restore of the current private production archive into an authorized disposable target. Use the existing private backup access and keep the target isolated until ownership, grants and RLS have been checked. Then connect the existing app to that target and run hosted Auth, Android, Queen An and the protected navigation regressions before requesting production authorization.
