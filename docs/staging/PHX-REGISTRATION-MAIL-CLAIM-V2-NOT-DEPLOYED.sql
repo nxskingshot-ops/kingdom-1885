@@ -18,7 +18,7 @@ begin
   select o.id from public.phx_registration_notification_outbox o
   where o.channel='email' and o.attempts<10 and (
     (o.state in ('queued','failed') and o.next_attempt_at<=now())
-    or (o.state='sending' and o.claimed_at<now()-interval '10 minutes')
+    or (o.state='sending' and o.claimed_at<now()-interval '10 minutes' and o.attempts<10)
   )
   order by o.id for update skip locked limit greatest(0,least(p_limit,20))
  ), claimed as (
