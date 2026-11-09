@@ -24,9 +24,9 @@ form.addEventListener('submit',async event=>{
  try{
   const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2');
   const db=createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{persistSession:true,autoRefreshToken:true}});
-  const {data,error}=await db.auth.signUp({email,password:pass,options:{data:{kingshot_player_id:playerId}}});
+  const {data,error}=await db.auth.signUp({email,password:pass,options:{emailRedirectTo:new URL('./phx-registration-status-v2.html',window.location.href).href,data:{kingshot_player_id:playerId}}});
   if(error)throw error;
-  status.textContent=data?.user?'Registration request received. Please check your email if confirmation is required. Access is granted only after administrator approval.':'If registration can proceed, check your email for the next step. Administrator approval is still required.';
+  status.textContent=data?.user?'Account signup received. Confirm your email if required, then open Account status and select Request access. Signup alone does not submit an approval request.':'If signup can proceed, check your email. Then open Account status to request access.';
   form.reset();password.type=confirmPassword.type='password';
  }catch(error){
   status.textContent='Registration could not be completed: '+(error?.message||'Please try again later.');
