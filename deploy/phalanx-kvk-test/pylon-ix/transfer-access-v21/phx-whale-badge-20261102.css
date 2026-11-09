@@ -1,0 +1,25 @@
+@import url("./phx-alliance-compact-20261102.css");
+.phx-intel-rating .phx-rating-shield {
+ display:block;
+ align-self:center;
+ width:max-content;
+ max-width:100%;
+ min-height:0;
+ margin:8px auto;
+ padding:6px 16px;
+ border:1px solid #d8aa57;
+ border-radius:8px;
+ background:linear-gradient(135deg,#142536,#253041,#142536);
+ box-shadow:inset 0 0 9px rgba(241,199,119,.14);
+ color:#f4cf88;
+ font:800 1.08rem Georgia,serif;
+ text-align:center;
+ white-space:nowrap;
+}
+.phx-intel-rating .phx-rating-shield::before,
+.phx-intel-rating .phx-rating-shield::after {content:none;display:none}
+.phx-intel-rating {align-items:center;text-align:center}
+
+/* PHX mobile verdict: keep long evidence warnings inside the assessment card. */
+.phx-verdict-card,.phx-verdict-card .phx-sea-rating{box-sizing:border-box;min-width:0;max-width:100%;}
+.phx-verdict-card .phx-sea-rating{display:block;width:100%;white-space:normal;overflow-wrap:anywhere;word-break:normal;line-height:1.3;text-align:center;font-size:clamp(1rem,4vw,1.5rem);}

@@ -34,3 +34,36 @@ Date: 2026-11-09. Status: BLOCKED / NOT RELEASED. Scope: existing NEXUS PHALANX 
 
 ## Stop conditions
 Do not apply isolated test migrations or enable V2 on production until mapping, backup/restore, migration diff and authorized end-to-end tests are evidenced. Preserve production data and rollback capability.
+## Continuation · Transfer Scouting Access V2 · 2026-11-09
+
+Version `phx-scouting-roles-20261109`. Implemented in the existing `transfer-pr42` pilot and its previously approved compact `transfer-access-v21` view. The working branch incorporates the approved staging baseline `bc1da8c64472f26841581b4522ac52acf6618373`. This continuation supersedes the earlier backup and implementation status above.
+
+### Scope and compatibility
+
+- One role vocabulary in invitations, registration approval, and member editing. A verified registrant must match the live invitation by email and Kingshot ID. Approval confirms the exact invited role. Old Member and Kingdom invitations still have their original approval path, and existing access managers can open the separate legacy invitation form.
+- One authority for role grants, the existing `phx_access_management` RPC and the existing membership row. An additive nullable `scouting_role` stores the scoped role. Existing records receive no automatic grants or role mapping. New V2 applicants receive the existing Member baseline plus the selected scouting role.
+- Observer can read scouting records. Operator can add and edit candidates and use the built-in CSV export. Administrator additionally manages Transfer Scouting access. Scoped roles never grant legacy R4/R5/admin or candidate deletion. The Observer interface hides the built-in export. The CSV contains the same rows as the permitted read view, so client-side download controls are a workflow distinction.
+- The same live-session check, serialization lock and atomic audit apply to role management. Owner, delegate, self, privileged legacy accounts and existing scoped administrators are guarded. Scoped administrators cannot manage Kingdom-only access. Member role changes require a reason and record the actor, previous role and new role. The existing RPC signature is kept. Its `p_email` argument carries the reason only for `set_scouting_role`.
+- The [candidate SQL](../../security/patches/PHX-ACCESS-V2-TRANSFER-SCOUTING-20261109.sql) verifies the reviewed function body and that membership and candidate RLS are enabled before applying. It defaults to disabled and adds only two candidate policies for scoped writes. It does not run automatically through the migration directory.
+- The [backout SQL](../../security/patches/PHX-ACCESS-V2-TRANSFER-SCOUTING-DISABLE-20261109.sql) disables V2 access and new candidate write paths while retaining records and audit. Existing Member access remains available. Pending V2 invitations are retained and reserve their bindings until expiry or reactivation. Frontend rollback is independent. Individual access changes require an authorized, audited operation.
+
+### Evidence
+
+| Check | Status | Evidence and scope |
+|---|---|---|
+| GitHub handoff and committed production preflight | BESTANDEN | Work baseline `9bc2c55192e57def8680c60b14a6eeb5902bfb6c` contains the requested preflight. Read-only production review confirmed two membership rows with legacy roles Admin and R5, zero open invitations, zero pending legacy requests and existing RLS. |
+| Existing Cloudflare pages | BESTANDEN | Test branch `21568a93fd62f7585253f937ce426db768703ef1`, successful [workflow](https://github.com/nxskingshot-ops/kingdom-1885/actions/runs/42697076766). Isolated HTML returned HTTP 200 and matched its Git blob. Both active Scouting pilot HTML files returned HTTP 200 and matched staging `bc1da8c`. This verifies the prior deployment. |
+| All three invitations, approvals and persisted roles | BESTANDEN | Local PostgreSQL 17.5 via PGlite. Exact invitation match, confirmed email, role readback, and legacy compatibility. |
+| Negative authority and RLS paths | BESTANDEN | Local SQL fixture. Anonymous and ordinary R5 denied. Observer and Operator cannot administer. Scoped Administrator can manage eligible members and cannot grant Kingdom access, alter protected accounts or delete candidates. Revoked-session and disabled-flag checks passed. |
+| Audit and transactional consistency | BESTANDEN | SQL fixture. Duplicate invitation and repeat grant handling, reason and before/after readback, failed audit rolls back the role write. |
+| Sign-in, registration, role editing, account lifecycle and Tools navigation | BESTANDEN | Chromium 390 and 1280 CSS pixels on the existing app. Simulated GoTrue sign-in and email confirmation, connected to the local PostgreSQL fixture. V2 and legacy fallback checked separately. |
+| Transfer decision and deploy assets | BESTANDEN | Existing Transfer Decision test suite 12/12 and Cloudflare asset preflight. New code scoped to the two Scouting views. |
+| Production backup created | BESTANDEN | [GitHub Actions run 42596466758](https://github.com/nxskingshot-ops/kingdom-1885/actions/runs/42596466758), 09 Nov 10:50 CET, successful encrypted dump and upload steps. |
+| Production backup integrity | BESTANDEN | Same job succeeded at archive parsing, encryption/decryption comparison and remote-copy byte comparison. The private backup was not retrieved by this work. |
+| Synthetic backup and separate restore | BESTANDEN | A fresh PostgreSQL fixture loaded the compressed backup and returned identical membership, candidate, invitation, audit and flag data. |
+| Actual production backup restored in isolation | NICHT GETESTET | The available [archive-validation workflow](https://github.com/nxskingshot-ops/kingdom-1885/actions/runs/38539296575) only parsed an older archive. A current restore must use an authorized disposable target and verify owners, grants and policies separately because the scheduled dump excludes owner and ACL metadata. |
+| Previous hosted login with the known isolated account | FEHLGESCHLAGEN | Historical invalid credentials. The current read-only check found a confirmed account and no active administrator V2 role for that identity. No password was retried. Use isolated-project Auth recovery with the account holder or dedicated authorized test identities. |
+| Hosted Auth, PostgREST, physical Android and Queen An | NICHT GETESTET | The hosted isolated project lacks `public.transfer_candidates` and intentionally does not grant authenticated execution of the legacy Access RPC. Prepare a compatible isolated restore before migration and use approved test identities. The currently deployed pages still serve the prior versions. |
+| Production integration, full PHALANX regression and release | NICHT GETESTET | No production migration or role change. Real sign-in, candidate operations, HOME/Territory Control/Outpost Map 2.0 and 74-outpost export regressions, Queen An's actual account and a specifically authorized rollout remain gated. |
+
+Reproduce from the work branch with `@electric-sql/pglite@0.3.14`, Playwright and Chromium. Run `node security/tests/phx-access-v2-transfer-scouting-20261109.mjs`, then `PHX_TEST_ACCESS_V2=1 node security/tests/phx-access-management-browser-20261109.mjs` and repeat the browser test without the environment flag to exercise fallback.
