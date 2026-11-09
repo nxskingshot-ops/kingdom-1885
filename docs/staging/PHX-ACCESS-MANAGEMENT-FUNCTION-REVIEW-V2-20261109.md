@@ -25,3 +25,11 @@ Kingshot game rank independent from PHALANX app role. App role names Observer, O
 
 ## Implementation gates
 Inspect actual deployed Access Management frontend and all linked endpoints; map legacy membership values; reconcile existing accounts; check schema and RLS dependencies; produce verified backup and rollback; implement in isolated branch; run authorization negative tests, data integrity, mobile and regression; explicit release approval. No production changes, backup, restore or runtime tests performed in this review.
+
+## 2026-11-09 follow-up: actual Transfer Scouting staging source located
+Read GitHub branch stage/transfer-live-rankings-20261103:
+- deploy/phalanx-kvk-test/pylon-ix/transfer-scouting-id-stage-20261030.html (blob 10835d72a9f72a1de3232de156199b4521f9d79d): login panel has Sign in, Register -> ./transfer-register.html, Forgot password -> ./password-recovery.html. It does not itself contain the registration review queue.
+- deploy/phalanx-kvk-test/pylon-ix/transfer-scouting-id-stage-20261030.js (blob 010d145fc9ab43d72184038e873c3451364775fe): check() reads nxs_memberships.role and accepts member/r4/r5/admin; canEdit is r4/r5/admin. UI shows raw membership role as identity label. Candidate delete button is also gated by canEdit, meaning R4/R5 may delete, matching the existing broad RLS DELETE policy. The same script directly calls transfer_candidates CRUD.
+- This proves current staging still couples game-like legacy membership labels to authorization. Do NOT simply rename role values in DB: doing so would break current staging access and potentially other modules. Implement compatibility and capability migration with tests.
+- Need to inspect ./transfer-register.html, ./password-recovery.html and current Access Management surface and their actual deployment mapping. These files were not yet inspected in this pass.
+- Current staging source verified; deployed asset parity and runtime behavior NOT TESTED. No production changes.
