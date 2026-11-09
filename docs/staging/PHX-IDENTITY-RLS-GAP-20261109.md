@@ -28,3 +28,12 @@ These conflict with approved matrix: only Admin may review/approve registration 
 Supabase public pg_policies read-only query, 2026-11-09.
 Database authorization gap discovery: PASS.
 Backup / restore / migration / deployed authorization / UI integration / regression: NOT TESTED.
+
+## Additional source inspection — 2026-11-09
+Inspected existing preview/kingdom-hub-menu-test.html on work branch and live Supabase Edge Function nexus-access-review version 8 (ACTIVE, sha256 c02a84df38389f0bc37529f1388ea6256dca3e26da0420d15a5a04be080e1e16).
+- Legacy frontend checkNexusAccessAdmin accepts r4/r5/admin, and role dropdown includes kingdom, member, outpost, officer, r5, admin; default is member for NXS, kingdom otherwise. This is NOT the approved explicit role selection policy.
+- Live Edge Function accepts r4/r5/admin for review; non-admin R4/R5 can approve member/kingdom and reject requests, contradicting new Admin-only approval rule. Admin-only restriction already exists for granting elevated roles and credential reset, but is insufficient.
+- Live Edge Function creates a fresh technical @example.com auth account and random password for each approval, instead of linking an existing registered identity. Identity Registry must avoid duplicates and must not delete existing users during failure cleanup.
+- Live function has a protected owner ID for password reset; preserve this guard and verify independently before changes.
+- The preview file is a legacy surface; current PHALANX Access Management frontend and other deployed Edge Functions still need discovery before any fix. Do not assume this file is the current user-facing screen.
+- No source or deployment modified; this is read-only evidence.
