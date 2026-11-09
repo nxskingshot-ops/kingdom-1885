@@ -54,7 +54,32 @@ Deno.serve(async (request) => {
     }
     return json({ application: publicRow(data) }, 201);
   }
-  // Review intentionally not exposed until app-level Administrator permissions,
-  // atomic grant/review transaction and audit log are approved and implemented.
+  if (action === 'review') {
+    if (typeof payload.application_id !== 'string' || !/^[0-9a-f-]{36}$/i.test(payload.application_id))
+      return json({ error: 'Invalid application ID' }, 400);
+    if (payload.decision !== 'approved' && payload.decision !== 'rejected')
+      return json({ error: 'Invalid decision' }, 400);
+    if (payload.message != null && (typeof payload.message !== 'string' || payload.message.length > 500))
+      return json({ error: 'Invalid message' }, 400);
+    // Run the atomic RPC under the CALLER JWT, not the service-role client.
+    // PostgreSQL validates explicit reviewer permission and prevents self-review.
+    const caller = createClient(url, publishable, {
+      global: { headers: { Authorization: 'Bearer ' + jwt } },
+      auth: { persistSession: false },
+    });
+    const { data, error } = await caller.rpc('phx_review_registration', {
+      p_application_id: payload.application_id,
+      p_decision: payload.decision,
+      p_public_message: payload.message ?? null,
+    });
+    if (error) {
+      if (error.code === '42501') return json({ error: 'Review permission denied' }, 403);
+      if (error.code === '23505') return json({ error: 'Request already reviewed' }, 409);
+      if (error.code === 'P0002') return json({ error: 'Request not found' }, 404);
+      return json({ error: 'Review unavailable' }, 503);
+    }
+    return json({ review: data });
+  }
+  // No role or membership grants: approval is only a recorded review decision.
   return json({ error: 'Unsupported action' }, 400);
 });
