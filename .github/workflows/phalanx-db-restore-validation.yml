@@ -1,84 +1,117 @@
-name: PHALANX backup restore validation (read-only)
+name: PHALANX private backup restore rehearsal
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - work/phx-access-v2-safe-plan-20261109
+    paths:
+      - '.github/workflows/phalanx-db-restore-validation.yml'
 
 permissions:
   contents: read
 
 concurrency:
-  group: phalanx-db-restore-validation
+  group: phalanx-private-restore-rehearsal
   cancel-in-progress: false
 
 jobs:
-  validate:
+  restore:
+    if: github.repository == 'nxskingshot-ops/kingdom-1885' && github.ref == 'refs/heads/work/phx-access-v2-safe-plan-20261109'
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 25
     env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.B2_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.B2_APPLICATION_KEY }}
-      AWS_DEFAULT_REGION: eu-central-003
-      AWS_EC2_METADATA_DISABLED: "true"
-      BACKUP_PASSPHRASE: ${{ secrets.PHALANX_BACKUP_ENCRYPTION_KEY }}
-      B2_ENDPOINT: https://s3.eu-central-003.backblazeb2.com
-      B2_BUCKET: nexus-phalanx-backup
-      BACKUP_OBJECT: postgres/manual/phalanx-postgres-20261014T084627Z-run38537463488.dump.enc
+      BACKUP_RUN: "42596466758"
+      RESTORE_IMAGE: supabase/postgres@sha256:d5424e9f4d0c21d63991c3f3dd77881f23f722c3a212452a61bc91924b79e8c8
+      RESTORE_CONTAINER: phx-private-restore-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
-      - name: Check secret presence
-        shell: bash
-        run: |
-          set -euo pipefail
-          for name in AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY BACKUP_PASSPHRASE; do
-            if [[ -z "${!name}" ]]; then echo "::error::Missing required secret for $name"; exit 1; fi
-          done
-      - name: Install PostgreSQL client and AWS CLI
-        shell: bash
-        run: |
-          set -euo pipefail
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq postgresql-common ca-certificates curl unzip openssl
-          sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq postgresql-client-18
-          curl -fsSL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o /tmp/awscliv2.zip
-          unzip -q /tmp/awscliv2.zip -d /tmp
-          sudo /tmp/aws/install --update
-          /usr/lib/postgresql/18/bin/pg_restore --version
-      - name: Download encrypted backup and checksum
+      - name: Check out reviewed restore code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+
+      - name: Prepare disposable restore runtime
         shell: bash
         run: |
           set -euo pipefail
           umask 077
-          mkdir -p "$RUNNER_TEMP/phalanx-restore-check"
-          cd "$RUNNER_TEMP/phalanx-restore-check"
-          aws --endpoint-url "$B2_ENDPOINT" s3 cp "s3://$B2_BUCKET/$BACKUP_OBJECT" backup.dump.enc --no-progress
-          aws --endpoint-url "$B2_ENDPOINT" s3 cp "s3://$B2_BUCKET/$BACKUP_OBJECT.sha256" backup.dump.enc.sha256 --no-progress
-          expected="$(awk '{print $1}' backup.dump.enc.sha256)"
-          actual="$(sha256sum backup.dump.enc | awk '{print $1}')"
-          test "$expected" = "$actual"
-          echo "Remote encrypted object checksum verified."
-      - name: Decrypt and validate PostgreSQL archive
+          restore_dir=$(mktemp -d "$RUNNER_TEMP/phx-restore.XXXXXXXX")
+          printf 'PHX_RESTORE_TEMP=%s\n' "$restore_dir" >> "$GITHUB_ENV"
+          command -v aws >/dev/null
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-common
+          sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-client-18
+          docker pull "$RESTORE_IMAGE"
+
+      - name: Retrieve and verify the private encrypted backup
         shell: bash
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.B2_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.B2_APPLICATION_KEY }}
+          BACKUP_PASSPHRASE: ${{ secrets.PHALANX_BACKUP_ENCRYPTION_KEY }}
+          AWS_DEFAULT_REGION: eu-central-003
+          AWS_EC2_METADATA_DISABLED: "true"
+          B2_ENDPOINT: https://s3.eu-central-003.backblazeb2.com
+          B2_BUCKET: nexus-phalanx-backup
         run: |
           set -euo pipefail
-          cd "$RUNNER_TEMP/phalanx-restore-check"
-          openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in backup.dump.enc -out restored.dump -pass env:BACKUP_PASSPHRASE
-          test -s restored.dump
-          /usr/lib/postgresql/18/bin/pg_restore --list restored.dump > restore.list
-          test -s restore.list
-          entries="$(grep -cv '^;' restore.list || true)"
-          test "$entries" -gt 0
-          echo "RESTORE_ENTRIES=$entries" >> "$GITHUB_ENV"
-          rm -f restored.dump backup.dump.enc
-      - name: Write validation summary
+          umask 077
+          cd "$PHX_RESTORE_TEMP"
+          for secret_name in AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY BACKUP_PASSPHRASE; do
+            if [[ -z "${!secret_name}" ]]; then
+              echo "::error::Required restore credential is unavailable."
+              exit 1
+            fi
+          done
+          aws --endpoint-url "$B2_ENDPOINT" s3api list-objects-v2 --bucket "$B2_BUCKET" \
+            --prefix postgres/daily/ --output json > objects.json 2> retrieve.log || {
+              echo "::error::Could not list the private backup prefix."
+              exit 1
+            }
+          key=$(python3 - "$BACKUP_RUN" <<'PY'
+          import json
+          import re
+          import sys
+
+          backup_run = sys.argv[1]
+          if not backup_run.isdecimal():
+              raise SystemExit("Invalid backup run.")
+          pattern = re.compile(r"postgres/daily/phalanx-postgres-\d{8}T\d{6}Z-run" + backup_run + r"\.dump\.enc")
+          with open("objects.json", encoding="utf-8") as listing:
+              matches = [
+                  item["Key"] for item in json.load(listing).get("Contents", [])
+                  if pattern.fullmatch(item["Key"])
+              ]
+          if len(matches) != 1:
+              raise SystemExit("Expected exactly one private archive for the reviewed backup run.")
+          print(matches[0])
+          PY
+          )
+          aws --endpoint-url "$B2_ENDPOINT" s3 cp "s3://$B2_BUCKET/$key" backup.enc --no-progress > retrieve.log 2>&1
+          aws --endpoint-url "$B2_ENDPOINT" s3 cp "s3://$B2_BUCKET/$key.sha256" backup.sha256 --no-progress >> retrieve.log 2>&1
+          expected=$(awk 'NR == 1 {print $1}' backup.sha256)
+          actual=$(sha256sum backup.enc | awk '{print $1}')
+          if [[ ! "$expected" =~ ^[a-f0-9]{64}$ || "$expected" != "$actual" ]]; then
+            echo "::error::The private encrypted backup checksum did not match."
+            exit 1
+          fi
+          openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in backup.enc -out restore.dump -pass env:BACKUP_PASSPHRASE
+          /usr/lib/postgresql/18/bin/pg_restore --list restore.dump > archive.list
+          grep -q 'TABLE DATA .* transfer_candidates' archive.list
+          echo "Encrypted archive checksum, decryption, and Transfer Scouting archive inventory passed."
+
+      - name: Restore and verify in a network-disabled PostgreSQL container
         shell: bash
         run: |
-          {
-            echo "### PHALANX restore validation passed"
-            echo "- Backup was downloaded from private Backblaze B2."
-            echo "- Stored SHA-256 checksum matched."
-            echo "- AES-256/PBKDF2 decryption succeeded."
-            echo "- PostgreSQL 18 pg_restore successfully parsed the archive."
-            echo "- Archive entries parsed: $RESTORE_ENTRIES"
-            echo "- **No database connection or restore command was used; production was untouched.**"
-          } >> "$GITHUB_STEP_SUMMARY"
+          bash security/tests/phx-access-v2-private-restore-20261109.sh
+
+      - name: Remove private restore files and database
+        if: always()
+        shell: bash
+        run: |
+          docker rm -fv "$RESTORE_CONTAINER" >/dev/null 2>&1 || true
+          if [[ "${PHX_RESTORE_TEMP:-}" == "$RUNNER_TEMP"/phx-restore.* ]]; then
+            rm -rf -- "$PHX_RESTORE_TEMP"
+          fi
