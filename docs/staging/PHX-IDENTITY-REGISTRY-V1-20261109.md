@@ -39,3 +39,6 @@ Verification: GitHub document update only; registration UI, database enforcement
 
 ## Member permissions — approved 2026-11-09
 Member is **read-only**: may search players and view scouting analyses and comparisons. Member must not create, edit or delete candidates, notes, evaluations, identity records, registration approvals, memberships or roles; must not administer accounts. Enforcement must be server-side (RLS/API), not only hidden UI buttons. Exact visibility of sensitive shared records remains subject to access review. Existing live behavior is unchanged until implementation and regression verification. R4 permissions: pending user decision.
+
+## R4 permissions — approved 2026-11-09
+R4 inherits all Member read-only search/analysis/comparison capabilities and additionally may (1) create and edit transfer scouting candidates, (2) edit scouting notes and evaluations, and (3) export reports and comparisons. Explicitly excluded: view registration requests, approve/reject registrations, assign/change roles, delete candidates, administer accounts, access GOD functions. No other privileges are implied. Changes must be enforced by RLS/server APIs and UI, with existing production behavior protected until tested release. R5 permissions remain pending user decision.
