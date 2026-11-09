@@ -17,11 +17,6 @@ async function check(){
   if(userError)throw userError;
   if(!user){state.textContent='Sign in required';details.textContent='Please sign in to view your account status.';return;}
   if(!user.email_confirmed_at){state.textContent='Confirm your email';details.textContent='Please use the confirmation link sent to your email before requesting access.';return;}
-  const {data:membership,error:memberError}=await db.from('nxs_memberships').select('role,active,expires_at').eq('user_id',user.id).maybeSingle();
-  if(memberError)throw memberError;
-  if(membership?.active===true&&(!membership.expires_at||new Date(membership.expires_at)>new Date())){
-   state.textContent='Module membership active';details.textContent='Your account has an active membership. Available modules depend on server-side permissions.';return;
-  }
   const {data:{session}}=await db.auth.getSession();
   if(!session?.access_token){state.textContent='Sign in required';details.textContent='Please sign in again.';return;}
   const result=await endpoint('status',session.access_token);
