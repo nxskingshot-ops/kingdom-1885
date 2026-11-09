@@ -29,11 +29,16 @@ Deno.serve(async (request) => {
   if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return json({ error: 'Invalid request' }, 400);
   const action = payload.action;
   if (action === 'status') {
+    const { data: memberships, error: membershipError } = await admin.from('nxs_memberships')
+      .select('active,expires_at').eq('user_id', user.id).eq('active',true).limit(10);
+    if (membershipError) return json({ error: 'Membership status unavailable' }, 503);
+    const legacyMembershipActive = (memberships ?? []).some((m: { expires_at: string | null }) =>
+      !m.expires_at || new Date(m.expires_at).getTime() > Date.now());
     const { data, error } = await admin.from('phx_registration_applications')
       .select('id,status,submitted_at,reviewed_at,public_message')
       .eq('requester_user_id', user.id).order('submitted_at', { ascending: false }).limit(1).maybeSingle();
     if (error) return json({ error: 'Status temporarily unavailable' }, 503);
-    return json({ application: data ? publicRow(data) : null });
+    return json({ application: data ? publicRow(data) : null, legacy_membership_active: legacyMembershipActive });
   }
   if (action === 'submit') {
     // A user who already has an active membership must not create a second
