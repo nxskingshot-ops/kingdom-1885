@@ -1,5 +1,5 @@
 // ISOLATED TEST ONLY — not connected to production
-// Staging-only review queue. No automatic permission assignment.
+// Staging-only review queue. Approval grants the selected app role via guarded atomic RPC.
 const URL='https://yuyvmbdybwpwpqsipfjt.supabase.co',KEY='sb_publishable_Zhtb-Gqaqe3Axf5XvuaSeQ_aGENmNQ4';
 const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2');
 const db=createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true}});
@@ -28,7 +28,7 @@ async function load(){
    }
    roleLabel.append(role);
    const actions=document.createElement('div');actions.className='actions';
-   for(const [decision,label] of [['approved','Approve review'],['rejected','Decline request']]){
+   for(const [decision,label] of [['approved','Approve and grant role'],['rejected','Decline request']]){
     const button=document.createElement('button');button.textContent=label;
     button.addEventListener('click',async()=>{
      const isApproval=decision==='approved';
