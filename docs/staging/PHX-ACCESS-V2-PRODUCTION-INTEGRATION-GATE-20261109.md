@@ -142,3 +142,13 @@ A one-time sign-in page was added only to the isolated Cloudflare preview at com
 | One-time hosted sign-in and scope | BESTANDEN | In mobile Chromium, a separate smoke link opened the scoped Administrator session and Tools → Access Management. A second verification of the same code returned HTTP 403. |
 | Handoff isolation | BESTANDEN | The smoke session ended through Auth logout and the fixture account showed zero active sessions before handoff. A fresh code was issued separately and left unused. The mint endpoint returned HTTP 410 after teardown. No credential or activation link is stored in this record. |
 | Physical Android and Queen An | NICHT GETESTET | A verified synthetic test link is ready for the project owner to open on Android. The physical device result and Queen An's personal acceptance remain separate. |
+
+## Continuation · physical Android Accounts view · 2026-11-10
+
+The project owner returned an Android screenshot showing the authenticated isolated preview at **Tools → Access Management → Accounts**. The device displayed two active manageable test accounts, Operator and Observer, alongside zero pending applications and zero open invitations. Search, all three section buttons and the account action labels were visible in English. The evidence is an Accounts view screenshot, with no credential or screenshot copied into the repository.
+
+| Check | Status | Evidence |
+|---|---|---|
+| Physical Android access and Accounts display | BESTANDEN | Authenticated Access Management view reached on the project owner's Android device. The two expected fixture roles and status counts loaded. |
+| Physical Android role selector and saved role change | NICHT GETESTET | Change role controls were visible. The selector was collapsed in the screenshot and no mutation was shown. |
+| Queen An and production release | NICHT GETESTET | This device evidence is limited to the project owner's isolated fixture session. |
