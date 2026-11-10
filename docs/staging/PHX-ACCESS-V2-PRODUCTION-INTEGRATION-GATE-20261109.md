@@ -175,3 +175,14 @@ The project owner returned an Android screenshot showing the authenticated isola
 | Signed-in checks on the updated pilot, protected navigation and V2 activation | NICHT GETESTET | FaQu and Queen An still need to check the updated pilot with their own sessions. Whole-app navigation regression and separate authorization precede flag activation. |
 
 The production flag was rechecked after publication and remained false. Frontend backout is a reviewed revert of the scoped pilot commit. The V2 disable patch is the data-preserving backout if the flag is enabled in a later authorized phase.
+
+## Continuation · existing pilot on physical Android · 2026-11-10
+
+The project owner supplied an Android screenshot in response to the FaQu pilot check. It shows Transfer Scouting Tools and **Access Management → Accounts** in English, with the three section buttons, an empty search field and counts of 0 active accounts, 0 pending applications and 0 invitations.
+
+| Check | Status | Evidence |
+|---|---|---|
+| Project owner’s Accounts view on physical Android | BESTANDEN | The supplied screenshot shows the loaded view and “No accounts to manage yet.” The account identity and a fresh sign-in are outside the screenshot. |
+| Expected legacy visibility in the default-off pilot | BESTANDEN | Read-only production check confirmed V2 false, one legacy Admin and one R5 membership, no open invitations and no pending rows in the legacy request table. The deployed list RPC excludes the caller, protected owner and bound delegate, and limits existing legacy memberships to Member and, for legacy managers, Kingdom. The observed empty Accounts view is consistent with that scope. |
+| Fresh FaQu sign-in, Queen An’s personal pilot check and protected navigation regression | NICHT GETESTET | This screenshot covers the Accounts view only. |
+| Production V2 activation and live V2 write flows | NICHT GETESTET | The production flag was false at verification. The earlier physical Android fixture role-change test remains separate. |
