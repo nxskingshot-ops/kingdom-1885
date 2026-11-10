@@ -1,0 +1,37 @@
+    <header class="phx-home-hero">
+      <svg class="phx-home-art" aria-hidden="true" viewBox="0 0 1536 768">
+        <defs>
+          <image id="phx-home-header-reference" href="home-header.jpg" width="1536" height="768"/>
+          <filter id="phx-home-texture-feather" x="-20%" y="-25%" width="140%" height="150%">
+            <feGaussianBlur stdDeviation="3"/>
+          </filter>
+          <mask id="phx-home-name-texture" maskUnits="userSpaceOnUse" x="289" y="26" width="158" height="110">
+            <rect x="299" y="35" width="136" height="91" fill="white" filter="url(#phx-home-texture-feather)"/>
+          </mask>
+          <mask id="phx-home-affiliation-left-texture" maskUnits="userSpaceOnUse" x="1044" y="48" width="170" height="68">
+            <rect x="1053" y="57" width="152" height="51" fill="white" filter="url(#phx-home-texture-feather)"/>
+          </mask>
+          <mask id="phx-home-affiliation-right-texture" maskUnits="userSpaceOnUse" x="1173" y="48" width="164" height="68">
+            <rect x="1182" y="57" width="146" height="51" fill="white" filter="url(#phx-home-texture-feather)"/>
+          </mask>
+        </defs>
+        <use href="#phx-home-header-reference"/>
+        <!-- Reuse plain plaque texture from the same image underneath the live fields. -->
+        <g mask="url(#phx-home-name-texture)"><use href="#phx-home-header-reference" x="-137"/></g>
+        <g mask="url(#phx-home-affiliation-left-texture)"><use href="#phx-home-header-reference" x="156"/></g>
+        <g mask="url(#phx-home-affiliation-right-texture)"><use href="#phx-home-header-reference" x="-150"/></g>
+      </svg>
+      <h1 id="phx-home-heading" class="phx-home-sr-only">NEXUS PHALANX</h1>
+      <span id="phx-r10-avatar" aria-hidden="true"><img alt="" id="phx-r10-photo" hidden></span>
+      <button type="button" id="phx-r8-war-entry" aria-label="War Room öffnen" data-home-label="openWar"></button>
+      <button type="button" class="phx-home-war-tab" data-home-action="war" aria-label="War Room öffnen" data-home-label="openWar"></button>
+      <div id="phx-r10-identity" aria-live="polite">
+        <span id="phx-r10-name"></span>
+        <span id="phx-r10-sub"></span>
+      </div>
+      <div id="phx-r11-affiliation" aria-label="Königreich und Allianz" data-home-label="affiliation">
+        <span id="phx-r11-kingdom"></span>
+        <span id="phx-r11-sep" aria-hidden="true">·</span>
+        <span id="phx-r11-alliance"></span>
+      </div>
+    </header>
