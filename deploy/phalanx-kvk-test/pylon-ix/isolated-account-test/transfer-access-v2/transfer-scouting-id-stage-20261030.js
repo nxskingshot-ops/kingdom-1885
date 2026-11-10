@@ -1,0 +1,1216 @@
+import { accessManagementStatus, mountAccessManagement, scoutingRoleLabels } from './phx-access-management-20261109.js?build=phx-scouting-roles-20261109';
+import { describeTransferPlan, readTransferPlan } from './phx-transfer-event-plan-20261108.js?v=phx-transfer-en-20261108';
+import { placeInAlliance, compareTopPeers } from './phx-transfer-alliance-placement-20261101.js?v=phx-transfer-evidence-20261107';
+import { assessAccount, suggestProvisionalRole } from './phx-transfer-account-assessment-20261101.js?v=phx-achilles-roles-20261108';
+import { strategicProfile } from './phx-transfer-strategic-profile-20261101.js';
+import { seaWorldVerdict, THRESHOLDS, WEIGHTS } from './phx-sea-world-v2-gate-20261101.js';
+import { candidateFromLookup, duplicateLookupFilter } from './transfer-id-candidate-20261030.js';
+import { forecast as phxTransferForecast, transferStatus as phxTransferStatus } from './phx-transfer-forecast-20261101.js';
+import { mountRuleDraftEditor } from './phx-transfer-rules-editor-20261101.js';
+import { formatPlayerNumber, formatPlayerUtc, formatPlayerSection, playerLookupError, rankingLabels, canonicalRankingName, playerRankingMap, rankingSourceText, playerSummaryMetrics, compactPower, captureKey, matchedTruePower, selectTruePowerCohort, truePowerComparisonHours, truePowerPeerMinimum } from './transfer-id-display-20261030.js?build=phx-truepower-window-20261108';
+const SUPABASE_URL='https://yuyvmbdybwpwpqsipfjt.supabase.co';
+const KEY='sb_publishable_Zhtb-Gqaqe3Axf5XvuaSeQ_aGENmNQ4';
+const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2');
+const db=createClient(SUPABASE_URL,KEY,{auth:{persistSession:true,autoRefreshToken:true}});
+const $=id=>document.getElementById(id);
+const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=x=>x==null?'–':Number(x).toLocaleString('en-US',{maximumFractionDigits:1});
+let players=[],chosen=new Set(),active=null,canEdit=false;
+let accessManagementSession;
+let canDelete=false, canExport=true;
+// The event-specific cap and metric have not been verified. Never classify invitations from account power.
+function invitationPreview(p){return 'Verify event rules';}
+function showLogin(message=''){accessManagementSession?.abort();const badge=document.getElementById('phxIdentity');if(badge){badge.classList.remove('is-online');const n=document.getElementById('phxIdentityName'),m=document.getElementById('phxIdentityMeta');if(n)n.textContent='Session not verified';if(m)m.textContent='Please sign in';const online=document.getElementById('phxIdentityOnline');if(online)online.textContent='OFFLINE';}canEdit=false;$('login').hidden=false;$('private').hidden=true;$('message').textContent=message||'Please sign in with your approved NXS account.';$('message').setAttribute('role','status');}
+function chosenPlayers(){return [...chosen].map(id=>players.find(p=>p.candidate_id===id)).filter(Boolean);}
+function filtered(){const q=$('search').value.trim().toLowerCase();const list=players.filter(p=>[p.player_name,p.kingdom,p.alliance,p.contact_status,p.metadata?.role].some(v=>String(v??'').toLowerCase().includes(q)));const s=$('sort').value;return list.sort((a,b)=>s==='name'?a.player_name.localeCompare(b.player_name):s==='power'?Number(b.power_m||0)-Number(a.power_m||0):Date.parse(b.updated_at)-Date.parse(a.updated_at));}
+function render(){
+$('total').textContent=players.length;
+$('contacted').textContent=players.filter(p=>['Contacted','Interested','Negotiating','Confirmed'].includes(p.contact_status)).length;
+$('reviews').textContent=players.filter(p=>!p.contact_status||p.contact_status==='Needs Review').length;
+$('kingdoms').textContent=new Set(players.map(p=>p.kingdom).filter(Boolean)).size;
+const shown=filtered();$('count').textContent=shown.length+' of '+players.length+' saved candidates';$('compare').textContent='⚖ Compare selected ('+chosen.size+'/3)';
+$('rows').innerHTML=shown.map(p=>'<tr data-id="'+esc(p.candidate_id)+'" class="'+(active===p.candidate_id?'selected':'')+'"><td><input type="checkbox" data-check="'+esc(p.candidate_id)+'" '+(chosen.has(p.candidate_id)?'checked':'')+'></td><td><button type="button" class="scouting-name-button" data-dossier="'+esc(p.candidate_id)+'" aria-label="Open player profile for '+esc(p.player_name)+'">'+esc(p.player_name)+'</button></td><td>'+esc(p.kingdom||'–')+'</td><td>'+esc(p.alliance||'–')+'</td><td>'+esc(p.metadata?.role||'–')+'</td><td>'+esc(p.castle_level||'–')+'</td><td>'+fmt(p.power_m)+(p.power_m==null?'':'M')+'</td><td>'+esc(p.metadata?.fit==null?'–':p.metadata.fit+'%')+'</td><td>'+esc(invitationPreview(p))+'</td><td>'+esc(p.transfer_eligibility||'Unknown')+'</td><td>'+esc(p.contact_status||'–')+'</td></tr>').join('')||'<tr><td colspan="11" class="empty">'+(players.length?'No candidates match your current search. Clear the filter to see all saved candidates.':'No candidates saved yet. Use Find a Player to start your shortlist.')+'</td></tr>';
+$('rows').querySelectorAll('tr[data-id]').forEach(row=>row.onclick=()=>{active=row.dataset.id;render();void loadCandidateEvidence(players.find(p=>p.candidate_id===active),true);});
+$('rows').querySelectorAll('button[data-dossier]').forEach(btn=>btn.onclick=e=>{e.stopPropagation();openSavedCandidate(btn.dataset.dossier)});
+$('rows').querySelectorAll('input[data-check]').forEach(box=>{box.onclick=e=>e.stopPropagation();box.onchange=()=>{if(box.checked){if(chosen.size>=3){box.checked=false;$('count').textContent='Select up to 3 candidates';return;}chosen.add(box.dataset.check)}else chosen.delete(box.dataset.check);$('compare').textContent='⚖ Compare selected ('+chosen.size+'/3)';}});
+const p=players.find(x=>x.candidate_id===active);$('profileTitle').textContent=p?p.player_name:'Candidate profile';$('editCandidate').hidden=!canEdit||!p;$('openDossier').hidden=!p;
+$('profile').replaceChildren();if(p){renderHeadlineMetrics($('profile'),evidenceFor(p));const notes=document.createElement('p');notes.textContent=p.notes||'No notes recorded.';$('profile').append(notes);}
+$('needs').innerHTML=['Rally Lead','Fighter','Joiner','R4 / R5 Potential'].map(role=>'<div><b>'+esc(role)+'</b><strong>'+players.filter(p=>p.metadata?.role===role).length+' recorded</strong></div>').join('');
+const kds=new Map();for(const p of players){const kd=p.kingdom||'Unspecified';kds.set(kd,(kds.get(kd)||0)+1);}
+$('kingdomNotes').innerHTML=[...kds].sort((a,b)=>b[1]-a[1]).slice(0,5).map(([kd,n])=>'<div><b>Kingdom #'+esc(kd)+'</b><span>'+n+(n===1?' candidate':' candidates')+'</span></div>').join('')||'<p class="empty">No saved kingdom records yet.</p>';
+ renderExternalIntel();
+}
+let candidateLoadRevision=0;
+async function load(saved){
+ const revision=++candidateLoadRevision;
+ try{
+  const {data,error}=await db.from('phx_hosted_fixture_candidates').select('*').order('updated_at',{ascending:false}).limit(1000);
+  if(revision!==candidateLoadRevision)return false;
+  if(error)throw error;
+  if(!Array.isArray(data))throw Error('The candidate list was not returned.');
+  if(saved&&!data.some(p=>p.candidate_id===saved.candidate_id
+    && captureKey(saved.updated_at)&&captureKey(p.updated_at)===captureKey(saved.updated_at))){
+   throw Error('The saved version is not visible in the candidate list.');
+  }
+  players=data;
+  chosen=new Set([...chosen].filter(id=>players.some(p=>p.candidate_id===id)));
+  if(saved)active=saved.candidate_id;
+  else if(!players.some(p=>p.candidate_id===active))active=players[0]?.candidate_id||null;
+  render();if(dossierOpen)renderDossier();
+  return true;
+ }catch(error){
+  if(revision!==candidateLoadRevision)return false;
+  $('count').textContent='Could not reload candidates: '+(error?.message||'Please try again.');
+  return false;
+ }
+}
+async function check(){
+accessManagementSession?.abort();
+accessManagementSession=new AbortController();
+const signal=accessManagementSession.signal;
+try{
+const {data:{user},error}=await db.auth.getUser();
+if(signal.aborted)return;
+if(error){showLogin('Session verification failed: '+error.message+'. Please sign in again.');return;}
+if(!user){showLogin('No active session. Please sign in with your approved NXS account.');return;}
+const {data:membership,error:merror}=await db.from('phx_hosted_fixture_memberships').select('role,active,expires_at').eq('user_id',user.id).maybeSingle();
+if(signal.aborted)return;
+if(merror){showLogin('Signed in, but membership verification failed: '+merror.message);return;}
+if(!membership){showLogin('Signed in, but no approved NXS membership was found for this account.');return;}
+if(!membership.active){showLogin('Signed in, but this NXS membership is inactive.');return;}
+if(membership.expires_at&&Date.parse(membership.expires_at)<=Date.now()){showLogin('Signed in, but this NXS membership has expired.');return;}
+if(!['member','r4','r5','admin'].includes(membership.role)){showLogin('Signed in, but this account role is not approved for Transfer Scouting.');return;}
+const access=await accessManagementStatus(db).catch(()=>null);
+if(signal.aborted)return;
+const scoutingRole=access?.scouting_role;
+const badge=document.getElementById('phxIdentity');if(badge){const display=user.id==='d4da222e-8aac-4950-a6df-46c88972458c'?'FaQu':(user.email||'Signed-in account');const n=document.getElementById('phxIdentityName'),m=document.getElementById('phxIdentityMeta');badge.classList.add('is-online');if(n)n.textContent=display;if(m)m.textContent=(scoutingRoleLabels[scoutingRole]||membership.role).toUpperCase()+' · ACTIVE';const online=document.getElementById('phxIdentityOnline');if(online)online.textContent='ONLINE';}
+canDelete=['r4','r5','admin'].includes(membership.role);
+canEdit=canDelete||scoutingRole==='operator'||scoutingRole==='administrator';
+canExport=canDelete||scoutingRole!=='observer';
+const exportTool=$('toolsCsv');
+exportTool.hidden=!canExport;
+const exportCard=exportTool.closest('details.phx-tool-item');
+if(exportCard)exportCard.hidden=!canExport;
+$('login').hidden=true;$('private').hidden=false;
+mountAccessManagement(db,signal,access);
+await load();
+}catch(e){if(!signal.aborted)showLogin('Unable to verify access: '+(e?.message||'Unknown error'));}}
+$('authForm').onsubmit=async e=>{
+e.preventDefault();const submit=$('authForm').querySelector('button[type="submit"]');if(submit.disabled)return;
+submit.disabled=true;$('message').textContent='Signing in…';
+try{const {error}=await db.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});$('password').value='';
+if(error){showLogin('Sign-in failed: '+error.message);return;}
+await check();
+}catch(error){showLogin('Sign-in request failed: '+(error?.message||'Network error'));}
+finally{submit.disabled=false;}
+};
+$('refresh').onclick=check;$('search').oninput=render;$('sort').onchange=render;
+$('compare').onclick=async()=>{
+ const candidates=chosenPlayers(),button=$('compare'),result=$('comparison');
+ if(candidates.length<2){result.textContent='Select two or three candidates.';return;}
+ button.disabled=true;result.textContent='Loading latest candidate data…';
+ try{
+  const fetched=await Promise.allSettled(candidates.map(p=>readPlayer(evidenceKey(p))));
+  if(candidates.some(p=>!chosen.has(p.candidate_id))||chosen.size!==candidates.length){
+   result.textContent='Selection changed. Compare the selected candidates again.';return;
+  }
+  const columns=candidates.map((record,index)=>{
+   const current=fetched[index].status==='fulfilled'?fetched[index].value:null;
+   const player=current?.player;
+   const metrics=playerSummaryMetrics(current?.ranks?.values,{power:player?.power,captured_at:current?.source?.cachedAt});
+   return {record,current,player,metrics};
+  });
+  const rows=[['Kingdom',c=>c.player?.kingdom],['Alliance',c=>c.player?.alliance],['Castle / TG',c=>c.metrics.at(-1).text],
+   ['Total Power',c=>c.metrics[0].text],['Profile capture',c=>formatPlayerUtc(c.current?.source?.cachedAt)],
+   ['Recorded role',c=>c.record.metadata?.role],['Recorded status',c=>c.record.contact_status],
+   ['Invitation · event verification',c=>invitationPreview(c.record)],['Recorded transfer',c=>c.record.transfer_eligibility]];
+  result.innerHTML='<h3>Selected candidates</h3><div class="scroll"><table><thead><tr><th>Metric</th>'+columns.map(c=>'<th>'+esc(c.player?.name||c.record.player_name)+'</th>').join('')+'</tr></thead><tbody>'+rows.map(([label,format])=>'<tr><td>'+label+'</td>'+columns.map(c=>'<td>'+esc(format(c)||'Not available')+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>';
+ }finally{button.disabled=false;}
+};
+$('csv').onclick=()=>{if(!canExport)return;const columns=['candidate_id','player_name','kingdom','alliance','power_m','castle_level','contact_status','invitation_preview','transfer_eligibility','recruiter','notes','updated_at'];const csv=[columns.join(','),...filtered().map(p=>columns.map(k=>'"'+String(k==='invitation_preview'?invitationPreview(p):p[k]??'').replace(/"/g,'""')+'"').join(','))].join('\r\n');const url=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='nxs-real-transfer-records.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),4000);};
+
+let editingCandidate=null,editorSaved=null,editorSaving=false;
+function openEditor(p){
+ if(!canEdit||editorSaving||!p)return;
+ editingCandidate=p;editorSaved=null;
+ $('saveCandidate').textContent='Save to NXS';
+ $('candidateForm').reset();$('editError').textContent='';
+ for(const control of $('candidateForm').elements)if(control.name)control.disabled=false;
+ $('editTitle').textContent=p?'Edit '+p.player_name:'Add candidate';
+ for(const name of ['player_name','kingdom','alliance','power_m','castle_level','recruiter','contact_status','transfer_eligibility','notes']){
+  const input=$('candidateForm').elements.namedItem(name);
+  if(name==='contact_status'){
+   input.querySelector('[data-legacy]')?.remove();
+   if(p[name]!=null&&![...input.options].some(option=>option.value===p[name])){
+    const option=new Option(p[name],p[name]);option.dataset.legacy='';input.add(option);
+   }
+  }
+  if(p[name]!=null)input.value=p[name];
+ }
+ $('candidateForm').elements.namedItem('role').value=p?.metadata?.role||'';
+ $('candidateForm').elements.namedItem('fit').value=p?.metadata?.fit??'';
+ for(const key of externalTrials){$('candidateForm').elements.namedItem('trial_'+key).value=p?.metadata?.mystic_trials?.[key]??'';}
+ $('candidateForm').elements.namedItem('trial_snapshot').value=p?.metadata?.mystic_trial_snapshot??'';
+ $('candidateForm').elements.namedItem('trial_source').value=p?.metadata?.mystic_trial_source??'';
+ $('modal').hidden=false;
+}
+function openCandidateLookup(){showWorkspace('phxIdPanel');$('phxGovernorId').focus();}
+$('newCandidate').onclick=openCandidateLookup;
+$('editCandidate').onclick=()=>openEditor(players.find(p=>p.candidate_id===active));
+// Protected removal: explicit confirmation, R4/R5/admin UI gate, exact record ID and verified response.
+const removeCandidateButton=document.createElement('button');
+removeCandidateButton.type='button';removeCandidateButton.textContent='Remove candidate';
+removeCandidateButton.className='secondary phx-remove-candidate';removeCandidateButton.hidden=true;
+$('editCandidate').insertAdjacentElement('afterend',removeCandidateButton);
+removeCandidateButton.onclick=async()=>{
+ const candidate=players.find(p=>p.candidate_id===active);
+ if(!canDelete||!candidate||removeCandidateButton.disabled)return;
+ const id=candidate.candidate_id;
+ if(!window.confirm('Remove '+candidate.player_name+' from saved candidates? This action is permanent.'))return;
+ removeCandidateButton.disabled=true;
+ try{
+  const {data,error}=await db.from('phx_hosted_fixture_candidates').delete().eq('candidate_id',id).select('candidate_id');
+  if(error)throw error;
+  if(!Array.isArray(data)||data.length!==1||data[0].candidate_id!==id)throw Error('Could not confirm removal.');
+  chosen.delete(id);if(active===id)active=null;
+  if(dossierOpen)closeDossier();
+  await load();
+ }catch(error){window.alert('Could not remove the candidate: '+error.message);}
+ finally{removeCandidateButton.disabled=false;}
+};
+const originalRenderCandidate=render;
+render=function(){originalRenderCandidate();removeCandidateButton.hidden=!canDelete||!players.some(p=>p.candidate_id===active);};
+
+
+function closeEditor(){if(!editorSaving)$('modal').hidden=true;}
+$('cancelEdit').onclick=closeEditor;$('closeEdit').onclick=closeEditor;
+
+$('candidateForm').onsubmit=async e=>{
+ e.preventDefault();if(!canEdit||!editingCandidate||editorSaving)return;
+ if(editorSaved){await saveCandidate();return;}
+ const v=Object.fromEntries(new FormData(e.currentTarget).entries());
+ if(!v.player_name.trim()){$('editError').textContent='Player name required';return;}
+ const old=editingCandidate;
+ const updatedAt=new Date(Math.max(Date.now(),(Date.parse(old.updated_at)||0)+1)).toISOString();
+ const data={player_name:v.player_name.trim(),kingdom:v.kingdom||null,alliance:v.alliance||null,power_m:v.power_m?Number(v.power_m):null,castle_level:v.castle_level||null,recruiter:v.recruiter||null,transfer_eligibility:v.transfer_eligibility||null,contact_status:v.contact_status,notes:v.notes||null,metadata:{...(old.metadata||{}),role:v.role||null,fit:v.fit?Number(v.fit):null,mystic_trials:{...old.metadata?.mystic_trials,...Object.fromEntries(externalTrials.map(key=>[key,v['trial_'+key]?.trim()||null]))},mystic_trial_snapshot:v.trial_snapshot||null,mystic_trial_source:v.trial_source?.trim()||null},updated_at:updatedAt};
+ await saveCandidate(data);
+};
+
+async function saveCandidate(data){
+ const button=$('saveCandidate'),status=$('editError');
+ editorSaving=true;button.disabled=true;
+ $('cancelEdit').disabled=true;$('closeEdit').disabled=true;
+ try{
+  if(!editorSaved){
+   status.textContent='Saving…';
+   const {candidate_id,updated_at}=editingCandidate;
+   const update=db.from('phx_hosted_fixture_candidates').update(data).eq('candidate_id',candidate_id);
+   const guarded=updated_at==null?update.is('updated_at',null):update.eq('updated_at',updated_at);
+   const {data:saved,error}=await guarded.select('candidate_id,updated_at').maybeSingle();
+   if(error)throw error;
+   if(!saved)throw Error('The record has changed or your account cannot edit it. Close the editor and refresh Candidates before trying again.');
+   editorSaved=saved;
+  }
+  status.textContent='Saved. Checking the candidate list…';
+  if(!await load(editorSaved)){
+   status.textContent='The save was confirmed, but the candidate could not be reloaded. Select Retry reload to check again without saving twice.';
+   button.textContent='Retry reload';
+   for(const control of $('candidateForm').elements)if(control.name)control.disabled=true;
+   return;
+  }
+  $('modal').hidden=true;
+ }catch(error){
+  status.textContent='Save could not be confirmed: '+(error?.message||'Check your connection and refresh Candidates.');
+ }finally{
+  editorSaving=false;button.disabled=false;
+  $('cancelEdit').disabled=false;$('closeEdit').disabled=false;
+ }
+}
+
+/* Optional external scouting evidence and protected read-only internal comparison. */
+const externalTrials=['coliseum','forest','crystal','knowledge','molten','radiant'];
+const externalLabels={coliseum:'Heroes & Hero Gear',forest:'Pets',crystal:'Governor Charms',knowledge:'Research',molten:'Governor Gear',radiant:'Mixed · Radiant Spire'};
+let internalPlayers=null,internalSnapshot='',internalLoading=false,currentRankingsRequest=null;
+const stageIndex=x=>{
+ if(typeof x!=='string'||!/^\d{1,3}-\d{1,2}$/.test(x))return null;
+ const [chapter,step]=x.split('-').map(Number);
+ return chapter>=1&&step>=1&&step<=10?(chapter-1)*10+step:null;
+};
+const normal=x=>String(x??'').normalize('NFKC').trim().toLowerCase();
+const currentEvidence=new Map(),evidencePending=new Set(),evidenceErrors=new Map();
+const boardLabels=rankingLabels;
+const evidenceKey=p=>String(p?.metadata?.governor_id||p?.metadata?.player_id||'');
+const evidenceFor=p=>currentEvidence.get(evidenceKey(p));
+async function readPlayer(id,signal=AbortSignal.timeout(125000)){
+ if(!/^[1-9][0-9]{0,15}$/.test(id))throw Error('Enter a valid Kingshot Player ID.');
+ const {data:{session},error}=await db.auth.getSession();if(error||!session?.access_token)throw Error('Please sign in again.');
+ const endpoint=new URL(phxBridgeUrl);
+ if(endpoint.protocol!=='https:')throw Error('A secure HTTPS connection is required.');
+ endpoint.searchParams.set('governorId',id);
+ const response=await fetch(endpoint,{headers:{apikey:KEY,Authorization:'Bearer '+session.access_token},cache:'no-store',signal});
+ if(!response.ok)throw Error(playerLookupError(response.status));const payload=await response.json();
+ if(payload.ok!==true||String(payload.governorId)!==id||!Number.isSafeInteger(payload.player?.kingdom)||payload.player.kingdom<1)throw Error('Player identity could not be confirmed.');
+ return payload;
+}
+async function loadCandidateEvidence(p,force=false){
+ const id=evidenceKey(p);if(!id||evidencePending.has(id)||(!force&&(currentEvidence.has(id)||evidenceErrors.has(id))))return;
+ currentEvidence.delete(id);
+ evidencePending.add(id);evidenceErrors.delete(id);renderDossier();renderExternalIntel();
+ try{const payload=await readPlayer(id);if(String(payload.player?.kingdom)!==String(p.kingdom))throw Error('Player kingdom has changed. Review the current profile in Find a Player.');currentEvidence.set(id,{...candidateFromLookup(payload,id).metadata.external_lookup,player:payload.player});}
+ catch(e){evidenceErrors.set(id,e.message||'Current evidence unavailable.');}
+ finally{evidencePending.delete(id);render();renderDossier();}
+}
+const rankingMap=playerRankingMap;
+function refreshInternalFilters(){
+ const select=$('internalAlliance'),previous=select.value;select.replaceChildren();
+ for(const [value,label] of [['','All alliances'],...[...new Set((internalPlayers||[]).map(p=>p.alliance_tag||'No alliance'))].sort((a,b)=>a.localeCompare(b)).map(x=>[x,x])]){
+  const option=document.createElement('option');option.value=value;option.textContent=label;select.append(option);
+ }
+ if([...select.options].some(o=>o.value===previous))select.value=previous;
+}
+function renderInternalChoices(selected=$('internalGovernor').value){
+ const select=$('internalGovernor'),query=normal($('internalSearch').value),alliance=$('internalAlliance').value;
+ const ownIds=comparisonPanel.parentNode===lookupIntel?.compare?lookupIntel.ids:[];
+ const available=(internalPlayers||[]).filter(p=>![p.governor_id,p.uid].some(id=>ownIds.includes(String(id))));
+ const matches=available.filter(p=>(!alliance||(p.alliance_tag||'No alliance')===alliance)&&(!query||[p.player_name,p.governor_id].some(v=>normal(v).includes(query))));
+ const chosen=available.find(p=>String(p.uid||p.player_name)===selected),pinned=chosen&&!matches.includes(chosen);
+ select.replaceChildren();
+ const append=p=>{const option=document.createElement('option');option.value=String(p.uid||p.player_name);option.textContent=p.player_name+' · '+(p.alliance_tag||'—');select.append(option);};
+ if(pinned)append(chosen);
+ for(const p of matches)append(p);
+ if(chosen)select.value=selected;
+ select.disabled=!select.options.length;
+ $('internalFilterStatus').textContent=matches.length+' matches / '+(internalPlayers||[]).length+' available'
+  +(pinned?' · Selected player kept outside filter':'');
+}
+$('internalSearch').oninput=()=>renderInternalChoices();
+$('internalAlliance').onchange=()=>renderInternalChoices();
+function comparisonBrief(external,inside){
+ const keys=['personal_power','true_power','troop_power','master_power','pet_power','hero_total','hero_equip',
+  'gov_gear','gov_charm','research_power','coliseum','forest_of_life','crystal_cave','knowledge_nexus','molten_fort','radiant_spire'];
+ const number=x=>['number','string'].includes(typeof x)&&String(x).trim()!==''&&Number.isFinite(Number(x))&&Number(x)>=0?Number(x):null;
+ const pairs=keys.map(key=>({key,a:number(external[key]?.value),b:number(inside[key]?.value)}))
+  .filter(row=>row.a!==null&&row.b!==null);
+ const describe=row=>{
+  const label=boardLabels[row.key]||'True Power';
+  if(!row.b)return label+' ('+row.a.toLocaleString('en-US')+' vs 0)';
+  const percent=Math.abs((row.a-row.b)/row.b*100);
+  const amount=percent<0.05?'<0.1':percent.toLocaleString('en-US',{maximumFractionDigits:1});
+  return label+' ('+amount+'% '+(row.a>row.b?'higher':'lower')+')';
+ };
+ const focus=direction=>pairs.filter(row=>direction*(row.a-row.b)>0)
+  .sort((a,b)=>Math.abs(b.a-b.b)/Math.max(1,b.a,b.b)-Math.abs(a.a-a.b)/Math.max(1,a.a,a.b));
+ const [higher]=focus(1),[lower]=focus(-1);
+ const highlights=[
+  higher&&'Biggest lead: '+describe(higher)+'.',
+  lower&&'Biggest gap: '+describe(lower)+'.'
+ ].filter(Boolean);
+ const stamps=new Set(pairs.flatMap(({key})=>[external[key].captured_at,inside[key].captured_at]).map(captureKey));
+ return {
+  summary: pairs.length
+   ? highlights.join(' ')||'Shared values are equal.'
+   : 'No comparable values are available.',
+  coverage: pairs.length+' of '+keys.length+' metrics compared'
+   +(pairs.length&&(stamps.size>1||stamps.has(''))?' · Capture times differ or are unknown':'')
+ };
+}
+function lookupComparisonRanks(payload,ranks=rankingMap(payload.ranks?.values),metrics){
+ const p=payload.player;
+ const [total,truePower]=metrics||playerSummaryMetrics(payload.ranks?.values,{
+  power:p.power??p.totalPower??p.total_power,captured_at:payload.source?.cachedAt
+ });
+ const entries={...ranks};
+ if(total.value!==null)entries.personal_power={value:total.value,captured_at:total.captured_at,kingdom_rank:total.rank,
+  source:total.source};
+ if(truePower.calculated)entries.true_power={value:truePower.value,captured_at:truePower.captured_at,source:'calculated'};
+ return entries;
+}
+function renderExternalIntel(){
+ const box=$('externalIntelResult'),summary=$('externalIntelSummary'),controls=$('internalCompareControls');
+ const controlLabel=controls.querySelector('summary');
+ const showStatus=(message,needsSelection=true)=>{
+  summary.textContent=message;box.replaceChildren();
+  if(needsSelection){
+   controls.open=true;
+   delete controls.dataset.ready;
+   controlLabel.textContent='Choose a #1885 player';
+  }
+ };
+ const lookup=comparisonPanel.closest('#phxIdResult')?lookupIntel:null;
+ const candidate=lookup?{player_name:lookup.name,kingdom:lookup.kingdom}:players.find(p=>p.candidate_id===active);
+ if(!candidate){showStatus('Select a candidate from your board first.');return;}
+ if(internalLoading){showStatus('Loading protected Kingdom #1885 data…',false);return;}
+ if(!internalPlayers){showStatus('Selected: '+candidate.player_name+'. Load the latest available #1885 rankings or enter an internal Kingshot Player ID.');return;}
+ const internal=internalPlayers.find(p=>String(p.uid||p.player_name)===$('internalGovernor').value);
+ if(!internal){showStatus('Select an internal player to compare.');return;}
+ const evidence=lookup?{source_cached_at:lookup.stamp}:evidenceFor(candidate);
+ const external=lookup?.ranks||rankingMap(evidence?.ranks?.values),inside=internal.rankings||{};
+ const brief=comparisonBrief(external,inside);
+ const heading=element('h4',null,'phx-comparison-match');
+ heading.append(element('span',candidate.player_name+' (KD '+(candidate.kingdom||'?')+')','phx-comparison-candidate'),
+  element('span','↔'),element('span',internal.player_name+' (#1885)','phx-comparison-peer'));
+ summary.replaceChildren(heading,element('p',brief.summary,'comparison-brief'),element('p',brief.coverage,'phx-decision-source'));
+ if(!controls.dataset.ready){
+  if(!controls.contains(document.activeElement))controls.open=false;
+  controls.dataset.ready='true';
+  controlLabel.textContent='Change comparison player';
+ }
+ box.replaceChildren();
+ const note=text=>{const p=document.createElement('p');p.textContent=text;box.append(p);};
+ const graphic=element('div',null,'phx-comparison-bars');
+ for(const [key,label] of [['personal_power','Total Power'],['true_power','True Power'],['master_power','Master Power'],['pet_power','Pet Power'],['hero_total','Hero Power']]){
+  const first=external[key]?.value, second=inside[key]?.value;
+  if([first,second].some(value=>value==null||String(value).trim()===''||!Number.isFinite(Number(value))||Number(value)<0))continue;
+  const max=Math.max(Number(first),Number(second),1);
+  const group=element('div');
+  group.append(element('strong',label));
+  for(const [name,value,tone] of [[candidate.player_name,first,'candidate'],[internal.player_name,second,'peer']]){
+   const meter=element('meter',null,'phx-comparison-'+tone);meter.min=0;meter.max=max;meter.value=Number(value);
+   meter.setAttribute('aria-label',name+' '+label+' '+compactPower(value));
+   group.append(element('small',name+' · '+compactPower(value)),meter);
+  }
+  graphic.append(group);
+ }
+ if(graphic.childElementCount)box.append(graphic);
+ const sourceDetails=document.createElement('details'),sourceSummary=document.createElement('summary'),sourceText=document.createElement('p');sourceDetails.className='comparison-method';sourceSummary.textContent='Sources, coverage & interpretation';sourceText.textContent='Candidate capture '+formatPlayerUtc(evidence?.source_cached_at)+'; #1885 capture '+(internal.captured_at||formatPlayerUtc(internalSnapshot))+'. Request time is not capture time. Each rank belongs to its own kingdom and is not directly comparable across kingdoms. Missing Top-100 entries are unknown, never zero or rank 101. Scores are not verified trial stages or battle predictions. The player list covers available Top-100 boards, not a complete census.';sourceDetails.append(sourceSummary,sourceText);box.append(sourceDetails);
+ if(evidencePending.has(evidenceKey(candidate)))note('Loading current candidate rankings…');
+ if(evidenceErrors.has(evidenceKey(candidate)))note('Current candidate refresh failed: '+evidenceErrors.get(evidenceKey(candidate)));
+ const rows=[];for(const key of new Set([...Object.keys(boardLabels),...Object.keys(external),...Object.keys(inside)])){
+  const a=external[key],b=inside[key];
+  rows.push([boardLabels[key]||(key==='true_power'?'True Power':key),a,b]);
+ }
+ const wrap=document.createElement('div');wrap.className='scroll';const table=document.createElement('table');
+ const thead=document.createElement('thead'),tr=document.createElement('tr');for(const label of ['Metric',candidate.player_name,internal.player_name]){const th=document.createElement('th');th.textContent=label;tr.append(th);}thead.append(tr);table.append(thead);
+ const body=document.createElement('tbody');
+ table.className='ranking-comparison';
+ for(const [label,a,b] of rows){
+  const tr=document.createElement('tr'),metric=document.createElement('th');metric.scope='row';metric.textContent=label;tr.append(metric);
+  for(const [entry,name,missing] of [[a,candidate.player_name,'Not available from source'],[b,internal.player_name,'Not listed in available board']]){
+   const td=document.createElement('td');td.dataset.player=name;renderRankingEvidence(td,entry,missing,true);tr.append(td);
+  }
+  body.append(tr);
+ }
+ table.append(body);wrap.append(table);box.append(decisionDetails('Full ranking comparison',wrap));
+
+}
+function requestCurrentRankings(){
+ if(!currentRankingsRequest){
+  currentRankingsRequest=(async()=>{
+   const {data:{session},error}=await db.auth.getSession();
+   if(error||!session?.access_token)throw Error('Sign in with your approved NEXUS account first.');
+   const response=await fetch(SUPABASE_URL+'/functions/v1/phalanx-transfer-intelligence-stage-20261031',{method:'GET',
+    headers:{apikey:KEY,Authorization:'Bearer '+session.access_token},cache:'no-store',signal:AbortSignal.timeout(12000)});
+   if(!response.ok)throw Error('Latest #1885 rankings unavailable.');
+   const data=await response.json();
+   if(!Array.isArray(data?.observations)||!data.observations.length)throw Error('No current #1885 ranking entries available.');
+   return data;
+  })().finally(()=>{currentRankingsRequest=null;});
+ }
+ return currentRankingsRequest;
+}
+$('loadInternal').onclick=async()=>{
+ if(internalLoading)return;
+ internalLoading=true;$('loadInternal').disabled=true;renderExternalIntel();
+ try{
+  const data=await requestCurrentRankings();
+  internalPlayers=attachVerifiedTruePower(data);
+  internalSnapshot=data.snapshot_date||'';
+  $('loadInternal').textContent='Refresh #1885 players ('+internalPlayers.length+')';
+  const previous=$('internalGovernor').value;
+  refreshInternalFilters();
+  const context=comparisonPanel.closest('#phxIdResult')?lookupIntel:null;
+  const selected=context?(internalPlayers.find(p=>String(p.governor_id||p.uid)===context.manualPeer)
+   ||strongestInternalPlayer(context.preferredAlliance,context.ids))
+   :internalPlayers.find(p=>String(p.uid||p.player_name)===previous)||internalPlayers.find(p=>p.player_name==='FaQu')||internalPlayers[0];
+  renderInternalChoices(selected?String(selected.uid||selected.player_name):'');
+  if(!context)loadCandidateEvidence(players.find(p=>p.candidate_id===active));
+  internalLoading=false;
+  lookupIntel?.refresh(data);renderExternalIntel();
+ }catch(error){
+  const box=$('externalIntelResult'),message='Comparison list unavailable: '+(error?.message||'Unknown error');
+  internalLoading=false;
+  if(internalPlayers){renderExternalIntel();box.append(element('p',message));}
+  else $('externalIntelSummary').textContent=message+'. You can still compare by Kingshot Player ID.';
+ }finally{
+  $('loadInternal').disabled=false;
+ }
+};
+async function refreshInternalPlayer(){
+ renderExternalIntel();const selected=internalPlayers?.find(p=>String(p.uid||p.player_name)===$('internalGovernor').value);
+ if(!selected?.governor_id)return;
+ const stillSelected=()=>internalPlayers?.find(p=>String(p.uid||p.player_name)===$('internalGovernor').value)===selected;
+ try{const payload=await readPlayer(String(selected.governor_id));if(payload.player?.kingdom!==1885)throw Error('Player kingdom has changed.');
+  selected.rankings=lookupComparisonRanks(payload);
+  selected.captured_at=formatPlayerUtc(payload.source?.cachedAt);selected.player_name=payload.player.name;
+ if(stillSelected())renderExternalIntel();
+ }catch(e){if(stillSelected()){renderExternalIntel();const note=document.createElement('p');note.textContent='Current player refresh failed: '+e.message+'. Available ranking snapshot remains visible.';$('externalIntelResult').append(note);}}
+}
+$('internalGovernor').onchange=()=>{
+ renderInternalChoices();
+ const selected=internalPlayers?.find(p=>String(p.uid||p.player_name)===$('internalGovernor').value);
+ if(lookupIntel&&comparisonPanel.parentNode===lookupIntel.compare)lookupIntel.manualPeer=String(selected?.governor_id||selected?.uid||'');
+ void refreshInternalPlayer();
+};
+$('internalIdForm').onsubmit=async e=>{
+ e.preventDefault();const button=$('loadInternalId');if(button.disabled)return;button.disabled=true;
+ const status=$('internalIdStatus');status.textContent='';
+ try{const id=$('internalPlayerId').value.trim(),payload=await readPlayer(id);if($('internalPlayerId').value.trim()!==id)throw Error('Kingshot Player ID changed. Load the player again.');if(payload.player?.kingdom!==1885)throw Error('This player is not in Kingdom #1885.');
+ if(comparisonPanel.parentNode===lookupIntel?.compare&&lookupIntel.ids.some(own=>own===id||own===String(payload.uid)))throw Error('Choose a different player for comparison.');
+ const record={uid:String(payload.uid||id),governor_id:id,player_name:payload.player.name,alliance_tag:payload.player.alliance,rankings:lookupComparisonRanks(payload)};
+ internalPlayers=internalPlayers||[];const index=internalPlayers.findIndex(p=>p.uid===record.uid||p.governor_id===id);if(index>=0)internalPlayers[index]=record;else internalPlayers.push(record);
+ refreshInternalFilters();renderInternalChoices(record.uid);
+ if(lookupIntel&&comparisonPanel.parentNode===lookupIntel.compare)lookupIntel.manualPeer=id;
+ record.captured_at=formatPlayerUtc(payload.source?.cachedAt);renderExternalIntel();loadCandidateEvidence(players.find(p=>p.candidate_id===active));
+ }catch(error){status.textContent='Player comparison unavailable: '+error.message;}finally{button.disabled=false;}
+};
+
+
+/* Read-only candidate dossier navigation; existing candidate data is never modified. */
+let dossierOpen=false,dossierTab='identity';
+const show=v=>v===null||v===undefined||v===''?'Not recorded':String(v);
+function dossierGrid(title,entries){
+ const wrapper=document.createElement('section'),heading=document.createElement('h3'),grid=document.createElement('div'),missing=[];
+ heading.textContent=title;grid.className='record-list';wrapper.append(heading,grid);
+ for(const [label,v] of entries){if(v==null||v===''||v==='Not recorded'||v==='Unknown'){missing.push(label);continue;}
+  const cell=document.createElement('div'),caption=document.createElement('span'),value=document.createElement('b');cell.className='record-row';caption.textContent=label;value.textContent=show(v);cell.append(caption,value);grid.append(cell);
+ }
+ if(missing.length){const details=document.createElement('details'),summary=document.createElement('summary'),text=document.createElement('p');details.className='missing-record';summary.textContent='Not recorded ('+missing.length+')';text.textContent=missing.join(', ');details.append(summary,text);wrapper.append(details);}
+ return wrapper;
+}
+function dossierParagraph(text){const p=document.createElement('p');p.textContent=text;return p}
+/* Smart Dossier V1: presentation-only grouping; original six evidence views remain available. */
+const dossierGroups={
+ overview:['identity','intelligence','evidence'],
+ development:['development'],
+ recruitment:['recruitment'],
+ comparison:['comparison']
+};
+let dossierSmartGroup='overview';
+const comparisonPanel=$('externalIntelPanel'),comparisonHome=comparisonPanel.parentNode;
+function restoreComparisonPanel(){
+ const home=$('phxToolsComparisonContent')||comparisonHome;
+ if(comparisonPanel.parentNode!==home)home.append(comparisonPanel);
+}
+function applySmartDossierNavigation(){
+ const names={identity:'Overview',development:'Strengths & limits',recruitment:'Recruitment',history:'Compare #1885'};
+ document.querySelectorAll('[data-dossier-tab]').forEach(button=>{
+  const key=button.dataset.dossierTab;
+  if(key==='intelligence'||key==='evidence'){button.hidden=true;return;}
+  if(names[key])button.textContent=names[key];
+  button.setAttribute('aria-pressed',String(({identity:'overview',history:'comparison'})[key]===dossierSmartGroup||key===dossierSmartGroup));
+ });
+}
+function renderDossierSection(){
+ if(!dossierOpen)return;
+ const p=players.find(x=>x.candidate_id===active);
+ if(!p){closeDossier();return}
+ $('dossierTitle').textContent=p.player_name;
+ $('dossierIdentity').textContent=[p.alliance,p.kingdom?'#'+p.kingdom:null,'ID '+(evidenceKey(p)||'Not confirmed'),p.contact_status].filter(Boolean).join(' · ');
+ const headlineEvidence=evidenceFor(p);renderHeadlineMetrics($('dossierOverview'),headlineEvidence);
+ document.querySelectorAll('[data-dossier-tab]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.dossierTab===dossierTab)));
+ const root=$('dossierContent');root.replaceChildren();
+ const evidence=evidenceFor(p),id=evidenceKey(p);
+ const source=document.createElement('p');source.className='compact-source-line';source.textContent=evidence?'Latest available data · '+formatPlayerUtc(evidence.source_cached_at):evidencePending.has(id)?'Loading latest player data…':'Current player data unavailable';root.append(source);
+ if(id){const refresh=document.createElement('button');refresh.type='button';refresh.className='compact-refresh';refresh.textContent='↻ Refresh';refresh.disabled=evidencePending.has(id);refresh.onclick=()=>loadCandidateEvidence(p,true);root.append(refresh);}
+
+ const m=p.metadata||{},t=m.mystic_trials||{},labels={coliseum:'Heroes & Hero Gear',forest:'Pets',crystal:'Governor Charms',knowledge:'Research',molten:'Governor Gear',radiant:'Mixed · Radiant Spire'};
+ if(dossierTab==='identity'||dossierTab==='overview'){
+  const details=document.createElement('details'),summary=document.createElement('summary');details.className='record-details';summary.textContent='Saved record & identity';details.append(summary,dossierGrid('Identity & Power',[
+   ['Player name',p.player_name],['Kingshot Player ID',evidenceKey(p)],['Kingdom',p.kingdom],['Alliance',p.alliance],['Saved Castle / Truegold',p.castle_level],['Saved Total Power',p.power_m==null?null:fmt(p.power_m)+'M'],['Previous name',m.previous_name],['Previous kingdom',m.previous_kingdom],['Updated on',p.updated_at?new Date(p.updated_at).toLocaleDateString('en-GB'):null]]));root.append(details);
+ }
+ if(dossierTab==='comparison'){root.append(comparisonPanel);renderExternalIntel();}
+ if(dossierTab==='development'){
+  renderTrialAssessment(root,evidence?.ranks?.values);
+  const rankings=document.createElement('section'),rankingHeading=document.createElement('h3'),rankingGrid=document.createElement('div');rankingHeading.textContent='Player Rankings';rankingGrid.className='dossier-list';appendRankingEntries(rankingGrid,evidence?.ranks?.values,'dossier-cell');rankings.append(rankingHeading,rankingGrid);root.append(rankings);
+  root.append(arenaList(evidence?.arena_squad?.heroes||[]));
+  const stages=Object.entries(labels).filter(([key])=>stageIndex(t[key])!==null),detail=document.createElement('details'),summary=document.createElement('summary');detail.className='record-details';summary.textContent='Recorded Mystic Trial Stages ('+stages.length+'/6)';detail.append(summary);
+  if(stages.length)detail.append(dossierGrid('Verified trial stages',stages.map(([key,label])=>[label,t[key]])));else detail.append(dossierParagraph('No manually verified trial stages recorded. Ranking scores are shown above.'));root.append(detail);
+ }
+ if(dossierTab==='evidence'){
+  const disclosure=document.createElement('details'),caption=document.createElement('summary');disclosure.className='record-details';caption.textContent='Sources & capture times';disclosure.append(caption);root.append(disclosure);
+  disclosure.append(dossierGrid('Evidence & Sources',[
+   ['Mystic Trial evidence',m.mystic_trial_source],['Observation date',m.mystic_trial_snapshot],
+   ['Profile evidence',m.profile_source||'Mighty Pulse via protected Stage Bridge'],['Player source capture',formatPlayerUtc(evidence?.source_cached_at)],['Player lookup time',formatPlayerUtc(evidence?.checked_at_utc)],['Saved screenshots','Not supported in LIVE yet']]));
+  disclosure.append(dossierParagraph('Manually recorded evidence and current source capture are shown separately.'));
+ }
+ if(dossierTab==='recruitment'){
+  root.append(dossierGrid('Recruitment',[
+   ['Desired role',m.role],['Recorded fit',m.fit==null?null:m.fit+'%'],['Contact status',p.contact_status],
+   ['Transfer eligibility',p.transfer_eligibility],['Invitation preview',invitationPreview(p)],
+   ['Recruiter',p.recruiter],['Last contact',m.last_contact]]));
+  const heading=document.createElement('h3');heading.textContent='Notes';root.append(heading,dossierParagraph(p.notes||'No notes recorded.'));
+ }
+ if(dossierTab==='intelligence'){
+  const article=document.createElement('div');article.className='evidence-brief';const heading=document.createElement('h3');heading.textContent='Available evidence';article.append(heading,dossierParagraph(Object.keys(playerRankingMap(evidence?.ranks?.values)).length+' ranking metrics · '+(evidence?.arena_squad?.heroes||[]).length+' Arena heroes.'));
+  if(p.notes)article.append(dossierParagraph(p.notes));root.append(article);
+ }
+
+}
+function renderDossier(){
+ if(!dossierOpen)return;
+ restoreComparisonPanel();
+ const tabs=dossierGroups[dossierSmartGroup]||['identity'];
+ const root=$('dossierContent');
+ const sections=[];
+ for(const tab of tabs){
+  dossierTab=tab;
+  renderDossierSection();
+  // Source summary and refresh belong once above the combined sections.
+  const nodes=Array.from(root.childNodes);
+  if(sections.length)nodes.splice(0,evidenceKey(players.find(x=>x.candidate_id===active))?2:1);
+  sections.push(...nodes);
+ }
+ root.replaceChildren(...sections);
+ const forecastPanel=document.createElement('section');
+ forecastPanel.className='dossier-report';
+ forecastPanel.setAttribute('aria-label','Expected transfer rules');
+ const forecastHeading=document.createElement('h3');
+ const manualPlan=describeTransferPlan(readTransferPlan());
+ forecastHeading.textContent=manualPlan?'PYLON IX · Manual Transfer Plan':'PYLON IX · Transfer Intelligence — FORECAST';
+ const forecastBody=document.createElement('p');
+ forecastBody.textContent=manualPlan||'Expected Group '+phxTransferForecast.group+' · Kingdoms '+phxTransferForecast.range.join('–')+' · Ordinary reference '+phxTransferForecast.ordinaryReferenceM+'M · Leading reference '+phxTransferForecast.leadingReferenceM+'M · '+phxTransferForecast.window+'.';
+ const forecastNotice=document.createElement('p');
+ forecastNotice.textContent=manualPlan?'Plan saved on this device. Check invitation eligibility and the applicable power metric in-game.':phxTransferStatus(null)+'. Community forecast only; #1885 classification, official power metric, active cap, invitations and final rules are unconfirmed. Source: '+phxTransferForecast.source+' (checked '+phxTransferForecast.checked+').';
+ forecastPanel.append(forecastHeading,forecastBody,forecastNotice);
+ root.prepend(forecastPanel);
+ mountRuleDraftEditor(forecastPanel,{canEdit:false}); // Fail closed until a server-verified transfer_admin role exists.
+ if(canEdit&&players.some(p=>p.candidate_id===active)){
+  const admin=document.createElement('section');admin.className='dossier-report';
+  const heading=document.createElement('h3');heading.textContent='Candidate management';
+  const button=document.createElement('button');button.type='button';button.textContent='Remove candidate';
+  button.onclick=()=>removeCandidateButton.click();admin.append(heading,button);root.append(admin);
+ }
+ applySmartDossierNavigation();
+}
+function openDossier(group='overview'){
+ if(!players.some(p=>p.candidate_id===active))return;
+ dossierOpen=true;dossierSmartGroup=group;dossierTab='identity';$('scoutingBoard').hidden=true;$('candidateDossier').hidden=false;
+ renderDossier();loadCandidateEvidence(players.find(p=>p.candidate_id===active),true);syncWorkspace();$('candidateDossier').scrollIntoView({block:'start',behavior:'auto'});
+}
+function closeDossier(){restoreComparisonPanel();dossierOpen=false;$('candidateDossier').hidden=true;$('scoutingBoard').hidden=false;syncWorkspace()}
+$('openDossier').onclick=()=>openDossier();
+$('backToBoard').onclick=()=>{closeDossier();$('openDossier').focus()};
+document.querySelectorAll('[data-dossier-tab]').forEach(b=>b.onclick=()=>{
+ dossierSmartGroup=({identity:'overview',development:'development',recruitment:'recruitment',history:'comparison'})[b.dataset.dossierTab]||'overview';
+ renderDossier();
+ if(dossierSmartGroup==='comparison')$('loadInternal').click();
+});
+
+
+setInterval(()=>{if(!$('private').hidden&&$('modal').hidden&&!document.hidden)load()},20000);
+
+
+/* PHX ID STAGE: additive read-only feature; original LIVE V5 logic above remains unchanged. */
+const phxIdForm=$('phxIdForm'),phxIdStatus=$('phxIdStatus'),phxIdResult=$('phxIdResult');
+const phxLookupIndicator=document.createElement('span');phxLookupIndicator.setAttribute('aria-hidden','true');phxLookupIndicator.style.cssText='display:none;width:17px;height:17px;border:2px solid rgba(226,189,112,.3);border-top-color:#e2bd70;border-radius:50%;animation:phx-lookup-spin .85s linear infinite;flex:none';const phxLookupWrap=document.createElement('div');phxLookupWrap.style.cssText='display:flex;align-items:center;gap:10px';phxIdStatus.parentNode.insertBefore(phxLookupWrap,phxIdStatus);phxLookupWrap.append(phxLookupIndicator,phxIdStatus);const phxLookupStyle=document.createElement('style');phxLookupStyle.textContent='@keyframes phx-lookup-spin{to{transform:rotate(360deg)}}';document.head.append(phxLookupStyle);function setPhxLookupState(state,message){phxIdStatus.textContent=message;phxLookupIndicator.style.display=state==='loading'?'inline-block':'none';phxIdStatus.style.color=state==='success'?'#70d69b':state==='error'?'#f0a0a0':'';phxIdStatus.style.fontWeight=state==='success'?'700':'';phxIdStatus.setAttribute('role','status');phxIdStatus.setAttribute('aria-live','polite');}
+const phxBridgeUrl=SUPABASE_URL+'/functions/v1/phalanx-transfer-id-snapshot-fallback-stage-20261031'; // Staging only; browser CORS requires verified deployment.
+// One compact read-only renderer for lookup, dossier and comparison. Values stay exact.
+function renderRankingEvidence(target,entry,missing='Not available from source',compact=false){
+ target.className=(target.className||'')+' ranking-evidence';
+ if(!entry){const unknown=document.createElement('span');unknown.className='ranking-missing';unknown.textContent=missing;target.append(unknown);return;}
+ const value=document.createElement('strong'),rank=document.createElement('small'),details=document.createElement('details'),summary=document.createElement('summary'),source=document.createElement('p');
+ value.className='ranking-value';value.textContent=compact?compactPower(entry.value):formatPlayerNumber(entry.value);value.title='Exact value: '+formatPlayerNumber(entry.value);
+ rank.className='ranking-rank';rank.textContent='Kingdom rank: '+formatPlayerNumber(entry.kingdom_rank);
+ details.className='ranking-source';summary.textContent=compact?'ⓘ':entry.source==='saved_snapshot'?'Saved snapshot':'Source & time';summary.title='Exact value, kingdom rank, source and capture time';source.textContent='Exact value: '+formatPlayerNumber(entry.value)+' · Kingdom rank: '+formatPlayerNumber(entry.kingdom_rank)+(entry.source==='calculated'?' · Calculated from matched Total and Troop Power · '+formatPlayerUtc(entry.captured_at):rankingSourceText(entry));details.append(summary,source);target.append(value);if(!compact)target.append(rank);target.append(details);
+}
+function appendRankingEntries(target,values,cellClass){
+ const v=values||{},map=playerRankingMap(v),table=document.createElement('table'),head=document.createElement('thead'),header=document.createElement('tr'),body=document.createElement('tbody');table.className='ranking-list';
+ for(const label of ['Metric','Value','KD rank','']){const th=document.createElement('th');th.textContent=label;header.append(th);}head.append(header);table.append(head,body);
+ const append=(label,entry,missing,sourceEntry)=>{const row=document.createElement('tr');row.className='ranking-evidence';for(const text of [label,entry?formatPlayerNumber(entry.value):missing,entry?formatPlayerNumber(entry.kingdom_rank):'—']){const td=document.createElement('td');td.textContent=text;row.append(td);}
+  const td=document.createElement('td'),details=document.createElement('details'),summary=document.createElement('summary'),source=document.createElement('p');details.className='ranking-source';summary.textContent='ⓘ';summary.title='Source and time';source.textContent=rankingSourceText(entry||sourceEntry).replace(/^ · /,'');details.append(summary,source);td.append(details);row.append(td);body.append(row);};
+ for(const [key,entry] of Object.entries(map))append(rankingLabels[key]||entry.name,entry);
+ for(const board of Array.isArray(v.boards)?v.boards:[])if(board.status==='not_listed'&&!map[canonicalRankingName(board.name)])append(rankingLabels[board.name]||board.name,null,'Not listed in Top 100',board);
+ if(!body.children.length)append('Rankings',null,'Not available');target.append(table);
+ if(v.board_status==='unavailable'){const note=document.createElement('p');note.className='ranking-status';note.textContent='Additional kingdom boards unavailable; available player standings remain displayed.';target.append(note);}
+}
+function renderTrialAssessment(root,values){
+ const keys=['coliseum','forest_of_life','crystal_cave','knowledge_nexus','molten_fort','radiant_spire'],map=playerRankingMap(values);
+ const section=document.createElement('section'),title=document.createElement('h3'),grid=document.createElement('div');
+ title.textContent='Mystic Trials · relative development';grid.className='trial-balance';section.append(title,grid);
+ const ranks=[];
+ for(const key of keys){const row=document.createElement('div'),label=document.createElement('span'),value=document.createElement('b'),entry=map[key];label.textContent=rankingLabels[key];
+  const rank=Number(entry?.kingdom_rank),valid=entry?.kingdom_rank!=null&&Number.isInteger(rank)&&rank>=1&&rank<=100;
+  value.textContent=valid?'#'+rank:'Not available';row.append(label,value);grid.append(row);if(valid)ranks.push(rank);
+ }
+ const note=document.createElement('p');note.className='ranking-status';
+ note.textContent=(ranks.length===6?'Mean rank '+(ranks.reduce((a,b)=>a+b,0)/6).toFixed(1)+' · Rank spread '+(Math.max(...ranks)-Math.min(...ranks))+'. ':'Coverage '+ranks.length+'/6; no overall indicator calculated. ')+
+ 'Smaller ranks indicate stronger placement within this kingdom. These are development indicators; they do not reveal equipment levels or battle outcomes. Missing Top-100 entries are unknown, never rank 101 or zero. Mean and spread are descriptive, not official Mystic Power.';
+ section.append(note);root.append(section);
+}
+function renderHeadlineMetrics(target,evidence){
+ const profile={power:evidence?.player?.power,captured_at:evidence?.source_cached_at,castle_level:evidence?.player?.castle_level},metrics=playerSummaryMetrics(evidence?.ranks?.values,profile);target.replaceChildren();target.classList.add('headline-metrics');
+ for(const metric of metrics){const item=document.createElement('div'),label=document.createElement('span'),value=document.createElement('strong'),detail=document.createElement('details'),summary=document.createElement('summary'),info=document.createElement('p');item.className='headline-metric';item.dataset.metric=metric.key;label.textContent=metric.label;value.textContent=metric.text;value.title=metric.details;detail.className='metric-info';summary.textContent='ⓘ';summary.title=metric.label+' source and calculation';info.textContent=metric.details;detail.append(summary,info);item.append(label,value,detail);target.append(item);}
+}
+function arenaList(heroes){const section=document.createElement('section'),heading=document.createElement('h3'),list=document.createElement('div');heading.textContent='Arena Squad';list.className='arena-list';section.append(heading,list);for(const [i,h] of heroes.entries()){const row=document.createElement('div'),name=document.createElement('span'),stats=document.createElement('b');row.className='arena-row';name.textContent=(i+1)+'. '+(h.name||'Unknown');stats.textContent=[h.level==null?null:'Level '+h.level,(h.stars??h.star)==null?null:(h.stars??h.star)+' stars'].filter(Boolean).join(' · ');row.append(name,stats);list.append(row);}if(!heroes.length)list.textContent='No Arena heroes available.';return section;}
+const phxSearchShell=document.createElement('div');phxSearchShell.id='phxSearchShell';phxSearchShell.hidden=true;phxSearchShell.style.cssText='display:none;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px 12px;border:1px solid #b88a47;background:#081d2c;color:#f1d7a4;margin:10px 0';const phxSearchLabel=document.createElement('strong');const phxNewSearch=document.createElement('button');phxNewSearch.type='button';phxNewSearch.textContent='New Search';phxNewSearch.addEventListener('click',()=>{restoreComparisonPanel();lookupIntel=null;phxSearchShell.hidden=true;phxSearchShell.style.display='none';phxIdForm.hidden=false;phxIdForm.style.display='';phxIdForm.querySelector('input')?.focus();});phxSearchShell.append(phxSearchLabel,phxNewSearch);phxIdForm.parentNode.insertBefore(phxSearchShell,phxIdForm);
+const element = (tag, text, className) => {
+ const node=document.createElement(tag);
+ if(text!=null)node.textContent=text;
+ if(className)node.className=className;
+ return node;
+};
+function decisionDetails(title, ...contents){
+ const details=element('details',null,'phx-decision-fold');
+ details.append(element('summary',title),...contents);
+ return details;
+}
+function allianceTag(value){
+ return String(value||'').trim().replace(/^\[|\]$/g,'').toUpperCase();
+}
+const destinationAlliances=['NXS','OoO','MYM','FRA'];
+let lookupIntel=null;
+
+function strongestInternalPlayer(preferred, ownIds){
+ const available=(internalPlayers||[]).filter(player=>![player.governor_id,player.uid].some(id=>ownIds.includes(String(id))));
+ const power=player=>Number(player.rankings?.personal_power?.value)||0;
+ const ordered=[...available].sort((a,b)=>power(b)-power(a));
+ return ordered.find(player=>allianceTag(player.alliance_tag)===allianceTag(preferred)&&power(player)>0)
+  ||ordered[0];
+}
+
+function verifiedTruePowerEvidence(metric,cohort){
+ if(!metric.calculated)return 'A verified candidate True Power value is required for comparison.';
+ if(!cohort)return 'No verified #1885 comparison capture within '+truePowerComparisonHours+' hours.';
+ const {peers,capture,gapMs}=cohort;
+ const minutes=Math.floor(gapMs/60000);
+ const gap=capture===captureKey(metric.captured_at)?'same instant':minutes===0?'less than 1 min':
+  (minutes>=60?Math.floor(minutes/60)+' h ':'')+minutes%60+' min';
+ const timing='Candidate capture '+formatPlayerUtc(metric.captured_at)+' · #1885 capture '+formatPlayerUtc(capture)+' · '+gap+'.';
+ if(peers.length<truePowerPeerMinimum)return timing;
+ const rank=1+peers.filter(row=>row.true_power>metric.value).length;
+ const nxs=peers.filter(row=>allianceTag(row.alliance_tag)==='NXS');
+ const nxsRank=1+nxs.filter(row=>row.true_power>metric.value).length;
+ return 'True Power comparison: #'+rank+' of '+(peers.length+1)+' in the verified sample'
+  +(nxs.length?' · NXS #'+nxsRank+' of '+(nxs.length+1):'')+'. '+timing+' Sample based on overlapping Top-100 boards.';
+}
+function attachVerifiedTruePower(data){
+ const source=({provider_request:'provider_kingdom',saved_snapshot:'saved_snapshot'})[data.source_mode];
+ return data.observations.map(row=>{
+  const total=row.rankings?.personal_power,troop=row.rankings?.troop_power;
+  const pair=matchedTruePower({...total,source:total?.source||source},{...troop,source:troop?.source||source});
+  return {...row,true_power_verified:pair!==null,true_power:pair?.value??null,true_power_captured_at:pair?.captured_at??null};
+ });
+}
+
+function mountDecision(payload,id){
+ const p=payload.player, values=payload.ranks?.values, ranks=playerRankingMap(values);
+ const name=p.name||p.playerName||p.player_name||'Unknown player';
+ const stamp=payload.source?.cachedAt;
+ const metrics=playerSummaryMetrics(values,{
+  power:p.power??p.totalPower??p.total_power, captured_at:stamp,
+  castle_level:p.townCenterLevel??p.town_center_level??p.castleLevel??p.castle_level
+ });
+ const assessment=assessAccount(p,ranks);
+ const [total,truePower]=metrics;
+ const mixedCaptures=new Set(metrics.map(metric=>captureKey(metric.captured_at)).filter(Boolean)).size>1;
+ const castle=metrics.at(-1);
+ if(castle.value===null&&castle.text!=='Not available')castle.details='Profile field · '+formatPlayerUtc(stamp);
+ const comparisonRanks=lookupComparisonRanks(payload,ranks,metrics);
+ const seaRanks=Object.fromEntries(assessment.rankingEvidence.filter(row=>row.rank<=100).map(row=>[row.key,row.rank]));
+ // Use the documented historical rating presentation and the existing provisional formula.
+ const sea=seaWorldVerdict({...p,governorId:id},Object.keys(WEIGHTS).some(key=>seaRanks[key])?{
+  scope:'top25_provisional',ranks:seaRanks,truePower:truePower.calculated?truePower.value:null
+ }:null);
+ const tierName=tier=>tier.replaceAll('_',' ').replace(/\b[a-z]/g,letter=>letter.toUpperCase());
+ const rating=element('div',null,'phx-intel-rating');
+ const tierIndex=THRESHOLDS.findIndex(row=>row.tier===sea.tier);
+ const nextThreshold=THRESHOLDS[tierIndex-1]?.min;
+ const tier=sea.tier?tierName(sea.tier)+(sea.scoreLower>=nextThreshold-3?'+':''):'Rating unavailable';
+ const tierStars=THRESHOLDS[tierIndex]?.stars;
+ if(tierStars)rating.append(element('strong',tierStars.replace('+','')));
+ rating.append(element('span',(tierStars?.endsWith('+')?'◆ ':'')+tier,'phx-rating-shield'));
+ const card=element('section',null,'phx-scout-section phx-player-intel-card');
+ const head=element('header',null,'phx-intel-head');
+ const identity=element('div');
+ identity.append(element('small','PHALANX · PLAYER INTELLIGENCE'),element('h3',name),
+  element('p',[p.alliance,'Kingdom #'+p.kingdom,'ID '+id].filter(Boolean).join(' · ')));
+ head.append(identity,rating);
+ const tiles=element('dl',null,'phx-intel-metrics');
+ const metricEvidence=element('ul',null,'phx-decision-list');
+ const trueSample=element('p');
+ const trueVerdict=element('p',null,'phx-intel-overview');
+ const trueHelp=element('dialog',null,'phx-decision-true-help');
+ trueHelp.setAttribute('aria-label','True Power calculation and comparison');
+ const closeHelp=element('button','Close');
+ const closeForm=element('form');closeForm.method='dialog';closeForm.append(closeHelp);
+ trueHelp.append(element('h4','True Power · calculation and comparison'),trueVerdict,element('p',truePower.details),trueSample,closeForm);
+ const profileRanks=assessment.rankingEvidence.filter(row=>row.key!=='pet_power'&&row.rank<=100);
+ const middle=Math.floor(profileRanks.length/2);
+ const profileMedian=profileRanks.length>=4?(profileRanks[Math.floor((profileRanks.length-1)/2)].rank+profileRanks[middle].rank)/2:null;
+ const profileColor=profileMedian===null?null:profileMedian<=10?'green':profileMedian<=25?'blue':profileMedian<=50?'yellow':'pink';
+ // The dialog explains the True Power result and its comparison sample.
+ for(const metric of [total,truePower,castle,...metrics.slice(2,-1)]){
+  const label=metric.label.replace(' · score','').replace('Truegold','TG');
+  metricEvidence.append(element('li',label+' · '+metric.details));
+  if(metric!==total&&metric!==truePower&&metric!==castle)continue;
+  const tile=element('div',null,'phx-intel-metric');
+  tile.dataset.metric=metric.key;
+  const value=element('dd',null,metric===truePower?'phx-true-power-inline':null);
+  value.append(element('strong',metric.text==='Not available'?'—':metric.text));
+  value.title=metric.details;
+  if(metric===truePower){
+   const info=element('button','i','phx-decision-info');
+   info.type='button';info.setAttribute('aria-label','True Power calculation and comparison');
+   info.addEventListener('click',()=>trueHelp.showModal());
+   value.append(info);
+  }
+  tile.append(element('dt',label),value);
+  if(metric.captured_at&&mixedCaptures)tile.append(element('small',formatPlayerUtc(metric.captured_at)+(metric.source==='saved_snapshot'?' · Stored':''),'phx-decision-source'));
+  tiles.append(tile);
+ }
+
+ const facts=element('div',null,'phx-intel-insights');
+ const short=rows=>rows.map(row=>row.label+' #'+row.rank).join(' · ');
+ for(const [label,content] of [
+  ['↗ Strengths',short(assessment.strengths.slice(0,2))||'No Top-15 strength recorded'],
+  ['◇ Development areas',short(assessment.development.slice(0,2))||'No relative gap recorded']
+ ]){
+  const cell=element('div');cell.append(element('strong',label),element('p',content));facts.append(cell);
+ }
+ const capture=formatPlayerUtc(stamp);
+ const profileCapture=payload.source?.fresh===false?'Cached provider profile':'Provider profile';
+ const freshness=element('p',assessment.profile+' · '+assessment.coverage+'/'+assessment.expected
+  +' kingdom categories'+(assessment.dated<assessment.coverage?' · Some dates unknown':assessment.oldest!==assessment.newest?' · Mixed capture dates':''),'phx-decision-source');
+ const body=element('div',null,'phx-intel-body');
+ const brand=element('div',null,'phx-dossier-brand');
+ brand.append(element('strong','⚔ PYLON IX'),element('small','CENTRAL ACCOUNT ASSESSMENT'));
+ const recommendation=element('div',null,'phx-achilles-recommendation');
+ const primaryRole=assessment.priorities[0];
+ const tiedRoles=primaryRole?assessment.priorities.filter(role=>role.evidence.length===primaryRole.evidence.length
+  && role.evidence.reduce((sum,row)=>sum+row.rank,0)===primaryRole.evidence.reduce((sum,row)=>sum+row.rank,0)):[];
+ // ACHILLES: documented peer True Power and strong hero-related kingdom ranks
+ // justify a clear candidate recommendation, not an unverified combat assignment.
+ const rallySignals=['hero_equip','hero_total','research_power','gov_gear','gov_charm']
+  .map(key=>assessment.rankingEvidence.find(row=>row.key===key&&row.rank<=15)).filter(Boolean);
+ const defaultRole=primaryRole?'Review '+tiedRoles.map(role=>role.label).join(' or ')+' potential'
+  :'Insufficient evidence for a specific KvK role';
+ const strongest=assessment.strengths.slice(0,3);
+ const weakest=assessment.development.slice(0,2);
+ const hero=assessment.rankingEvidence.find(row=>row.key==='hero_equip');
+ const research=assessment.rankingEvidence.find(row=>row.key==='research_power');
+ const master=assessment.rankingEvidence.find(row=>row.key==='master_power');
+ const troop=assessment.rankingEvidence.find(row=>row.key==='troop_power');
+ const heroPower=assessment.rankingEvidence.find(row=>row.key==='hero_total');
+ const specialized=hero?.rank<=15&&research?.rank<=15&&master?.rank>30;
+ const heroFocused=[hero,heroPower].some(row=>row?.rank<=15);
+ const troopFocused=troop?.rank<=15&&!heroFocused;
+ const missing=assessment.coverage<4;
+ const dna=missing
+  ?'Account DNA is provisional: only '+assessment.coverage+' of '+assessment.expected+' kingdom ranking categories are available.'
+  :specialized
+  ?'Hero equipment and research rank in the top 15, while master power is outside the top 30. This suggests focused account development.'
+  :troopFocused
+  ?'Troop power is a documented top-15 strength, while comparable hero rankings are not. This suggests a troop-focused profile; combat performance remains unverified.'
+  :heroFocused
+  ?'Hero development is a documented top-15 strength. Its impact depends on the remaining account profile and combat buffs.'
+  :assessment.profile==='Balanced'
+  ?'The available kingdom rankings indicate balanced development without a single dominant specialization.'
+  :'The available rankings show mixed development; no single combat specialization is confirmed.';
+ const roleTitle=element('strong','KvK recommendation · Provisional');
+ const roleText=element('p',defaultRole+'.','phx-intel-overview');
+ const verification=element('p','To confirm: combat buffs and battle reports.','phx-decision-source');
+ const overviewText=element('p',dna,'phx-intel-overview');
+ const evidenceDetails=decisionDetails('Evidence · strengths and development',
+  element('strong','Documented strengths'),element('p',short(strongest)||'No documented Top-15 strengths'),
+  element('strong','Relative development gaps'),element('p',short(weakest)||'No documented relative gaps'),
+  element('p','Ranking gaps do not automatically imply combat weaknesses.','phx-decision-source'));
+ recommendation.append(roleTitle,roleText,verification,evidenceDetails);
+ brand.querySelector('strong').textContent='⚔ PYLON IX';
+ brand.querySelector('small').textContent='STRATEGIC VERDICT';
+ brand.style.cssText='display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 10px;margin-bottom:4px';
+ brand.querySelector('strong').style.cssText='font-size:clamp(16px,4.2vw,22px);white-space:nowrap;letter-spacing:.02em';
+ brand.querySelector('small').style.cssText='font-size:clamp(9px,2.4vw,12px);letter-spacing:.1em';
+ const levelTitle=element('h4',assessment.level);
+ levelTitle.style.cssText='margin:4px 0 8px;font-size:clamp(17px,4.5vw,23px)';
+ overviewText.style.cssText='margin:0 0 10px;line-height:1.45';
+ recommendation.style.cssText='margin:0 0 12px';
+ roleText.style.cssText='margin:6px 0;line-height:1.45';
+ verification.style.cssText='margin:4px 0 8px;line-height:1.4';
+ body.append(brand,levelTitle,overviewText,recommendation,facts);
+ card.append(head,tiles,trueHelp);
+
+ const alliance=element('section',null,'phx-placement-compact phx-decision-alliance');
+ const preferredAlliance=destinationAlliances.find(tag=>p.kingdom===1885&&allianceTag(tag)===allianceTag(p.alliance))||'NXS';
+ const placement=element('div',null,'phx-alliance-results');placement.setAttribute('aria-live','polite');
+ const placementSource=element('p',null,'phx-decision-source');placementSource.hidden=true;
+ alliance.append(element('h4','Alliance comparison'),placementSource,placement);
+
+ const roleGrid=element('ul',null,'phx-decision-roles');
+ for(const role of assessment.roles){
+  const row=element('li');
+  row.append(element('strong',role.label),element('span',role.review?'Priority review':'Evidence needed'));
+  roleGrid.append(row);
+ }
+ const roleEvidence=element('ul',null,'phx-decision-list');
+ for(const role of assessment.roles){
+  roleEvidence.append(element('li',role.label+' · '+(short(role.evidence)||'No Top-15 indicators recorded')+'. Verify: '+role.missing+'.'));
+ }
+ const roles=decisionDetails('KvK roles & evidence',roleGrid,
+  element('p','Review priority uses the number of role-related Top-15 indicators, then the sum of their ranks. Verify role-specific buffs and battle reports before assigning a role.'),roleEvidence);
+
+ const evidence=element('div');
+ const method=element('p','Overall level uses the median of at least 4 of 9 category ranks (≤15 strong, ≤40 established, >40 developing). '
+  +'Strengths are Top 15. Development lists the weakest documented positions outside that group. Missing metrics remain unknown. '
+  +'With enough categories, a Top-15 strength and a rank beyond #30 indicate specialization; a spread of 15 places or less indicates a balanced profile.');
+ evidence.append(freshness,method,element('p',(assessment.median===null?'Median unavailable':'Median kingdom rank #'+assessment.median)
+  +' · '+assessment.dated+'/'+assessment.coverage+' ranked categories dated'
+  +(assessment.oldest?' · '+assessment.oldest+(assessment.oldest===assessment.newest?'':' to '+assessment.newest):'')
+  +'. Missing ranks: '+(assessment.missing.join(', ')||'none')+'.'));
+ const ratingScale=element('ul',null,'phx-decision-list');
+ for(const row of THRESHOLDS)ratingScale.append(element('li',row.stars.replace('+',' ◆')+' · '+tierName(row.tier)+' · ≥'+row.min));
+ const seaWeights=Object.entries(WEIGHTS).map(([key,value])=>(rankingLabels[key]||'True Power')+' '+value+'%').join(' · ');
+ const legend=decisionDetails('ⓘ View rating scale',ratingScale,element('p',sea.detail),
+  ...(sea.status==='PROVISIONAL_RANGE'?[element('p','Possible upper tier with missing metrics: '+tierName(sea.upperTier)+'.')]:[]),
+  element('p',seaWeights),
+  element('p','A + indicates a documented score within 3 points of the next tier. For other kingdoms the model uses the same provisional #1885 scale and local ranking positions.'));
+ legend.classList.add('phx-sea-world-legend');
+ card.append(legend,body);
+ const candidateIds=[id,payload.uid,p.uid,p.governorId,p.governor_id].filter(Boolean).map(String);
+ const refreshTrueSample=()=>{
+  const cohort=selectTruePowerCohort(truePower,internalPlayers||[],candidateIds);
+  const peers=cohort?.peers||[];
+  const reliable=peers.length>=truePowerPeerMinimum;
+  trueSample.textContent=verifiedTruePowerEvidence(truePower,cohort);
+  const percentile=reliable?100*peers.filter(row=>row.true_power<=truePower.value).length/peers.length:null;
+  const label=percentile===null?null:percentile>=85?'Very strong':percentile>=60?'Strong':percentile>=20?'Average':'Needs development';
+  const color=label==='Very strong'?'green':label==='Strong'?'blue':label==='Average'?'yellow':'pink';
+  const tile=tiles.querySelector('[data-metric="true_power"]');
+  if(tile){
+   delete tile.dataset.profileColor;
+   if(label)tile.dataset.profileColor=color;
+   const value=tile.querySelector('dd');
+   if(value){delete value.dataset.profileColor;if(label)value.dataset.profileColor=color;}
+  }
+  trueVerdict.textContent=label?label+' · True Power percentile '+Math.round(percentile)+' among '+peers.length+' verified peers (partial kingdom sample).'
+   :'Not yet rateable · '+peers.length+' comparable True Power values; at least '+truePowerPeerMinimum+' required.';
+  trueSample.textContent+=' Each True Power value uses Total and Troop Power from the same source and capture. The comparison uses one #1885 capture within '+truePowerComparisonHours+' hours of the candidate capture. Rating: green top 15%, blue next 25%, yellow next 40%, pink bottom 20%.';
+  // Live peer rankings arrive asynchronously; update the strategic verdict with them.
+  const suggested=suggestProvisionalRole(assessment,label);
+  const rallyCandidate=suggested.role==='Rally Leader candidate';
+  roleTitle.textContent='KvK recommendation · '+(suggested.role||'Unconfirmed');
+  roleText.textContent=suggested.reason+'.';
+  verification.textContent='Next check: '+suggested.verify+'.';
+  // Explain why a player's relative True Power can differ from their
+  // overall account development. Never treat a partial sample as a full census.
+  const weakCategories=[hero,research,heroPower].filter(row=>Number.isFinite(row?.rank)&&row.rank>50);
+  const weakNames=weakCategories.map(row=>row.label+' #'+row.rank);
+  const contrast=label==='Average'&&weakNames.length>=2
+   ?'True Power is average within '+peers.length+' verified comparable players, but '+weakNames.join(' and ')+' rank lower in the available kingdom boards. This indicates relative development gaps, not proven combat weakness.'
+   :label==='Very strong'&&weakNames.length>=2
+   ?'True Power is very strong within the verified sample, but '+weakNames.join(' and ')+' rank lower in the available kingdom boards. High non-troop power alone does not establish combat leadership.'
+   :label
+   ?'True Power is '+label.toLowerCase()+' in the verified comparison sample; the account profile separately evaluates the available kingdom rankings.'
+   :'True Power cannot currently be compared reliably. The account profile uses only the available kingdom rankings.';
+  // Lead with the most useful interpretation; retain the account-DNA explanation
+  // for other profiles without presenting a partial ranking as a full census.
+  const headline=label==='Average'&&weakNames.length>=2
+   ?'Average True Power, but weaker hero and research rankings.'
+   :label==='Very strong'&&weakNames.length>=2
+   ?'Very strong True Power, with important development gaps.'
+   :null;
+  overviewText.textContent=headline?headline+' '+contrast:dna+' '+contrast;
+ };
+ refreshTrueSample();
+ evidence.append(metricEvidence,
+  element('p',profileCapture+' capture: '+capture+' · Lookup (UTC): '+formatPlayerUtc(payload.checkedAtUtc)));
+
+ const all=element('div',null,'phx-decision-rankings');
+ appendRankingEntries(all,values,'');
+ const rankRows=strategicProfile(ranks).rows.filter(row=>assessment.rankingEvidence.some(item=>item.key===row.key));
+ if(rankRows.length){
+  const profile=element('section',null,'phx-intel-profile phx-profile-visible');
+  profile.append(element('h4','Strength profile · Kingdom rankings'),
+   element('p','Bars show kingdom rank. Rank 1 is best.','phx-scout-muted'));
+  for(const row of rankRows){
+   const line=element('div',null,'phx-intel-rank');
+   line.dataset.band=row.rank<=10?'good':row.rank<=20?'developing':'gap';
+   const title=element('div',null,'phx-intel-rank-head');
+   title.append(element('strong',row.label),element('b','Kingdom #'+row.rank));
+   const track=element('div',null,'phx-intel-track');
+   track.setAttribute('aria-hidden','true');
+   const fill=element('div',null,'phx-intel-fill');fill.style.width=Math.max(1,101-row.rank)+'%';
+   track.append(fill);line.append(title,track);profile.append(line);
+  }
+  body.append(profile);
+ }
+ body.append(alliance);
+
+ const compare=decisionDetails('Compare with a #1885 player');
+ const chooseDefault=()=>{
+  const peer=internalPlayers?.find(player=>String(player.governor_id||player.uid)===lookupIntel.manualPeer)
+   ||strongestInternalPlayer(preferredAlliance,candidateIds);
+  renderInternalChoices(peer?String(peer.uid||peer.player_name):'');
+ };
+ lookupIntel={id,ids:candidateIds,name,kingdom:p.kingdom,ranks:comparisonRanks,stamp,preferredAlliance,compare,refresh:refreshTrueSample};
+ const showComparison=()=>{
+  if(!compare.open||lookupIntel?.compare!==compare)return;
+  const moved=comparisonPanel.parentNode!==compare;
+  if(moved){compare.append(comparisonPanel);chooseDefault();}
+  if(moved&&!internalLoading)$('loadInternal').click();
+  else {
+   renderExternalIntel();
+  }
+ };
+ lookupIntel.showComparison=showComparison;
+ compare.addEventListener('toggle',showComparison);
+ const heroes=payload.arenaSquad?.heroes||[];
+ body.append(compare);
+ card.append(roles,decisionDetails('Rankings & evidence · '+Object.keys(ranks).length+' metrics',all,
+  decisionDetails('Sources, calculations & freshness',evidence),
+  decisionDetails('Arena Squad · '+heroes.length+' · '+formatPlayerSection(payload.arenaSquad?.status),arenaList(heroes))));
+ phxIdResult.replaceChildren(card);
+ const renderAlliances=data=>renderAlliancePlacement(placement,placementSource,total,candidateIds,comparisonRanks,data);
+ lookupIntel.refresh=data=>{refreshTrueSample();if(data)renderAlliances(data);};
+ renderAlliances(null);
+ void requestCurrentRankings().then(data=>{
+  internalPlayers=attachVerifiedTruePower(data);
+  internalSnapshot=data.snapshot_date||'';
+  refreshTrueSample();
+  renderAlliances(data);
+ },()=>renderAlliances({observations:[]}));
+}
+
+function renderAlliancePlacement(root,source,total,candidateIds,candidateRanks,data){
+ if(!root.isConnected)return;
+ const rows=data?.observations||[];
+ const capture=rows.reduce((latest,row)=>{
+  const time=Date.parse(row.rankings?.personal_power?.captured_at);
+  return Number.isFinite(time)&&time>latest?time:latest;
+ },-Infinity);
+ const timestamp=Number.isFinite(capture)?new Date(capture).toISOString():'';
+ const storedTotal=rows.some(row=>Date.parse(row.rankings?.personal_power?.captured_at)===capture
+  &&row.rankings.personal_power.source==='saved_snapshot')||data?.source_mode==='saved_snapshot';
+ const cohort=rows.filter(row=>Date.parse(row.rankings?.personal_power?.captured_at)===capture
+  && ![row.uid,row.governor_id].some(id=>candidateIds.includes(String(id))));
+ const opened=new Set([...root.querySelectorAll('details[open]')].map(node=>node.parentElement.dataset.alliance));
+ const tiles=destinationAlliances.map(tag=>{
+  const tile=element('section',null,'phx-alliance-result');
+  tile.dataset.alliance=tag;
+  tile.append(element('h5',tag));
+  const roster=cohort.filter(row=>allianceTag(row.alliance_tag)===allianceTag(tag))
+   .map(row=>({player_id:row.governor_id||row.uid,player_name:row.player_name,power:row.rankings.personal_power.value}));
+  const sample=placeInAlliance(total.value,roster,timestamp.slice(0,10));
+  if(sample.rankMin===null){
+   tile.append(element('p',!data?'Loading…':total.value===null?'Player power unavailable':'Ranking data unavailable','phx-decision-source'));
+   return tile;
+  }
+  const rank='#'+sample.rankMin+(sample.rankMin===sample.rankMax?'':'–'+sample.rankMax);
+  tile.append(element('strong',rank+' in sample','phx-decision-placement'),
+   element('p',sample.comparisonSize+(sample.comparisonSize===1?' ranked peer':' ranked peers'),'phx-decision-source'));
+  const details=decisionDetails('Ranking details',
+   element('p',(storedTotal?'Stored ranking capture':'Provider ranking capture')
+    +' · '+formatPlayerUtc(timestamp)+' · Kingdom Top 100, partial alliance coverage.'),
+   element('p','Player Total Power · '+compactPower(total.value)+' · '+formatPlayerUtc(total.captured_at)+'.'));
+  details.open=opened.has(tag);
+  const list=element('ol',null,'phx-decision-list');
+  for(const peer of sample.top15)list.append(element('li',(peer.player_name||'Player ID '+peer.player_id)+' · '+compactPower(peer.power)));
+  details.append(list);
+  const categories=compareTopPeers(candidateRanks,sample.top15,rows);
+  for(const row of categories)details.append(element('p',rankingLabels[row.key]+' · Player '+formatPlayerNumber(row.value)
+   +' ('+formatPlayerUtc(row.candidateCapture)+') · Median '+formatPlayerNumber(row.median)
+   +' from '+row.count+' sampled peers ('+formatPlayerUtc(row.capture)+')'));
+  tile.append(details);
+  return tile;
+ });
+ source.textContent=timestamp?'Total Power · '+formatPlayerUtc(timestamp)+(storedTotal?' · Stored capture':' · Provider capture'):'';
+ source.hidden=!timestamp;
+ root.replaceChildren(...tiles);
+}
+
+let candidateLookupId=null,lookupRequest=null;
+const candidateLookupContext=$('phxCandidateLookupContext');
+const lookupInput=$('phxGovernorId');
+const lookupButton=phxIdForm.querySelector('button');
+const lookupIntro=document.querySelector('#phxIdPanel .lookup-intro');
+const lookupHelp=document.querySelector('#phxIdPanel .lookup-help');
+
+function clearPlayerReview(){
+ restoreComparisonPanel();
+ lookupIntel=null;
+ phxIdResult.replaceChildren();
+ $('phxReview').hidden=true;
+ clearLookupCandidate();
+ phxSearchShell.hidden=true;
+ phxSearchShell.style.display='none';
+}
+
+function setCandidateLookupContext(candidateId){
+ candidateLookupId=candidateId;
+ const fromCandidate=candidateId!==null;
+ candidateLookupContext.hidden=!fromCandidate;
+ lookupIntro.hidden=fromCandidate;
+ lookupHelp.hidden=fromCandidate;
+ phxIdForm.hidden=fromCandidate;
+ phxIdForm.style.display=fromCandidate?'none':'';
+}
+
+async function runPlayerLookup(id,fromCandidate=false){
+ lookupRequest?.abort();
+ clearPlayerReview();
+ if($('private').hidden){setPhxLookupState('error','Sign in to continue.');return;}
+ const controller=new AbortController();
+ lookupRequest=controller;
+ lookupButton.disabled=true;
+ $('phxRetryCandidateLookup').hidden=true;
+ setPhxLookupState('loading','Loading player data… Source refresh can take up to 90 seconds.');
+ const timeout=setTimeout(()=>controller.abort(),125000);
+ try{
+  const payload=await readPlayer(id,controller.signal);
+  if(lookupRequest!==controller)return;
+  if(!fromCandidate&&lookupInput.value.trim()!==id){
+   setPhxLookupState('error','Kingshot Player ID changed. Load player data again.');
+   return;
+  }
+  const p=payload.player;
+  mountDecision(payload,id);
+  $('phxReview').hidden=false;
+  setPhxLookupState('success',fromCandidate?'✓ Player data loaded successfully.':'✓ Player data loaded successfully. Review the details before adding this player to Candidates.');
+  if(!fromCandidate){
+   offerLookupCandidate(payload,id);
+   phxSearchLabel.textContent=(p.name||p.player_name||p.nickname||'Player')+' · ID '+id;
+   phxIdForm.hidden=true;phxIdForm.style.display='none';
+   phxSearchShell.hidden=false;phxSearchShell.style.display='flex';
+   if(workspaceView==='phxIdPanel')$('phxReview').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+ }catch(error){
+  if(lookupRequest!==controller)return;
+  setPhxLookupState('error',error.name==='AbortError'?'The lookup timed out. Please try again later.':error instanceof TypeError?'Could not connect to the player lookup service. Check your session and try again.':error.message);
+  $('phxRetryCandidateLookup').hidden=!fromCandidate;
+ }finally{
+  clearTimeout(timeout);
+  if(lookupRequest===controller){lookupRequest=null;lookupButton.disabled=false;}
+ }
+}
+
+function openSavedCandidate(candidateId){
+ if(lookupSaving)return;
+ const candidate=players.find(p=>p.candidate_id===candidateId);
+ if(!candidate)return;
+ const id=evidenceKey(candidate);
+ active=candidateId;
+ if(!/^[1-9][0-9]{0,15}$/.test(id)){openDossier();return;}
+ if(candidateLookupId===null)showWorkspace('phxIdPanel');
+ setCandidateLookupContext(candidateId);
+ void runPlayerLookup(id,true);
+ $('phxBackToCandidates').focus({preventScroll:true});
+ candidateLookupContext.scrollIntoView({block:'start'});
+}
+
+phxIdForm.addEventListener('submit',e=>{
+ e.preventDefault();
+ if(!lookupButton.disabled)void runPlayerLookup(lookupInput.value.trim());
+});
+$('phxRetryCandidateLookup').onclick=()=>openSavedCandidate(candidateLookupId);
+$('phxBackToCandidates').onclick=()=>{
+ const candidateId=candidateLookupId;
+ showWorkspace('scoutingBoard');
+ render();
+ const button=$('rows').querySelector('button[data-dossier="'+CSS.escape(candidateId)+'"]');
+ (button||$('search')).focus();
+};
+$('phxOpenSavedDetails').onclick=()=>{
+ active=candidateLookupId;
+ showWorkspace('scoutingBoard');
+ openDossier('recruitment');
+};
+
+// Native section links; existing dossiers keep their own Back navigation.
+/* V5 progressive workspace adapted to protected cloud IDs. Source: 55f372d. */
+let workspaceView='phxIdPanel',profileOpen=false;
+// Preserve the existing transfer calculator, but place it under the established Tools view.
+const phxScenario=$('phxPowerScenario');
+const phxToolsBody=document.querySelector('#workspace-tools .tools-body');
+if(phxScenario&&phxToolsBody){phxScenario.classList.add('phx-tools-scenario');phxToolsBody.insertBefore(phxScenario,phxToolsBody.firstChild);}
+// Initialize the existing five-card Tools menu only after the calculator is relocated.
+if(typeof window.phxInitToolsMenu==='function')window.phxInitToolsMenu();
+
+function syncWorkspace(){
+ const total=players.length, candidateView=workspaceView==='scoutingBoard';
+ $('private').classList.toggle('is-empty',!total);
+ $('candidate-empty').hidden=!!total;
+ $('workspaceStats').hidden=!candidateView||!total||dossierOpen;
+ $('candidate-profile').hidden=!candidateView||!profileOpen||!players.some(p=>p.candidate_id===active);
+ $('scoutingBoard').classList.toggle('profile-open',!$('candidate-profile').hidden);
+ $('compare').disabled=chosen.size<2;$('compare').hidden=total<2;$('csv').hidden=!canExport||!total;
+ $('nextCandidateAction').hidden=!canEdit||!total;
+ $('addFirstCandidate').hidden=!canEdit;$('readOnlyNotice').hidden=canEdit;
+}
+function showWorkspace(view){
+ if(candidateLookupId!==null){
+  lookupRequest?.abort();
+  lookupRequest=null;
+  lookupButton.disabled=false;
+  clearPlayerReview();
+  setCandidateLookupContext(null);
+  setPhxLookupState('idle','Enter a Kingshot Player ID to look up a player.');
+ }
+ if(dossierOpen)closeDossier();
+ if(view!=='phxIdPanel')restoreComparisonPanel();
+ workspaceView=view;
+ for(const id of ['scoutingBoard','phxIdPanel','workspace-tools'])$(id).hidden=id!==view;
+ document.querySelector('main').dataset.workspaceView=view;
+ document.querySelectorAll('.workspace-nav [data-view]').forEach(el=>{const on=el.dataset.view===view;el.classList.toggle('active',on);if(on)el.setAttribute('aria-current','page');else el.removeAttribute('aria-current');});
+ syncWorkspace();
+ if(view==='phxIdPanel')lookupIntel?.showComparison();
+}
+$('phxOpenEventPlan').onclick=()=>{
+ showWorkspace('workspace-tools');
+ const editor=$('phxEventPlan');
+ const tool=editor?.closest('details');
+ if(tool)tool.open=true;
+ $('phxEventCap')?.focus();
+};
+document.querySelectorAll('[data-view]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();showWorkspace(el.dataset.view);}));
+$('addFirstCandidate').onclick=openCandidateLookup;
+$('toolsCsv').onclick=()=>$('csv').click();
+$('closeProfile').onclick=()=>{profileOpen=false;syncWorkspace();};
+$('rows').addEventListener('click',e=>{if(e.target.closest('tr[data-id]')&&!e.target.closest('input,button')){profileOpen=true;syncWorkspace();}});
+$('rows').addEventListener('change',syncWorkspace);
+new MutationObserver(syncWorkspace).observe($('rows'),{childList:true});
+showWorkspace('phxIdPanel');
+const advanced=document.createElement('details');advanced.className='advanced-fields';const summary=document.createElement('summary');summary.textContent='More details · Role, contact & development';advanced.append(summary);
+for(const label of [...$('candidateForm').querySelectorAll('.form-grid>label')]){if(!['player_name','kingdom'].includes(label.querySelector('[name]')?.name))advanced.append(label);}
+advanced.append($('candidateForm').querySelector('fieldset'));$('candidateForm').insertBefore(advanced,$('candidateForm').querySelector('label:has(textarea)'));
+
+/* ID-first candidate onboarding. Lookup stays read-only; the explicit button is the write action. */
+let lookupCandidate=null,lookupSaving=false,lookupSaved=null;
+function clearLookupCandidate(){lookupCandidate=null;lookupSaved=null;$('phxAdoptCandidate').textContent='Add to Candidates';$('workspaceNotice').textContent='';$('phxAdoptCandidate').hidden=true;$('phxAdoptStatus').textContent='';}
+function offerLookupCandidate(payload,id){
+ if($('phxGovernorId').value.trim()!==id)return;
+ try{lookupCandidate=candidateFromLookup(payload,id);
+ const alreadySaved=players.some(p=>evidenceKey(p)===id);
+ $('phxAdoptCandidate').hidden=!canEdit||alreadySaved;
+ $('phxAdoptStatus').textContent=alreadySaved?'This player is already a candidate. Existing data remains unchanged.':canEdit?'Review these details, then select Add to Candidates.':'Read only. Recruiter permission is required to add candidates.';
+ }catch(error){clearLookupCandidate();$('phxAdoptStatus').textContent=error.message;}
+}
+$('phxGovernorId').addEventListener('input',clearLookupCandidate);
+$('phxAdoptCandidate').onclick=async()=>{
+ if(lookupSaving)return;
+ const draft=lookupCandidate,id=draft?.metadata.governor_id;
+ if(!canEdit||$('private').hidden||!draft||$('phxGovernorId').value.trim()!==id){clearLookupCandidate();return;}
+ lookupSaving=true;$('phxAdoptCandidate').disabled=true;$('phxGovernorId').disabled=true;phxIdForm.querySelector('button').disabled=true;
+ try{
+  if(!lookupSaved){
+   $('phxAdoptStatus').textContent='Checking existing candidates…';
+   const {data:duplicates,error:readError}=await db.from('phx_hosted_fixture_candidates').select('candidate_id,player_name').or(duplicateLookupFilter(id)).limit(1);
+   if(readError)throw Error('Existing candidates could not be checked. Nothing was saved.');
+   if(duplicates?.length){$('phxAdoptCandidate').hidden=true;$('phxAdoptStatus').textContent='This player is already a candidate. Existing data remains unchanged.';return;}
+   const {data:saved,error}=await db.from('phx_hosted_fixture_candidates').insert({...draft,updated_at:new Date().toISOString()}).select('candidate_id,updated_at').maybeSingle();
+   if(error){if(error.code==='23505')throw Error('This player was already added. No duplicate was created.');throw Error('Could not add candidate: '+error.message);}
+   if(!saved?.candidate_id)throw Error('Save not confirmed. Refresh Candidates before trying again.');
+   lookupSaved=saved;
+  }
+  $('phxAdoptStatus').textContent='Saved. Checking the candidate list…';
+  if(!await load(lookupSaved)){
+   $('phxAdoptCandidate').textContent='Retry reload';
+   $('phxAdoptStatus').textContent='The save was confirmed, but the candidate could not be reloaded. Select Retry reload to check again.';
+   return;
+  }
+  clearLookupCandidate();$('search').value='';render();
+  $('workspaceNotice').textContent='Candidate added. Player data saved.';
+  showWorkspace('scoutingBoard');
+ }catch(error){$('phxAdoptStatus').textContent=error.message||'Save not confirmed. Refresh Candidates before trying again.';}
+ finally{lookupSaving=false;$('phxAdoptCandidate').disabled=false;$('phxGovernorId').disabled=false;phxIdForm.querySelector('button').disabled=false;}
+};
+
+check();
