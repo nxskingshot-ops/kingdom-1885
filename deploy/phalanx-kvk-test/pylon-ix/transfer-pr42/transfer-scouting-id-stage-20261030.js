@@ -1,4 +1,4 @@
-import { mountAccessManagement } from './phx-access-management-20261109.js';
+import { accessManagementStatus, mountAccessManagement, scoutingRoleLabels } from '../transfer-access-v21/phx-access-management-20261109.js?build=phx-scouting-roles-20261109';
 import { describeTransferPlan, readTransferPlan } from './phx-transfer-event-plan-20261108.js?v=phx-transfer-en-20261108';
 import { placeInAlliance, compareTopPeers } from './phx-transfer-alliance-placement-20261101.js?v=phx-transfer-evidence-20261107';
 import { assessAccount, suggestProvisionalRole } from './phx-transfer-account-assessment-20261101.js?v=phx-achilles-roles-20261108';
@@ -17,6 +17,7 @@ const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const fmt=x=>x==null?'–':Number(x).toLocaleString('en-US',{maximumFractionDigits:1});
 let players=[],chosen=new Set(),active=null,canEdit=false;
 let accessManagementSession;
+let canDelete=false, canExport=true;
 // The event-specific cap and metric have not been verified. Never classify invitations from account power.
 function invitationPreview(p){return 'Verify event rules';}
 function showLogin(message=''){accessManagementSession?.abort();const badge=document.getElementById('phxIdentity');if(badge){badge.classList.remove('is-online');const n=document.getElementById('phxIdentityName'),m=document.getElementById('phxIdentityMeta');if(n)n.textContent='Session not verified';if(m)m.textContent='Please sign in';const online=document.getElementById('phxIdentityOnline');if(online)online.textContent='OFFLINE';}canEdit=false;$('login').hidden=false;$('private').hidden=true;$('message').textContent=message||'Please sign in with your approved NXS account.';$('message').setAttribute('role','status');}
@@ -63,25 +64,37 @@ async function load(saved){
   return false;
  }
 }
-async function check(){try{
+async function check(){
+accessManagementSession?.abort();
+accessManagementSession=new AbortController();
+const signal=accessManagementSession.signal;
+try{
 const {data:{user},error}=await db.auth.getUser();
+if(signal.aborted)return;
 if(error){showLogin('Session verification failed: '+error.message+'. Please sign in again.');return;}
 if(!user){showLogin('No active session. Please sign in with your approved NXS account.');return;}
 const {data:membership,error:merror}=await db.from('nxs_memberships').select('role,active,expires_at').eq('user_id',user.id).maybeSingle();
+if(signal.aborted)return;
 if(merror){showLogin('Signed in, but membership verification failed: '+merror.message);return;}
 if(!membership){showLogin('Signed in, but no approved NXS membership was found for this account.');return;}
 if(!membership.active){showLogin('Signed in, but this NXS membership is inactive.');return;}
 if(membership.expires_at&&Date.parse(membership.expires_at)<=Date.now()){showLogin('Signed in, but this NXS membership has expired.');return;}
 if(!['member','r4','r5','admin'].includes(membership.role)){showLogin('Signed in, but this account role is not approved for Transfer Scouting.');return;}
-const badge=document.getElementById('phxIdentity');if(badge){const display=user.id==='d4da222e-8aac-4950-a6df-46c88972458c'?'FaQu':(user.email||'Signed-in account');const n=document.getElementById('phxIdentityName'),m=document.getElementById('phxIdentityMeta');badge.classList.add('is-online');if(n)n.textContent=display;if(m)m.textContent=membership.role.toUpperCase()+' · ACTIVE';const online=document.getElementById('phxIdentityOnline');if(online)online.textContent='ONLINE';}
-canEdit=['r4','r5','admin'].includes(membership.role);$('login').hidden=true;$('private').hidden=false;
-accessManagementSession?.abort();
-if(['r5','admin'].includes(membership.role)){
- accessManagementSession=new AbortController();
- void mountAccessManagement(db,accessManagementSession.signal).catch(()=>{});
-}
+const access=await accessManagementStatus(db).catch(()=>null);
+if(signal.aborted)return;
+const scoutingRole=access?.scouting_role;
+const badge=document.getElementById('phxIdentity');if(badge){const display=user.id==='d4da222e-8aac-4950-a6df-46c88972458c'?'FaQu':(user.email||'Signed-in account');const n=document.getElementById('phxIdentityName'),m=document.getElementById('phxIdentityMeta');badge.classList.add('is-online');if(n)n.textContent=display;if(m)m.textContent=(scoutingRoleLabels[scoutingRole]||membership.role).toUpperCase()+' · ACTIVE';const online=document.getElementById('phxIdentityOnline');if(online)online.textContent='ONLINE';}
+canDelete=['r4','r5','admin'].includes(membership.role);
+canEdit=canDelete||scoutingRole==='operator'||scoutingRole==='administrator';
+canExport=canDelete||scoutingRole!=='observer';
+const exportTool=$('toolsCsv');
+exportTool.hidden=!canExport;
+const exportCard=exportTool.closest('details.phx-tool-item');
+if(exportCard)exportCard.hidden=!canExport;
+$('login').hidden=true;$('private').hidden=false;
+mountAccessManagement(db,signal,access);
 await load();
-}catch(e){showLogin('Unable to verify access: '+(e?.message||'Unknown error'));}}
+}catch(e){if(!signal.aborted)showLogin('Unable to verify access: '+(e?.message||'Unknown error'));}}
 $('authForm').onsubmit=async e=>{
 e.preventDefault();const submit=$('authForm').querySelector('button[type="submit"]');if(submit.disabled)return;
 submit.disabled=true;$('message').textContent='Signing in…';
@@ -114,7 +127,7 @@ $('compare').onclick=async()=>{
   result.innerHTML='<h3>Selected candidates</h3><div class="scroll"><table><thead><tr><th>Metric</th>'+columns.map(c=>'<th>'+esc(c.player?.name||c.record.player_name)+'</th>').join('')+'</tr></thead><tbody>'+rows.map(([label,format])=>'<tr><td>'+label+'</td>'+columns.map(c=>'<td>'+esc(format(c)||'Not available')+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>';
  }finally{button.disabled=false;}
 };
-$('csv').onclick=()=>{const columns=['candidate_id','player_name','kingdom','alliance','power_m','castle_level','contact_status','invitation_preview','transfer_eligibility','recruiter','notes','updated_at'];const csv=[columns.join(','),...filtered().map(p=>columns.map(k=>'"'+String(k==='invitation_preview'?invitationPreview(p):p[k]??'').replace(/"/g,'""')+'"').join(','))].join('\r\n');const url=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='nxs-real-transfer-records.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),4000);};
+$('csv').onclick=()=>{if(!canExport)return;const columns=['candidate_id','player_name','kingdom','alliance','power_m','castle_level','contact_status','invitation_preview','transfer_eligibility','recruiter','notes','updated_at'];const csv=[columns.join(','),...filtered().map(p=>columns.map(k=>'"'+String(k==='invitation_preview'?invitationPreview(p):p[k]??'').replace(/"/g,'""')+'"').join(','))].join('\r\n');const url=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='nxs-real-transfer-records.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),4000);};
 
 let editingCandidate=null,editorSaved=null,editorSaving=false;
 function openEditor(p){
@@ -151,7 +164,7 @@ removeCandidateButton.className='secondary phx-remove-candidate';removeCandidate
 $('editCandidate').insertAdjacentElement('afterend',removeCandidateButton);
 removeCandidateButton.onclick=async()=>{
  const candidate=players.find(p=>p.candidate_id===active);
- if(!canEdit||!candidate||removeCandidateButton.disabled)return;
+ if(!canDelete||!candidate||removeCandidateButton.disabled)return;
  const id=candidate.candidate_id;
  if(!window.confirm('Remove '+candidate.player_name+' from saved candidates? This action is permanent.'))return;
  removeCandidateButton.disabled=true;
@@ -166,7 +179,7 @@ removeCandidateButton.onclick=async()=>{
  finally{removeCandidateButton.disabled=false;}
 };
 const originalRenderCandidate=render;
-render=function(){originalRenderCandidate();removeCandidateButton.hidden=!canEdit||!players.some(p=>p.candidate_id===active);};
+render=function(){originalRenderCandidate();removeCandidateButton.hidden=!canDelete||!players.some(p=>p.candidate_id===active);};
 
 
 function closeEditor(){if(!editorSaving)$('modal').hidden=true;}
@@ -1118,7 +1131,7 @@ function syncWorkspace(){
  $('workspaceStats').hidden=!candidateView||!total||dossierOpen;
  $('candidate-profile').hidden=!candidateView||!profileOpen||!players.some(p=>p.candidate_id===active);
  $('scoutingBoard').classList.toggle('profile-open',!$('candidate-profile').hidden);
- $('compare').disabled=chosen.size<2;$('compare').hidden=total<2;$('csv').hidden=!total;
+ $('compare').disabled=chosen.size<2;$('compare').hidden=total<2;$('csv').hidden=!canExport||!total;
  $('nextCandidateAction').hidden=!canEdit||!total;
  $('addFirstCandidate').hidden=!canEdit;$('readOnlyNotice').hidden=canEdit;
 }

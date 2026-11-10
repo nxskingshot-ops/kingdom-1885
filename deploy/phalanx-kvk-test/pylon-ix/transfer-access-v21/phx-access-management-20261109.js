@@ -1,4 +1,11 @@
+export const scoutingRoleLabels = Object.freeze({
+  observer: 'Observer',
+  operator: 'Operator',
+  administrator: 'Administrator',
+});
+
 const labels = {
+  ...scoutingRoleLabels,
   active: 'Active', suspended: 'Suspended', expired: 'Expired',
   pending: 'Pending approval', unconfirmed: 'Email not confirmed', rejected: 'Rejected',
   kingdom: 'Kingdom', member: 'Member',
@@ -18,6 +25,20 @@ function button(text, onClick) {
   return node;
 }
 
+function roleSelect(label, selected = '') {
+  const select = element('select');
+  select.required = true;
+  select.setAttribute('aria-label', label);
+  select.append(new Option('Choose a role', ''));
+  for (const [value, name] of Object.entries(scoutingRoleLabels)) select.append(new Option(name, value));
+  select.value = selected;
+  return select;
+}
+
+export async function accessManagementStatus(db) {
+  return rpc(db, 'check');
+}
+
 async function rpc(db, action, args = {}) {
   const { data, error } = await db.rpc('phx_access_management', { p_action: action, ...args });
   if (error) {
@@ -27,11 +48,10 @@ async function rpc(db, action, args = {}) {
   return data;
 }
 
-export async function mountAccessManagement(db, signal) {
+export function mountAccessManagement(db, signal, access) {
   const menu = document.getElementById('phxToolsMenu');
-  if (!menu || signal.aborted) return;
-  const access = await rpc(db, 'check');
-  if (signal.aborted || access?.allowed !== true) return;
+  if (!menu || signal.aborted || access?.allowed !== true) return;
+  const v2 = access.scouting_roles_enabled === true;
 
   const section = element('details');
   section.className = 'phx-tool-item';
@@ -67,20 +87,29 @@ export async function mountAccessManagement(db, signal) {
   Object.assign(email, { type: 'email', required: true, maxLength: 254, autocomplete: 'off' });
   const playerId = element('input');
   Object.assign(playerId, { inputMode: 'numeric', required: true, maxLength: 20, pattern: '[1-9][0-9]{0,19}' });
-  const role = element('select');
-  role.append(new Option('Member', 'member'), new Option('Kingdom', 'kingdom'));
-  for (const [label, input] of [['Email', email], ['Kingshot Player ID', playerId], ['Access role', role]]) {
+  let role = v2 ? roleSelect('Access role') : legacyRoleSelect();
+  const roleHint = element('small');
+  roleHint.id = 'phxAccessRoleHint';
+  const roleField = element('label', 'Access role');
+  const describeRole = legacy => {
+    role.setAttribute('aria-label', legacy && v2 ? 'Legacy access role' : 'Access role');
+    role.setAttribute('aria-describedby', roleHint.id);
+    roleHint.textContent = legacy ? 'Member includes baseline Transfer Scouting access.'
+      : 'Observer can view. Operator can also edit and export. Administrator can also manage access.';
+  };
+  function legacyRoleSelect() {
+    const select = element('select');
+    select.append(new Option('Member', 'member'), new Option('Kingdom', 'kingdom'));
+    return select;
+  }
+  for (const [label, input] of [['Email', email], ['Kingshot Player ID', playerId]]) {
     const field = element('label', label);
     field.append(input);
-    if (input === role) {
-      role.setAttribute('aria-label', label);
-      const roleHint = element('small', 'Member includes Transfer Scouting access.');
-      roleHint.id = 'phxAccessRoleHint';
-      role.setAttribute('aria-describedby', roleHint.id);
-      field.append(roleHint);
-    }
     form.append(field);
   }
+  describeRole(!v2);
+  roleField.append(role, roleHint);
+  form.append(roleField);
   const invite = element('button', 'Create invitation');
   invite.type = 'submit';
   form.append(invite);
@@ -167,6 +196,19 @@ export async function mountAccessManagement(db, signal) {
   linkActions.append(copy, link);
   linkPanel.append(element('summary', 'Registration link'), linkActions);
   invitationPanel.append(inviteTitle, info, form, inviteStatus);
+  if (v2 && access.legacy_manager) {
+    let legacy = false;
+    const switchRoles = button('Use legacy invitation', () => {
+      legacy = !legacy;
+      const next = legacy ? legacyRoleSelect() : roleSelect('Access role');
+      role.replaceWith(next);
+      role = next;
+      describeRole(legacy);
+      switchRoles.textContent = legacy ? 'Use Transfer Scouting roles' : 'Use legacy invitation';
+      role.focus();
+    });
+    form.append(switchRoles);
+  }
   if (registration) invitationPanel.append(linkPanel);
 
   const search = element('form');
@@ -187,16 +229,55 @@ export async function mountAccessManagement(db, signal) {
   };
   body.append(header, metrics, scope, invitationPanel, search, overviewStatus, sectionPicker, results);
 
-  function accountButton(label, action, account) {
+  function accountButton(label, action, account, approvalRole) {
     return button(label, () => {
       if (busy || signal.aborted) return;
-      if (!window.confirm(label + ' for ' + account.email + '?')) return;
+      if (approvalRole && !approvalRole.reportValidity()) return;
+      if (approvalRole && approvalRole.value !== account.invited_scouting_role) {
+        overviewStatus.textContent = 'Select the role on the invitation before approving.';
+        approvalRole.focus();
+        return;
+      }
+      const chosenRole = approvalRole?.value || account.invited_scouting_role || account.invited_role;
+      const roleSuffix = action === 'approve' ? ' as ' + labels[chosenRole] : '';
+      if (!window.confirm(label + ' for ' + account.email + roleSuffix + '?')) return;
       const args = { p_user_id: account.user_id };
       if (action === 'approve' || action === 'reject') {
-        Object.assign(args, { p_email: account.email, p_player_id: account.player_id, p_role: account.invited_role });
+        Object.assign(args, { p_email: account.email, p_player_id: account.player_id, p_role: chosenRole });
       }
       return run(overviewStatus, () => rpc(db, action, args), 'Account updated.');
     });
+  }
+
+  function roleEditor(account) {
+    const editor = element('details');
+    editor.className = 'phx-access-role-editor';
+    const form = element('form');
+    form.className = 'form-grid';
+    const select = roleSelect('Member role', account.scouting_role || '');
+    const reason = element('input');
+    Object.assign(reason, { required: true, maxLength: 500, autocomplete: 'off' });
+    const roleField = element('label', 'Member role');
+    const reasonField = element('label', 'Reason for change');
+    roleField.append(select);
+    reasonField.append(reason);
+    const save = element('button', 'Save role');
+    save.type = 'submit';
+    form.append(roleField, reasonField, save);
+    form.onsubmit = event => {
+      event.preventDefault();
+      if (!reason.value.trim()) {
+        overviewStatus.textContent = 'Enter a reason for the role change.';
+        reason.focus();
+        return;
+      }
+      if (!window.confirm('Assign ' + labels[select.value] + ' to ' + account.email + '?')) return;
+      void run(overviewStatus, () => rpc(db, 'set_scouting_role', {
+        p_user_id: account.user_id, p_role: select.value, p_email: reason.value.trim(),
+      }), 'Member role saved.');
+    };
+    editor.append(element('summary', 'Change role'), form);
+    return editor;
   }
 
   function describeAccount(account) {
@@ -205,16 +286,23 @@ export async function mountAccessManagement(db, signal) {
     const badge = element('span', labels[account.status] || account.status);
     badge.className = 'phx-access-badge';
     badge.dataset.status = account.status;
-    const role = account.role || account.invited_role;
+    const displayedRole = account.scouting_role || account.invited_scouting_role || account.role || account.invited_role;
     card.append(element('strong', account.email), badge, element('p', [
       account.player_id && 'ID ' + account.player_id,
-      labels[role] || role || 'Role not assigned',
+      labels[displayedRole] || displayedRole || 'Role not assigned',
     ].filter(Boolean).join(' · ')));
     const actions = element('div');
     actions.className = 'phx-access-card-actions';
     if (account.status === 'pending' || account.status === 'unconfirmed') {
       if (account.status === 'pending' && account.invited_role) {
-        actions.append(accountButton('Approve access', 'approve', account));
+        let approvalRole;
+        if (account.invited_scouting_role) {
+          approvalRole = roleSelect('Approval role', account.invited_scouting_role);
+          const roleField = element('label', 'Approval role');
+          roleField.append(approvalRole, element('small', 'Use the role recorded on the invitation.'));
+          actions.append(roleField);
+        }
+        actions.append(accountButton('Approve access', 'approve', account, approvalRole));
       } else if (!account.invited_role) {
         actions.append(button('Prepare invitation', () => {
           email.value = account.email;
@@ -225,8 +313,14 @@ export async function mountAccessManagement(db, signal) {
       }
       actions.append(accountButton('Reject request', 'reject', account));
     }
-    if (account.status === 'active') actions.append(accountButton('Suspend access', 'suspend', account));
-    if (account.status === 'suspended') actions.append(accountButton('Reactivate access', 'reactivate', account));
+    if (account.protected) {
+      card.append(element('p', 'Protected administrator'));
+    } else if (account.status === 'active') {
+      if (v2 && account.role === 'member') actions.append(roleEditor(account));
+      actions.append(accountButton('Suspend access', 'suspend', account));
+    } else if (account.status === 'suspended') {
+      actions.append(accountButton('Reactivate access', 'reactivate', account));
+    }
     if (actions.childElementCount) card.append(actions);
     return card;
   }
@@ -237,7 +331,7 @@ export async function mountAccessManagement(db, signal) {
     const badge = element('span', 'Open');
     badge.className = 'phx-access-badge';
     card.append(element('strong', invitation.email), badge, element('p', [
-      'ID ' + invitation.player_id, labels[invitation.role] || invitation.role,
+      'ID ' + invitation.player_id, labels[invitation.scouting_role || invitation.role] || invitation.role,
       'Expires ' + new Date(invitation.expires_at).toLocaleDateString('en-GB', { timeZone: 'UTC' }) + ' UTC',
     ].join(' · ')));
     return card;
