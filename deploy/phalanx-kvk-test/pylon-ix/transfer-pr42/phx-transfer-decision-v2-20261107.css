@@ -232,3 +232,11 @@
   #private #phxIdResult #externalIntelPanel > .panel-body,
   #private #phxIdResult #externalIntelResult { padding-inline: 0; }
 }
+
+/* PHX 2026-11-10: high-contrast values in selected-candidate comparison (mobile and desktop). */
+#private #comparison > .scroll > table { background: #0b1d2b; color: #edf3f6; }
+#private #comparison > .scroll > table thead th { background: #243746; color: #ffe2a5; }
+#private #comparison > .scroll > table tbody tr:nth-child(odd) > td { background: #122c3d; color: #f3f6f8; }
+#private #comparison > .scroll > table tbody tr:nth-child(even) > td { background: #1b3545; color: #f3f6f8; }
+#private #comparison > .scroll > table tbody tr > td:first-child { font-weight: 700; color: #ffe2a5; }
+#private #comparison > .scroll > table th, #private #comparison > .scroll > table td { border-color: #5c7180; text-shadow: none; }
