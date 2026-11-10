@@ -84,7 +84,7 @@ const access=await accessManagementStatus(db).catch(()=>null);
 if(signal.aborted)return;
 const scoutingRole=access?.scouting_role;
 const badge=document.getElementById('phxIdentity');if(badge){const display=user.id==='d4da222e-8aac-4950-a6df-46c88972458c'?'FaQu':(user.email||'Signed-in account');const n=document.getElementById('phxIdentityName'),m=document.getElementById('phxIdentityMeta');badge.classList.add('is-online');if(n)n.textContent=display;if(m)m.textContent=(scoutingRoleLabels[scoutingRole]||membership.role).toUpperCase()+' · ACTIVE';const godBadge=document.getElementById('phxGodModeBadge');if(godBadge)godBadge.hidden=(user.id!=='d4da222e-8aac-4950-a6df-46c88972458c');const online=document.getElementById('phxIdentityOnline');if(online)online.textContent='ONLINE';}
-canDelete=['r4','r5','admin'].includes(membership.role);
+canDelete=['r4','r5','admin'].includes(membership.role)||scoutingRole==='administrator';
 canEdit=canDelete||scoutingRole==='operator'||scoutingRole==='administrator';
 canExport=canDelete||scoutingRole!=='observer';
 const exportTool=$('toolsCsv');
