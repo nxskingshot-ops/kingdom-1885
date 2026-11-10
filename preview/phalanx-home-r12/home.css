@@ -90,7 +90,8 @@ body.phx-r6-at-home #phx-r3-nav { display: none !important; }
 }
 #phx-r6-home .phx-home-nav {
   position: relative;
-  display: grid;
+  /* The inherited Territory Control styles hide all nav elements on HOME. */
+  display: grid !important;
   grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 0;
   margin: 0 1%;
