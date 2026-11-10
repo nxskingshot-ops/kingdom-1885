@@ -1,0 +1,72 @@
+<section id="phx-r6-home" aria-labelledby="phx-home-heading" data-home-version="PHX-007-R12">
+  <div class="phx-home-shell">
+    <svg class="phx-home-defs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <image id="phx-home-original-art" width="1260" height="1401" href="__HOME_ART__"/>
+        <clipPath id="phx-home-hero-art" clipPathUnits="userSpaceOnUse">
+          <path clip-rule="evenodd" d="M0 62H1260V698H0Z M195 93H483V190H195Z M726 94H1234V180H726Z"/>
+        </clipPath>
+        <clipPath id="phx-home-card-art" clipPathUnits="objectBoundingBox">
+          <path d="M0 0H1V.52H.27V1H0Z"/>
+        </clipPath>
+      </defs>
+    </svg>
+    <header class="phx-home-hero">
+      <svg class="phx-home-art" aria-hidden="true" viewBox="0 62 1260 636" preserveAspectRatio="xMidYMid slice">
+        <use href="#phx-home-original-art" clip-path="url(#phx-home-hero-art)"/>
+      </svg>
+      <h1 id="phx-home-heading" class="phx-home-sr-only">NEXUS PHALANX</h1>
+      <button type="button" id="phx-r8-war-entry" aria-label="War Room öffnen" data-home-label="openWar">
+        <svg aria-hidden="true" viewBox="22 70 191 179" preserveAspectRatio="xMidYMid slice"><use href="#phx-home-original-art"/></svg>
+        <span id="phx-r10-avatar" aria-hidden="true"><img alt="" id="phx-r10-photo" hidden></span>
+      </button>
+      <div id="phx-r10-identity" aria-live="polite">
+        <span id="phx-r10-name"></span>
+        <span id="phx-r10-sub"></span>
+      </div>
+      <div id="phx-r11-affiliation" aria-label="Königreich und Allianz" data-home-label="affiliation">
+        <span class="phx-r11-crown" aria-hidden="true">♛</span>
+        <span id="phx-r11-kingdom"></span>
+        <span class="phx-r11-sep" aria-hidden="true">·</span>
+        <span id="phx-r11-alliance"></span>
+      </div>
+    </header>
+
+    <nav class="phx-home-nav" aria-label="HOME-Navigation" data-home-label="navigation">
+      <button type="button" aria-current="page" data-home-action="top"><svg class="phx-home-nav-icon" aria-hidden="true" viewBox="66 715 66 62"><use href="#phx-home-original-art"/></svg><b>Home</b></button>
+      <button type="button" data-home-action="war"><svg class="phx-home-nav-icon" aria-hidden="true" viewBox="253 715 67 62"><use href="#phx-home-original-art"/></svg><b>War Room</b></button>
+      <button type="button" data-home-action="command"><svg class="phx-home-nav-icon" aria-hidden="true" viewBox="595 716 66 61"><use href="#phx-home-original-art"/></svg><b>Command Center</b></button>
+      <button type="button" data-home-action="territory"><svg class="phx-home-nav-icon" aria-hidden="true" viewBox="656 1014 160 160"><use href="#phx-home-original-art"/></svg><b>Territory Control</b></button>
+      <button type="button" data-home-action="reports"><svg class="phx-home-nav-icon" aria-hidden="true" viewBox="934 717 66 61"><use href="#phx-home-original-art"/></svg><b>Reports</b></button>
+      <button type="button" data-home-action="pylon"><span aria-hidden="true">Λ</span><b>PYLON IX</b></button>
+      <label id="phx-r11-language">
+        <span aria-hidden="true">◎</span>
+        <select id="phx-r11-language-select" aria-label="App-Sprache" data-home-label="language">
+          <option value="de">DE</option><option value="en">EN</option><option value="fr">FR</option>
+        </select>
+      </label>
+    </nav>
+
+    <section class="phx-home-command" aria-labelledby="phx-home-command-heading">
+      <h2 id="phx-home-command-heading" tabindex="-1">Command Center</h2>
+      <div class="phx-home-cards">
+        <div class="phx-home-card" data-home-card="kvk">
+          <svg aria-hidden="true" viewBox="30 992 588 180" preserveAspectRatio="none"><use href="#phx-home-original-art"/></svg>
+          <span class="phx-home-card-copy"><strong data-home-text="kvkTitle">KvK Vorbereitung</strong><small data-home-text="pending">Anbindung folgt</small></span>
+        </div>
+        <button type="button" class="phx-home-card" data-home-card="territory" data-home-action="territory">
+          <svg aria-hidden="true" viewBox="641 992 588 180" preserveAspectRatio="none"><use href="#phx-home-original-art"/></svg>
+          <span class="phx-home-card-copy"><strong>Territory Control</strong><small>Outposts &amp; Reports</small></span><span class="phx-home-card-arrow" aria-hidden="true">›</span>
+        </button>
+        <div class="phx-home-card" data-home-card="transfer">
+          <svg aria-hidden="true" viewBox="30 1194 588 180" preserveAspectRatio="none"><use href="#phx-home-original-art"/></svg>
+          <span class="phx-home-card-copy"><strong>Transfer Scouting</strong><small data-home-text="pending">Anbindung folgt</small></span>
+        </div>
+        <div class="phx-home-card" data-home-card="alliance">
+          <svg aria-hidden="true" viewBox="641 1194 588 180" preserveAspectRatio="none"><use href="#phx-home-original-art"/></svg>
+          <span class="phx-home-card-copy"><strong data-home-text="allianceTitle">Allianzvergleich</strong><small data-home-text="pending">Anbindung folgt</small></span>
+        </div>
+      </div>
+    </section>
+  </div>
+</section>
