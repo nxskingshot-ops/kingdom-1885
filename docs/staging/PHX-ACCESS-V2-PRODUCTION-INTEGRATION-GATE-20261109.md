@@ -132,3 +132,13 @@ The existing Access V2 UI was deployed as an isolated Cloudflare test copy under
 The hosted test uses a dedicated roster and expiring memberships. The database readback showed three invitations, three approvals, two role changes, two inserts and three candidate updates. The short-lived provisioning endpoint was replaced with an inert response and verified to return HTTP 410. The pre-existing isolated project still has eight legacy memberships and its original Access RPC remains closed to authenticated clients. Credentials were generated only for synthetic accounts and are not part of the repository. A real-device test requires a separately verified test identity.
 
 The [fixture generator](../../security/tests/prepare-phx-hosted-access-fixture-20261110.py) reproduces the hosted SQL from the reviewed migrations, and the [browser smoke test](../../security/tests/phx-access-v2-hosted-smoke-20261110.mjs) runs against a fresh fixture using private scratch identity input. Use the isolated public client key through `PHX_HOSTED_PUBLISHABLE_KEY`, the fixture credentials file through `PHX_HOSTED_FIXTURE_IDENTITIES`, and set `PHX_PLAYWRIGHT` and `PHX_CHROMIUM` for the local test runner. A proxy is optional and can be set with `PHX_FIXTURE_BROWSER_PROXY`. Keep certificate verification enabled for normal environments.
+
+## Continuation · physical Android handoff · 2026-11-10
+
+A one-time sign-in page was added only to the isolated Cloudflare preview at commit `8e2718cf31224a3a07f0c0a15a922fc0fe096217`. [Deployment 42757033462](https://github.com/nxskingshot-ops/kingdom-1885/actions/runs/42757033462) passed. The two served login assets matched Git. The login verifies the isolated fixture's Administrator role before opening Transfer Scouting and removes the code from the browser URL. The account remains a time-limited synthetic identity.
+
+| Check | Status | Evidence |
+|---|---|---|
+| One-time hosted sign-in and scope | BESTANDEN | In mobile Chromium, a separate smoke link opened the scoped Administrator session and Tools → Access Management. A second verification of the same code returned HTTP 403. |
+| Handoff isolation | BESTANDEN | The smoke session ended through Auth logout and the fixture account showed zero active sessions before handoff. A fresh code was issued separately and left unused. The mint endpoint returned HTTP 410 after teardown. No credential or activation link is stored in this record. |
+| Physical Android and Queen An | NICHT GETESTET | A verified synthetic test link is ready for the project owner to open on Android. The physical device result and Queen An's personal acceptance remain separate. |
