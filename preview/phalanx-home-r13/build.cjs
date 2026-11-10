@@ -23,7 +23,7 @@ function replaceOnce(source, match, replacement) {
 
 let app = verifiedFile(base, R12_SHA256).toString('utf8');
 verifiedFile(header, HEADER_SHA256);
-app = replaceOnce(app, 'data-home-version="PHX-007-R12"', 'data-home-version="PHX-007-R14"');
+app = replaceOnce(app, 'data-home-version="PHX-007-R12"', 'data-home-version="PHX-007-R15"');
 app = replaceOnce(app, /        <clipPath id="phx-home-hero-art"[\s\S]*?<\/clipPath>\n/, '');
 app = replaceOnce(app, /    <header class="phx-home-hero">[\s\S]*?<\/header>\n/,
   readFileSync(join(__dirname, 'hero.html'), 'utf8'));
@@ -31,6 +31,22 @@ app = replaceOnce(app, /#phx-r6-home \.phx-home-hero \{[\s\S]*?(?=#phx-r6-home \
   readFileSync(join(__dirname, 'hero.css'), 'utf8'));
 app = replaceOnce(app, /    <nav class="phx-home-nav"[^>]*>\n[\s\S]*?(?=      <button type="button" data-home-action="pylon")/,
   '    <nav class="phx-home-nav" aria-label="HOME-Navigation" data-home-label="navigation">\n');
+app = replaceOnce(app, 'data-home-action="pylon"><span aria-hidden="true">Λ</span>',
+  `data-home-action="pylon"><svg class="phx-home-pylon-icon" aria-hidden="true" viewBox="884 36 128 128">
+        <image id="phx-home-pylon-icon-image" width="1024" height="1536"/>
+      </svg>`);
+app = replaceOnce(app, '.phx-home-nav span {', `#phx-r6-home .phx-home-pylon-icon {
+  display: block;
+  width: 27px;
+  height: 27px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.phx-home-nav span {`);
+app = replaceOnce(app, "  const home = byId('phx-r6-home');",
+  `  const home = byId('phx-r6-home');
+  const pylonArtwork = byId('phx-pylon-modal').querySelector('img');
+  byId('phx-home-pylon-icon-image').setAttribute('href', pylonArtwork.getAttribute('src'));`);
 app = replaceOnce(app, '      <label id="phx-r11-language">', `      <button type="button" data-home-action="settings">
         <span aria-hidden="true">⚙</span><b data-home-text="settings">Einstellungen</b>
       </button>
