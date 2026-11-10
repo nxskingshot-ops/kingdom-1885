@@ -7,7 +7,7 @@
   let token = new URLSearchParams(location.hash.slice(1)).get('test');
   history.replaceState(null, '', location.pathname);
 
-  if (location.origin !== expectedOrigin || !/^[a-f0-9]{64}$/i.test(token ?? '')) {
+  if (location.origin !== expectedOrigin || !/^[a-f0-9]{56}$/i.test(token ?? '')) {
     status.textContent = 'Open the complete one-time test link.';
     return;
   }
