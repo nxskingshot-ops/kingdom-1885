@@ -150,5 +150,6 @@ The project owner returned an Android screenshot showing the authenticated isola
 | Check | Status | Evidence |
 |---|---|---|
 | Physical Android access and Accounts display | BESTANDEN | Authenticated Access Management view reached on the project owner's Android device. The two expected fixture roles and status counts loaded. |
-| Physical Android role selector and saved role change | NICHT GETESTET | Change role controls were visible. The selector was collapsed in the screenshot and no mutation was shown. |
+| Physical Android role selector | BESTANDEN | The follow-up Android screenshot at 05:43 shows the native selector with Observer, Operator and Administrator. Observer is preselected for the fixture account. |
+| Physical Android saved role change | NICHT GETESTET | The screenshot shows the open selector. Saving and refreshing the updated role require a separate device test. |
 | Queen An and production release | NICHT GETESTET | This device evidence is limited to the project owner's isolated fixture session. |
