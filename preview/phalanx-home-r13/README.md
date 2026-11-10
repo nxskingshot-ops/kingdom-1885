@@ -1,11 +1,16 @@
-# PHALANX HOME · PHX-007-R13
+# PHALANX HOME · R13 und R14
 
-Isolierte HOME-Testfassung vom 10.11.2026. Die von Matthi übermittelte
-Header-Vorlage ist in `home-header.jpg` unverändert archiviert. Dateiformat JPEG,
-1536 × 768 Pixel. Die beiden Plaketten verwenden Ausschnitte der Originaltextur.
-Name, Level, Königreich und Allianz kommen aus dem vorhandenen lokalen Profil.
-Der runde Avatar und die War-Room-Lasche öffnen den bestehenden War Room.
-Der vorhandene Bildwähler liegt unter **Einstellungen → Profilbild ändern**.
+## R14 · Schlanke HOME-Navigation
+
+Die Leiste enthält den bestehenden PYLON-IX-Button, Einstellungen und die Sprachwahl. Einstellungen öffnet das vorhandene Profilformular direkt. Der War Room behält seine Zugänge über Avatar und Lasche. Territory Control bleibt als Kachel erreichbar, Outpost Reports über Territory Control.
+
+[Geschützte R14-Testvorschau](https://phalanx-r11-atlas-preview-9w9c4rgsd-matze4428-6040.vercel.app/) · [R13-Rückweg](https://phalanx-r11-atlas-preview-edjw5k328-matze4428-6040.vercel.app/)
+
+- BESTANDEN im simulierten DOM. Einstellungen und Fokus, lokales Profil und simulierter Bildimport, beide War-Room-Einstiege, Sprache, Territory-Rückweg und vorhandener PYLON-Dialog mit Rückweg.
+- BESTANDEN auf Dateiebene. HOME-Header, Command Center, Territory Control, Outpost Map, Reports, Profilskript und PYLON-Skript bytegleich mit R13. Alle Inline-Skripte syntaktisch gültig.
+- NICHT GETESTET. R14 im angemeldeten Browser und auf physischem Android.
+
+R14-HTML SHA-256 `24ac3cdef24d6dabfefd023df8d8d22894adf17c0405abf07d6fc01ce36a273a`.
 
 ## Reproduzieren
 
@@ -16,21 +21,5 @@ Benötigt Node.js und die unveränderte [R12-Testdatei](https://chatgpt.com/libr
 node build.cjs /pfad/PHALANX_HOME_R12_TEST.html /pfad/ausgabe
 ```
 
-- SHA-256 Originalheader `9b8eef3df70587956fb58ce4028a7de01b183d2f2ff2d58352ab6d298ee0f016`
-- SHA-256 R13-HTML `d89a89dfec75b76afae6b6046775ec2a8284b1544981bf913742edb3af0ffaae`
-
-## Teststand
-
-| Prüfung | Ergebnis | Nachweis |
-|---|---|---|
-| Quell- und Build-Integrität | BESTANDEN | Pinned SHA-256, Vercel-Datei-IDs für die sechs Eingangsdateien geprüft, 8 JavaScript-Blöcke syntaktisch gültig. |
-| Bestandsschutz auf Dateiebene | BESTANDEN | 24 Style- und Skriptblöcke bytegleich mit R12, einschließlich Territory Control, Karte und Reports. Drei Blöcke mit HOME, Profil und Routing gezielt angepasst. |
-| Rendern des Bildmotivs | BESTANDEN | Originalmotiv und Texturmasken als SVG bei 768 px gerendert und visuell gesichtet. |
-| HOME, War Room, Profil und Sprache | BESTANDEN in DOM-Simulation | Avatar und Lasche, War-Room-Rückweg, langer Name, leere Allianz, simulierter Bildimport, Speichern, Wiederladen, Zurücksetzen und Sprachwahl. |
-| Territory Control, Karte und Reports | Teilprüfung BESTANDEN | Routingadapter in der DOM-Simulation, Modulblöcke bytegleich. Funktionale R13-Navigation im echten Browser NICHT GETESTET. |
-| Geschützte Vorschau | BESTANDEN | Vercel meldet abgeschlossenes Deployment und keine Aliase. Der Browser zeigt die Vercel-Anmeldung. |
-| R13 im angemeldeten Browser, physisches Android, visueller Vergleich der Live-Typografie | NICHT GETESTET | Anmeldung stand der Prüfsitzung nicht zur Verfügung. Der Rendernachweis deckt die Grafik ab. |
-| Rollen, Live-Daten und Wiederherstellung | NICHT GETESTET | Isolierte HOME-Vorschau mit lokalem Profil. |
-
-[R13-Testvorschau](https://phalanx-r11-atlas-preview-edjw5k328-matze4428-6040.vercel.app/) ·
-[R12-Rückweg](https://phalanx-r11-atlas-preview-1cj287yeu-matze4428-6040.vercel.app/).
+Unverändertes Originalmotiv `home-header.jpg`, SHA-256 `9b8eef3df70587956fb58ce4028a7de01b183d2f2ff2d58352ab6d298ee0f016`.
+Der gesicherte R13-Stand liegt im Vorgänger-Commit `c5f9f27`.

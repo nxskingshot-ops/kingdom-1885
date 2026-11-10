@@ -23,16 +23,48 @@ function replaceOnce(source, match, replacement) {
 
 let app = verifiedFile(base, R12_SHA256).toString('utf8');
 verifiedFile(header, HEADER_SHA256);
-app = replaceOnce(app, 'data-home-version="PHX-007-R12"', 'data-home-version="PHX-007-R13"');
+app = replaceOnce(app, 'data-home-version="PHX-007-R12"', 'data-home-version="PHX-007-R14"');
 app = replaceOnce(app, /        <clipPath id="phx-home-hero-art"[\s\S]*?<\/clipPath>\n/, '');
 app = replaceOnce(app, /    <header class="phx-home-hero">[\s\S]*?<\/header>\n/,
   readFileSync(join(__dirname, 'hero.html'), 'utf8'));
 app = replaceOnce(app, /#phx-r6-home \.phx-home-hero \{[\s\S]*?(?=#phx-r6-home \.phx-home-nav)/,
   readFileSync(join(__dirname, 'hero.css'), 'utf8'));
-app = replaceOnce(app, '#phx-r6-home .phx-home-nav {\n  position: relative;',
-  '#phx-r6-home .phx-home-nav {\n  position: relative;\n  display: grid !important;');
+app = replaceOnce(app, /    <nav class="phx-home-nav"[^>]*>\n[\s\S]*?(?=      <button type="button" data-home-action="pylon")/,
+  '    <nav class="phx-home-nav" aria-label="HOME-Navigation" data-home-label="navigation">\n');
+app = replaceOnce(app, '      <label id="phx-r11-language">', `      <button type="button" data-home-action="settings">
+        <span aria-hidden="true">⚙</span><b data-home-text="settings">Einstellungen</b>
+      </button>
+      <label id="phx-r11-language">`);
+app = replaceOnce(app, '#phx-r6-home .phx-home-nav {\n  position: relative;\n  display: grid;\n  grid-template-columns: repeat(7, minmax(0, 1fr));',
+  '#phx-r6-home .phx-home-nav {\n  position: relative;\n  display: grid !important;\n  grid-template-columns: repeat(3, minmax(0, 1fr));');
+app = replaceOnce(app, 'body.phx-r8-war-open #phx-r8-war{display:block}', `body.phx-r8-war-open #phx-r8-war{display:block}
+#phx-r8-war.phx-settings-open :is(.wr-intro,.wr-cards,.wr-note){display:none}
+#phx-r8-war.phx-settings-open #phx-r10-settings{border-top:0;margin-top:0}`);
+app = replaceOnce(app, "function route(){const on=location.hash==='#war-room';document.body.classList.toggle('phx-r8-war-open',on);war.setAttribute('aria-hidden',String(!on));}",
+  `function route(){
+ const settings=location.hash==='#war-room-settings';
+ const on=settings||location.hash==='#war-room';
+ const wasSettings=war.classList.contains('phx-settings-open');
+ document.body.classList.toggle('phx-r8-war-open',on);
+ war.classList.toggle('phx-settings-open',settings);
+ war.setAttribute('aria-hidden',String(!on));
+ if(on&&settings!==wasSettings){
+  war.scrollTop=0;
+  if(settings)document.getElementById('phx-home-settings-title').focus({preventScroll:true});
+ }
+}`);
+app = replaceOnce(app, "visible || location.hash === '#war-room'",
+  "visible || location.hash === '#war-room' || location.hash === '#war-room-settings'");
+app = replaceOnce(app, "  const commandHeading = byId('phx-home-command-heading');\n", '');
+app = replaceOnce(app, /    top: [^\n]*\n/, '');
+app = replaceOnce(app, /    command: \(\) => \{[\s\S]*?\n    \},\n/,
+  "    settings: () => { location.hash = '#war-room-settings'; },\n");
+app = replaceOnce(app, /    reports: [^\n]*\n/, '');
+app = replaceOnce(app, "pending: 'Anbindung folgt',", "settings: 'Einstellungen', pending: 'Anbindung folgt',");
+app = replaceOnce(app, "pending: 'Coming later',", "settings: 'Settings', pending: 'Coming later',");
+app = replaceOnce(app, "pending: 'À venir',", "settings: 'Paramètres', pending: 'À venir',");
 app = replaceOnce(app, "<h2>Kommandantenprofil</h2>",
-  '<h2>Einstellungen</h2>');
+  '<h2 id="phx-home-settings-title" tabindex="-1">Einstellungen</h2>');
 app = replaceOnce(app, '<label>Profilbild<input accept=', '<label><span><svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 17 14-14 4 4L7 21H3zM14 6l4 4"/></svg> Profilbild ändern</span><input accept=');
 app = replaceOnce(app, " $('phx-r10-sub').textContent='Lvl '+(profile.level||'—')+' ⚔';",
   " $('phx-r10-sub').textContent='Lvl '+(profile.level||'—');");
