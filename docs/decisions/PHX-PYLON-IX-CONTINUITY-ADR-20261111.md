@@ -43,3 +43,16 @@ Die zuvor erstellte Datei `PHX-PYTHON-CONTINUITY-ADR-20261111.md` beruhte auf ei
 - BESTANDEN: Pflichtprozess und Transfer-Startquellen im isolierten GitHub-Branch dokumentiert, sofern danach erneut gelesen.
 - NICHT GETESTET: PYLON-IX-Wissensspeicher, automatische Synchronisierung, Abruf des Wissens durch PYLON IX, Live-Events und End-to-End-Verkabelung.
 - KEINE produktive Änderung, Datenlöschung, Berechtigungsänderung oder Deployment durch diesen Eintrag.
+
+## Präzisierung: funktionsgenaue Verkabelung (2026-11-11)
+
+Der Nutzer stellt ausdrücklich klar: PYLON IX darf **nicht nur Module** miteinander verbinden. Die verbindliche Zielarchitektur umfasst auch **Funktionen innerhalb eines Moduls** sowie **Funktionen über mehrere Module hinweg** und Ereignisse, die mehrere Funktionen betreffen.
+
+### Pflicht für jede technische Bestandsaufnahme und Integration
+- Jede relevante Funktion mit stabiler ID, Modul, Aufgabe, Eingaben/Ausgaben, Datenquellen, Aufrufern, abhängigen Funktionen, Berechtigungen, Fehlerpfad, Status, Version und Tests inventarisieren.
+- Beziehungen typisieren: `module-to-module`, `function-to-function`, `cross-module-function`, `event-to-function`. Bestehende Verbindungen von neuen/geplanten klar unterscheiden.
+- Funktionsübergreifende Vorgänge Ende-zu-Ende betrachten (z. B. Registrierung → Freigabe → Profil/Rolle → HOME; Profil-Spieler-ID → geschützte Spielerabfrage → Transferbewertung). Beispiele sind **Zielbilder**, keine Bestätigung der aktuellen technischen Umsetzung.
+- Gemeinsame Funktionen wiederverwenden statt duplizieren; keine konkurrierende Authentifizierung, keine ungeprüften direkten Datenbankzugriffe und keine Umgehung von Rollen/RLS.
+- Bei jeder Modul- oder Funktionsänderung Auswirkungen auf **alle** verbundenen Funktionen und Module prüfen und als Wissensdelta für PYLON IX dokumentieren.
+- Vor Umsetzung tatsächliche Quellcode-Abhängigkeiten, vorhandene PYLON-Integration und FREEZEs prüfen; erst dann Steckpunkte, Schnittstellen, Eventwege und Steuerungszuständigkeiten festlegen.
+- Automatische, funktionsgenaue Verkabelung, PYLON-Lesezugriff und End-to-End-Tests sind **noch nicht implementiert oder nachgewiesen**. Kein produktiver Eingriff durch diese Dokumentation.
