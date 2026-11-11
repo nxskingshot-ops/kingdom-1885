@@ -46,3 +46,10 @@ Function links: Transfer login signInWithPassword → getUser → nxs_membership
 - Ran a local static source-contract script against original HTML. PASS (12): checksum, R12 version marker, HOME root, hero, navigation, War Room, PYLON IX modal, War Room route, HOME initialization, PYLON action, name ID, kingdom ID; each required marker occurred exactly once.
 - BLOCKED (1 prerequisite): exact pinned home-header.jpg is not available in local working directory; required SHA-256 9b8eef3df70587956fb58ce4028a7de01b183d2f2ff2d58352ab6d298ee0f016 not independently verified. GitHub versioned blob exists, but local fetch was unavailable. Do not bypass the hash check.
 - Original build.cjs and build-hybrid.cjs source inspected via GitHub; actual node build and browser E2E NOT RUN. Do not mislabel static marker checks as full build or UI tests.
+
+## Header source recovery – 2026-11-11
+- Found pinned header in existing GitHub checkpoint at preview/phalanx-home-r13/home-header.jpg, blob SHA-1 59874f2812748e42e419a70bb114b48847693ca2; GitHub file fetch returned base64 payload (597,231 characters including line breaks). This proves source existence, not the required SHA-256 or local file integrity.
+- Local runtime direct raw.githubusercontent.com request failed with network ConnectionError. Browser/source fetch fallback did not yield a local binary. Did not create or substitute a different image.
+- Read exact original build.cjs, build-hybrid.cjs and hybrid.contract.test.cjs from checkpoint. Build requires original header SHA-256 9b8eef3df70587956fb58ce4028a7de01b183d2f2ff2d58352ab6d298ee0f016 and original R12 SHA-256; hybrid refuses overwriting output and runs original builder. These guards remain intact.
+- Important: hybrid.js links Transfer card to existing Cloudflare staging URL in a new window; this is not authenticated same-origin integration. The test checks URL presence, not end-to-end auth.
+- Build, header SHA-256 and browser tests remain BLOCKED/NOT TESTED. Do not claim completed HOME integration or release.
