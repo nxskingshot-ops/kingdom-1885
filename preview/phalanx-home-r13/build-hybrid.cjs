@@ -45,7 +45,6 @@ const panels=`
     <section class="phx-hc-war-table" aria-label="War Room strategy table">
       <div class="phx-hc-war-heading"><span>⚔</span><div><strong>WAR ROOM</strong><small id="phx-hc-war-subtitle">Command table · Kingdom #1885</small></div></div>
       <div class="phx-hc-map" aria-hidden="true"><div class="phx-hc-map-ring"></div><div class="phx-hc-map-core" id="phx-hc-map-alliance">—</div></div>
-      <button type="button" data-home-action="war">Enter War Room <span aria-hidden="true">›</span></button>
     </section>
 `;
 html=html.slice(0,end)+panels+html.slice(end);
