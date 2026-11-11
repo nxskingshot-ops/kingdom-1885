@@ -23,3 +23,11 @@
 - NICHT GETESTET: sichere persistente Account↔Spieler-ID-Verknüpfung; aktuelle Live-Spielerdaten; echte Login→HOME→War-Room-Navigation; Mobil- und Regressionstests.
 - NICHT DURCHGEFÜHRT: Datenbankmigration, produktive Änderungen, Backup/Restore-Test, Deployment.
 - Änderungsumfang dieser Entscheidung: **nur Dokumentation im isolierten GitHub-Branch**.
+
+## Quellcode- und Build-Nachprüfung (2026-11-11)
+- Der reale Einstieg wird aus `preview/phalanx-home-r13/build.cjs` bzw. `build-hybrid.cjs` und einer **externen** geprüften R12-HTML-Quelldatei erzeugt. `preview/phalanx-home-r13/index.html` ist **kein** Quellpfad.
+- Die R12-Originaldatei `PHALANX_HOME_R12_TEST.html` wurde in der Projektbibliothek gefunden und als Arbeitskopie materialisiert; **SHA-256 `ace5c9dd54e685e378b350b9d462ec756ce05abd231fae3b66ed35df6eaa0c42` verifiziert**.
+- R12-Quelltext enthält lokale Browserprofil-Logik (`localStorage`), jedoch **keine** direkte `supabase.auth`- oder `createClient`-Integration. Das HOME ist daher noch nicht mit einer echten Supabase-Login-Sitzung verbunden.
+- Der isolierte Adapter `home-profile-auth-stage.js` ist noch nicht in den Build eingebunden und wird nicht ausgeführt. Sein bestehendes Staging-API setzt einen authentifizierten Supabase-Client voraus; **nicht** durch eine neue parallele Authentifizierung ersetzen.
+- Vercel-Projekt `phalanx-r11-atlas-preview` vorhanden; zuletzt beobachtete Preview READY bedeutet **keinen** erfolgreichen Login-/HOME-Funktionstest.
+- Nächster Schritt: den **tatsächlichen** Login-Einstieg der vorhandenen App ermitteln und sicheren Auth-Session-Übergang zur bestehenden HOME-Build-Ausgabe spezifizieren; erst danach isoliert verdrahten, testen und deployen. Keine produktive Migration ohne eigene Freigabe.
