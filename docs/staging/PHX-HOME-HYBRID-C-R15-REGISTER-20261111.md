@@ -25,3 +25,14 @@ Target: existing Vercel preview project phalanx-r11-atlas-preview (preview only)
 
 ## Status
 ISOLATED BRANCH CREATED; NO HYBRID C INTEGRATION OR RELEASE CLAIMED.
+
+## Verification update – 2026-11-11
+- Vercel deployment dpl_3LL3ehDs1aiaCy7T9VDqFC3VB4B3: READY, commit fbe66a5, preview only.
+- Build events: generic Vercel CLI 65.14.0, completed in 531ms; NO execution of build-hybrid.cjs evidenced. READY is not a functional HOME acceptance.
+- Repository original header asset at preview/phalanx-home-r13/home-header.jpg: EXISTS (GitHub connector cannot UTF-8 decode JPEG; earlier local absence does not mean repository absence).
+- Repository preview/phalanx-home-r13/r12-source.html: NOT FOUND.
+- Repository preview/phalanx-home-r13/public/index.html: NOT FOUND.
+- Root package.json and vercel.json: NOT FOUND.
+- The verified R12 HTML exists only in the isolated conversation workspace; no authorization to expose its 11MB contents to a public repository was inferred.
+- BLOCKER: arrange a controlled input artifact for the pinned R12 source and explicitly invoke the R15/Hybrid C builder in an isolated preview build. Do not point the shared Vercel project at an unverified build output.
+- Integration files currently present in branch, but no complete output generated or browser regression proven.
