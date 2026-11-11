@@ -24,10 +24,18 @@ const once=(needle,replacement)=>{
 };
 if(!html.includes('data-home-version="PHX-007-R15"'))throw Error('Not R15');
 if(html.includes('phx-hc-pylon'))throw Error('Already integrated');
-const closing='  </div>\n</section>';
+// Match the actual HOME section boundary, not the first nested closing tag.
 const start=html.indexOf('<section id="phx-r6-home"');
-const end=html.indexOf(closing,start);
-if(start<0||end<start||!html.slice(start,end).includes('class="phx-home-command"'))throw Error('HOME structure unexpected');
+if(start<0||html.indexOf('<section id="phx-r6-home"',start+1)>=0)throw Error('HOME section missing or duplicated');
+const tag=/<\\/?section\\b[^>]*>/g;
+tag.lastIndex=start;
+let depth=0,end=-1,match;
+while((match=tag.exec(html))){
+  depth+=match[0].startsWith('</')?-1:1;
+  if(depth===0){end=match.index;break;}
+  if(depth<0)throw Error('HOME section nesting invalid');
+}
+if(end<start||!html.slice(start,end).includes('class="phx-home-command"'))throw Error('HOME structure unexpected');
 const panels=`
     <section class="phx-hc-pylon" aria-label="PYLON IX">
       <div class="phx-hc-pylon-emblem" aria-hidden="true"><img id="phx-hc-original-pylon" alt="" hidden></div>
