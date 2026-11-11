@@ -53,3 +53,10 @@ Function links: Transfer login signInWithPassword → getUser → nxs_membership
 - Read exact original build.cjs, build-hybrid.cjs and hybrid.contract.test.cjs from checkpoint. Build requires original header SHA-256 9b8eef3df70587956fb58ce4028a7de01b183d2f2ff2d58352ab6d298ee0f016 and original R12 SHA-256; hybrid refuses overwriting output and runs original builder. These guards remain intact.
 - Important: hybrid.js links Transfer card to existing Cloudflare staging URL in a new window; this is not authenticated same-origin integration. The test checks URL presence, not end-to-end auth.
 - Build, header SHA-256 and browser tests remain BLOCKED/NOT TESTED. Do not claim completed HOME integration or release.
+
+## GitHub-hosted source-integrity CI evidence (2026-11-11)
+- Created isolated workflow .github/workflows/phx-home-r15-source-integrity-isolated.yml at commit 2758852b926d2410e54378d5011fed0177672281; branch work/phx-home-r15-auth-session-audit-20261111 only; contents read permission; no deploy or database writes.
+- GitHub Actions run 43042333046, job 130597123356: completed SUCCESS. Log proves original preview/phalanx-home-r13/home-header.jpg: OK against pinned SHA-256 9b8eef3df70587956fb58ce4028a7de01b183d2f2ff2d58352ab6d298ee0f016.
+- Same job ran node --test preview/phalanx-home-r13/hybrid.contract.test.cjs: 8 passed, 0 failed, 0 skipped. These are source contract tests, NOT R15 build or browser E2E.
+- Evidence URL: https://github.com/nxskingshot-ops/kingdom-1885/actions/runs/43042333046
+- Remaining: R12 source not versioned in repository, so hosted runner cannot execute complete R15 build without a safe, approved source handoff; authenticated same-origin integration and UI E2E NOT TESTED.
