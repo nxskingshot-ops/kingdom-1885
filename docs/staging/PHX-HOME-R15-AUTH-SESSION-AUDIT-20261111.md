@@ -33,3 +33,10 @@ Supabase JS persisted session storage is scoped to the browser origin. A login o
 
 ## PYLON IX knowledge delta
 Function links: Transfer login signInWithPassword → getUser → nxs_memberships authorization (existing in Transfer code); proposed authenticated session → HOME R15 adapter → server-authorized player ID → historical player snapshot → HOME DOM (not implemented). Distinguish app role from Kingshot rank. No PYLON IX live ingestion verified.
+
+## Additional verified evidence (2026-11-11)
+- Library original PHALANX_HOME_R12_TEST.html materialized locally (11,669,534 bytes); SHA-256 recomputed with sha256sum = ace5c9dd54e685e378b350b9d462ec756ce05abd231fae3b66ed35df6eaa0c42. PASS: exact original R12 source bytes, not a reconstruction.
+- Git tree at checkpoint 77f535db98aa382e3ad046c86dca817ff8603ce4 retrieved, 699 entries, not truncated. Existing login implementation in deploy/phalanx-kvk-test/pylon-ix/transfer-access-v21/transfer-scouting-id-stage-20261030.js verified; legacy HOME RC9 separate wrapper verified.
+- Vercel project phalanx-r11-atlas-preview inspected. Latest READY preview dpl_9gYqVQFYJFAmStnzucx2ymuNNVXt is associated with audit-only commit 18cad06ba2cf1ff20777fe6e3554775d93a9f1ff, not a verified HOME build. Project has SSO deployment protection. READY is NOT proof of working HOME/auth.
+- Vercel deployment file tree lookup returned 404 (not_found); no deployment content or browser functionality could be verified. Stop rather than assuming build artifacts exist.
+- Original header JPEG SHA-256, full R15 build, canonical production entry, same-origin routing and end-to-end authentication remain NOT TESTED.
