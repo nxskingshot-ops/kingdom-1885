@@ -1,0 +1,26 @@
+name: PHALANX HOME R15 pinned-source integrity (isolated)
+on:
+  push:
+    branches:
+      - work/phx-home-r15-auth-session-audit-20261111
+    paths:
+      - '.github/workflows/phx-home-r15-source-integrity-isolated.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout audit branch
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Verify original pinned header checksum
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf '%s  %s\n' '9b8eef3df70587956fb58ce4028a7de01b183d2f2ff2d58352ab6d298ee0f016' 'preview/phalanx-home-r13/home-header.jpg' | sha256sum --check
+      - name: Run isolated Hybrid C source contract suite
+        run: node --test preview/phalanx-home-r13/hybrid.contract.test.cjs
