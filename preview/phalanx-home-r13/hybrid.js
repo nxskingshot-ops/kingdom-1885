@@ -15,9 +15,16 @@
   // Route only the existing Transfer Scouting card to the existing staging module.
   // No auth bypass, no new storage, and no changes to the module itself.
   const transferUrl = 'https://stage-transfer-live-rankings.nexus-phalanx-kvk-test.pages.dev/pylon-ix/transfer-scouting-id-stage-20261030.html';
-  const transferCard = document.querySelector('#phx-r6-home [data-home-action="transfer"]');
+  const transferCard = document.querySelector('#phx-r6-home [data-home-card="transfer"]');
   if (transferCard) {
+    transferCard.setAttribute('role', 'link');
+    transferCard.setAttribute('tabindex', '0');
     transferCard.setAttribute('aria-label', 'Open Transfer Scouting');
+    const pendingLabel = transferCard.querySelector('[data-home-text="pending"]');
+    if (pendingLabel) {
+      pendingLabel.removeAttribute('data-home-text');
+      pendingLabel.textContent = 'Open Transfer Scouting';
+    }
     transferCard.addEventListener('click', event => {
       event.preventDefault();
       event.stopImmediatePropagation();
@@ -28,6 +35,12 @@
         window.location.assign(transferUrl);
       }
     }, {capture:true});
+    transferCard.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        transferCard.click();
+      }
+    });
   }
   const missing = new Set(['Keine Allianz','No alliance','Aucune alliance','—','']);
   const text = {
