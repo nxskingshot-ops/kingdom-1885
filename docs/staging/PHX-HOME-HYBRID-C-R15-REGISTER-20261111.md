@@ -36,3 +36,11 @@ ISOLATED BRANCH CREATED; NO HYBRID C INTEGRATION OR RELEASE CLAIMED.
 - The verified R12 HTML exists only in the isolated conversation workspace; no authorization to expose its 11MB contents to a public repository was inferred.
 - BLOCKER: arrange a controlled input artifact for the pinned R12 source and explicitly invoke the R15/Hybrid C builder in an isolated preview build. Do not point the shared Vercel project at an unverified build output.
 - Integration files currently present in branch, but no complete output generated or browser regression proven.
+
+## Source contract verification – 2026-11-11
+- Source: all five current files fetched back from GitHub branch (build.cjs, build-hybrid.cjs, hybrid.css, hybrid.js, hybrid.contract.test.cjs).
+- Independent V8/JavaScript source assertions: 5 of 5 PASS (SHA pins, wrapper guard, CSS scoping, no new JS persistence, syntax parse). This was not the GitHub Actions runner; do not represent as CI success.
+- GitHub Actions run listing for commit 0fc74e0 returned zero runs (endpoint is limited to PR-triggered runs). CI execution remains NOT CONFIRMED.
+- Vercel deployment dpl_6gPQTgbbTva7gNNyFj3h9oHeb5pk, commit 0fc74e0, READY preview. This does not prove build-hybrid.cjs ran.
+- Missing verified R12 input at expected repository path remains the blocking dependency for full R15 output.
+- Pending: actual builder execution, served HTML validation, full module navigation, Android and data regressions.
