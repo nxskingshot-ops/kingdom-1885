@@ -55,3 +55,14 @@ test('Nested HOME sections resolve to the outer closing tag',()=>{
  }
  assert.equal(end,html.indexOf('</section><section id="other">'));
 });
+
+test('Transfer card links to existing staging module without modifying auth',()=>{
+ const js=read('hybrid.js');
+ assert.match(js,/\[data-home-card="transfer"\]/);
+ assert.match(js,/stage-transfer-live-rankings\.nexus-phalanx-kvk-test\.pages\.dev\/pylon-ix\/transfer-scouting-id-stage-20261030\.html/);
+ assert.match(js,/addEventListener\('click'/);
+ assert.match(js,/addEventListener\('keydown'/);
+ assert.match(js,/stopImmediatePropagation\(\)/);
+ assert.match(js,/window\.open\(transferUrl/);
+ assert.doesNotMatch(js,/supabase\.auth|signInWithPassword|localStorage|sessionStorage/);
+});
