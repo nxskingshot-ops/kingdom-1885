@@ -24,3 +24,21 @@ jobs:
           printf '%s  %s\n' '9b8eef3df70587956fb58ce4028a7de01b183d2f2ff2d58352ab6d298ee0f016' 'preview/phalanx-home-r13/home-header.jpg' | sha256sum --check
       - name: Run isolated Hybrid C source contract suite
         run: node --test preview/phalanx-home-r13/hybrid.contract.test.cjs
+      - name: Exercise original R15 build guardrails (negative paths)
+        shell: bash
+        run: |
+          set -euo pipefail
+          tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
+          printf 'deliberately invalid R12 source' > "$tmp/not-r12.html"
+          mkdir "$tmp/already-exists"
+          if node preview/phalanx-home-r13/build-hybrid.cjs "$tmp/not-r12.html" "$tmp/already-exists" > "$tmp/existing.log" 2>&1; then
+            echo 'FAIL: existing output was accepted'; exit 1
+          fi
+          grep -q 'Output already exists; refusing to overwrite' "$tmp/existing.log"
+          if node preview/phalanx-home-r13/build-hybrid.cjs "$tmp/not-r12.html" "$tmp/new-output" > "$tmp/source.log" 2>&1; then
+            echo 'FAIL: invalid R12 was accepted'; exit 1
+          fi
+          grep -q 'R12 SHA mismatch' "$tmp/source.log"
+          test ! -e "$tmp/new-output"
+          echo 'PASS: overwrite prevention and R12 checksum rejection executed'
