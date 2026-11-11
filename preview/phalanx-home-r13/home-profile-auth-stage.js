@@ -4,13 +4,11 @@
  */
 (() => {
   'use strict';
-  const CONFIRMED_LINKS = Object.freeze({
-    'd4da222e-8aac-4950-a6df-46c88972458c': '291410048'
-  }); // User-confirmed 2026-11-11; staging-only until secure server mapping exists.
+  // Never embed account UUID → player ID mappings in client-side source.
   const byId = id => document.getElementById(id);
   const setText = (id, value) => { const el=byId(id); if(el) el.textContent=value == null || value === '' ? '—' : String(value); };
   const formatKingdom = value => value == null ? '—' : '#' + String(value).replace(/^#/, '');
-  async function renderAuthenticatedHome(supabase) {
+  async function renderAuthenticatedHome(supabase, resolvePlayerId) {
     if (!supabase?.auth?.getUser || !supabase?.from) throw new Error('Existing Supabase client required');
     const {data:authData,error:authError}=await supabase.auth.getUser();
     if(authError) throw authError;
@@ -19,8 +17,16 @@
     const {data:profile,error:profileError}=await supabase.from('app_profiles').select('display_name').eq('user_id',user.id).maybeSingle();
     if(profileError) throw profileError;
     setText('phx-r10-name',profile?.display_name || '—');
-    const playerId=CONFIRMED_LINKS[user.id];
-    if(!playerId) return {status:'PLAYER_LINK_MISSING'};
+    // Resolver must use an authorized server-side account↔player mapping.
+    // Do not derive identity from display name or untrusted browser storage.
+    const playerId=typeof resolvePlayerId === 'function' ? await resolvePlayerId(user) : null;
+    if(playerId && !/^\\d+$/.test(String(playerId))) throw new Error('Invalid player ID');
+    if(!playerId) {
+      setText('phx-r11-kingdom',null);
+      setText('phx-r11-alliance',null);
+      setText('phx-r10-sub','Level nicht verifiziert');
+      return {status:'PLAYER_LINK_MISSING'};
+    }
     const {data:rows,error:playerError}=await supabase.from('phalanx_alliance_players')
       .select('player_id,player_name,kingdom,alliance,alliance_rank,tg_level,snapshot_date')
       .eq('player_id',playerId).order('snapshot_date',{ascending:false}).limit(1);
