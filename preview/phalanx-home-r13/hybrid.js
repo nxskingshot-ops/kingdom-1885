@@ -21,7 +21,8 @@
     transferCard.addEventListener('click', event => {
       event.preventDefault();
       event.stopImmediatePropagation();
-      const tab = window.open(transferUrl, '_blank', 'noopener,noreferrer');
+      const tab = window.open(transferUrl, '_blank');
+      if (tab) tab.opener = null;
       if (!tab) {
         // A blocked popup must not silently discard the user's action.
         window.location.assign(transferUrl);
