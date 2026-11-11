@@ -67,3 +67,11 @@ Function links: Transfer login signInWithPassword → getUser → nxs_membership
 - A local read-only Python script and JSON report were generated under /mnt/data/phx-r15-audit/ (not committed, no application modifications).
 - Hosted original header SHA-256 verification and 8 Hybrid C contracts remain PASS from GitHub Actions run 43042333046.
 - Remaining full build requires making verified R12 bytes available to an environment that also has the pinned header. No production changes authorized or made.
+
+## Executed original-builder negative-path checks (2026-11-11)
+- Workflow commit e6d18f25c095634e7351042ebb24e6805bce3e76; GitHub Actions run 43042914090, completed SUCCESS, all steps passed.
+- Executed build-hybrid.cjs with existing output dir: correctly rejected overwrite, PASS.
+- Executed build-hybrid.cjs with deliberately invalid R12 source and new output dir: correctly rejected SHA mismatch and did not create output, PASS.
+- Pinned header SHA-256 PASS; 8/8 Hybrid C contract tests PASS in same run.
+- Attempted local Chromium R12 browser baseline (file URL and loopback HTTP): both returned net::ERR_BLOCKED_BY_ADMINISTRATOR. Browser baseline NOT TESTED; no screenshot or UI result claimed.
+- Full positive R15 build and authenticated UI E2E remain NOT TESTED. The verified R12 original remains in local materialized Library copy, not in GitHub runner. No production changes, no DB writes.
