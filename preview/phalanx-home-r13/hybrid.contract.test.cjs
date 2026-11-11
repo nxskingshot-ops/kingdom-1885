@@ -43,10 +43,10 @@ test('Build source files have valid JS syntax',()=>{
 
 test('Nested HOME sections resolve to the outer closing tag',()=>{
  const builder=read('build-hybrid.cjs');
- assert.match(builder,/const tag=\/<\\\/\?section\\b\[\^>\]\*>\/g/);
+ assert.ok(builder.includes('const tag=/<\\/?section\\b[^>]*>/g;'));
  const html='<section id="phx-r6-home"><section class="nested"></section><div class="phx-home-command"></div></section><section id="other"></section>';
  const start=html.indexOf('<section id="phx-r6-home"');
- const tag=/<\\/?section\\b[^>]*>/g;
+ const tag=/<\/?section\b[^>]*>/g;
  tag.lastIndex=start;
  let depth=0,end=-1,match;
  while((match=tag.exec(html))){
