@@ -60,3 +60,10 @@ Function links: Transfer login signInWithPassword → getUser → nxs_membership
 - Same job ran node --test preview/phalanx-home-r13/hybrid.contract.test.cjs: 8 passed, 0 failed, 0 skipped. These are source contract tests, NOT R15 build or browser E2E.
 - Evidence URL: https://github.com/nxskingshot-ops/kingdom-1885/actions/runs/43042333046
 - Remaining: R12 source not versioned in repository, so hosted runner cannot execute complete R15 build without a safe, approved source handoff; authenticated same-origin integration and UI E2E NOT TESTED.
+
+## Local original R15 replacement-anchor validation (2026-11-11)
+- Used the locally materialized, SHA-256-verified original PHALANX_HOME_R12_TEST.html; verified all 24 literal/regex replacement anchors taken from unchanged preview/phalanx-home-r13/build.cjs.
+- Result: 24 PASS, 0 FAIL, every anchor appears exactly once. This establishes deterministic source compatibility for the original builder, not successful build output or UI behavior.
+- A local read-only Python script and JSON report were generated under /mnt/data/phx-r15-audit/ (not committed, no application modifications).
+- Hosted original header SHA-256 verification and 8 Hybrid C contracts remain PASS from GitHub Actions run 43042333046.
+- Remaining full build requires making verified R12 bytes available to an environment that also has the pinned header. No production changes authorized or made.
