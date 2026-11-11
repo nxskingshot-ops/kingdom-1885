@@ -44,12 +44,17 @@
   }
   const missing = new Set(['Keine Allianz','No alliance','Aucune alliance','—','']);
   const text = {
-    de: {table:'Kommandotisch', kingdom:'Königreich', enter:'War Room betreten'},
-    en: {table:'Command table', kingdom:'Kingdom', enter:'Enter War Room'},
-    fr: {table:'Table de commandement', kingdom:'Royaume', enter:'Entrer dans le War Room'}
+    de: {table:'Kommandotisch', kingdom:'Königreich', enter:'War Room betreten', transfer:'Transfer Scouting öffnen'},
+    en: {table:'Command table', kingdom:'Kingdom', enter:'Enter War Room', transfer:'Open Transfer Scouting'},
+    fr: {table:'Table de commandement', kingdom:'Royaume', enter:'Entrer dans le War Room', transfer:'Ouvrir Transfer Scouting'}
   };
   function sync() {
     const locale = Object.hasOwn(text, language?.value) ? language.value : 'en';
+    if (transferCard) {
+      transferCard.setAttribute('aria-label', text[locale].transfer);
+      const caption = transferCard.querySelector('.phx-home-card-copy small');
+      if (caption && caption.textContent !== text[locale].transfer) caption.textContent = text[locale].transfer;
+    }
     const label = (alliance?.textContent || '').trim();
     const value = missing.has(label) ? '—' : label;
     if (core && core.textContent !== value) core.textContent = value;
