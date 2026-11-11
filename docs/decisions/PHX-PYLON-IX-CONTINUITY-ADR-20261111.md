@@ -56,3 +56,25 @@ Der Nutzer stellt ausdrücklich klar: PYLON IX darf **nicht nur Module** miteina
 - Bei jeder Modul- oder Funktionsänderung Auswirkungen auf **alle** verbundenen Funktionen und Module prüfen und als Wissensdelta für PYLON IX dokumentieren.
 - Vor Umsetzung tatsächliche Quellcode-Abhängigkeiten, vorhandene PYLON-Integration und FREEZEs prüfen; erst dann Steckpunkte, Schnittstellen, Eventwege und Steuerungszuständigkeiten festlegen.
 - Automatische, funktionsgenaue Verkabelung, PYLON-Lesezugriff und End-to-End-Tests sind **noch nicht implementiert oder nachgewiesen**. Kein produktiver Eingriff durch diese Dokumentation.
+
+## PYLON IX – verlässliche Nutzerantworten (Zusatzentscheid 2026-11-11)
+
+**Nutzerziel:** PYLON IX soll auf Fragen aller berechtigten Nutzer plausible, präzise, sinnvolle und möglichst richtige Antworten geben, einschließlich modul- und funktionsübergreifender Fragen.
+
+### Verbindliche Qualitäts- und Sicherheitsregeln
+1. **Quellenbindung:** App-Code, versionierte Projektregister, freigegebene Regeln und berechtigt abrufbare aktuelle Daten als Wissensgrundlage; Aussagen nach Quelle, Zeitpunkt und Gültigkeitsbereich unterscheiden.
+2. **Keine Halluzinationen:** Fehlende, unvollständige, veraltete oder widersprüchliche Daten offen benennen. Keine Spielerwerte, Live-Verfügbarkeit, Freigaben, Tests oder Funktionszustände erfinden.
+3. **Funktionsübergreifende Antworten:** Relevante Abhängigkeiten zwischen Funktionen und Modulen berücksichtigen, ohne Berechtigungen oder RLS zu umgehen.
+4. **Berechtigungen:** Jede Datenabfrage und Antwort muss das bestehende Supabase-Auth- und Rollenmodell respektieren; kein unberechtigtes Offenlegen von Spieler-, Konto-, Mitglieder- oder Administrationsdaten.
+5. **Erklärbarkeit:** Bei Bewertungen relevante Kennzahlen, Datenquelle, Erfassungszeit, verwendete Regel und Grenzen nachvollziehbar machen; insbesondere Transfer-Scouting-Rollen nicht ohne erforderliche Kampfnachweise als gesichert ausgeben.
+6. **Antwortqualität:** Nutzerfrage direkt, verständlich, kontextbezogen und ohne unnötige Rückfragen beantworten; Ungewissheit angemessen kalibrieren.
+7. **Keine absolute Korrektheitsbehauptung:** KI-Antworten können fehlerhaft sein. Qualitätskontrolle durch Testfälle, Quellenabgleich, Rechte- und Regressionstests sowie Korrekturprotokolle.
+8. **Wissensfortschreibung:** Nach freigegebenen Änderungen Wissensdelta dokumentieren und später nachweislich über die PYLON-Verbindung synchronisieren. Keine stillschweigende Übernahme unbestätigter Behauptungen als Fakten.
+
+### Abnahmekriterien (noch offen)
+- Testfragen zu HOME, Access, Territory, Transfer und funktionsübergreifenden Abläufen.
+- Korrekte Antworten auf belegte Fragen; explizite Unsicherheit bei Datenlücken; Nachweis von Quelle und Datenstand.
+- Berechtigungstests für Gast, Mitglied, Operator, Administrator und geschützte Rollen, soweit implementiert.
+- Regressionstests nach jeder relevanten Wissens- oder Schnittstellenänderung.
+
+**Status:** Anforderung dokumentiert; Antwortsystem, Datenzugriffe, Qualitätstests und Live-Anbindung sind **NICHT GETESTET**. Keine produktiven Änderungen.
