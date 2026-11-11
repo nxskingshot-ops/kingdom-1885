@@ -21,3 +21,25 @@ Status: BESCHLOSSENE ANFORDERUNG; TECHNISCHE VERKABELUNG NOCH NICHT IMPLEMENTIER
 
 ## Korrekturvermerk
 Die zuvor erstellte Datei `PHX-PYTHON-CONTINUITY-ADR-20261111.md` beruhte auf einer Fehlinterpretation und wurde ausdrücklich für ungültig erklärt. Python ist **nicht** die vom Nutzer gemeinte zentrale Instanz.
+
+## Verbindliche PYLON-IX-Wissensfortschreibung – Zusatzentscheid 2026-11-11
+
+**Nutzerauftrag:** PYLON IX muss das bereits vorhandene Wissen, insbesondere aus Transfer Scouting, behalten und bei jedem relevanten Entwicklungsschritt nachweisbar dazulernen, ohne dass der Nutzer dies wiederholt einfordern muss.
+
+### Pflichtablauf für jede zukünftige Moduländerung
+1. **VORHER:** Bestehenden PYLON-IX-Code, Regeln, gespeicherte Erkenntnisse, Schnittstellen, Versionsstände, Entscheidungen und FREEZEs lesen. Wissen und Funktionalität nicht als leer annehmen.
+2. **BESTAND SICHERN:** Unveränderten Ausgangsstand und Abhängigkeiten dokumentieren; für riskante Änderungen Backup, Integrität und Rückweg gesondert nachweisen.
+3. **WISSENSDELTA:** Zu jeder Änderung festhalten, was PYLON IX neu wissen muss: Modul, Funktionen, Eingänge/Ausgänge, Datenquellen, Berechtigungen, Entscheidungen, Fehler, Tests, Status, Quellverweise und Version.
+4. **ÜBERGABE:** Wissensdelta im versionierten PHALANX-Projektregister dokumentieren; sobald eine echte PYLON-Schnittstelle implementiert ist, an diese übermitteln. Kein stillschweigendes Überschreiben vorhandener Regeln.
+5. **NACHWEIS:** Prüfung ausweisen als `BESTANDEN`, `FEHLGESCHLAGEN` oder `NICHT GETESTET`. Nur `BESTANDEN` für echte Wissensübernahme, wenn PYLON IX den neuen Eintrag nachweislich wieder auslesen kann. GitHub-Dokumentation allein ist **keine** bewiesene automatische Übernahme durch PYLON IX.
+6. **KEINE RÜCKFRAGE-SCHLEIFE:** Wissensfortschreibung ist Standardbestandteil der Arbeit; nur bei notwendigen Freigaben, Sicherheitsrisiken oder Blockaden fragen.
+
+### Startbestand Transfer Scouting
+- Bestehende Quelle: `docs/staging/PHX-TRANSFER-DECISION-V2-20261107.md` auf `stage/transfer-live-rankings-20261103` sowie tatsächlicher Transfer-Code, Bewertungsmodule und Backend.
+- Vorhandene PYLON-IX-Urteilsdarstellung, SEA-WORLD-Regeln, Rollenprioritäten, Vergleiche, Datenquellen, Fehler, Tests und Rückwege **inventarisieren und erhalten**; nicht neu erfinden.
+- Bereits gespeicherte PYLON-IX-Daten und deren Speicherort müssen noch technisch verifiziert werden.
+
+### Technischer Status
+- BESTANDEN: Pflichtprozess und Transfer-Startquellen im isolierten GitHub-Branch dokumentiert, sofern danach erneut gelesen.
+- NICHT GETESTET: PYLON-IX-Wissensspeicher, automatische Synchronisierung, Abruf des Wissens durch PYLON IX, Live-Events und End-to-End-Verkabelung.
+- KEINE produktive Änderung, Datenlöschung, Berechtigungsänderung oder Deployment durch diesen Eintrag.
