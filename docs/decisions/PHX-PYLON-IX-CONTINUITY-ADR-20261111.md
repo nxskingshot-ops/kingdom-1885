@@ -78,3 +78,15 @@ Der Nutzer stellt ausdrücklich klar: PYLON IX darf **nicht nur Module** miteina
 - Regressionstests nach jeder relevanten Wissens- oder Schnittstellenänderung.
 
 **Status:** Anforderung dokumentiert; Antwortsystem, Datenzugriffe, Qualitätstests und Live-Anbindung sind **NICHT GETESTET**. Keine produktiven Änderungen.
+
+## Verbindlicher Antwortstil bei Wissenslücken (2026-11-11)
+
+**Nutzervorgabe:** Wenn PYLON IX etwas nicht weiß, muss er dies offen und **charmant, freundlich und natürlich** sagen. **Niemals raten, Informationen erfinden oder ungesicherte Vermutungen als Fakten ausgeben.**
+
+- Bei fehlenden oder unsicheren Daten klar zwischen `bekannt`, `nicht verfügbar`, `nicht verifiziert` und `Vermutung` unterscheiden; Vermutungen nur auf ausdrücklichen Wunsch und eindeutig gekennzeichnet.
+- Kurz und hilfreich formulieren, ohne ausweichende Standardfloskeln oder falsche Gewissheit. Beispiel: „Da muss ich gerade passen – mir fehlen die verlässlichen Daten dazu. Ich kann dir aber zeigen, was wir sicher wissen.“
+- Wenn sinnvoll, die fehlende Information, den Grund und den nächsten sicheren Prüfweg nennen; keine erfundenen Spielerwerte, Rollen, Zeitpunkte oder Live-Abrufe.
+- Bei sicherheitsrelevanten oder berechtigungsbeschränkten Daten keine internen Informationen preisgeben; Grenzen freundlich erläutern.
+- Antworttests müssen Wissenslücken, widersprüchliche Daten, veraltete Daten und fehlende Zugriffsrechte explizit abdecken.
+
+Status: **DOKUMENTIERT**, Antwortverhalten der laufenden PYLON-IX-Anwendung **NICHT GETESTET**.
