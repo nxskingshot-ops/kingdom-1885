@@ -40,3 +40,18 @@ test('Build source files have valid JS syntax',()=>{
  const vm=require('node:vm');
  for(const file of ['build-hybrid.cjs','hybrid.js'])assert.doesNotThrow(()=>new vm.Script(read(file),{filename:file}));
 });
+
+test('Nested HOME sections resolve to the outer closing tag',()=>{
+ const builder=read('build-hybrid.cjs');
+ assert.match(builder,/const tag=\/<\\\/\?section\\b\[\^>\]\*>\/g/);
+ const html='<section id="phx-r6-home"><section class="nested"></section><div class="phx-home-command"></div></section><section id="other"></section>';
+ const start=html.indexOf('<section id="phx-r6-home"');
+ const tag=/<\\/?section\\b[^>]*>/g;
+ tag.lastIndex=start;
+ let depth=0,end=-1,match;
+ while((match=tag.exec(html))){
+  depth+=match[0].startsWith('</')?-1:1;
+  if(depth===0){end=match.index;break;}
+ }
+ assert.equal(end,html.indexOf('</section><section id="other">'));
+});
