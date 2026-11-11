@@ -12,6 +12,22 @@
   const core = get('phx-hc-map-alliance');
   const subtitle = get('phx-hc-war-subtitle');
   const language = get('phx-r11-language-select');
+  // Route only the existing Transfer Scouting card to the existing staging module.
+  // No auth bypass, no new storage, and no changes to the module itself.
+  const transferUrl = 'https://stage-transfer-live-rankings.nexus-phalanx-kvk-test.pages.dev/pylon-ix/transfer-scouting-id-stage-20261030.html';
+  const transferCard = document.querySelector('#phx-r6-home [data-home-action="transfer"]');
+  if (transferCard) {
+    transferCard.setAttribute('aria-label', 'Open Transfer Scouting');
+    transferCard.addEventListener('click', event => {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const tab = window.open(transferUrl, '_blank', 'noopener,noreferrer');
+      if (!tab) {
+        // A blocked popup must not silently discard the user's action.
+        window.location.assign(transferUrl);
+      }
+    }, {capture:true});
+  }
   const missing = new Set(['Keine Allianz','No alliance','Aucune alliance','—','']);
   const text = {
     de: {table:'Kommandotisch', kingdom:'Königreich', enter:'War Room betreten'},
