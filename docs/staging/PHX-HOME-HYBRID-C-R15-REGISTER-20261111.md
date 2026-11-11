@@ -44,3 +44,11 @@ ISOLATED BRANCH CREATED; NO HYBRID C INTEGRATION OR RELEASE CLAIMED.
 - Vercel deployment dpl_6gPQTgbbTva7gNNyFj3h9oHeb5pk, commit 0fc74e0, READY preview. This does not prove build-hybrid.cjs ran.
 - Missing verified R12 input at expected repository path remains the blocking dependency for full R15 output.
 - Pending: actual builder execution, served HTML validation, full module navigation, Android and data regressions.
+
+## Real R12 HOME boundary verification – 2026-11-11
+- Verified local R12 HTML SHA-256: ace5c9dd54e685e378b350b9d462ec756ce05abd231fae3b66ed35df6eaa0c42.
+- Actual HOME section starts at byte/character offset 8263282 and closes at offset 11657785 in the decoded HTML; 4 section opening/closing tags traversed. Original HOME identifier unique.
+- Existing `phx-home-command` present inside the fully matched section.
+- Result: PASS for boundary detection against the real R12 source; not yet tested against generated R15 output.
+- Local evidence: PHX_R15_HOME_BOUNDARY_REAL_R12_CHECK_20261111.json (conversation artifact, not a repository file).
+- Full build and browser acceptance remain blocked by source/header artifact handoff.
