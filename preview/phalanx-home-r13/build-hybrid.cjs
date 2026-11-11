@@ -27,7 +27,7 @@ if(html.includes('phx-hc-pylon'))throw Error('Already integrated');
 // Match the actual HOME section boundary, not the first nested closing tag.
 const start=html.indexOf('<section id="phx-r6-home"');
 if(start<0||html.indexOf('<section id="phx-r6-home"',start+1)>=0)throw Error('HOME section missing or duplicated');
-const tag=/<\\/?section\\b[^>]*>/g;
+const tag=/<\/?section\b[^>]*>/g;
 tag.lastIndex=start;
 let depth=0,end=-1,match;
 while((match=tag.exec(html))){
