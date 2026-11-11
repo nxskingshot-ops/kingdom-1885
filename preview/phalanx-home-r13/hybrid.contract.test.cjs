@@ -66,3 +66,11 @@ test('Transfer card links to existing staging module without modifying auth',()=
  assert.match(js,/window\.open\(transferUrl/);
  assert.doesNotMatch(js,/supabase\.auth|signInWithPassword|localStorage|sessionStorage/);
 });
+
+test('War Room has only avatar entry; strategy table is visual',()=>{
+ const builder=read('build-hybrid.cjs');
+ const hero=read('hero.html');
+ assert.match(hero,/id="phx-r8-war-entry"/);
+ assert.match(builder,/class="phx-hc-war-table"/);
+ assert.doesNotMatch(builder,/<button[^>]*data-home-action="war"[^>]*>Enter War Room/);
+});
