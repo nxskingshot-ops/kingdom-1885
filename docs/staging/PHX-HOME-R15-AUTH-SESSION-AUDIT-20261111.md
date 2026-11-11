@@ -40,3 +40,9 @@ Function links: Transfer login signInWithPassword → getUser → nxs_membership
 - Vercel project phalanx-r11-atlas-preview inspected. Latest READY preview dpl_9gYqVQFYJFAmStnzucx2ymuNNVXt is associated with audit-only commit 18cad06ba2cf1ff20777fe6e3554775d93a9f1ff, not a verified HOME build. Project has SSO deployment protection. READY is NOT proof of working HOME/auth.
 - Vercel deployment file tree lookup returned 404 (not_found); no deployment content or browser functionality could be verified. Stop rather than assuming build artifacts exist.
 - Original header JPEG SHA-256, full R15 build, canonical production entry, same-origin routing and end-to-end authentication remain NOT TESTED.
+
+## Local R12 source contract run (2026-11-11)
+- Materialized original R12: 11,669,534 bytes, SHA-256 ace5c9dd54e685e378b350b9d462ec756ce05abd231fae3b66ed35df6eaa0c42, verified with local sha256sum and Python hashlib.
+- Ran a local static source-contract script against original HTML. PASS (12): checksum, R12 version marker, HOME root, hero, navigation, War Room, PYLON IX modal, War Room route, HOME initialization, PYLON action, name ID, kingdom ID; each required marker occurred exactly once.
+- BLOCKED (1 prerequisite): exact pinned home-header.jpg is not available in local working directory; required SHA-256 9b8eef3df70587956fb58ce4028a7de01b183d2f2ff2d58352ab6d298ee0f016 not independently verified. GitHub versioned blob exists, but local fetch was unavailable. Do not bypass the hash check.
+- Original build.cjs and build-hybrid.cjs source inspected via GitHub; actual node build and browser E2E NOT RUN. Do not mislabel static marker checks as full build or UI tests.
