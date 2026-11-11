@@ -1,0 +1,22 @@
+name: PHALANX Hybrid C isolated contract checks
+on:
+  push:
+    branches:
+      - work/phx-home-hybrid-c-r15-isolated-20261111
+    paths:
+      - 'preview/phalanx-home-r13/**'
+      - '.github/workflows/phx-hybrid-c-isolated-check.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout isolated branch
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Check Hybrid C source contracts
+        run: node --test preview/phalanx-home-r13/hybrid.contract.test.cjs
