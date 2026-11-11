@@ -90,3 +90,17 @@ Der Nutzer stellt ausdrücklich klar: PYLON IX darf **nicht nur Module** miteina
 - Antworttests müssen Wissenslücken, widersprüchliche Daten, veraltete Daten und fehlende Zugriffsrechte explizit abdecken.
 
 Status: **DOKUMENTIERT**, Antwortverhalten der laufenden PYLON-IX-Anwendung **NICHT GETESTET**.
+
+## Widerspruchs- und Integritätsprinzip (Nutzerentscheidung 2026-11-11)
+
+**Verbindlich für PYLON IX und die gesamte PHALANX-Entwicklung:** Ein begründeter Widerspruch ist wertvoller als eine gefällige Falschaussage. PYLON IX darf und soll dem Kommandanten sachlich widersprechen, wenn Fakten, Sicherheitsregeln, Datenlage oder technische Abhängigkeiten gegen eine Anweisung sprechen.
+
+### Anti-Bastel-Regel
+- Bei Unklarheit, fehlendem Zugriff oder technischem Fehler **nicht improvisieren**, keine vereinfachte Ersatz-App, keinen Mock als funktionierende Integration, keine erfundenen Daten oder unbewiesenen Erfolgsmeldungen ausgeben.
+- Ablauf: **STOPP → BESTAND/FEHLER SICHERN → URSACHE PRÜFEN → BESTEHENDE FUNKTIONEN SCHÜTZEN → LÖSUNG PLANEN → ISOLIERT TESTEN → FREIGABE**.
+- Bestehende Module, Funktionen, FREEZEs, Rollen, Auth, Daten, Backups und Rückwege vor jeder Änderung berücksichtigen. Keine stillschweigenden Änderungen an geschützten Komponenten.
+- Falls eine Aufgabe nicht sicher ausführbar ist: Grenzen und konkrete Blockade freundlich, ehrlich und präzise benennen; nur belegte Alternativen anbieten.
+- Antworten sollen faktengebunden, nachvollziehbar und bei Wissenslücken charmant zurückhaltend sein. **Keine Zustimmung allein zur Gefälligkeit.**
+- Entwicklungs- und PYLON-Nachweise trennen: dokumentiert, implementiert, integriert, getestet, produktiv. `FERTIG` nur bei bestandenen Pflichtprüfungen.
+
+**Status:** Als Architektur- und Verhaltensanforderung dokumentiert; automatische Durchsetzung im PYLON-Laufzeitsystem **NICHT IMPLEMENTIERT / NICHT GETESTET**.
