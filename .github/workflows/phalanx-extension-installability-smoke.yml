@@ -1,0 +1,72 @@
+name: PHALANX Extension Installability Smoke (Dummy Only)
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/phalanx-extension-installability-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  extension-installability:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Start network-isolated disposable Supabase PostgreSQL 17
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -z "${PGHOST:-}" && test -z "${PGPASSWORD:-}"
+          docker pull supabase/postgres:17.6.1.173
+          docker run -d --name phalanx-extension-smoke --network none \
+            -e POSTGRES_PASSWORD='throwaway-local-only' \
+            supabase/postgres:17.6.1.173 \
+            postgres -c config_file=/etc/postgresql/postgresql.conf >/dev/null
+          ready=0
+          for attempt in $(seq 1 45); do
+            if docker exec phalanx-extension-smoke pg_isready -U supabase_admin >/dev/null 2>&1; then ready=1; break; fi
+            sleep 2
+          done
+          test "$ready" -eq 1
+          docker exec phalanx-extension-smoke createdb -U supabase_admin -T template0 phalanx_extension_dummy
+      - name: Check extension availability and installation on dummy database
+        shell: bash
+        run: |
+          set -euo pipefail
+          dir="$RUNNER_TEMP/phalanx-extension-smoke"
+          mkdir -m 700 "$dir"
+          docker exec -i phalanx-extension-smoke psql -U supabase_admin -d phalanx_extension_dummy -X -v ON_ERROR_STOP=1 -At <<'SQL' > "$dir/availability"
+          WITH required(name) AS (
+            VALUES ('pg_cron'),('pg_net'),('pg_stat_statements'),('pgcrypto'),('supabase_vault'),('uuid-ossp')
+          )
+          SELECT count(*) FROM required r JOIN pg_available_extensions a ON a.name=r.name;
+          SQL
+          test "$(cat "$dir/availability")" = 6 || { echo "::error::Extension availability count mismatch"; exit 1; }
+          # Test each extension independently; never print SQL errors or identifiers from server.
+          for ext in pg_cron pg_net pg_stat_statements pgcrypto supabase_vault uuid-ossp; do
+            status=0
+            target_db=phalanx_extension_dummy
+            if [ "$ext" = pg_cron ]; then target_db=postgres; fi
+            docker exec -i phalanx-extension-smoke psql -U supabase_admin -d "$target_db" -X -v ON_ERROR_STOP=1 \
+              -c "CREATE EXTENSION IF NOT EXISTS \"$ext\";" > "$dir/install.out" 2> "$dir/install.err" || status=$?
+            if [ "$status" -ne 0 ]; then
+              echo "::error::Dummy installation failed for allowlisted extension: $ext (server details withheld)"
+              exit 1
+            fi
+          done
+          docker exec -i phalanx-extension-smoke psql -U supabase_admin -d phalanx_extension_dummy -X -v ON_ERROR_STOP=1 -At <<'SQL' > "$dir/installed"
+          SELECT count(*) FROM pg_extension WHERE extname IN
+            ('pg_net','pg_stat_statements','pgcrypto','supabase_vault','uuid-ossp');
+          SQL
+          test "$(cat "$dir/installed")" = 5 || { echo "::error::Extension installation count mismatch"; exit 1; }
+          cron_count="$(docker exec -i phalanx-extension-smoke psql -U supabase_admin -d postgres -X -v ON_ERROR_STOP=1 -At -c "SELECT count(*) FROM pg_extension WHERE extname='pg_cron';")"
+          test "$cron_count" = 1 || { echo "::error::pg_cron installation count mismatch"; exit 1; }
+          echo '### Dummy extension installation PASS' >> "$GITHUB_STEP_SUMMARY"
+          echo '- Six extensions installed in isolated disposable PostgreSQL 17 test database' >> "$GITHUB_STEP_SUMMARY"
+          echo '- No real backup, production credentials, SQL logs or data accessed' >> "$GITHUB_STEP_SUMMARY"
+          echo '- This does NOT prove production extension version parity or full restore' >> "$GITHUB_STEP_SUMMARY"
+      - name: Remove disposable database and temporary output
+        if: always()
+        shell: bash
+        run: |
+          docker rm -f phalanx-extension-smoke >/dev/null 2>&1 || true
+          rm -rf "$RUNNER_TEMP/phalanx-extension-smoke"
