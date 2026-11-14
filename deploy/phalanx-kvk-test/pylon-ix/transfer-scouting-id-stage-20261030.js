@@ -56,14 +56,14 @@ async function check(){try{
 const {data:{user},error}=await db.auth.getUser();
 if(error){showLogin('Session verification failed: '+error.message+'. Please sign in again.');return;}
 if(!user){showLogin('No active session. Please sign in with your approved NXS account.');return;}
-const {data:membership,error:merror}=await db.from('nxs_memberships').select('role,active,expires_at').eq('user_id',user.id).maybeSingle();
+const {data:membership,error:merror}=await db.from('nxs_memberships').select('role,scouting_role,active,expires_at').eq('user_id',user.id).maybeSingle();
 if(merror){showLogin('Signed in, but membership verification failed: '+merror.message);return;}
 if(!membership){showLogin('Signed in, but no approved NXS membership was found for this account.');return;}
 if(!membership.active){showLogin('Signed in, but this NXS membership is inactive.');return;}
 if(membership.expires_at&&Date.parse(membership.expires_at)<=Date.now()){showLogin('Signed in, but this NXS membership has expired.');return;}
-if(!['member','r4','r5','admin'].includes(membership.role)){showLogin('Signed in, but this account role is not approved for Transfer Scouting.');return;}
-const badge=document.getElementById('phxIdentity');if(badge){const display=user.id==='d4da222e-8aac-4950-a6df-46c88972458c'?'FaQu':(user.email||'Signed-in account');const n=document.getElementById('phxIdentityName'),m=document.getElementById('phxIdentityMeta');badge.classList.add('is-online');if(n)n.textContent=display;if(m)m.textContent=membership.role.toUpperCase()+' · ACTIVE';const online=document.getElementById('phxIdentityOnline');if(online)online.textContent='ONLINE';}
-canEdit=['r4','r5','admin'].includes(membership.role);$('newCandidate').hidden=!canEdit;$('login').hidden=true;$('private').hidden=false;await load();
+if(!['observer','operator','administrator'].includes(membership.scouting_role)){showLogin('Transfer Scouting role not assigned. Ask an administrator to review your access.');return;}
+const badge=document.getElementById('phxIdentity');if(badge){const display=user.id==='d4da222e-8aac-4950-a6df-46c88972458c'?'FaQu':(user.email||'Signed-in account');const n=document.getElementById('phxIdentityName'),m=document.getElementById('phxIdentityMeta');badge.classList.add('is-online');if(n)n.textContent=display;if(m)m.textContent=membership.scouting_role.toUpperCase()+' · ACTIVE';const online=document.getElementById('phxIdentityOnline');if(online)online.textContent='ONLINE';}
+canEdit=['operator','administrator'].includes(membership.scouting_role);$('newCandidate').hidden=!canEdit;$('login').hidden=true;$('private').hidden=false;await load();
 }catch(e){showLogin('Unable to verify access: '+(e?.message||'Unknown error'));}}
 $('authForm').onsubmit=async e=>{
 e.preventDefault();const submit=$('authForm').querySelector('button[type="submit"]');if(submit.disabled)return;
