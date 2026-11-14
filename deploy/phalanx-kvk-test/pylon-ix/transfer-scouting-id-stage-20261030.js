@@ -27,10 +27,10 @@ if(discordTestButton)discordTestButton.addEventListener('click',async()=>{
 });
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=x=>x==null?'–':Number(x).toLocaleString('en-US',{maximumFractionDigits:1});
-let players=[],chosen=new Set(),active=null,canEdit=false;
+let players=[],chosen=new Set(),active=null,canEdit=false,canDelete=false;
 // The event-specific cap and metric have not been verified. Never classify invitations from account power.
 function invitationPreview(p){return 'Verify event rules';}
-function showLogin(message=''){const badge=document.getElementById('phxIdentity');if(badge){badge.classList.remove('is-online');const n=document.getElementById('phxIdentityName'),m=document.getElementById('phxIdentityMeta');if(n)n.textContent='Session not verified';if(m)m.textContent='Please sign in';const online=document.getElementById('phxIdentityOnline');if(online)online.textContent='OFFLINE';}canEdit=false;$('login').hidden=false;$('private').hidden=true;$('message').textContent=message||'Please sign in with your approved NXS account.';$('message').setAttribute('role','status');}
+function showLogin(message=''){const badge=document.getElementById('phxIdentity');if(badge){badge.classList.remove('is-online');const n=document.getElementById('phxIdentityName'),m=document.getElementById('phxIdentityMeta');if(n)n.textContent='Session not verified';if(m)m.textContent='Please sign in';const online=document.getElementById('phxIdentityOnline');if(online)online.textContent='OFFLINE';}canEdit=false;canDelete=false;$('login').hidden=false;$('private').hidden=true;$('message').textContent=message||'Please sign in with your approved NXS account.';$('message').setAttribute('role','status');}
 function chosenPlayers(){return [...chosen].map(id=>players.find(p=>p.candidate_id===id)).filter(Boolean);}
 function filtered(){const q=$('search').value.trim().toLowerCase();const list=players.filter(p=>[p.player_name,p.kingdom,p.alliance,p.contact_status,p.metadata?.role].some(v=>String(v??'').toLowerCase().includes(q)));const s=$('sort').value;return list.sort((a,b)=>s==='name'?a.player_name.localeCompare(b.player_name):s==='power'?Number(b.power_m||0)-Number(a.power_m||0):Date.parse(b.updated_at)-Date.parse(a.updated_at));}
 function render(){
@@ -63,7 +63,7 @@ if(!membership.active){showLogin('Signed in, but this NXS membership is inactive
 if(membership.expires_at&&Date.parse(membership.expires_at)<=Date.now()){showLogin('Signed in, but this NXS membership has expired.');return;}
 if(!['observer','operator','administrator'].includes(membership.scouting_role)){showLogin('Transfer Scouting role not assigned. Ask an administrator to review your access.');return;}
 const badge=document.getElementById('phxIdentity');if(badge){const display=user.id==='d4da222e-8aac-4950-a6df-46c88972458c'?'FaQu':(user.email||'Signed-in account');const n=document.getElementById('phxIdentityName'),m=document.getElementById('phxIdentityMeta');badge.classList.add('is-online');if(n)n.textContent=display;if(m)m.textContent=membership.scouting_role.toUpperCase()+' · ACTIVE';const online=document.getElementById('phxIdentityOnline');if(online)online.textContent='ONLINE';}
-canEdit=['operator','administrator'].includes(membership.scouting_role);$('newCandidate').hidden=!canEdit;$('login').hidden=true;$('private').hidden=false;await load();
+canEdit=['operator','administrator'].includes(membership.scouting_role);canDelete=membership.scouting_role==='administrator';$('newCandidate').hidden=!canEdit;$('login').hidden=true;$('private').hidden=false;await load();
 }catch(e){showLogin('Unable to verify access: '+(e?.message||'Unknown error'));}}
 $('authForm').onsubmit=async e=>{
 e.preventDefault();const submit=$('authForm').querySelector('button[type="submit"]');if(submit.disabled)return;
@@ -117,29 +117,29 @@ function openEditor(p){
 }
 $('newCandidate').onclick=()=>{showWorkspace('phxIdPanel');$('phxGovernorId').focus();};
 $('editCandidate').onclick=()=>openEditor(players.find(p=>p.candidate_id===active));
-// Protected removal: explicit confirmation, R4/R5/admin UI gate, exact record ID and verified response.
+// Protected removal: administrator-only UI gate; backend RLS must independently enforce it.
 const removeCandidateButton=document.createElement('button');
 removeCandidateButton.type='button';removeCandidateButton.textContent='Remove candidate';
 removeCandidateButton.className='secondary phx-remove-candidate';removeCandidateButton.hidden=true;
 $('editCandidate').insertAdjacentElement('afterend',removeCandidateButton);
 removeCandidateButton.onclick=async()=>{
  const candidate=players.find(p=>p.candidate_id===active);
- if(!canEdit||!candidate||removeCandidateButton.disabled)return;
+ if(!canDelete||!candidate||removeCandidateButton.disabled)return;
  const id=candidate.candidate_id;
- if(!window.confirm('Kandidat '+candidate.player_name+' aus der gespeicherten Liste entfernen? Dieser Vorgang kann nicht rückgängig gemacht werden.'))return;
+ if(!window.confirm('Remove '+candidate.player_name+' from saved candidates? This cannot be undone.'))return;
  removeCandidateButton.disabled=true;
  try{
   const {data,error}=await db.from('transfer_candidates').delete().eq('candidate_id',id).select('candidate_id');
   if(error)throw error;
-  if(!Array.isArray(data)||data.length!==1||data[0].candidate_id!==id)throw Error('Löschung nicht bestätigt.');
+  if(!Array.isArray(data)||data.length!==1||data[0].candidate_id!==id)throw Error('Deletion was not confirmed.');
   chosen.delete(id);if(active===id)active=null;
   if(dossierOpen)closeDossier();
   await load();
- }catch(error){window.alert('Kandidat konnte nicht entfernt werden: '+error.message);}
+ }catch(error){window.alert('Could not remove candidate: '+error.message);}
  finally{removeCandidateButton.disabled=false;}
 };
 const originalRenderCandidate=render;
-render=function(){originalRenderCandidate();removeCandidateButton.hidden=!canEdit||!players.some(p=>p.candidate_id===active);};
+render=function(){originalRenderCandidate();removeCandidateButton.hidden=!canDelete||!players.some(p=>p.candidate_id===active);};
 
 
 function closeEditor(){$('modal').hidden=true}
