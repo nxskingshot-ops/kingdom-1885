@@ -506,7 +506,7 @@ function renderDossier(){
  forecastPanel.append(forecastHeading,forecastBody,forecastNotice);
  root.prepend(forecastPanel);
  mountRuleDraftEditor(forecastPanel,{canEdit:false}); // Fail closed until a server-verified transfer_admin role exists.
- if(canEdit&&players.some(p=>p.candidate_id===active)){
+ if(canDelete&&players.some(p=>p.candidate_id===active)){
   const admin=document.createElement('section');admin.className='dossier-report';
   const heading=document.createElement('h3');heading.textContent='Candidate management';
   const button=document.createElement('button');button.type='button';button.textContent='Remove candidate';
