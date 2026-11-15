@@ -59,7 +59,9 @@ jobs:
           SIGNER="$(find "${ANDROID_HOME:-/usr/local/lib/android/sdk}/build-tools" -type f -name apksigner | sort -V | tail -n1)"
           "$AAPT" dump badging "$APK" | grep -m1 "^package:" | tee /tmp/package.txt
           grep -q "name='app.nexusphalanx.stage.v22isolated'" /tmp/package.txt
-          "$SIGNER" verify --print-certs "$APK" | grep -E 'Signer #1 certificate SHA-256 digest|Verified using v[1234] scheme'
+          "$SIGNER" verify --print-certs "$APK" | tee /tmp/apk-signature.txt
+          grep -qi "certificate SHA-256 digest" /tmp/apk-signature.txt
+          test -s "$APK"
           sha256sum "$APK"
       - uses: actions/upload-artifact@v4
         with:
