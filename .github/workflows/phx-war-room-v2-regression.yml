@@ -1,0 +1,43 @@
+name: PHALANX War Room V2 integrated regression gate
+on:
+  push:
+    branches:
+      - work/phx-android-v21-parallel-20261115
+    paths:
+      - '.github/workflows/phx-war-room-v2-regression.yml'
+      - 'android-stage/www/phx-war-room-v2.js'
+      - 'android-stage/www/phx-war-room-v2.css'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify frozen asset checksums and original navigation markers
+        run: node android-stage/scripts/verify.cjs
+      - name: Check V2 script syntax
+        run: node --check android-stage/www/phx-war-room-v2.js
+      - name: Verify additive-only HTML patch against frozen baseline
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,re
+          base=Path('android-stage/www')
+          s=(base/'index.html').read_text()
+          addition='<link rel="stylesheet" href="./phx-war-room-v2.css" data-phx-war-v2="true"/>\n<script src="./phx-war-room-v2.js" defer data-phx-war-v2="true"></script>\n'
+          assert s.count(addition)==1,'Integration must be present exactly once'
+          restored=s.replace(addition,'')
+          expected='b675a78957893f13bb9708f604310ccba27774a0087d788605cede40bd690604'
+          assert hashlib.sha256(restored.encode()).hexdigest()==expected,'Original frozen HTML changed outside guarded insertion'
+          js=(base/'phx-war-room-v2.js').read_text()
+          for marker in ['phx-r8-war','phx-r8-war-cards','phx-r10-settings','phx-personal-profile-r10','ACCOUNT INTELLIGENCE','ALLIANCE POSITION','PLAYER DEVELOPMENT','COMMAND ACCESS','POWER']:
+              assert marker in js,marker
+          assert 'localStorage.setItem' not in js,'New layer must not overwrite existing profile/shortcuts'
+          print('BESTANDEN: original 11.7MB HTML byte-for-byte preserved except additive links')
+          print('BESTANDEN: five War Room areas, power and legacy DOM adapters')
+          print('NICHT GETESTET: Android runtime, pixel comparison, live data, persisted interactions')
+          PY
