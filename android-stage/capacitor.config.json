@@ -1,0 +1,8 @@
+{
+  "appId": "app.nexusphalanx.stage",
+  "appName": "NEXUS PHALANX STAGE",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}
