@@ -1,0 +1,101 @@
+name: PHALANX V2.1 parallel Android test APK
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - work/phx-android-v21-parallel-20261115
+    paths:
+      - 'android-stage/www/**'
+      - 'android-stage/package.json'
+      - 'android-stage/capacitor.config.json'
+      - '.github/workflows/phx-android-isolated-debug.yml'
+permissions:
+  contents: read
+jobs:
+  debug-apk:
+    if: github.ref == 'refs/heads/work/phx-android-v21-parallel-20261115'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: android-stage
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Configure Android SDK with command line tools
+        uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-35 build-tools;35.0.0'
+      - name: Verify original assets
+        run: node scripts/verify.cjs
+      - name: Generate lockfile from pinned versions
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Create Android native project
+        run: npx cap add android && npx cap sync android
+      - name: Apply Android edge-to-edge window inset fix (isolated build only)
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('android/app/src/main/res/values/styles.xml')
+          s=p.read_text()
+          # Android 15 target SDK 35: opt out of forced edge-to-edge for the test build.
+          if 'android:windowOptOutEdgeToEdgeEnforcement' not in s:
+              s=s.replace('</style>', '<item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>\n    </style>')
+          p.write_text(s)
+          main=next(Path('android/app/src/main/java').rglob('MainActivity.java'))
+          src=main.read_text()
+          if 'WindowCompat.setDecorFitsSystemWindows' not in src:
+              src=src.replace('public class MainActivity extends BridgeActivity {', '''public class MainActivity extends BridgeActivity {
+            @Override
+            public void onCreate(android.os.Bundle savedInstanceState) {
+              super.onCreate(savedInstanceState);
+              androidx.core.view.WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+              getWindow().setStatusBarColor(android.graphics.Color.rgb(8, 15, 28));
+              getWindow().setNavigationBarColor(android.graphics.Color.rgb(8, 15, 28));
+            }
+          ''')
+          main.write_text(src)
+          print('Applied native Android window fit and edge-to-edge opt-out to generated project')
+          PY
+      - name: Set V2.1 update version without changing application ID
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('android/app/build.gradle')
+          s=p.read_text()
+          assert 'applicationId "app.nexusphalanx.stage.v21parallel"' in s, 'Unexpected package ID; stop'
+          assert 'versionCode 1' in s, 'Unexpected base version; stop'
+          s=s.replace('versionCode 1','versionCode 2',1).replace('versionName "1.0"','versionName "1.1"',1)
+          p.write_text(s)
+          print('V2.1: app.nexusphalanx.stage.v21parallel, versionCode=2, versionName=1.1')
+          PY
+      - name: Build debug APK
+        run: cd android && chmod +x gradlew && ./gradlew assembleDebug --no-daemon
+      - name: Validate distinct test package and version
+        run: |
+          AAPT="$(find "${ANDROID_HOME:-/usr/local/lib/android/sdk}/build-tools" -type f -name aapt | sort -V | tail -n1)"
+          APK="android/app/build/outputs/apk/debug/app-debug.apk"
+          "$AAPT" dump badging "$APK" | grep -m1 "^package:"
+          "$AAPT" dump badging "$APK" | grep -m1 "^package:" | grep -q "name='app.nexusphalanx.stage.v21parallel' versionCode='2'"
+          echo "PASS: Parallel package ID and versionCode 2"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: phalanx-v21-parallel-lockfile
+          path: android-stage/package-lock.json
+          if-no-files-found: ignore
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        with:
+          name: phalanx-v21-parallel-debug-apk
+          path: android-stage/android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 7
