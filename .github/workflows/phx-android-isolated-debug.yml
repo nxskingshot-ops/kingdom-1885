@@ -6,6 +6,8 @@ on:
       - work/phx-android-capacitor-isolated-20261115
     paths:
       - 'android-stage/www/**'
+      - 'android-stage/package.json'
+      - 'android-stage/capacitor.config.json'
       - '.github/workflows/phx-android-isolated-debug.yml'
 permissions:
   contents: read
