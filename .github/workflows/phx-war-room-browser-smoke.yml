@@ -1,0 +1,58 @@
+name: PHALANX War Room V2 browser navigation smoke
+on:
+  push:
+    branches:
+      - work/phx-android-v21-parallel-20261115
+    paths:
+      - '.github/workflows/phx-war-room-browser-smoke.yml'
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install isolated browser test dependency
+        run: |
+          npm install --no-save --prefix /tmp/phx-browser playwright@1.58.2
+          /tmp/phx-browser/node_modules/.bin/playwright install chromium
+      - name: Browser smoke at Android viewport without altering user data
+        run: |
+          NODE_PATH=/tmp/phx-browser/node_modules node - <<'JS'
+          const {chromium}=require('playwright');
+          const {pathToFileURL}=require('url');
+          const path=require('path');
+          (async()=>{
+            const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
+            const page=await browser.newPage({viewport:{width:393,height:852},deviceScaleFactor:2,isMobile:true,hasTouch:true});
+            const errors=[];page.on('pageerror',e=>errors.push(e.message));
+            await page.goto(pathToFileURL(path.resolve('android-stage/www/index.html')).href,{waitUntil:'domcontentloaded'});
+            await page.evaluate(()=>{location.hash='war-room'});
+            await page.waitForTimeout(500);
+            const results=await page.evaluate(()=>{
+              const w=document.querySelector('#phx-r8-war');
+              return {integrated:w?.dataset.v2Integrated,visible:!!w&&getComputedStyle(w).display!=='none',profile:!!document.querySelector('.phx-w2-profile'),power:!!document.querySelector('[data-w2-power]'),tiles:document.querySelectorAll('.phx-w2-tile').length,shortcuts:document.querySelectorAll('#phx-r8-war-cards .wr-card').length,settings:!!document.querySelector('#phx-r10-settings'),home:!!document.querySelector('#phx-r6-home'),map:!!document.querySelector('#map'),reports:!!document.querySelector('#report')};
+            });
+            console.log('WAR_ROOM_SMOKE',JSON.stringify(results));
+            if(results.integrated!=='yes'||!results.visible||!results.profile||!results.power||results.tiles!==3||results.shortcuts!==3||!results.settings||!results.home||!results.map||!results.reports)throw Error('War Room browser smoke failed');
+            await page.locator('#phx-r8-war-back').click();
+            await page.waitForTimeout(200);
+            const hash=await page.evaluate(()=>location.hash);
+            console.log('BACK_ROUTE',hash);
+            if(hash!=='#phalanx-home')throw Error('War Room back route failed');
+            await page.evaluate(()=>{location.hash='war-room'});
+            await page.waitForTimeout(100);
+            const before=await page.evaluate(()=>localStorage.getItem('phx-war-room-slot-0'));
+            await page.locator('#phx-r8-war-cards select').first().selectOption('report');
+            const after=await page.evaluate(()=>localStorage.getItem('phx-war-room-slot-0'));
+            console.log('SHORTCUT_PERSISTENCE',JSON.stringify({before,after}));
+            if(after!=='report')throw Error('Shortcut persistence failed');
+            await page.screenshot({path:'/tmp/phx-war-room-mobile.png',fullPage:false});
+            console.log('BROWSER_ERRORS',JSON.stringify(errors.slice(0,5)));
+            await browser.close();
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
