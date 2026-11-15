@@ -50,3 +50,19 @@
 - **Entscheidender Unterschied: Build #4 hat andere App-ID als #5/#6.** #4 ist daher kein In-Place-Update für eine Installation der V2-Paket-ID. Die vom Nutzer sichtbaren zwei App-Namen STAGE und TEST V2 passen zu getrennten Installationen, aber die tatsächliche Zuordnung der auf dem Handy installierten Pakete ist ohne Paketmanagerdiagnose noch nicht verifiziert.
 - Für das **bestehende TEST V2** ist Build #5 als Ursprung wahrscheinlicher als #4; ausdrücklich **Hypothese**. Das Installationsproblem von #6 ist weiterhin ungeklärt.
 - Nächster Schritt: installierte V2-Paket-ID/Signatur und exakten Installationsfehler ermitteln. Keine Daten löschen, keine weitere APK auf Verdacht.
+
+## Abschließender Zertifikatsvergleich / Schlüsselsuche (15.11.2026)
+
+- GitHub Actions [Diagnose #4](https://github.com/nxskingshot-ops/kingdom-1885/actions/runs/43736451374): **BESTANDEN**; alle Fingerabdrücke tatsächlich ausgelesen.
+- Installierte V2 (App Analyzer, Nutzer-Screenshot): `bab2610df631cd2616bc5eb2fbbd7c06f51b69e7f8fff873b9474bf4446c1780`.
+- Build #4: `9ad497999407e768119117e3dca83d54f811cccaef2a4f35648c5833911dae30` — MISMATCH.
+- Build #5: `bab2610df631cd2616bc5eb2fbbd7c06f51b69e7f8fff873b9474bf4446c1780` — **MATCH**.
+- Build #6: `124aff3e9fd3093de52d9b504130b248c8ff9d1c0a9c4cd7a68a455b5b2ec09a` — MISMATCH.
+- Build #7: `0f57d011e151dd8e924ebdd48ac3505411fed530ffdbac45d05a1c2c67ec048f` — MISMATCH.
+- **Ursache bestätigt:** automatischer Debug-Keystore wechselte zwischen GitHub Actions Läufen; späterer Build kann installierte V2 nicht aktualisieren.
+- GitHub-Code-Suche nach `debug.keystore`, `keystore`, `signingConfig`: keine Ergebnisse im durchsuchbaren Standardbranch. Dies ist **kein Beweis**, dass in anderen Branches/externen Speichern keine Sicherung existiert.
+- Artefakte von Run #5 und #7 enthalten jeweils nur `phalanx-stage-debug-apk` und `phalanx-stage-lockfile`, keinen Keystore.
+- Privater Signaturschlüssel von #5: **NICHT GEFUNDEN**. APK-Zertifikat erlaubt keine Wiederherstellung des privaten Schlüssels.
+- **STOPP für In-Place-Update** bis Schlüssel nachweislich vorliegt. Weder bestehende V2 deinstallieren noch App-Daten löschen.
+- Option: zuerst explizit geprüften Datenexport / Migration entwerfen und testen; erst danach mit Freigabe zu neuer dauerhaft signierter App wechseln.
+- Status: Signaturdiagnose BESTANDEN; Schlüsselverfügbarkeit NICHT NACHGEWIESEN; Datenbackup/Wiederherstellung NICHT GETESTET; Update FEHLGESCHLAGEN; Produktion UNVERÄNDERT.
