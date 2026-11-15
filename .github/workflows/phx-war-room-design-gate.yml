@@ -1,0 +1,25 @@
+name: PHALANX War Room V2 isolated structural gate
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - work/phx-android-v21-parallel-20261115
+    paths:
+      - 'android-stage/war-room-v2-design-reference.html'
+      - 'android-stage/scripts/verify-war-room.cjs'
+      - '.github/workflows/phx-war-room-design-gate.yml'
+permissions:
+  contents: read
+jobs:
+  war-room-design-gate:
+    if: github.ref == 'refs/heads/work/phx-android-v21-parallel-20261115'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check isolated War Room structural requirements
+        run: node android-stage/scripts/verify-war-room.cjs
+      - name: Verify frozen Android app asset integrity
+        run: node android-stage/scripts/verify.cjs
