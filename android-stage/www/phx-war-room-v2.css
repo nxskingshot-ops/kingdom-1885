@@ -36,3 +36,5 @@
 #phx-r8-war .phx-w2-editor>summary{cursor:pointer;color:#e9c98d}
 #phx-r8-war .phx-w2-editor #phx-r10-settings{margin-top:12px}
 @media(max-width:360px){#phx-r8-war .phx-w2-profile-grid{grid-template-columns:66px 1fr}#phx-r8-war .phx-w2-avatar{width:64px;height:64px}#phx-r8-war .phx-w2-topline{font-size:15px}}
+
+/* Isolated Android V2.1 build trigger after guarded HTML integration; no style changes. */
