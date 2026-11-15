@@ -1,0 +1,29 @@
+name: PHALANX War Room DOM read-only inventory
+on:
+  push:
+    branches:
+      - work/phx-android-v21-parallel-20261115
+    paths:
+      - '.github/workflows/phx-war-room-dom-inventory.yml'
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extract existing War Room DOM, CSS and routing context without modifying source
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('android-stage/www/index.html').read_text()
+          lines=s.splitlines()
+          for i in range(880,min(944,len(lines))):
+              line=lines[i]
+              if len(line)>2400:
+                  line=line[:1200]+' ... [long line truncated] ... '+line[-450:]
+              print(f'LINE {i+1}: {line}')
+          for term in ['id="phx-r8-war"','id="phx-r8-war-cards"','id="phx-r8-war-back"','id="phx-r8-war-entry"','phx-r8-war-open']:
+              print('MARKER',term,'COUNT',s.count(term))
+          PY
