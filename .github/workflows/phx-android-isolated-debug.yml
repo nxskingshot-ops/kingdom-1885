@@ -26,13 +26,10 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
-      - name: Verify preinstalled Android SDK
-        run: |
-          test -n "${ANDROID_HOME:-}" && test -d "$ANDROID_HOME"
-          command -v sdkmanager
-          sdkmanager --version
-      - name: Install required Android SDK components
-        run: sdkmanager --install 'platform-tools' 'platforms;android-35' 'build-tools;35.0.0'
+      - name: Configure Android SDK with command line tools
+        uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-35 build-tools;35.0.0'
       - name: Verify original assets
         run: node scripts/verify.cjs
       - name: Generate lockfile from pinned versions
