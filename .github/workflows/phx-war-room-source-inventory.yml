@@ -1,0 +1,29 @@
+name: PHALANX War Room source integration inventory
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    if: github.ref == 'refs/heads/work/phx-android-v21-parallel-20261115'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read-only War Room and navigation source inventory
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re,hashlib
+          p=Path('android-stage/www/index.html')
+          s=p.read_text()
+          print('MAIN_BYTES',p.stat().st_size,'SHA256',hashlib.sha256(p.read_bytes()).hexdigest())
+          terms=['war-room','warRoom','warroom','phxNavigate','phx-r6-home','PYLON IX','Territory Control','Outpost Reports','localStorage','PHX_HOME_QUEEN_AN_APPROVED.png']
+          for term in terms:
+              matches=list(re.finditer(re.escape(term),s,re.I))
+              print('TERM',repr(term),'COUNT',len(matches))
+              for m in matches[:7]:
+                  line=s.count('\n',0,m.start())+1
+                  snippet=re.sub(r'\s+',' ',s[max(0,m.start()-110):m.end()+150])
+                  print(' LINE',line,'CONTEXT',snippet[:300])
+          print('READ_ONLY_INVENTORY_COMPLETE')
+          PY
