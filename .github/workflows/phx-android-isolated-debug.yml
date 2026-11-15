@@ -40,6 +40,31 @@ jobs:
         run: npm ci --no-audit --no-fund
       - name: Create Android native project
         run: npx cap add android && npx cap sync android
+      - name: Apply Android edge-to-edge window inset fix (isolated build only)
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('android/app/src/main/res/values/styles.xml')
+          s=p.read_text()
+          # Android 15 target SDK 35: opt out of forced edge-to-edge for the test build.
+          if 'android:windowOptOutEdgeToEdgeEnforcement' not in s:
+              s=s.replace('</style>', '<item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>\n    </style>')
+          p.write_text(s)
+          main=next(Path('android/app/src/main/java').rglob('MainActivity.java'))
+          src=main.read_text()
+          if 'WindowCompat.setDecorFitsSystemWindows' not in src:
+              src=src.replace('public class MainActivity extends BridgeActivity {', '''public class MainActivity extends BridgeActivity {
+            @Override
+            public void onCreate(android.os.Bundle savedInstanceState) {
+              super.onCreate(savedInstanceState);
+              androidx.core.view.WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+              getWindow().setStatusBarColor(android.graphics.Color.rgb(8, 15, 28));
+              getWindow().setNavigationBarColor(android.graphics.Color.rgb(8, 15, 28));
+            }
+          ''')
+          main.write_text(src)
+          print('Applied native Android window fit and edge-to-edge opt-out to generated project')
+          PY
       - name: Build debug APK
         run: cd android && chmod +x gradlew && ./gradlew assembleDebug --no-daemon
       - uses: actions/upload-artifact@v4
