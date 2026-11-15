@@ -45,10 +45,10 @@ jobs:
             print(f'{label} ({len(keys)}):',', '.join(keys[:80]))
             if len(keys)>80: print('Additional keys omitted:',len(keys)-80)
           print('STORAGE CALL SITE STRUCTURE (no values or full source code):')
-          for m in re.finditer(r'\\blocalStorage\\b',s,re.I):
+          for m in re.finditer(r'\blocalStorage\b',s,re.I):
             before=s[max(0,m.start()-120):m.start()]
             after=s[m.end():m.end()+160]
-            action=re.match(r'\\s*\\.\\s*(getItem|setItem|removeItem|clear|key|length)',after)
-            print('  offset',m.start(),'line',s.count('\\n',0,m.start())+1,'method',action.group(1) if action else 'other','near-war-room',bool(re.search('war.room|phx-war-room',before+after,re.I)))
+            action=re.match(r'\s*\.\s*(getItem|setItem|removeItem|clear|key|length)',after)
+            print('  offset',m.start(),'line',s.count('\n',0,m.start())+1,'method',action.group(1) if action else 'other','near-war-room',bool(re.search('war.room|phx-war-room',before+after,re.I)))
           print('NOTE: Static source inventory only. No access to installed device app data, no backup, no restoration test.')
           PY
