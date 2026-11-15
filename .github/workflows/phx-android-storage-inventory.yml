@@ -1,0 +1,48 @@
+name: PHALANX V2 read-only storage API inventory
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - work/phx-android-capacitor-isolated-20261115
+    paths:
+      - '.github/workflows/phx-android-storage-inventory.yml'
+permissions:
+  contents: read
+jobs:
+  inventory:
+    if: github.ref == 'refs/heads/work/phx-android-capacitor-isolated-20261115'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect static app storage API references without reading device data
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re,hashlib
+          p=Path('android-stage/www/index.html')
+          if not p.is_file(): raise SystemExit('Missing HTML')
+          s=p.read_text(encoding='utf-8',errors='replace')
+          print('HTML bytes:',p.stat().st_size)
+          print('HTML SHA256:',hashlib.sha256(p.read_bytes()).hexdigest())
+          patterns={
+            'localStorage':r'\blocalStorage\b',
+            'sessionStorage':r'\bsessionStorage\b',
+            'indexedDB':r'\bindexedDB\b',
+            'document.cookie':r'\bdocument\.cookie\b',
+            'Capacitor Preferences':r'\bPreferences\.(?:get|set|remove|clear)\s*\(',
+            'Capacitor Filesystem':r'\bFilesystem\.(?:readFile|writeFile|deleteFile)\s*\(',
+            'WebSQL':r'\bopenDatabase\s*\(',
+            'fetch':r'\bfetch\s*\(',
+            'supabase':r'\bsupabase\b',
+          }
+          for name,pat in patterns.items():
+            print(f'{name}: {len(re.findall(pat,s,re.I))} textual occurrences (not proof of use)')
+          for pat,label in [(r'localStorage\.(?:setItem|getItem|removeItem)\s*\(\s*([\x22\x27\x60])([^\x22\x27\x60]{1,90})\1','localStorage literal keys'),
+                            (r'sessionStorage\.(?:setItem|getItem|removeItem)\s*\(\s*([\x22\x27\x60])([^\x22\x27\x60]{1,90})\1','sessionStorage literal keys')]:
+            keys=sorted({m.group(2) for m in re.finditer(pat,s,re.I)})
+            print(f'{label} ({len(keys)}):',', '.join(keys[:80]))
+            if len(keys)>80: print('Additional keys omitted:',len(keys)-80)
+          print('NOTE: Static source inventory only. No access to installed device app data, no backup, no restoration test.')
+          PY
