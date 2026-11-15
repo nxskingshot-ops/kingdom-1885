@@ -1,0 +1,68 @@
+name: PHALANX V2.2 safe side-by-side install APK
+on:
+  push:
+    branches:
+      - work/phx-android-v21-parallel-20261115
+    paths:
+      - '.github/workflows/phx-android-v22-side-by-side.yml'
+permissions:
+  contents: read
+jobs:
+  debug-apk:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: android-stage
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-35 build-tools;35.0.0'
+      - name: Verify frozen app and War Room layer
+        run: |
+          node scripts/verify.cjs
+          node --check www/phx-war-room-v2.js
+      - name: Generate isolated Android project
+        run: |
+          npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+          npm ci --no-audit --no-fund
+          npx cap add android && npx cap sync android
+      - name: Change only generated test package identity, not source or data
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('android/app/build.gradle')
+          s=p.read_text()
+          old='applicationId "app.nexusphalanx.stage.v21parallel"'
+          assert s.count(old)==1,'Unexpected package; stop'
+          s=s.replace(old,'applicationId "app.nexusphalanx.stage.v22isolated"')
+          assert 'versionCode 1' in s
+          s=s.replace('versionCode 1','versionCode 1',1)
+          p.write_text(s)
+          print('NEW SIDE-BY-SIDE PACKAGE: app.nexusphalanx.stage.v22isolated')
+          print('Existing V2/V2.1 apps and storage are untouched')
+          PY
+      - name: Build independent debug APK
+        run: cd android && chmod +x gradlew && ./gradlew assembleDebug --no-daemon
+      - name: Verify package, certificate and APK
+        run: |
+          APK=android/app/build/outputs/apk/debug/app-debug.apk
+          AAPT="$(find "${ANDROID_HOME:-/usr/local/lib/android/sdk}/build-tools" -type f -name aapt | sort -V | tail -n1)"
+          SIGNER="$(find "${ANDROID_HOME:-/usr/local/lib/android/sdk}/build-tools" -type f -name apksigner | sort -V | tail -n1)"
+          "$AAPT" dump badging "$APK" | grep -m1 "^package:" | tee /tmp/package.txt
+          grep -q "name='app.nexusphalanx.stage.v22isolated'" /tmp/package.txt
+          "$SIGNER" verify --print-certs "$APK" | grep -E 'Signer #1 certificate SHA-256 digest|Verified using v[1234] scheme'
+          sha256sum "$APK"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: phalanx-v22-safe-side-by-side-apk
+          path: android-stage/android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 7
