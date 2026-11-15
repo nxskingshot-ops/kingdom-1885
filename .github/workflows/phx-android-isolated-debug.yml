@@ -6,6 +6,7 @@ on:
       - work/phx-android-capacitor-isolated-20261115
     paths:
       - 'android-stage/www/**'
+      - '.github/workflows/phx-android-isolated-debug.yml'
 permissions:
   contents: read
 jobs:
@@ -25,7 +26,13 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
-      - uses: android-actions/setup-android@v3
+      - name: Verify preinstalled Android SDK
+        run: |
+          test -n "${ANDROID_HOME:-}" && test -d "$ANDROID_HOME"
+          command -v sdkmanager
+          sdkmanager --version
+      - name: Install required Android SDK components
+        run: sdkmanager --install 'platform-tools' 'platforms;android-35' 'build-tools;35.0.0'
       - name: Verify original assets
         run: node scripts/verify.cjs
       - name: Generate lockfile from pinned versions
