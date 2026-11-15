@@ -1,6 +1,6 @@
 {
-  "appId": "app.nexusphalanx.stage.v2",
-  "appName": "NEXUS PHALANX TEST V2",
+  "appId": "app.nexusphalanx.stage.v21parallel",
+  "appName": "NEXUS PHALANX V2.1 TEST",
   "webDir": "www",
   "server": {
     "androidScheme": "https"
