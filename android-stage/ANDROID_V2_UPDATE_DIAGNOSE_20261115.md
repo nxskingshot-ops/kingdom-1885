@@ -39,3 +39,14 @@
 - **Beide APKs verwenden laut direktem Zertifikatvergleich dasselbe Signaturzertifikat**. Die frühere Vermutung eines Zertifikatkonflikts **zwischen Build #5 und #6 ist widerlegt**. Das sagt noch nichts über die Signatur der auf dem Gerät installierten V2.
 - **Ursache des Installationsfehlers weiterhin OFFEN**. Nächster Nachweis: `adb install -r` mit dem bereits vorhandenen Build-#6-Artefakt und Auswertung des konkreten `INSTALL_FAILED_...`-Codes, nur mit autorisiertem Testgerät und ohne Deinstallation oder Datenlöschung; alternativ Zertifikat der installierten App und APK separat prüfen.
 - **Keine neue APK erzeugen**, bevor der konkrete Installationsfehler bekannt ist. Keine Produktion oder Daten geändert.
+
+## Verifizierter Build-#4-Vergleich – 15.11.2026
+
+- GitHub Actions [Lauf](https://github.com/nxskingshot-ops/kingdom-1885/actions/runs/43734137585), Job `132872878237`: **BESTANDEN**.
+- Build #4: `app.nexusphalanx.stage`, `versionCode=1`, SHA256 `859c7c85cbf94634b39eb0177e6515ff46f20b80c580c864fe4ea5645c249459`.
+- Build #5: `app.nexusphalanx.stage.v2`, `versionCode=1`.
+- Build #6: `app.nexusphalanx.stage.v2`, `versionCode=1`.
+- **Zertifikat für #4, #5 und #6 identisch**; frühere Signaturvermutung ist für diese Artefakte widerlegt.
+- **Entscheidender Unterschied: Build #4 hat andere App-ID als #5/#6.** #4 ist daher kein In-Place-Update für eine Installation der V2-Paket-ID. Die vom Nutzer sichtbaren zwei App-Namen STAGE und TEST V2 passen zu getrennten Installationen, aber die tatsächliche Zuordnung der auf dem Handy installierten Pakete ist ohne Paketmanagerdiagnose noch nicht verifiziert.
+- Für das **bestehende TEST V2** ist Build #5 als Ursprung wahrscheinlicher als #4; ausdrücklich **Hypothese**. Das Installationsproblem von #6 ist weiterhin ungeklärt.
+- Nächster Schritt: installierte V2-Paket-ID/Signatur und exakten Installationsfehler ermitteln. Keine Daten löschen, keine weitere APK auf Verdacht.
