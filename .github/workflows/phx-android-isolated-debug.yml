@@ -65,6 +65,18 @@ jobs:
           main.write_text(src)
           print('Applied native Android window fit and edge-to-edge opt-out to generated project')
           PY
+      - name: Set V2.1 update version without changing application ID
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('android/app/build.gradle')
+          s=p.read_text()
+          assert 'applicationId "app.nexusphalanx.stage.v2"' in s, 'Unexpected package ID; stop'
+          assert 'versionCode 1' in s, 'Unexpected base version; stop'
+          s=s.replace('versionCode 1','versionCode 2',1).replace('versionName "1.0"','versionName "1.1"',1)
+          p.write_text(s)
+          print('V2.1: app.nexusphalanx.stage.v2, versionCode=2, versionName=1.1')
+          PY
       - name: Build debug APK
         run: cd android && chmod +x gradlew && ./gradlew assembleDebug --no-daemon
       - uses: actions/upload-artifact@v4
