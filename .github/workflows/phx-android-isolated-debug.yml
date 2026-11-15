@@ -1,0 +1,46 @@
+name: PHALANX isolated Android debug APK
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  debug-apk:
+    if: github.ref == 'refs/heads/work/phx-android-capacitor-isolated-20261115'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: android-stage
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: android-actions/setup-android@v3
+      - name: Verify original assets
+        run: node scripts/verify.cjs
+      - name: Generate lockfile from pinned versions
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Create Android native project
+        run: npx cap add android && npx cap sync android
+      - name: Build debug APK
+        run: cd android && chmod +x gradlew && ./gradlew assembleDebug --no-daemon
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: phalanx-stage-lockfile
+          path: android-stage/package-lock.json
+          if-no-files-found: ignore
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        with:
+          name: phalanx-stage-debug-apk
+          path: android-stage/android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 7
