@@ -1,0 +1,29 @@
+name: PHALANX HOME plaque read-only audit
+on:
+  push:
+    branches: [work/phx-android-v21-parallel-20261115]
+    paths: ['.github/workflows/phx-home-plaque-audit.yml']
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Locate actual plaque markup and style
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('android-stage/www/index.html').read_text()
+          lines=s.splitlines()
+          for token in ['phx-r10-input-name','phx-r10-input-level','phx-r8-war-entry','phx-r6-home','phx-r10-profile','phx-r10-level','phx-r11-kingdom','phx-r11-alliance','FaQu']:
+              print('TOKEN',token)
+              hits=list(re.finditer(re.escape(token),s,re.I))
+              print('COUNT',len(hits))
+              for m in hits[:8]:
+                  print('LINE',s.count('\n',0,m.start())+1,'CONTEXT',re.sub(r'\s+',' ',s[max(0,m.start()-180):m.end()+260])[:510])
+          for i in range(0,len(lines)):
+              if 'phx-r8-war-entry' in lines[i] or ('level' in lines[i].lower() and 'plaque' in lines[i].lower()):
+                  print('SOURCE',i+1,lines[i][:1600])
+          PY
