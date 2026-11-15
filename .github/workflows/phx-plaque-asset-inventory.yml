@@ -1,0 +1,29 @@
+name: PHALANX inspect original plaque assets
+on:
+  push:
+    branches: [work/phx-android-v21-parallel-20261115]
+    paths: ['.github/workflows/phx-plaque-asset-inventory.yml']
+permissions: {contents: read}
+jobs:
+  inventory:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          import re
+          root=Path('android-stage/www')
+          for p in root.rglob('*'):
+              if p.is_file() and p.suffix.lower() in ('.png','.webp','.jpg','.jpeg'):
+                  if any(x in p.name.lower() for x in ['home','queen','plaque','name','header','profile']):
+                      try:
+                          im=Image.open(p)
+                          print('ASSET',p,im.size,'BYTES',p.stat().st_size)
+                      except Exception as e: print('INVALID',p,str(e))
+          s=(root/'index.html').read_text()
+          for term in ['PHX_HOME_QUEEN_AN_APPROVED.png','phx-queen-scene','phx-r10-identity','phx-home-war-tab']:
+              for m in list(re.finditer(re.escape(term),s))[:8]:
+                  print('SOURCE',term,'LINE',s.count('\\n',0,m.start())+1,'SNIP',re.sub(r'\\s+',' ',s[max(0,m.start()-130):m.end()+180])[:360])
+          PY
