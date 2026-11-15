@@ -1,6 +1,11 @@
 name: PHALANX isolated Android debug APK
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - work/phx-android-capacitor-isolated-20261115
+    paths:
+      - 'android-stage/www/**'
 permissions:
   contents: read
 jobs:
