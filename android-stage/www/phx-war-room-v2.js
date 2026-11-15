@@ -1,0 +1,21 @@
+(()=>{'use strict';
+const war=document.getElementById('phx-r8-war');
+if(!war||war.dataset.v2Integrated==='yes')return;
+const cards=document.getElementById('phx-r8-war-cards'),back=document.getElementById('phx-r8-war-back'),settings=document.getElementById('phx-r10-settings');
+if(!cards||!back||!settings)return;
+war.dataset.v2Integrated='yes';war.classList.add('phx-war-v2');
+const shell=war.querySelector('.wr-shell');if(!shell)return;
+const intro=shell.querySelector('.wr-intro'),note=shell.querySelector('.wr-note'),head=shell.querySelector('.wr-head');
+if(intro)intro.hidden=true;if(note)note.hidden=true;
+if(head){head.classList.add('phx-w2-hero');const banner=document.createElement('div');banner.className='phx-w2-ribbon';banner.textContent='PERSONAL COMMAND DOSSIER';head.append(banner)}
+const profile=document.createElement('section');profile.className='phx-w2-profile';profile.setAttribute('aria-label','Commander Profile');
+profile.innerHTML='<div class="phx-w2-topline">COMMANDER PROFILE <span class="phx-w2-pending">PROFILE · LOCAL</span></div><div class="phx-w2-profile-grid"><div class="phx-w2-avatar" aria-label="Commander avatar">♜</div><div><strong class="phx-w2-name" data-w2-name>Commander</strong><div class="phx-w2-meta">Level <span data-w2-level>—</span> · <span data-w2-alliance>—</span> · Kingdom <span data-w2-kingdom>—</span></div><div class="phx-w2-meta">Player ID: <span data-w2-id>Not connected</span></div></div></div><div class="phx-w2-power"><strong>⚔ POWER</strong><span data-w2-power>Live data pending</span></div>';
+const sections=document.createElement('div');sections.className='phx-w2-sections';
+const defs=[['ACCOUNT INTELLIGENCE','Current assessment, strengths & weaknesses','▤','No verified account assessment connected.'],['ALLIANCE POSITION','Your position in alliance','♜','Verified alliance placement data not connected.'],['PLAYER DEVELOPMENT','Progress and changes over time','↗','Historical data not connected. No values have been invented.']];
+for(const [title,sub,icon,empty] of defs){const details=document.createElement('details');details.className='phx-w2-tile';const summary=document.createElement('summary');summary.innerHTML='<span class="phx-w2-icon" aria-hidden="true">'+icon+'</span><span><strong>'+title+'</strong><small>'+sub+'</small></span><span class="phx-w2-arrow">›</span>';const p=document.createElement('p');p.textContent=empty;details.append(summary,p);sections.append(details)}
+const command=document.createElement('section');command.className='phx-w2-command';command.innerHTML='<h2>♜ COMMAND ACCESS</h2><p>Three configurable shortcuts · original routes retained</p>';
+const edit=document.createElement('details');edit.className='phx-w2-editor';edit.innerHTML='<summary>⚙ Profile settings</summary>';edit.append(settings);
+if(head)head.after(profile);else shell.prepend(profile);profile.after(sections);sections.after(command);command.append(cards);command.after(edit);
+function refresh(){let p={};try{p=JSON.parse(localStorage.getItem('phx-personal-profile-r10')||'{}')||{}}catch(_){}const value=(key,fallback)=>String(p[key]??fallback);profile.querySelector('[data-w2-name]').textContent=value('name','Commander');profile.querySelector('[data-w2-level]').textContent=value('level','—');profile.querySelector('[data-w2-alliance]').textContent=value('alliance','—');profile.querySelector('[data-w2-kingdom]').textContent=value('kingdom','—');const avatar=profile.querySelector('.phx-w2-avatar');if(p.image&&typeof p.image==='string'&&/^data:image\/(?:png|jpeg|webp);base64,/.test(p.image)){avatar.textContent='';avatar.style.backgroundImage='url('+JSON.stringify(p.image)+')';avatar.style.backgroundSize='cover';avatar.style.backgroundPosition='center'}else{avatar.textContent='♜';avatar.style.backgroundImage='none'}}
+refresh();document.getElementById('phx-r10-save')?.addEventListener('click',()=>setTimeout(refresh,0));window.addEventListener('storage',e=>{if(e.key==='phx-personal-profile-r10')refresh()});window.addEventListener('hashchange',()=>{if(location.hash==='#war-room')refresh()});
+})();
