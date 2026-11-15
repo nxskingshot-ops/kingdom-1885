@@ -28,3 +28,14 @@
 - Statusleistenfix auf Gerät: **NICHT GETESTET**.
 - Navigation/Regressionen: **NICHT GETESTET**.
 - Freigabe zur produktiven Bereitstellung: **NICHT ERTEILT**.
+
+## Verifiziertes Ergebnis der Signaturdiagnose – 15.11.2026
+
+- GitHub Actions Lauf [#1](https://github.com/nxskingshot-ops/kingdom-1885/actions/runs/43728771682): **BESTANDEN**, Job-ID `132856374419`.
+- Originalartefakte Build #5 und Build #6 wurden durch den Workflow heruntergeladen und mit `apksigner` sowie `aapt` geprüft.
+- Build #5: APK-SHA256 `8bc2f48d5e99b22403a2ff5a30fa2d618122ea1b4eb5e236b2e9cece4f5d15a7`.
+- Build #6: APK-SHA256 `3e0db623d9be751c89febc9a1851d98b9806f5b40ecfe2ddead56a97fe1ca97a`.
+- Beide APKs: App-ID `app.nexusphalanx.stage.v2`, `versionCode=1`, `versionName=1.0`.
+- **Beide APKs verwenden laut direktem Zertifikatvergleich dasselbe Signaturzertifikat**. Die frühere Vermutung eines Zertifikatkonflikts **zwischen Build #5 und #6 ist widerlegt**. Das sagt noch nichts über die Signatur der auf dem Gerät installierten V2.
+- **Ursache des Installationsfehlers weiterhin OFFEN**. Nächster Nachweis: `adb install -r` mit dem bereits vorhandenen Build-#6-Artefakt und Auswertung des konkreten `INSTALL_FAILED_...`-Codes, nur mit autorisiertem Testgerät und ohne Deinstallation oder Datenlöschung; alternativ Zertifikat der installierten App und APK separat prüfen.
+- **Keine neue APK erzeugen**, bevor der konkrete Installationsfehler bekannt ist. Keine Produktion oder Daten geändert.
