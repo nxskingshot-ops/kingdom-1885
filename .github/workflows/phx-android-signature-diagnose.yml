@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 12
     steps:
-      - name: Compare APK signatures and manifest metadata from builds 4, 5 and 6
+      - name: Compare APK signatures and manifest metadata from builds 4, 5, 6 and 7
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
@@ -28,7 +28,7 @@ jobs:
           repo=os.environ["GH_REPO"]
           raw=subprocess.check_output(["gh","run","list","--repo",repo,"--workflow","phx-android-isolated-debug.yml","--branch","work/phx-android-capacitor-isolated-20261115","--limit","30","--json","databaseId,number,conclusion"],text=True)
           runs=json.loads(raw)
-          for number in (4,5,6):
+          for number in (4,5,6,7):
               matches=[r for r in runs if r["number"]==number and r["conclusion"]=="success"]
               if not matches: raise SystemExit(f"Cannot find successful build #{number}; stop without guessing")
               runid=str(matches[0]["databaseId"])
@@ -40,7 +40,7 @@ jobs:
           APKSIGNER="$(find "${ANDROID_HOME:-/usr/local/lib/android/sdk}/build-tools" -type f -name apksigner | sort -V | tail -n1)"
           AAPT="$(find "${ANDROID_HOME:-/usr/local/lib/android/sdk}/build-tools" -type f -name aapt | sort -V | tail -n1)"
           test -x "$APKSIGNER" && test -x "$AAPT"
-          for number in 4 5 6; do
+          for number in 4 5 6 7; do
             apk="/tmp/phx-apk-compare/build-$number/app-debug.apk"
             test -s "$apk"
             echo "=== BUILD #$number ==="
@@ -58,4 +58,17 @@ jobs:
           else
             echo "RESULT: DIFFERENT signing certificates for build #4, #5 and #6; Android cannot update one with the other."
           fi
-          echo "This checks GitHub artifacts, NOT the APK currently installed on the user's phone."
+          phone_cert="bab2610df631cd2616bc5eb2fbbd7c06f51b69e7f8fff873b9474bf4446c1780"
+          echo "INSTALLED V2 CERT SHA256: $phone_cert"
+          for number in 4 5 6 7; do
+            apk="/tmp/phx-apk-compare/build-$number/app-debug.apk"
+            cert="$("$APKSIGNER" verify --print-certs "$apk" | sed -n 's/^Signer #1 certificate SHA-256 digest: //p' | head -n1)"
+            cert="$(echo "$cert" | tr '[:upper:]' '[:lower:]')"
+            echo "BUILD #$number CERT SHA256: $cert"
+            if [[ "$cert" == "$phone_cert" ]]; then
+              echo "BUILD #$number vs INSTALLED V2: MATCH"
+            else
+              echo "BUILD #$number vs INSTALLED V2: MISMATCH"
+            fi
+          done
+          echo "This compares user-supplied installed-app fingerprint to GitHub artifacts; not an install test."
