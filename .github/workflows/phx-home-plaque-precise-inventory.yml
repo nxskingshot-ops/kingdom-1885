@@ -1,0 +1,27 @@
+name: PHALANX HOME plaque precise source inventory
+on:
+  push:
+    branches: [work/phx-android-v21-parallel-20261115]
+    paths: ['.github/workflows/phx-home-plaque-precise-inventory.yml']
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read exact HOME plaque markup and scoped CSS
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('android-stage/www/index.html').read_text()
+          for marker in ['#phx-r10-identity','#phx-r10-name','#phx-r10-sub','#phx-r11-affiliation','.phx-queen-experimental #phx-r10-identity','.phx-queen-experimental #phx-r11-affiliation','id="phx-r10-identity"']:
+              print('MARKER',marker)
+              for m in list(re.finditer(re.escape(marker),s))[:12]:
+                  start=s.rfind('{',0,m.start())
+                  end=s.find('}',m.end())
+                  if start<0 or end<0 or end-start>1400: 
+                      start=max(0,m.start()-130);end=min(len(s),m.end()+380)
+                  print('LINE',s.count('\n',0,m.start())+1,'CONTEXT',re.sub(r'\s+',' ',s[start:end+1])[:1100])
+          PY
