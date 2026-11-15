@@ -1,6 +1,11 @@
 name: PHALANX War Room source integration inventory
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - work/phx-android-v21-parallel-20261115
+    paths:
+      - '.github/workflows/phx-war-room-source-inventory.yml'
 permissions:
   contents: read
 jobs:
