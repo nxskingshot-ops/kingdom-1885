@@ -1,4 +1,4 @@
-name: PHALANX V2.5 isolated HOME Android APK
+name: PHALANX V2.6 isolated HOME Android APK
 on:
   push:
     branches:
@@ -40,8 +40,8 @@ jobs:
           const fs = require('node:fs');
           const file = 'capacitor.config.json';
           const config = JSON.parse(fs.readFileSync(file, 'utf8'));
-          config.appId = 'app.nexusphalanx.stage.v25home';
-          config.appName = 'NEXUS PHALANX V2.5 TEST';
+          config.appId = 'app.nexusphalanx.stage.v26plaque';
+          config.appName = 'NEXUS PHALANX V2.6 TEST';
           fs.writeFileSync(file, JSON.stringify(config, null, 2) + '\n');
           JS
           npx cap add android
@@ -84,14 +84,14 @@ jobs:
           AAPT="$(find "${ANDROID_HOME:-/usr/local/lib/android/sdk}/build-tools" -type f -name aapt | sort -V | tail -n1)"
           SIGNER="$(find "${ANDROID_HOME:-/usr/local/lib/android/sdk}/build-tools" -type f -name apksigner | sort -V | tail -n1)"
           "$AAPT" dump badging "$APK" > /tmp/package.txt
-          grep -q "name='app.nexusphalanx.stage.v25home'" /tmp/package.txt
+          grep -q "name='app.nexusphalanx.stage.v26plaque'" /tmp/package.txt
           "$SIGNER" verify --print-certs "$APK" | tee /tmp/apk-signature.txt
           grep -qi "certificate SHA-256 digest" /tmp/apk-signature.txt
           test -s "$APK"
           sha256sum "$APK"
       - uses: actions/upload-artifact@v4
         with:
-          name: phalanx-home-v25-android-apk
+          name: phalanx-home-v26-android-apk
           path: android-stage/android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 7
   browser:
