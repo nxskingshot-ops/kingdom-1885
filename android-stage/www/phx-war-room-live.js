@@ -32,6 +32,24 @@
       <button type="button" data-live-logout>Sign out</button>
     </div>`;
   profile.after(account);
+  const toolbar = war.querySelector('.phx-w2-toolbar');
+  const openProfile = document.createElement('button');
+  openProfile.type = 'button';
+  openProfile.className = 'phx-live-open';
+  openProfile.textContent = 'Live profile';
+  toolbar.append(openProfile);
+  const version = document.createElement('span');
+  version.className = 'phx-live-build';
+  version.textContent = 'V2.9 TEST';
+  toolbar.append(version);
+  openProfile.addEventListener('click', () => {
+    account.scrollIntoView({ block: 'start' });
+    (form.hidden ? el('refresh') : form.elements.email).focus({ preventScroll: true });
+  });
+  const sourceBadge = document.createElement('span');
+  sourceBadge.className = 'phx-live-source-badge';
+  sourceBadge.textContent = 'Sign in for live data';
+  profile.append(sourceBadge);
   const el = name => account.querySelector('[data-live-' + name + ']');
   const form = el('login');
   const status = el('status');
@@ -46,11 +64,17 @@
     const headers = { apikey: apiKey };
     if (token) headers.Authorization = 'Bearer ' + token;
     if (body) headers['Content-Type'] = 'application/json';
-    const res = await fetch(project + path, {
-      method, headers, body: body && JSON.stringify(body), cache: 'no-store',
-      redirect: 'error', signal: AbortSignal.timeout(timeout)
-    });
-    return { status: res.status, data: await res.json().catch(() => null) };
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeout);
+    try {
+      const res = await fetch(project + path, {
+        method, headers, body: body && JSON.stringify(body), cache: 'no-store',
+        redirect: 'error', signal: controller.signal
+      });
+      return { status: res.status, data: await res.json().catch(() => null) };
+    } finally {
+      clearTimeout(timer);
+    }
   }
 
   function clearProfile() {
@@ -66,6 +90,7 @@
   function showSignedOut(message) {
     session = null;
     clearProfile();
+    sourceBadge.textContent = 'Sign in for live data';
     actions.hidden = true;
     form.hidden = false;
     status.textContent = message;
@@ -92,6 +117,7 @@
     const current = ++operation;
     clearProfile();
     status.textContent = 'Loading own profile…';
+    sourceBadge.textContent = 'Checking live data';
     refresh.disabled = true;
     try {
       const result = await request('/functions/v1/phx-war-room-own-profile', { token: session, timeout: 45000 });
@@ -99,6 +125,7 @@
       if (result.status === 401) return showSignedOut('Session expired. Sign in again.');
       const data = result.data;
       if (result.status !== 200 || !/^[1-9][0-9]{0,15}$/.test(data?.playerId ?? '')) {
+        sourceBadge.textContent = 'Live data unavailable';
         status.textContent = result.status === 403 ? 'This account has no verified player access.'
           : result.status === 429 ? 'Request limit reached. Try again later.'
           : 'Live profile is temporarily unavailable.';
@@ -118,12 +145,16 @@
       status.textContent = player ? 'Verified profile · MightPulse'
         : 'Current values are unavailable. Refresh to check again.';
       values.hidden = false;
+      sourceBadge.textContent = player ? 'Verified live data' : 'Current data unavailable';
       if (player) {
         power.textContent = amount ?? 'Unavailable';
         profile.classList.add('phx-live-verified');
       }
     } catch {
-      if (current === operation) status.textContent = 'Could not load the live profile. Try again.';
+      if (current === operation) {
+        sourceBadge.textContent = 'Live data unavailable';
+        status.textContent = 'Could not load the live profile. Try again.';
+      }
     } finally {
       if (current === operation) refresh.disabled = false;
     }

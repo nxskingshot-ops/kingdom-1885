@@ -69,3 +69,28 @@ body.phx-r6-at-home #phx-r6-home .phx-home-nav {
   outline: 3px solid #83bbff;
   outline-offset: -5px;
 }
+
+/* Align the affiliation text with the single frame in the approved artwork. */
+#phx-r6-home .phx-queen-experimental #phx-r11-affiliation {
+  left: 75.85%;
+  right: auto;
+  top: 3.40%;
+  width: 17.70%;
+  height: 5.55%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  gap: 0.24em;
+  font: 700 clamp(8px, 2.5cqi, 18px)/1 Georgia, serif;
+  color: #ffe0a0;
+  text-shadow: 0 1px 2px #000;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+#phx-r6-home .phx-queen-experimental #phx-r11-alliance {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

@@ -65,10 +65,14 @@ async function run() {
         });
         await home();
         await id('phx-r8-war-entry').tap();
+        await expect(page.getByText('V2.9 TEST')).toBeVisible();
+        await page.getByRole('button', { name: 'Live profile' }).click();
+        await expect(account.getByLabel('Test account email')).toBeFocused();
         await account.getByLabel('Test account email').fill('warroom@example.invalid');
         await account.getByLabel('Password').fill('mock-only-password');
         await account.getByRole('button', { name: 'Sign in' }).click();
         await expect(account.getByRole('status')).toHaveText('Verified profile · MightPulse');
+        await expect(page.locator('.phx-live-source-badge')).toHaveText('Verified live data');
         await expect(account.locator('[data-live-id]')).toHaveText('291410048');
         await expect(account.locator('[data-live-power]')).toHaveText(/190[,. ]778[,. ]224/);
         await expect(page.locator('[data-w2-power]')).toBeVisible();
@@ -95,6 +99,11 @@ async function run() {
       await expect(id('phx-r10-sub')).toBeHidden();
       await expect(id('phx-r11-affiliation')).toHaveText(/#1885\s*·\s*NXS/);
       await expect(hero.locator('.phx-home-name-texture')).toBeVisible();
+      if (process.env.PHX_TEST_LIVE_PROFILE === '1') {
+        await expect(hero.locator('#phx-v29-affiliation-mask')).toBeAttached();
+        await expect(id('phx-r11-affiliation')).toHaveCSS('border-top-width', '0px');
+        await expect(id('phx-r11-affiliation')).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+      }
       assert.equal(await hero.locator('.phx-queen-scene').evaluate(img => img.naturalWidth), 1670);
       await page.screenshot({ path: evidence + '/home-393.png' });
     });

@@ -16,7 +16,15 @@ LEFT_TEXTURE = """<svg class="phx-home-name-texture" viewBox="0 0 1670 941" pres
     <mask id="phx-v25-name-mask" maskUnits="userSpaceOnUse" x="249" y="32" width="144" height="60">
       <rect x="251" y="34" width="140" height="56" fill="white" filter="url(#phx-v25-texture-edge)"/>
     </mask>
+    <mask id="phx-v29-affiliation-mask" maskUnits="userSpaceOnUse" x="1265" y="31" width="298" height="53">
+      <rect x="1267" y="33" width="294" height="49" fill="white" filter="url(#phx-v25-texture-edge)"/>
+    </mask>
   </defs>
+  <g mask="url(#phx-v29-affiliation-mask)">
+    <svg x="1264" y="30" width="300" height="56" viewBox="1412 34 12 47" preserveAspectRatio="none" overflow="hidden">
+      <image href="./PHX_HOME_QUEEN_AN_APPROVED.png" width="1670" height="941"/>
+    </svg>
+  </g>
   <g mask="url(#phx-v25-name-mask)">
     <svg x="248" y="31" width="146" height="62" viewBox="389 34 10 44" preserveAspectRatio="none" overflow="hidden">
       <image href="./PHX_HOME_QUEEN_AN_APPROVED.png" width="1670" height="941"/>

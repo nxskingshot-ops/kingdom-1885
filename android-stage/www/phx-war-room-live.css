@@ -53,3 +53,32 @@
   color: transparent;
   pointer-events: none;
 }
+
+#phx-r8-war .phx-w2-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+#phx-r8-war .phx-live-open {
+  font: 700 14px Georgia, serif;
+}
+#phx-r8-war .phx-live-build {
+  margin-left: auto;
+  color: #ffe0a0;
+  font: 700 11px system-ui, sans-serif;
+  white-space: nowrap;
+}
+#phx-r8-war .phx-live-source-badge {
+  position: absolute;
+  top: 4%;
+  left: 76.4%;
+  width: 20.5%;
+  height: 8.7%;
+  display: grid;
+  place-items: center;
+  background: #201d1a;
+  color: #ffedcf;
+  border-radius: 4px;
+  text-align: center;
+  font: 700 clamp(7px, 2.1cqi, 11px)/1 system-ui, sans-serif;
+}
