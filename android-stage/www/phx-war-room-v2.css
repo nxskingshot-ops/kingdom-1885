@@ -38,3 +38,11 @@
 @media(max-width:360px){#phx-r8-war .phx-w2-profile-grid{grid-template-columns:66px 1fr}#phx-r8-war .phx-w2-avatar{width:64px;height:64px}#phx-r8-war .phx-w2-topline{font-size:15px}}
 
 /* Isolated Android V2.1 build trigger after guarded HTML integration; no style changes. */
+
+/* V2.7 Android-only correction: reserve space for HOME back action; no routing changes. */
+@media(max-width:600px){
+ #phx-r8-war .phx-w2-hero{padding-top:54px;min-height:174px;box-sizing:border-box}
+ #phx-r8-war .phx-w2-hero #phx-r8-war-back{top:8px;left:12px;z-index:4;max-width:calc(100% - 24px)}
+ #phx-r8-war .phx-w2-hero .wr-eyebrow{font-size:12px;letter-spacing:1px}
+ #phx-r8-war .phx-w2-hero .wr-title{font-size:clamp(32px,8vw,46px);line-height:1.05}
+}
