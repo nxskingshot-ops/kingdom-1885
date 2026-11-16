@@ -26,13 +26,15 @@ function csvCell(value) {
   return '"' + text.replaceAll('"', '""') + '"';
 }
 function download(format, content, mimeType) {
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(new Blob([content], { type: mimeType }));
+  // Downloads use the host document; the map iframe keeps its existing sandbox.
+  const host = window.parent;
+  const link = host.document.createElement('a');
+  link.href = host.URL.createObjectURL(new Blob([content], { type: mimeType }));
   link.download = 'PHALANX-Outposts-1885.' + format;
-  document.body.append(link);
+  host.document.body.append(link);
   link.click();
   link.remove();
-  setTimeout(() => URL.revokeObjectURL(link.href), 30000);
+  host.setTimeout(() => host.URL.revokeObjectURL(link.href), 30000);
 }
 $('export-json').disabled = $('export-csv').disabled = !exportRows.length;
 $('export-json').onclick = () =>
