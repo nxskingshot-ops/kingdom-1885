@@ -1,5 +1,5 @@
-/* Coordinates refer to the 1670 × 941 Queen An original. Keep its right plaque unchanged. */
-#phx-r6-home .phx-queen-experimental .phx-home-name-texture {
+/* Coordinates refer to the 1670 × 941 Queen An original. Render both plaques within the unchanged original frame. */
+#phx-r6-home .phx-queen-experimental .phx-home-plaque-texture {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -93,4 +93,9 @@ body.phx-r6-at-home #phx-r6-home .phx-home-nav {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+#phx-r6-home .phx-queen-experimental #phx-r11-sep[hidden],
+#phx-r6-home .phx-queen-experimental #phx-r11-alliance[hidden] {
+  display: none;
 }

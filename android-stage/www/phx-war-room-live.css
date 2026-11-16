@@ -82,3 +82,7 @@
   text-align: center;
   font: 700 clamp(7px, 2.1cqi, 11px)/1 system-ui, sans-serif;
 }
+
+#phx-r8-war .phx-r10-fields label[hidden] {
+  display: none;
+}

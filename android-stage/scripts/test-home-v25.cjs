@@ -36,11 +36,14 @@ async function run() {
     const hero = page.locator('.phx-queen-experimental');
     const home = async () => page.goto(url + '/#phalanx-home', { waitUntil: 'load' });
 
-    if (process.env.PHX_TEST_LIVE_PROFILE === '1') {
+    const live = process.env.PHX_TEST_LIVE_PROFILE === '1';
+    if (live) {
       await check('Live-Profil im War Room: Anmeldung, Aktualisieren und Abmelden', async () => {
         const origin = 'https://yuyvmbdybwpwpqsipfjt.supabase.co';
         let freshness = 'fresh';
         let signOutObserved = false;
+        let unlinked = false;
+        let ownPlayer = { name: 'Scout Étoile', kingdom: 1901, alliance: 'ALT', power: '190778224' };
         const account = page.getByRole('region', { name: 'Live profile' });
         const sourceDate = '2026-11-16T06:32:25.503Z';
         const endpoint = origin + '/functions/v1/phx-war-room-own-profile';
@@ -57,15 +60,19 @@ async function run() {
         });
         await page.route(endpoint, async request => {
           assert.equal(request.request().headers().authorization, 'Bearer mock-live-token');
+          if (unlinked) {
+            await request.fulfill({ status: 403, json: { error: 'approved_player_link_required' } });
+            return;
+          }
           await request.fulfill({ json: {
             playerId: '291410048', freshness, capturedAt: sourceDate,
             checkedAt: '2026-11-16T06:32:25.629Z',
-            player: freshness === 'fresh' ? { name: 'FaQu', kingdom: 1885, alliance: 'NXS', power: '190778224' } : null
+            player: freshness === 'fresh' ? ownPlayer : null
           } });
         });
         await home();
         await id('phx-r8-war-entry').tap();
-        await expect(page.getByText('V2.9 TEST')).toBeVisible();
+        await expect(page.getByText('HOME FINAL TEST')).toBeVisible();
         await page.getByRole('button', { name: 'Live profile' }).click();
         await expect(account.getByLabel('Test account email')).toBeFocused();
         await account.getByLabel('Test account email').fill('warroom@example.invalid');
@@ -74,6 +81,22 @@ async function run() {
         await expect(account.getByRole('status')).toHaveText('Verified profile · MightPulse');
         await expect(page.locator('.phx-live-source-badge')).toHaveText('Verified live data');
         await expect(account.locator('[data-live-id]')).toHaveText('291410048');
+        await expect(page.locator('[data-w2-name]')).toHaveText('Scout Étoile');
+        await expect(page.locator('[data-w2-alliance]')).toHaveText('ALT');
+        await expect(page.locator('[data-w2-kingdom]')).toHaveText('#1901');
+        await expect(page.locator('[data-w2-level]')).toHaveText('—');
+        await id('phx-r8-war-back').click();
+        await route('phalanx-home');
+        await expect(id('phx-r10-name')).toHaveText('Scout Étoile');
+        await expect(id('phx-r10-sub')).toBeHidden();
+        await expect(id('phx-r11-affiliation')).toHaveText(/#1901\s*·\s*ALT/);
+        await page.screenshot({ path: evidence + '/home-verified-393.png' });
+        await id('phx-r8-war-entry').tap();
+        ownPlayer = { ...ownPlayer, alliance: null };
+        await account.getByRole('button', { name: 'Refresh profile' }).click();
+        await expect(id('phx-r11-affiliation')).toHaveText('#1901·');
+        await expect(id('phx-r11-sep')).toBeHidden();
+        await expect(page.locator('[data-w2-alliance]')).toHaveText('—');
         await expect(account.locator('[data-live-power]')).toHaveText(/190[,. ]778[,. ]224/);
         await expect(page.locator('[data-w2-power]')).toBeVisible();
         await expect(account.locator('[data-live-captured]')).toHaveAttribute('datetime', sourceDate);
@@ -83,6 +106,11 @@ async function run() {
         await account.getByRole('button', { name: 'Refresh profile' }).click();
         await expect(account.locator('[data-live-power]')).toHaveText('Unavailable');
         await expect(page.locator('[data-w2-power]')).toHaveText('Data pending');
+        await expect(page.locator('[data-w2-name]')).toHaveText('—');
+        await expect(id('phx-r11-kingdom')).toHaveText('—');
+        unlinked = true;
+        await account.getByRole('button', { name: 'Refresh profile' }).click();
+        await expect(account.getByRole('status')).toHaveText('This account has no verified player access.');
         await account.getByRole('button', { name: 'Sign out' }).click();
         await expect(account.getByRole('status')).toHaveText('Signed out.');
         await expect(account.locator('[data-live-values]')).toBeHidden();
@@ -95,10 +123,11 @@ async function run() {
 
     await check('HOME und Plaketten bei 393 px', async () => {
       await home();
-      await expect(id('phx-r10-name')).toHaveText('FaQu');
+      await expect(id('phx-r10-name')).toHaveText(live ? 'Profil öffnen' : 'FaQu');
       await expect(id('phx-r10-sub')).toBeHidden();
-      await expect(id('phx-r11-affiliation')).toHaveText(/#1885\s*·\s*NXS/);
-      await expect(hero.locator('.phx-home-name-texture')).toBeVisible();
+      if (live) await expect(id('phx-r11-kingdom')).toHaveText('—');
+      else await expect(id('phx-r11-affiliation')).toHaveText(/#1885\s*·\s*NXS/);
+      await expect(hero.locator('.phx-home-plaque-texture')).toBeVisible();
       if (process.env.PHX_TEST_LIVE_PROFILE === '1') {
         await expect(hero.locator('#phx-v29-affiliation-mask')).toBeAttached();
         await expect(id('phx-r11-affiliation')).toHaveCSS('border-top-width', '0px');
@@ -114,9 +143,9 @@ async function run() {
       await route('war-room');
       await expect(id('phx-r8-war')).toBeVisible();
       await expect(page.getByRole('region', { name: 'Commander Profile' })).toBeVisible();
-      await expect(page.locator('[data-w2-name]')).toHaveText('FaQu');
-      await expect(page.locator('[data-w2-alliance]')).toHaveText('NXS');
-      await expect(page.locator('[data-w2-kingdom]')).toHaveText('#1885');
+      await expect(page.locator('[data-w2-name]')).toHaveText(live ? '—' : 'FaQu');
+      await expect(page.locator('[data-w2-alliance]')).toHaveText(live ? '—' : 'NXS');
+      await expect(page.locator('[data-w2-kingdom]')).toHaveText(live ? '—' : '#1885');
       await expect(page.locator('[data-w2-power]')).toHaveText('Data pending');
       const backBox = await id('phx-r8-war-back').boundingBox();
       const artBox = await page.locator('.phx-w2-hero').boundingBox();
@@ -152,14 +181,25 @@ async function run() {
       assert.doesNotMatch(await id('phx-r8-war').innerText(), /master power|pet power|hero power/i);
       await page.locator('.phx-w2-editor summary').filter({ hasText: 'Profile settings' }).click();
       const longName = 'CommanderFaQuTheGreatÉtoile';
-      await id('phx-r10-input-name').fill(longName);
-      await id('phx-r10-input-level').fill('33');
-      await id('phx-r11-input-kingdom').fill('1901');
-      await id('phx-r11-input-alliance').fill('ALT');
-      await id('phx-r10-save').click();
-      await expect(page.locator('[data-w2-name]')).toHaveText(longName);
-      await expect(page.locator('[data-w2-level]')).toHaveText('33');
-      assert.equal(await page.evaluate(key => JSON.parse(localStorage.getItem(key)).name, profileKey), longName);
+      if (live) {
+        await expect(id('phx-r10-input-name')).toBeHidden();
+        await id('phx-r10-file').setInputFiles({
+          name: 'test.png', mimeType: 'image/png',
+          buffer: Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+j2uoAAAAASUVORK5CYII=', 'base64')
+        });
+        await expect(id('phx-r10-message')).toContainText('Bild bereit');
+        await id('phx-r10-save').click();
+        await expect(page.locator('.phx-w2-avatar')).toBeVisible();
+      } else {
+        await id('phx-r10-input-name').fill(longName);
+        await id('phx-r10-input-level').fill('33');
+        await id('phx-r11-input-kingdom').fill('1901');
+        await id('phx-r11-input-alliance').fill('ALT');
+        await id('phx-r10-save').click();
+        await expect(page.locator('[data-w2-name]')).toHaveText(longName);
+        await expect(page.locator('[data-w2-level]')).toHaveText('33');
+        assert.equal(await page.evaluate(key => JSON.parse(localStorage.getItem(key)).name, profileKey), longName);
+      }
       await page.locator('.phx-w2-shortcut-settings summary').click();
       const shortcuts = id('phx-r8-war-cards').locator('select');
       await expect(shortcuts).toHaveCount(3);
@@ -172,7 +212,8 @@ async function run() {
         await expect(shortcuts.nth(index)).toHaveValue(target);
       }
       await page.locator('.phx-w2-shortcut-settings summary').click();
-      await expect(page.locator('[data-w2-name]')).toHaveText(longName);
+      await expect(page.locator('[data-w2-name]')).toHaveText(live ? '—' : longName);
+      if (live) await expect(page.locator('.phx-w2-avatar')).toBeVisible();
       await expect(page.locator('.phx-w2-shortcut')).toHaveText(['Reports', 'Territory', 'Outpost Map']);
       await page.screenshot({ path: evidence + '/war-room-393.png' });
       for (const [label, destination] of [['Outpost Reports', 'report'], ['Territory Control', 'home'], ['Outpost Map', 'map']]) {
@@ -184,9 +225,12 @@ async function run() {
       await id('phx-r8-war-back').click();
       await route('phalanx-home');
       await page.reload({ waitUntil: 'load' });
-      await expect(id('phx-r10-name')).toHaveText(longName);
+      await expect(id('phx-r10-name')).toHaveText(live ? 'Profil öffnen' : longName);
       await expect(id('phx-r10-sub')).toBeHidden();
-      await expect(id('phx-r11-affiliation')).toHaveText(/#1901\s*·\s*ALT/);
+      if (live) {
+        await expect(id('phx-r11-kingdom')).toHaveText('—');
+        await expect(id('phx-r10-photo')).toBeVisible();
+      } else await expect(id('phx-r11-affiliation')).toHaveText(/#1901\s*·\s*ALT/);
       for (const width of [320, 393, 740]) {
         await page.setViewportSize({ width, height: 852 });
         const name = await id('phx-r10-name').evaluate(node => {
@@ -233,6 +277,8 @@ async function run() {
       await route('phalanx-home');
       await nav('reports').click();
       await route('report');
+      await id('report-back').click();
+      await route('phalanx-home');
     });
 
     await home();

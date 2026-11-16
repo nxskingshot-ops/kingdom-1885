@@ -10,7 +10,7 @@ STAGE = Path(__file__).resolve().parents[1]
 SCENE = '<img class="phx-queen-scene" src="PHX_HOME_QUEEN_AN_APPROVED.png" alt="" aria-hidden="true">'
 # Like R13, mask the baked letters with adjacent texture from the same file.
 # The donor strip and mask keep clear of the laurels and gold frame.
-LEFT_TEXTURE = """<svg class="phx-home-name-texture" viewBox="0 0 1670 941" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+PLAQUE_TEXTURE = """<svg class="phx-home-plaque-texture" viewBox="0 0 1670 941" preserveAspectRatio="none" aria-hidden="true" focusable="false">
   <defs>
     <filter id="phx-v25-texture-edge"><feGaussianBlur stdDeviation="0.9"/></filter>
     <mask id="phx-v25-name-mask" maskUnits="userSpaceOnUse" x="249" y="32" width="144" height="60">
@@ -21,7 +21,7 @@ LEFT_TEXTURE = """<svg class="phx-home-name-texture" viewBox="0 0 1670 941" pres
     </mask>
   </defs>
   <g mask="url(#phx-v29-affiliation-mask)">
-    <svg x="1264" y="30" width="300" height="56" viewBox="1412 34 12 47" preserveAspectRatio="none" overflow="hidden">
+    <svg x="1264" y="30" width="300" height="56" viewBox="1418 34 7 47" preserveAspectRatio="none" overflow="hidden">
       <image href="./PHX_HOME_QUEEN_AN_APPROVED.png" width="1670" height="941"/>
     </svg>
   </g>
@@ -42,6 +42,17 @@ OLD_MODULE_RETURN = """if (!event.target.closest('[data-phx-r3-target="home"]'))
 MODULE_RETURN = """if (!event.target.closest('[data-phx-r3-target="home"]')) return;
     event.stopImmediatePropagation();
     bridge('home');"""
+HOME_REPORTS = "reports: () => bridge('report'),"
+HOME_REPORTS_WITH_RETURN = """reports: () => {
+      if (bridge('report')) history.replaceState({...history.state, fromPhalanxHome: true}, '');
+    },"""
+REPORT_BACK = "  language.addEventListener('change', localize);"
+CONTEXTUAL_REPORT_BACK = """  byId('report-back').addEventListener('click', event => {
+    if (!history.state?.fromPhalanxHome) return;
+    event.stopImmediatePropagation();
+    location.hash = '#phalanx-home';
+  }, true);
+  language.addEventListener('change', localize);"""
 STYLE_LINK = '<link rel="stylesheet" href="./phx-home-plaque-v25.css">'
 
 
@@ -55,10 +66,14 @@ def integrate(web_root: Path) -> None:
     index = web_root / "index.html"
     original = index.read_bytes()
     replacements = {
-        SCENE: f"{SCENE}\n{LEFT_TEXTURE}",
+        SCENE: f"{SCENE}\n{PLAQUE_TEXTURE}",
         "</head>": f"{STYLE_LINK}\n</head>",
         TERRITORY_ENTRY: f"{TERRITORY_BACK}{TERRITORY_ENTRY}",
         OLD_MODULE_RETURN: MODULE_RETURN,
+        HOME_REPORTS: HOME_REPORTS_WITH_RETURN,
+        REPORT_BACK: CONTEXTUAL_REPORT_BACK,
+        '    updateRoute(); // pushState does not emit hashchange.':
+            '    updateRoute(); // pushState does not emit hashchange.\n    return true;',
     }
     patched = original
     for before, after in replacements.items():

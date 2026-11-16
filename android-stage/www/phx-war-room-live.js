@@ -40,11 +40,11 @@
   toolbar.append(openProfile);
   const version = document.createElement('span');
   version.className = 'phx-live-build';
-  version.textContent = 'V2.9 TEST';
+  version.textContent = 'HOME FINAL TEST';
   toolbar.append(version);
   openProfile.addEventListener('click', () => {
     account.scrollIntoView({ block: 'start' });
-    (form.hidden ? el('refresh') : form.elements.email).focus({ preventScroll: true });
+    (form.hidden ? refresh : form.elements.email).focus({ preventScroll: true });
   });
   const sourceBadge = document.createElement('span');
   sourceBadge.className = 'phx-live-source-badge';
@@ -57,6 +57,16 @@
   const values = el('values');
   const refresh = el('refresh');
   const power = profile.querySelector('[data-w2-power]');
+  const home = document.getElementById('phx-r6-home');
+  const homeName = document.getElementById('phx-r10-name');
+  const homeLevel = document.getElementById('phx-r10-sub');
+  const homeKingdom = document.getElementById('phx-r11-kingdom');
+  const homeAlliance = document.getElementById('phx-r11-alliance');
+  const homeDivider = document.getElementById('phx-r11-sep');
+  const affiliation = document.getElementById('phx-r11-affiliation');
+  for (const field of ['phx-r10-input-name', 'phx-r10-input-level', 'phx-r11-input-kingdom', 'phx-r11-input-alliance']) {
+    document.getElementById(field).closest('label').hidden = true;
+  }
   let session = null;
   let operation = 0;
 
@@ -77,7 +87,24 @@
     }
   }
 
+  function renderIdentity(player) {
+    const name = player?.name ?? '';
+    homeName.dataset.profileName = name;
+    homeName.textContent = name || ({
+      de: 'Profil öffnen', en: 'Open profile', fr: 'Ouvrir le profil'
+    }[home.lang] ?? 'Open profile');
+    homeName.title = name;
+    homeLevel.textContent = '';
+    homeKingdom.textContent = player ? '#' + player.kingdom : '—';
+    homeAlliance.textContent = player?.alliance ?? '';
+    homeAlliance.hidden = !player?.alliance;
+    homeDivider.hidden = homeAlliance.hidden;
+    affiliation.title = player ? [homeKingdom.textContent, player.alliance].filter(Boolean).join(' · ') : '';
+    document.dispatchEvent(new Event('phx:profile-rendered'));
+  }
+
   function clearProfile() {
+    renderIdentity(null);
     values.hidden = true;
     for (const field of values.querySelectorAll('dd:not(:has(time)), time')) {
       field.textContent = '';
@@ -132,9 +159,15 @@
         return;
       }
 
-      const player = data.freshness === 'fresh' ? data.player : null;
+      const player = data.freshness === 'fresh' && Number.isSafeInteger(data.player?.kingdom) &&
+        data.player.kingdom > 0 ? {
+          ...data.player,
+          name: typeof data.player.name === 'string' ? data.player.name.trim() : '',
+          alliance: typeof data.player.alliance === 'string' ? data.player.alliance.trim() : ''
+        } : null;
       const amount = typeof player?.power === 'string' && /^\d{1,24}$/.test(player.power)
         ? new Intl.NumberFormat().format(BigInt(player.power)) : null;
+      renderIdentity(player);
       el('name').textContent = player?.name || '—';
       el('kingdom').textContent = player?.kingdom ? '#' + player.kingdom : '—';
       el('alliance').textContent = player?.alliance || '—';
@@ -159,6 +192,11 @@
       if (current === operation) refresh.disabled = false;
     }
   }
+
+  renderIdentity(null);
+  document.getElementById('phx-r11-language-select').addEventListener('change', () => {
+    if (!homeName.dataset.profileName && !profile.classList.contains('phx-live-verified')) renderIdentity(null);
+  });
 
   form.addEventListener('submit', async event => {
     event.preventDefault();

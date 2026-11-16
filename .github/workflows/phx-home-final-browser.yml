@@ -1,0 +1,46 @@
+name: PHALANX HOME FINAL browser verification
+on:
+  push:
+    branches:
+      - work/phx-home-final-audit-20261116
+    paths:
+      - '.github/workflows/phx-home-final-browser.yml'
+      - 'android-stage/**'
+      - 'integration/war-room-live-profile/**'
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify protected source and profile handler
+        run: |
+          (cd android-stage && node scripts/verify.cjs)
+          node --test integration/war-room-live-profile/handler.test.mjs
+      - name: Install Chromium
+        run: |
+          npm install --no-save --prefix /tmp/phx-browser @playwright/test@1.58.2
+          /tmp/phx-browser/node_modules/.bin/playwright install chromium
+      - name: Verify the web assets packaged by Android
+        run: |
+          cp -a android-stage/www /tmp/phx-home-final-www
+          python3 android-stage/scripts/integrate-home-v25.py /tmp/phx-home-final-www
+          python3 android-stage/scripts/integrate-war-room-live-v28.py /tmp/phx-home-final-www
+          python3 -m http.server 8765 --bind 127.0.0.1 --directory /tmp/phx-home-final-www &
+          for attempt in {1..10}; do
+            if curl -fsS -o /dev/null http://127.0.0.1:8765/; then break; fi
+            sleep 1
+          done
+          PHX_TEST_LIVE_PROFILE=1 PHX_EVIDENCE=/tmp/phx-home-final-evidence \
+            NODE_PATH=/tmp/phx-browser/node_modules node android-stage/scripts/test-home-v25.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: phalanx-home-final-browser-evidence
+          path: /tmp/phx-home-final-evidence
+          retention-days: 7

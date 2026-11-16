@@ -28,13 +28,11 @@
   profile.setAttribute('aria-label', 'Commander Profile');
   profile.innerHTML = `
     <h2 class="phx-w2-visually-hidden">Commander Profile</h2>
-    <span class="phx-w2-visually-hidden">Live data pending</span>
     <img class="phx-w2-avatar" alt="Commander avatar" hidden>
     <strong class="phx-w2-value phx-w2-name" data-w2-name></strong>
     <span class="phx-w2-value phx-w2-level"><span class="phx-w2-visually-hidden">Level </span><span data-w2-level></span></span>
     <span class="phx-w2-value phx-w2-alliance"><span class="phx-w2-visually-hidden">Alliance </span><span data-w2-alliance></span></span>
     <span class="phx-w2-value phx-w2-kingdom"><span class="phx-w2-visually-hidden">Kingdom </span><span data-w2-kingdom></span></span>
-    <span class="phx-w2-visually-hidden">Player ID and last update unavailable.</span>
     <span class="phx-w2-visually-hidden">Power: <span data-w2-power>Data pending</span></span>
   `;
   head.after(profile);
@@ -114,7 +112,7 @@
 
   function refreshProfile() {
     const profileValues = {
-      name: byId('phx-r10-name').textContent,
+      name: byId('phx-r10-name').dataset.profileName ?? byId('phx-r10-name').textContent,
       level: byId('phx-r10-sub').textContent.replace(/^Lvl\s+|\s+⚔$/g, ''),
       alliance: byId('phx-r11-alliance').textContent,
       kingdom: byId('phx-r11-kingdom').textContent
@@ -132,6 +130,7 @@
   }
 
   refreshProfile();
+  document.addEventListener('phx:profile-rendered', refreshProfile);
   for (const id of ['phx-r10-save', 'phx-r10-reset']) {
     byId(id).addEventListener('click', refreshProfile);
   }
