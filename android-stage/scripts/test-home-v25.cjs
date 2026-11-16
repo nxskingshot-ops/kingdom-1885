@@ -38,7 +38,7 @@ async function run() {
 
     const live = process.env.PHX_TEST_LIVE_PROFILE === '1';
     if (live) {
-      await check('Live-Profil im War Room: Anmeldung, Aktualisieren und Abmelden', async () => {
+      await check('Live-Profil in HOME und War Room: Anmeldung, Aktualisieren und Abmelden', async () => {
         const origin = 'https://yuyvmbdybwpwpqsipfjt.supabase.co';
         let freshness = 'fresh';
         let signOutObserved = false;
@@ -71,6 +71,12 @@ async function run() {
           } });
         });
         await home();
+        await page.evaluate(key => localStorage.setItem(key, JSON.stringify({
+          name: 'Altes lokales Profil', level: '27', kingdom: '1885', alliance: 'NXS'
+        })), profileKey);
+        await page.reload({ waitUntil: 'load' });
+        await expect(id('phx-r10-name')).toHaveText('Profil');
+        await expect(id('phx-r11-kingdom')).toHaveText('—');
         await id('phx-r8-war-entry').tap();
         await expect(page.getByText('HOME FINAL TEST')).toBeVisible();
         await page.getByRole('button', { name: 'Live profile' }).click();
@@ -90,7 +96,13 @@ async function run() {
         await expect(id('phx-r10-name')).toHaveText('Scout Étoile');
         await expect(id('phx-r10-sub')).toBeHidden();
         await expect(id('phx-r11-affiliation')).toHaveText(/#1901\s*·\s*ALT/);
-        await page.screenshot({ path: evidence + '/home-verified-393.png' });
+        for (const width of [320, 393, 740]) {
+          await page.setViewportSize({ width, height: 852 });
+          await expect(id('phx-r11-affiliation')).toBeVisible();
+          await expect(id('phx-r10-sub')).toBeHidden();
+          if (width === 393) await page.screenshot({ path: evidence + '/home-verified-393.png' });
+        }
+        await page.setViewportSize({ width: 393, height: 852 });
         await id('phx-r8-war-entry').tap();
         ownPlayer = { ...ownPlayer, alliance: null };
         await account.getByRole('button', { name: 'Refresh profile' }).click();
@@ -123,7 +135,7 @@ async function run() {
 
     await check('HOME und Plaketten bei 393 px', async () => {
       await home();
-      await expect(id('phx-r10-name')).toHaveText(live ? 'Profil öffnen' : 'FaQu');
+      await expect(id('phx-r10-name')).toHaveText(live ? 'Profil' : 'FaQu');
       await expect(id('phx-r10-sub')).toBeHidden();
       if (live) await expect(id('phx-r11-kingdom')).toHaveText('—');
       else await expect(id('phx-r11-affiliation')).toHaveText(/#1885\s*·\s*NXS/);
@@ -225,7 +237,7 @@ async function run() {
       await id('phx-r8-war-back').click();
       await route('phalanx-home');
       await page.reload({ waitUntil: 'load' });
-      await expect(id('phx-r10-name')).toHaveText(live ? 'Profil öffnen' : longName);
+      await expect(id('phx-r10-name')).toHaveText(live ? 'Profil' : longName);
       await expect(id('phx-r10-sub')).toBeHidden();
       if (live) {
         await expect(id('phx-r11-kingdom')).toHaveText('—');
@@ -290,6 +302,26 @@ async function run() {
       await expect(map.locator('#rows > *')).toHaveCount(74);
     });
     if (loaded) {
+      await check('Outpost Map JSON- und CSV-Export mit allen 74 Outposts und Quadranten', async () => {
+        const readExport = async format => {
+          const [file] = await Promise.all([page.waitForEvent('download'), map.locator('#export-' + format).click()]);
+          assert.equal(file.suggestedFilename(), 'PHALANX-Outposts-1885.' + format);
+          return fs.readFile(await file.path(), 'utf8');
+        };
+        await map.locator('#a').selectOption({ index: 1 });
+        const records = JSON.parse(await readExport('json'));
+        assert.equal(records.length, 74);
+        assert.equal(new Set(records.map(record => record.id)).size, 74);
+        for (const row of records) {
+          const expected = row.coord_x < 600 ? (row.coord_y < 600 ? 'Nord' : 'West')
+            : (row.coord_y < 600 ? 'Ost' : 'Süd');
+          assert.equal(row.quadrant, expected);
+        }
+        const csv = (await readExport('csv')).trim().split(/\r?\n/);
+        assert.equal(csv.length, 75);
+        assert.match(csv[0], /"id".*"coord_x";"coord_y";"quadrant"$/);
+        await map.locator('#reset').click();
+      });
       await check('Outpost Map Allianzfilter und Rücksetzen', async () => {
         const alliance = map.locator('#a');
         await alliance.selectOption({ index: 1 });

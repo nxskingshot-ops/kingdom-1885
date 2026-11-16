@@ -90,9 +90,8 @@
   function renderIdentity(player) {
     const name = player?.name ?? '';
     homeName.dataset.profileName = name;
-    homeName.textContent = name || ({
-      de: 'Profil öffnen', en: 'Open profile', fr: 'Ouvrir le profil'
-    }[home.lang] ?? 'Open profile');
+    homeName.textContent = name || (home.lang === 'en' ? 'Profile' : 'Profil');
+    homeName.classList.toggle('phx-long-name', Array.from(name).length > 8);
     homeName.title = name;
     homeLevel.textContent = '';
     homeKingdom.textContent = player ? '#' + player.kingdom : '—';
