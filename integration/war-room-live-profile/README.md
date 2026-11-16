@@ -38,3 +38,10 @@ Die autorisierte Spielerquelle im isolierten Projekt anbinden und anschließend 
 Der War-Room-Endpunkt verwendet für die bestätigte eigene Spieler-ID den MightPulse-Basisabruf (Name, Königreich, Allianz und Power). Die bisherige Transfer-Bridge ist davon unabhängig. Der API-Schlüssel gehört als `MIGHTPULSE_API_KEY` in die Edge-Function-Secrets des Testprojekts. Die bestehende Kontoprüfung und ein separates Limit von 20 Aufrufen pro Konto und UTC-Stunde liegen vor dem Anbieterabruf. Der Anbieter erhält nur die ermittelte Spieler-ID und seinen API-Schlüssel.
 
 Neun Handler-Tests mit simulierten Antworten bestanden. Der PostgreSQL-Test bestätigte die Ablehnung eines unverknüpften Kontos, 20 erlaubte Aufrufe und die Ablehnung des nächsten Aufrufs. Die SQL-Testtransaktion wurde vollständig zurückgerollt. Der Abruf mit einem echten MightPulse-Testschlüssel und die Android-Anzeige stehen aus.
+
+### Live-Nachweis · 16.11.2026
+
+- Im isolierten Projekt wurde die Migration `phx_war_room_mightpulse_quota` angewendet und `phx-war-room-own-profile` als Version 3 mit aktiver JWT-Prüfung bereitgestellt. Quellstand `427f750c5f0390810260cd8da15abf9847afcc2f`. Die vorherige Funktionsfassung ist im Git-Stand `8612b5639837f9690d3d2b399c55f1fa0ed555e8` enthalten.
+- **BESTANDEN:** Anmeldung mit temporärem Supabase-Testkonto sowie anschließender eigener Profilabruf mit Android-Origin `https://localhost` jeweils HTTP 200. Der Server lieferte für die im Test zugeordnete Spieler-ID 291410048 FaQu, Königreich 1885, NXS und Power 190.778.224. Die Quelle meldete `fresh`, Erfassungszeit 06:32:25.503 UTC, Abrufzeit 06:32:25.629 UTC. Dieser Nachweis verwendet eine authentifizierte HTTP-Testsitzung mit Android-Origin.
+- **BESTANDEN:** Nach Bereinigung null verbleibende Datensätze des Testkontos in Konten, Sitzungen, Mitgliedschaften, Zuordnungen und Abruflimits.
+- **NICHT GETESTET:** Geräteanzeige. V2.7 enthält keinen Client für diese Anbindung. Der nächste App-Schritt ist die Android-Anmeldung im Testprojekt und das Rendern des verifizierten eigenen Profils im War Room.
