@@ -1,0 +1,50 @@
+/* Coordinates refer to the 1670 × 941 Queen An original. Keep its right plaque unchanged. */
+#phx-r6-home .phx-queen-experimental .phx-home-name-texture {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+#phx-r6-home .phx-queen-experimental #phx-r10-identity {
+  left: 14.15%;
+  top: 3.6%;
+  width: 10.15%;
+  height: 6%;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  pointer-events: none;
+}
+
+#phx-r6-home .phx-queen-experimental #phx-r10-name {
+  width: 100%;
+  font-size: clamp(9px, 2.7cqi, 20px);
+  line-height: 1;
+  text-align: center;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px #000;
+}
+
+#phx-r6-home .phx-queen-experimental #phx-r10-sub {
+  display: none;
+}
+
+#phx-r6-home .phx-queen-experimental #phx-r8-war-entry {
+  left: 2.16%;
+  top: 0.64%;
+  width: 8.86%;
+}
+
+#phx-r6-home .phx-queen-experimental .phx-home-war-tab {
+  left: 10.95%;
+  top: 10.5%;
+  width: 12.6%;
+  height: 4.25%;
+  min-height: 24px;
+}
