@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - work/phx-android-home-v25-20261116
+      - work/phx-home-v26-android-css-20261116
     paths:
       - '.github/workflows/phx-android-home-v25.yml'
       - 'android-stage/**'
