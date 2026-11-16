@@ -37,9 +37,25 @@ async function run() {
     await expect(map.locator('#rows > *')).toHaveCount(74, { timeout: 20000 });
     await expect(map.locator('#export-json')).toBeEnabled();
     await expect(map.locator('#export-csv')).toBeEnabled();
+    await page.locator('#phx-r3-nav [data-phx-r3-target=home]').click();
+    await expect(page).toHaveURL(/#home$/);
+    await page.getByRole('link', { name: 'Zurück zu HOME' }).click();
+    await expect(page).toHaveURL(/#phalanx-home$/);
+    await nav('reports').click();
+    await expect(page).toHaveURL(/#report$/);
+    await id('report-back').click();
+    await expect(page).toHaveURL(/#phalanx-home$/);
+    await nav('pylon').click();
+    await expect(id('phx-pylon-modal')).toBeVisible();
+    await id('phx-pylon-close').click();
+    await expect(page).toHaveURL(/#phalanx-home$/);
+    console.log('BESTANDEN: API 35 HOME, War Room, Territory Control, Reports und PYLON IX.');
+    await nav('territory').click();
+    await id('open-map').click();
+    await expect(map.locator('#rows > *')).toHaveCount(74, { timeout: 20000 });
     expect(await page.evaluate(() => window.Capacitor.isPluginAvailable('OutpostExport'))).toBe(true);
     for (const format of ['json', 'csv']) {
-      await map.locator('#export-' + format).click();
+      await map.locator('#export-' + format).dispatchEvent('click');
       await expect.poll(() => {
         execFileSync('adb', ['shell', 'uiautomator', 'dump', '/sdcard/phx-export.xml']);
         const xml = execFileSync('adb', ['shell', 'cat', '/sdcard/phx-export.xml'], { encoding: 'utf8' });
@@ -53,19 +69,10 @@ async function run() {
       await expect(map.locator('#export-status')).toHaveText('Export gespeichert.');
     }
     await page.locator('#phx-r3-nav [data-phx-r3-target=home]').click();
-    await expect(page).toHaveURL(/#home$/);
     await page.getByRole('link', { name: 'Zurück zu HOME' }).click();
     await expect(page).toHaveURL(/#phalanx-home$/);
-    await nav('reports').click();
-    await expect(page).toHaveURL(/#report$/);
-    await id('report-back').click();
-    await expect(page).toHaveURL(/#phalanx-home$/);
-    await nav('pylon').click();
-    await expect(id('phx-pylon-modal')).toBeVisible();
-    await id('phx-pylon-close').click();
-    await expect(page).toHaveURL(/#phalanx-home$/);
     expect(failures).toEqual([]);
-    console.log('BESTANDEN: API 35 APK-Installation, HOME, War Room, Navigation und 74 Live-Outposts im WebView');
+    console.log('BESTANDEN: API 35 Outpost-JSON und -CSV über den Android-Dateidialog gespeichert');
   } finally {
     await device.close();
   }

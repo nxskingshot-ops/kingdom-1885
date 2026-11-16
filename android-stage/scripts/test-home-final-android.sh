@@ -5,6 +5,11 @@ package=app.nexusphalanx.stage.homefinal
 apk=android-stage/android/app/build/outputs/apk/debug/app-debug.apk
 evidence=/tmp/phx-home-final-android
 mkdir -p "$evidence"
+capture_diagnostics() {
+  adb exec-out screencap -p > "$evidence/android-last-screen.png" || true
+  adb logcat -d -s AndroidRuntime chromium Capacitor Capacitor/Console > "$evidence/android-logcat.txt" || true
+}
+trap capture_diagnostics EXIT
 adb install "$apk"
 adb shell am start -W -n "$package/.MainActivity"
 adb shell dumpsys webviewupdate > "$evidence/webview-version.txt"
