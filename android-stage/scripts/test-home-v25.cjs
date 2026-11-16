@@ -73,7 +73,7 @@ async function run() {
         await expect(section.locator('p')).toBeVisible();
       }
       assert.doesNotMatch(await id('phx-r8-war').innerText(), /master power|pet power|hero power/i);
-      await page.locator('.phx-w2-editor summary').click();
+      await page.locator('.phx-w2-editor summary').filter({ hasText: 'Profile settings' }).click();
       const longName = 'CommanderFaQuTheGreatÉtoile';
       await id('phx-r10-input-name').fill(longName);
       await id('phx-r10-input-level').fill('33');
