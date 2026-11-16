@@ -59,7 +59,9 @@ def integrate(web_root: Path) -> None:
         patched = patched.replace(before.encode(), after.encode(), 1)
     if not (web_root / "phx-home-plaque-v25.css").is_file():
         raise SystemExit("Missing V2.5 plaque stylesheet.")
-    if not (web_root / "phx-home-right-plaque-v26-candidate.css").is_file():\n        raise SystemExit("Missing V2.6 right plaque stylesheet.")\n    index.write_bytes(patched)
+    if not (web_root / "phx-home-right-plaque-v26-candidate.css").is_file():
+        raise SystemExit("Missing V2.6 right plaque stylesheet.")
+    index.write_bytes(patched)
     print("BESTANDEN: V2.5 texture and CSS applied to verified staging assets.")
 
 
