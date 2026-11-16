@@ -1,40 +1,181 @@
-/* PHALANX WAR ROOM V2 isolated additive visual layer. Original routes, HOME, Territory and storage retained. */
-#phx-r8-war.phx-war-v2{background:radial-gradient(ellipse at 50% 0,#553522 0,transparent 40%),#090b0e;color:#f5e3c0;font-family:Georgia,serif}
-#phx-r8-war.phx-war-v2 .wr-shell{max-width:520px;margin:0 auto;padding:0 10px 26px}
-#phx-r8-war .phx-w2-hero{position:relative;min-height:154px;margin:0 -10px 14px;padding:12px 12px 25px;text-align:center;display:flex;align-items:center;justify-content:center;flex-direction:column;border-bottom:3px solid #98612e;background:linear-gradient(0deg,#120f13b8,#0d0d1099),radial-gradient(ellipse at 50% 100%,#ad6335,#44342b 45%,#11141b 90%)}
-#phx-r8-war .phx-w2-hero .wr-eyebrow{font:700 15px Georgia,serif;letter-spacing:2px;color:#ffda94}
-#phx-r8-war .phx-w2-hero .wr-title{font:700 clamp(34px,9vw,50px) Georgia,serif;color:#ffdf9a;text-shadow:0 3px 5px #000}
-#phx-r8-war .phx-w2-hero #phx-r8-war-back{position:absolute;left:12px;top:8px;font:700 12px Georgia,serif;padding:7px;border:1px solid #93642f;background:#151719;color:#ffe0a0}
-#phx-r8-war .phx-w2-ribbon{font:700 12px Georgia,serif;letter-spacing:.6px;background:linear-gradient(#7d1c22,#35090e);border:1px solid #ae7938;padding:5px 18px}
-#phx-r8-war .phx-w2-profile,#phx-r8-war .phx-w2-tile,#phx-r8-war .phx-w2-command,#phx-r8-war .phx-w2-editor{border:2px solid #895b2d;background:linear-gradient(115deg,#29231f,#11151a 50%,#211c18);box-shadow:inset 0 0 0 2px #3c2b1d,0 4px 8px #0009;margin:10px 0;border-radius:4px}
-#phx-r8-war .phx-w2-profile{padding:14px}
-#phx-r8-war .phx-w2-topline{display:flex;justify-content:space-between;gap:6px;font-size:18px;font-weight:bold;color:#ffdc98}
-#phx-r8-war .phx-w2-pending{font:10px Arial,sans-serif;color:#c4b19a;border:1px solid #76512d;padding:4px}
-#phx-r8-war .phx-w2-profile-grid{display:grid;grid-template-columns:80px minmax(0,1fr);gap:12px;align-items:center;margin-top:10px}
-#phx-r8-war .phx-w2-avatar{width:78px;height:78px;border:4px double #d3a05c;border-radius:50%;display:grid;place-items:center;font-size:42px;background:radial-gradient(#43444a,#12151b)}
-#phx-r8-war .phx-w2-name{display:block;font-size:23px;color:#ffe2a5}
-#phx-r8-war .phx-w2-meta{font:12px/1.65 Arial,sans-serif;color:#e7d8c2}
-#phx-r8-war .phx-w2-power{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:11px;padding:10px;background:linear-gradient(90deg,#57270f,#241713);border:1px solid #b7803c}
-#phx-r8-war .phx-w2-power strong{font-size:19px;color:#ffe0a0}
-#phx-r8-war .phx-w2-power span{font:12px Arial,sans-serif}
-#phx-r8-war .phx-w2-tile summary{list-style:none;display:grid;grid-template-columns:58px 1fr 20px;align-items:center;gap:9px;min-height:78px;padding:9px;cursor:pointer}
-#phx-r8-war .phx-w2-tile summary::-webkit-details-marker{display:none}
-#phx-r8-war .phx-w2-tile strong{display:block;color:#f4d08b;font-size:clamp(16px,4.4vw,22px)}
-#phx-r8-war .phx-w2-tile small{display:block;font:12px/1.4 Arial,sans-serif;color:#e6d7c4;margin-top:4px}
-#phx-r8-war .phx-w2-icon{font-size:32px;text-align:center;color:#e4b871}
-#phx-r8-war .phx-w2-arrow{font-size:29px;color:#e2b46b}
-#phx-r8-war .phx-w2-tile p{padding:0 14px 14px;font:13px/1.5 Arial,sans-serif}
-#phx-r8-war .phx-w2-command{padding:12px}
-#phx-r8-war .phx-w2-command h2{font:700 22px Georgia,serif;color:#f4d08b;margin:0}
-#phx-r8-war .phx-w2-command>p{font:12px Arial,sans-serif;margin:5px 0 10px}
-#phx-r8-war .phx-w2-command .wr-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
-#phx-r8-war .phx-w2-command .wr-card{min-width:0;margin:0;padding:7px;background:#12151a;border:1px solid #966b39}
-#phx-r8-war .phx-w2-command .wr-card h3{font-size:11px;margin:0 0 5px}
-#phx-r8-war .phx-w2-command .wr-actions{display:flex;flex-direction:column;gap:5px}
-#phx-r8-war .phx-w2-command .wr-actions select,#phx-r8-war .phx-w2-command .wr-actions button{width:100%;min-width:0;font-size:11px;padding:6px 2px}
-#phx-r8-war .phx-w2-editor{padding:10px}
-#phx-r8-war .phx-w2-editor>summary{cursor:pointer;color:#e9c98d}
-#phx-r8-war .phx-w2-editor #phx-r10-settings{margin-top:12px}
-@media(max-width:360px){#phx-r8-war .phx-w2-profile-grid{grid-template-columns:66px 1fr}#phx-r8-war .phx-w2-avatar{width:64px;height:64px}#phx-r8-war .phx-w2-topline{font-size:15px}}
+/* The supplied 969 × 1536 artwork is shared by the individually interactive panels. */
+#phx-r8-war.phx-war-v2 {
+  padding: env(safe-area-inset-top) 0 calc(16px + env(safe-area-inset-bottom));
+  color: #f5e3c0;
+  background: #0c0b09;
+}
 
-/* Isolated Android V2.1 build trigger after guarded HTML integration; no style changes. */
+#phx-r8-war.phx-war-v2 .wr-shell {
+  width: min(100%, 520px);
+  margin: auto;
+  container-type: inline-size;
+}
+
+#phx-r8-war .phx-w2-toolbar {
+  padding: 4px 2%;
+  background: #161311;
+  border-bottom: 1px solid #86552a;
+}
+#phx-r8-war #phx-r8-war-back {
+  min-width: 44px;
+  min-height: 44px;
+  background: #161311;
+  font: 700 14px Georgia, serif;
+}
+
+#phx-r8-war .phx-w2-art {
+  display: block;
+  position: relative;
+  box-sizing: border-box;
+  aspect-ratio: 969 / var(--panel-height);
+  background: url("./phx-war-room-reference.jpg") center var(--panel-offset) / 100% auto no-repeat;
+}
+
+#phx-r8-war .phx-w2-hero {
+  --panel-height: 280;
+  --panel-offset: 0%;
+  padding: 0;
+  border: 0;
+}
+
+#phx-r8-war .phx-w2-profile {
+  --panel-height: 360;
+  --panel-offset: 23.809524%; /* y = 280 */
+}
+
+#phx-r8-war .phx-w2-avatar {
+  position: absolute;
+  left: 6.15%;
+  top: 19%;
+  width: 20%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+#phx-r8-war .phx-w2-value {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+  background: linear-gradient(100deg, #171614, #1c1d1f);
+  font: 500 clamp(11px, 3cqi, 15px)/1 system-ui, sans-serif;
+  color: #ffedcf;
+}
+#phx-r8-war .phx-w2-value > span:not(.phx-w2-visually-hidden) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#phx-r8-war .phx-w2-name {
+  display: block;
+  left: 37.3%;
+  top: 21%;
+  width: 57.5%;
+  height: 19%;
+  padding: 0.5% 1%;
+  text-overflow: ellipsis;
+  font: 700 clamp(16px, 5.6cqi, 29px)/1.02 Georgia, serif;
+  text-shadow: 0 2px 3px #000;
+  color: #ffe0a0;
+}
+#phx-r8-war .phx-w2-level,
+#phx-r8-war .phx-w2-alliance,
+#phx-r8-war .phx-w2-kingdom {
+  top: 42.3%;
+  height: 11%;
+  padding: 0 0.4%;
+}
+#phx-r8-war .phx-w2-level { left: 36.6%; width: 10.4%; }
+#phx-r8-war .phx-w2-alliance { left: 57.2%; width: 13.6%; }
+#phx-r8-war .phx-w2-kingdom { left: 79%; width: 15.9%; }
+
+#phx-r8-war .phx-w2-tile summary {
+  list-style: none;
+  cursor: pointer;
+}
+#phx-r8-war .phx-w2-tile summary::-webkit-details-marker { display: none; }
+#phx-r8-war .phx-w2-tile summary:focus-visible {
+  outline: 3px solid #ffe0a0;
+  outline-offset: -5px;
+}
+#phx-r8-war [data-panel="account"] {
+  --panel-height: 172;
+  --panel-offset: 46.920821%; /* y = 640 */
+}
+#phx-r8-war [data-panel="alliance"] {
+  --panel-height: 171;
+  --panel-offset: 59.487179%; /* y = 812 */
+}
+#phx-r8-war [data-panel="development"] {
+  --panel-height: 176;
+  --panel-offset: 72.279412%; /* y = 983 */
+}
+#phx-r8-war .phx-w2-tile p {
+  margin: 0 2%;
+  padding: 12px;
+  background: #1c1b19;
+  border: 1px solid #86552a;
+  font: 13px/1.5 system-ui, sans-serif;
+}
+
+#phx-r8-war .phx-w2-command {
+  --panel-height: 310;
+  --panel-offset: 94.535073%; /* y = 1159 */
+}
+#phx-r8-war .phx-w2-shortcut {
+  position: absolute;
+  top: 50%;
+  left: 5.6%;
+  width: 29%;
+  height: 31%;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: 700 clamp(12px, 3.8cqi, 20px)/1 Georgia, serif;
+  color: #ffe0a0;
+  text-shadow: 0 2px 3px #000;
+}
+#phx-r8-war .phx-w2-shortcut:nth-of-type(2) { left: 36%; }
+#phx-r8-war .phx-w2-shortcut:nth-of-type(3) { left: 65.7%; }
+#phx-r8-war .phx-w2-shortcut span {
+  display: grid;
+  place-items: center;
+  position: absolute;
+  inset: 20% 8%;
+  background: linear-gradient(#212120, #171614);
+}
+
+#phx-r8-war .phx-w2-editor {
+  margin: 8px 2%;
+  padding: 10px 12px;
+  border: 1px solid #86552a;
+  border-radius: 5px;
+  background: #181716;
+}
+#phx-r8-war .phx-w2-editor > summary {
+  min-height: 28px;
+  cursor: pointer;
+}
+#phx-r8-war .phx-w2-editor #phx-r10-settings { margin-top: 12px; }
+#phx-r8-war .phx-w2-shortcut-settings .wr-card {
+  padding: 8px;
+  margin: 4px 0;
+}
+#phx-r8-war .phx-w2-shortcut-settings .wr-card h3 {
+  font-size: 13px;
+  margin: 0 0 4px;
+}
+#phx-r8-war .phx-w2-shortcut-settings .wr-actions select { min-width: 0; }
+
+#phx-r8-war .phx-w2-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

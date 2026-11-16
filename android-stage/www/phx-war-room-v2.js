@@ -1,21 +1,127 @@
-(()=>{'use strict';
-const war=document.getElementById('phx-r8-war');
-if(!war||war.dataset.v2Integrated==='yes')return;
-const cards=document.getElementById('phx-r8-war-cards'),back=document.getElementById('phx-r8-war-back'),settings=document.getElementById('phx-r10-settings');
-if(!cards||!back||!settings)return;
-war.dataset.v2Integrated='yes';war.classList.add('phx-war-v2');
-const shell=war.querySelector('.wr-shell');if(!shell)return;
-const intro=shell.querySelector('.wr-intro'),note=shell.querySelector('.wr-note'),head=shell.querySelector('.wr-head');
-if(intro)intro.hidden=true;if(note)note.hidden=true;
-if(head){head.classList.add('phx-w2-hero');const banner=document.createElement('div');banner.className='phx-w2-ribbon';banner.textContent='PERSONAL COMMAND DOSSIER';head.append(banner)}
-const profile=document.createElement('section');profile.className='phx-w2-profile';profile.setAttribute('aria-label','Commander Profile');
-profile.innerHTML='<div class="phx-w2-topline">COMMANDER PROFILE <span class="phx-w2-pending">PROFILE · LOCAL</span></div><div class="phx-w2-profile-grid"><div class="phx-w2-avatar" aria-label="Commander avatar">♜</div><div><strong class="phx-w2-name" data-w2-name>Commander</strong><div class="phx-w2-meta">Level <span data-w2-level>—</span> · <span data-w2-alliance>—</span> · Kingdom <span data-w2-kingdom>—</span></div><div class="phx-w2-meta">Player ID: <span data-w2-id>Not connected</span></div></div></div><div class="phx-w2-power"><strong>⚔ POWER</strong><span data-w2-power>Live data pending</span></div>';
-const sections=document.createElement('div');sections.className='phx-w2-sections';
-const defs=[['ACCOUNT INTELLIGENCE','Current assessment, strengths & weaknesses','▤','No verified account assessment connected.'],['ALLIANCE POSITION','Your position in alliance','♜','Verified alliance placement data not connected.'],['PLAYER DEVELOPMENT','Progress and changes over time','↗','Historical data not connected. No values have been invented.']];
-for(const [title,sub,icon,empty] of defs){const details=document.createElement('details');details.className='phx-w2-tile';const summary=document.createElement('summary');summary.innerHTML='<span class="phx-w2-icon" aria-hidden="true">'+icon+'</span><span><strong>'+title+'</strong><small>'+sub+'</small></span><span class="phx-w2-arrow">›</span>';const p=document.createElement('p');p.textContent=empty;details.append(summary,p);sections.append(details)}
-const command=document.createElement('section');command.className='phx-w2-command';command.innerHTML='<h2>♜ COMMAND ACCESS</h2><p>Three configurable shortcuts · original routes retained</p>';
-const edit=document.createElement('details');edit.className='phx-w2-editor';edit.innerHTML='<summary>⚙ Profile settings</summary>';edit.append(settings);
-if(head)head.after(profile);else shell.prepend(profile);profile.after(sections);sections.after(command);command.append(cards);command.after(edit);
-function refresh(){let p={};try{p=JSON.parse(localStorage.getItem('phx-personal-profile-r10')||'{}')||{}}catch(_){}const value=(key,fallback)=>String(p[key]??fallback);profile.querySelector('[data-w2-name]').textContent=value('name','Commander');profile.querySelector('[data-w2-level]').textContent=value('level','—');profile.querySelector('[data-w2-alliance]').textContent=value('alliance','—');profile.querySelector('[data-w2-kingdom]').textContent=value('kingdom','—');const avatar=profile.querySelector('.phx-w2-avatar');if(p.image&&typeof p.image==='string'&&/^data:image\/(?:png|jpeg|webp);base64,/.test(p.image)){avatar.textContent='';avatar.style.backgroundImage='url('+JSON.stringify(p.image)+')';avatar.style.backgroundSize='cover';avatar.style.backgroundPosition='center'}else{avatar.textContent='♜';avatar.style.backgroundImage='none'}}
-refresh();document.getElementById('phx-r10-save')?.addEventListener('click',()=>setTimeout(refresh,0));window.addEventListener('storage',e=>{if(e.key==='phx-personal-profile-r10')refresh()});window.addEventListener('hashchange',()=>{if(location.hash==='#war-room')refresh()});
+(() => {
+  'use strict';
+
+  const byId = id => document.getElementById(id);
+  const war = byId('phx-r8-war');
+  const cards = byId('phx-r8-war-cards');
+  const back = byId('phx-r8-war-back');
+  const settings = byId('phx-r10-settings');
+  const head = war?.querySelector('.wr-head');
+  if (!head || !cards || !back || !settings || war.dataset.v2Integrated === 'yes') return;
+
+  war.dataset.v2Integrated = 'yes';
+  war.classList.add('phx-war-v2');
+  war.querySelector('.wr-intro').hidden = true;
+  war.querySelector('.wr-note').hidden = true;
+
+  const toolbar = document.createElement('div');
+  toolbar.className = 'phx-w2-toolbar';
+  head.before(toolbar);
+  toolbar.append(back);
+  head.classList.add('phx-w2-hero', 'phx-w2-art');
+  head.firstElementChild.classList.add('phx-w2-visually-hidden');
+  head.querySelector('.wr-title').setAttribute('role', 'heading');
+  head.querySelector('.wr-title').setAttribute('aria-level', '1');
+
+  const profile = document.createElement('section');
+  profile.className = 'phx-w2-profile phx-w2-art';
+  profile.setAttribute('aria-label', 'Commander Profile');
+  profile.innerHTML = `
+    <h2 class="phx-w2-visually-hidden">Commander Profile</h2>
+    <span class="phx-w2-visually-hidden">Live data pending</span>
+    <img class="phx-w2-avatar" alt="Commander avatar" hidden>
+    <strong class="phx-w2-value phx-w2-name" data-w2-name></strong>
+    <span class="phx-w2-value phx-w2-level"><span class="phx-w2-visually-hidden">Level </span><span data-w2-level></span></span>
+    <span class="phx-w2-value phx-w2-alliance"><span class="phx-w2-visually-hidden">Alliance </span><span data-w2-alliance></span></span>
+    <span class="phx-w2-value phx-w2-kingdom"><span class="phx-w2-visually-hidden">Kingdom </span><span data-w2-kingdom></span></span>
+    <span class="phx-w2-visually-hidden">Player ID and last update unavailable.</span>
+    <span class="phx-w2-visually-hidden">Power: <span data-w2-power>Data pending</span></span>
+  `;
+  head.after(profile);
+
+  const sections = document.createElement('div');
+  sections.className = 'phx-w2-sections';
+  const panels = [
+    ['account', 'ACCOUNT INTELLIGENCE', 'Current assessment, strengths & weaknesses', 'Verified account assessment unavailable.'],
+    ['alliance', 'ALLIANCE POSITION', 'Your position in alliance', 'Verified alliance placement unavailable.'],
+    ['development', 'PLAYER DEVELOPMENT', 'Progress and changes over time', 'Verified progress history unavailable.']
+  ];
+  for (const [kind, title, description, empty] of panels) {
+    const details = document.createElement('details');
+    details.className = 'phx-w2-tile';
+    details.dataset.panel = kind;
+    const summary = document.createElement('summary');
+    summary.className = 'phx-w2-art';
+    const label = document.createElement('span');
+    label.className = 'phx-w2-visually-hidden';
+    label.textContent = title + ' — ' + description;
+    summary.append(label);
+    const content = document.createElement('p');
+    content.textContent = empty;
+    details.append(summary, content);
+    sections.append(details);
+  }
+  profile.after(sections);
+
+  const command = document.createElement('section');
+  command.className = 'phx-w2-command phx-w2-art';
+  command.setAttribute('aria-label', 'Command Access');
+  command.innerHTML = '<h2 class="phx-w2-visually-hidden">Command Access</h2>';
+  sections.after(command);
+  const shortcutSettings = document.createElement('details');
+  shortcutSettings.className = 'phx-w2-editor phx-w2-shortcut-settings';
+  shortcutSettings.innerHTML = '<summary>Configure shortcuts</summary>';
+  shortcutSettings.append(cards);
+  command.after(shortcutSettings);
+
+  const shortLabels = { territory: 'Territory', map: 'Outpost Map', report: 'Reports', pylon: 'PYLON IX' };
+  for (const card of cards.querySelectorAll('.wr-card')) {
+    const select = card.querySelector('select');
+    const button = card.querySelector('button');
+    button.classList.add('phx-w2-shortcut');
+    const label = document.createElement('span');
+    button.replaceChildren(label);
+    command.append(button);
+
+    const refresh = () => {
+      const target = select.selectedOptions[0];
+      label.textContent = shortLabels[select.value] ?? target.textContent;
+      button.setAttribute('aria-label', target.textContent);
+    };
+    select.addEventListener('change', refresh);
+    refresh();
+  }
+
+  const edit = document.createElement('details');
+  edit.className = 'phx-w2-editor';
+  edit.innerHTML = '<summary>Profile settings</summary>';
+  edit.append(settings);
+  shortcutSettings.after(edit);
+
+  function refreshProfile() {
+    const profileValues = {
+      name: byId('phx-r10-name').textContent,
+      level: byId('phx-r10-sub').textContent.replace(/^Lvl\s+|\s+⚔$/g, ''),
+      alliance: byId('phx-r11-alliance').textContent,
+      kingdom: byId('phx-r11-kingdom').textContent
+    };
+    for (const [field, value] of Object.entries(profileValues)) {
+      const element = profile.querySelector('[data-w2-' + field + ']');
+      element.textContent = value || '—';
+      element.title = element.textContent;
+    }
+    const homePhoto = byId('phx-r10-photo');
+    const avatar = profile.querySelector('.phx-w2-avatar');
+    avatar.hidden = homePhoto.hidden;
+    if (avatar.hidden) avatar.removeAttribute('src');
+    else avatar.src = homePhoto.src;
+  }
+
+  refreshProfile();
+  for (const id of ['phx-r10-save', 'phx-r10-reset']) {
+    byId(id).addEventListener('click', refreshProfile);
+  }
+  window.addEventListener('hashchange', () => {
+    if (location.hash === '#war-room') refreshProfile();
+  });
 })();

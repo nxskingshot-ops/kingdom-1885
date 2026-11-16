@@ -52,6 +52,21 @@ async function run() {
       await route('war-room');
       await expect(id('phx-r8-war')).toBeVisible();
       await expect(page.getByRole('region', { name: 'Commander Profile' })).toBeVisible();
+      await expect(page.locator('[data-w2-name]')).toHaveText('FaQu');
+      await expect(page.locator('[data-w2-alliance]')).toHaveText('NXS');
+      await expect(page.locator('[data-w2-kingdom]')).toHaveText('#1885');
+      await expect(page.locator('[data-w2-power]')).toHaveText('Data pending');
+      const backBox = await id('phx-r8-war-back').boundingBox();
+      const artBox = await page.locator('.phx-w2-hero').boundingBox();
+      assert.ok(backBox.y + backBox.height <= artBox.y, 'Back button must stay above artwork');
+      const artwork = await page.evaluate(async () => {
+        const image = new Image();
+        image.src = './phx-war-room-reference.jpg';
+        await image.decode();
+        return [image.naturalWidth, image.naturalHeight];
+      });
+      assert.deepEqual(artwork, [969, 1536]);
+      await page.screenshot({ path: evidence + '/war-room-design-393.png' });
       for (const title of ['ACCOUNT INTELLIGENCE', 'ALLIANCE POSITION', 'PLAYER DEVELOPMENT']) {
         const section = page.locator('.phx-w2-tile').filter({ hasText: title });
         await section.locator('summary').click();
@@ -68,17 +83,27 @@ async function run() {
       await expect(page.locator('[data-w2-name]')).toHaveText(longName);
       await expect(page.locator('[data-w2-level]')).toHaveText('33');
       assert.equal(await page.evaluate(key => JSON.parse(localStorage.getItem(key)).name, profileKey), longName);
+      await page.locator('.phx-w2-shortcut-settings summary').click();
       const shortcuts = id('phx-r8-war-cards').locator('select');
       await expect(shortcuts).toHaveCount(3);
       await shortcuts.nth(0).selectOption('report');
       await shortcuts.nth(1).selectOption('territory');
       await shortcuts.nth(2).selectOption('map');
       await page.reload({ waitUntil: 'load' });
+      await page.locator('.phx-w2-shortcut-settings summary').click();
       for (const [index, target] of ['report', 'territory', 'map'].entries()) {
         await expect(shortcuts.nth(index)).toHaveValue(target);
       }
+      await page.locator('.phx-w2-shortcut-settings summary').click();
       await expect(page.locator('[data-w2-name]')).toHaveText(longName);
+      await expect(page.locator('.phx-w2-shortcut')).toHaveText(['Reports', 'Territory', 'Outpost Map']);
       await page.screenshot({ path: evidence + '/war-room-393.png' });
+      for (const [label, destination] of [['Outpost Reports', 'report'], ['Territory Control', 'home'], ['Outpost Map', 'map']]) {
+        await page.getByRole('region', { name: 'Command Access' }).getByRole('button', { name: label }).click();
+        await route(destination);
+        await page.goBack();
+        await route('war-room');
+      }
       await id('phx-r8-war-back').click();
       await route('phalanx-home');
       await page.reload({ waitUntil: 'load' });
