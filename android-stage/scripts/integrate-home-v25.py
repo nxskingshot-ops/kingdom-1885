@@ -18,11 +18,22 @@ LEFT_TEXTURE = """<svg class="phx-home-name-texture" viewBox="0 0 1670 941" pres
     </mask>
   </defs>
   <g mask="url(#phx-v25-name-mask)">
-    <svg x="248" y="31" width="146" height="62" viewBox="392 31 18 62" preserveAspectRatio="none" overflow="hidden">
+    <svg x="248" y="31" width="146" height="62" viewBox="389 34 10 44" preserveAspectRatio="none" overflow="hidden">
       <image href="./PHX_HOME_QUEEN_AN_APPROVED.png" width="1670" height="941"/>
     </svg>
   </g>
 </svg>"""
+TERRITORY_ENTRY = '<button aria-label="Outpost Map 2.0 öffnen"'
+TERRITORY_BACK = (
+    '<a class="phx-v25-territory-back" href="#phalanx-home"'
+    ' aria-label="Zurück zu HOME"></a>'
+)
+OLD_MODULE_RETURN = """if (!event.target.closest('[data-phx-r3-target="home"]')) return;
+    event.stopImmediatePropagation();
+    location.hash = '#phalanx-home';"""
+MODULE_RETURN = """if (!event.target.closest('[data-phx-r3-target="home"]')) return;
+    event.stopImmediatePropagation();
+    bridge('home');"""
 STYLE_LINK = '<link rel="stylesheet" href="./phx-home-plaque-v25.css">'
 
 
@@ -35,12 +46,19 @@ def integrate(web_root: Path) -> None:
             raise SystemExit(f"Unexpected baseline SHA-256 for {filename}")
     index = web_root / "index.html"
     original = index.read_bytes()
-    if original.count(SCENE.encode()) != 1 or original.count(b"</head>") != 1:
-        raise SystemExit("Unexpected HOME header or document head.")
+    replacements = {
+        SCENE: f"{SCENE}\n{LEFT_TEXTURE}",
+        "</head>": f"{STYLE_LINK}\n</head>",
+        TERRITORY_ENTRY: f"{TERRITORY_BACK}{TERRITORY_ENTRY}",
+        OLD_MODULE_RETURN: MODULE_RETURN,
+    }
+    patched = original
+    for before, after in replacements.items():
+        if patched.count(before.encode()) != 1:
+            raise SystemExit(f"Unexpected integration anchor: {before}")
+        patched = patched.replace(before.encode(), after.encode(), 1)
     if not (web_root / "phx-home-plaque-v25.css").is_file():
         raise SystemExit("Missing V2.5 plaque stylesheet.")
-    patched = original.replace(SCENE.encode(), f"{SCENE}\n{LEFT_TEXTURE}".encode(), 1)
-    patched = patched.replace(b"</head>", f"{STYLE_LINK}\n</head>".encode(), 1)
     index.write_bytes(patched)
     print("BESTANDEN: V2.5 texture and CSS applied to verified staging assets.")
 

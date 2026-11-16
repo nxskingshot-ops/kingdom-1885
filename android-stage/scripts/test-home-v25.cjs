@@ -114,20 +114,20 @@ async function run() {
 
     await check('HOME → Territory Control → Outpost Map und Reports → HOME', async () => {
       await home();
-      await nav('territory').click();
+      await page.locator('[data-home-card=territory]').click();
       await route('home');
       await expect(id('home')).toBeVisible();
       await id('open-map').click();
       await route('map');
       await expect(id('map')).toBeVisible();
-      await page.goBack();
+      await page.locator('#phx-r3-nav [data-phx-r3-target=home]').click();
       await route('home');
       await id('hall-open-report').click();
       await route('report');
       await expect(id('report')).toBeVisible();
       await id('report-back').click();
       await route('home');
-      await id('b-home').click();
+      await page.getByRole('link', { name: 'Zurück zu HOME' }).click();
       await route('phalanx-home');
       await nav('reports').click();
       await route('report');
@@ -165,7 +165,7 @@ async function run() {
       await expect(expand).toHaveAttribute('aria-pressed', 'false');
     });
     await check('Reports CSV-Export', async () => {
-      await id('b-report').click();
+      await page.locator('#phx-r3-nav [data-phx-r3-target=report]').click();
       const [file] = await Promise.all([page.waitForEvent('download'), id('matrix-csv').click()]);
       assert.match(file.suggestedFilename(), /\.csv$/i);
       assert.match(await fs.readFile(await file.path(), 'utf8'), /Allianz.*Nord.*Gesamt/);
