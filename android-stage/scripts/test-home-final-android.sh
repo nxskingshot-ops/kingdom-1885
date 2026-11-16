@@ -10,6 +10,8 @@ capture_diagnostics() {
   adb logcat -d -s AndroidRuntime chromium Capacitor Capacitor/Console > "$evidence/android-logcat.txt" || true
 }
 trap capture_diagnostics EXIT
+adb shell settings put secure anr_show_background 0
+adb shell am force-stop com.google.android.apps.nexuslauncher
 adb install "$apk"
 adb shell am start -W -n "$package/.MainActivity"
 adb shell dumpsys webviewupdate > "$evidence/webview-version.txt"

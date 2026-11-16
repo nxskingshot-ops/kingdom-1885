@@ -58,6 +58,17 @@
   const refresh = el('refresh');
   const power = profile.querySelector('[data-w2-power]');
   const home = document.getElementById('phx-r6-home');
+  const statusBar = window.Capacitor?.isPluginAvailable('StatusBar') && window.Capacitor.Plugins.StatusBar;
+  if (statusBar) {
+    const syncStatusBar = () => {
+      const onHome = !location.hash || location.hash === '#phalanx-home';
+      void (onHome ? statusBar.hide() : statusBar.show()).catch(() => {});
+    };
+    window.addEventListener('hashchange', syncStatusBar);
+    window.addEventListener('popstate', syncStatusBar);
+    new MutationObserver(syncStatusBar).observe(home, { attributes: true, attributeFilter: ['inert'] });
+    syncStatusBar();
+  }
   const homeName = document.getElementById('phx-r10-name');
   const homeLevel = document.getElementById('phx-r10-sub');
   const homeKingdom = document.getElementById('phx-r11-kingdom');

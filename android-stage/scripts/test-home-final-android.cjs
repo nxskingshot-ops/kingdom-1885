@@ -9,7 +9,11 @@ async function run() {
   const [device] = await _android.devices();
   if (!device) throw new Error('Android emulator not found');
   try {
-    const webView = await device.webView({ pkg: 'app.nexusphalanx.stage.homefinal' }, { timeout: 30000 });
+    const pid = Number(execFileSync('adb', ['shell', 'pidof', 'app.nexusphalanx.stage.homefinal'], {
+      encoding: 'utf8'
+    }).trim());
+    if (!Number.isSafeInteger(pid) || pid < 1) throw new Error('App process not found');
+    const webView = await device.webView({ pid }, { timeout: 30000 });
     const page = await webView.page();
     await expect(page).toHaveURL(/^https:\/\/localhost\//);
     page.setDefaultTimeout(10000);
@@ -19,6 +23,9 @@ async function run() {
     const nav = target => page.locator('.phx-home-nav [data-home-action="' + target + '"]');
     await page.reload();
     await expect(id('phx-r6-home')).toBeVisible();
+    await expect.poll(() => page.evaluate(async () =>
+      (await window.Capacitor.Plugins.StatusBar.getInfo()).visible
+    )).toBe(false);
     await expect(id('phx-r10-name')).toHaveText('Profil');
     await expect(id('phx-r10-sub')).toBeHidden();
     await expect(id('phx-r11-kingdom')).toHaveText('—');
