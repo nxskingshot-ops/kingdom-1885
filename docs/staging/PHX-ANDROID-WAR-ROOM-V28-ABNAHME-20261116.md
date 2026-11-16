@@ -1,0 +1,11 @@
+# PHALANX War Room V2.8 · Android-Live-Profil
+
+Stand 16.11.2026. Isolierter Testbuild `app.nexusphalanx.stage.v28warroom`, parallel installierbar. Keine Produktionsfreigabe.
+
+- Android-Anmeldung unter Live profile mit dem bestehenden Testkonto. Session-Token ausschließlich im Arbeitsspeicher, keine Registrierung in der APK. Abmelden räumt Profilwerte und Token lokal auf und beendet die aktuelle Sitzung serverseitig, soweit das Netzwerk verfügbar ist.
+- Live-Profil zeigt Name, Königreich, Allianz, Spieler-ID, Power sowie Quell- und Abrufzeit. Veraltete und ausstehende Daten zeigen keine aktuellen Werte. Der Abruf verwendet den JWT-geschützten Endpunkt des isolierten Projekts. Der MightPulse-Schlüssel bleibt serverseitig.
+- Für das im Chat bestätigte, bereits verifizierte Konto wurde FaQu im Testprojekt befristet bis 23.11.2026, 06:50 UTC, zugeordnet. Alte Mitgliedschaft, Einladungsdaten und bestehende Rollen wurden dabei nicht verändert. Im zurückgerollten SQL-Test bestanden Eigenabruf, Fremdschutz und Ablauf. Die Migration für die eigene War-Room-Testzuordnung ist unter `integration/war-room-live-profile/isolated-android-test-binding.sql` dokumentiert.
+- **BESTANDEN:** Zehn Chromium-Prüfungen, darunter Anmeldung, Abruf, veraltete Werte und Abmelden mit simulierten HTTP-Antworten sowie Navigation, 74 Outposts und Reports. [Browsernachweis](https://github.com/nxskingshot-ops/kingdom-1885/actions/runs/43819309644/artifacts/14202714813).
+- **BESTANDEN:** Der tatsächliche geschützte MightPulse-Abruf für FaQu wurde zuvor separat mit einer echten HTTP-Testsitzung nachgewiesen. Siehe [Serverprotokoll](https://github.com/nxskingshot-ops/kingdom-1885/blob/b447c944d20b4c030e9aaf19ffb88c30d77d2aac/integration/war-room-live-profile/README.md).
+- **BESTANDEN:** [Android-Build](https://github.com/nxskingshot-ops/kingdom-1885/actions/runs/43819309644) für `c7d5675df2068896c7af14ef9501e820b5b0c8df`. APK-Paketkennung und Signatur im Workflow geprüft. SHA-256 `6580c6525af3e28cc864c72dc4d6c3eb1ca14ab2d99a39685544cd6af2f76c3d`.
+- **OFFEN:** tatsächliche Anmeldung und Anzeige von V2.8 auf dem Android-Gerät mit dem bestehenden Testkonto. Der Geräte-Test folgt auf die Installation des separaten Pakets.
