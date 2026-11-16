@@ -44,8 +44,14 @@ Stand 16.11.2026. Isolierte Testfassung, Geräteabnahme offen.
 | Browserregression | BESTANDEN | Kein unbehandelter Browserfehler im dokumentierten Lauf. |
 | Android V2.5: HOME-Anzeige, Statusleiste und linke Plakette | BESTANDEN | Eingereichter Geräte-Screenshot zeigt HOME unterhalb der Statusleiste, FaQu einmal mittig, ohne Level. |
 | Android V2.5: rechte Plakette | BESTANDEN (Lesbarkeit) | #1885 · NXS ist lesbar. Der zusätzliche Rahmen über der goldenen Einfassung ist sichtbar. Designfreigabe offen. |
-| Android V2.5: Modulwege | NICHT GETESTET | Das Standbild belegt die HOME-Anzeige. War-Room- und Territory-Rückwege sind bisher im Browser geprüft. |
+| Android V2.5: War Room sichtbar | BESTANDEN | Geräte-Screenshot vom 16.11.2026 zeigt die geöffnete technische Ansicht. Der verwendete Einstieg und der Rückweg gehen aus dem Standbild nicht hervor. |
+| Android V2.5: War-Room-Design | FEHLGESCHLAGEN | Die Kommandantenhalle, das gestaltete Profil und die illustrierten Kacheln der Bildvorlage fehlen. Der HOME-Button überlagert die Überschrift. |
+| Android V2.5: Modulwege | NICHT GETESTET | Die vollständigen War-Room- und Territory-Rückwege sind bisher im Browser geprüft. |
 | Live-Accountwerte, PYLON-Rollen und Produktionsdaten | NICHT GETESTET | Bestehende Berechtigungen geschützt. Der Browserlauf prüft Navigation und öffentliche Kartendaten. |
+
+## War Room · visueller Abgleich
+
+Die vereinbarte Gestaltung kombiniert Kommandantenhalle und kompaktes persönliches Dossier. Am 15.11. wurde Power ausdrücklich im Commander Profile ergänzt. Es folgte der Auftrag zur pixelgenauen Umsetzung. Master-, Pet- und Hero-Power gehören weiterhin nicht in diese Ansicht. [Wahrscheinlichste Bildvorlage aus dieser Sequenz](https://chatgpt.com/library?file_id=libfile_4d8a9d632ebc819182c59b1fa6ece3b9&account_id=personal). Sie zeigt die Halle mit roten Bannern und Fackellicht, kompaktes Profil mit Power-Zeile, illustrierte Funktionskacheln und drei Schnellzugriffe. Die Zeitfolge und die sichtbaren Merkmale stützen die Zuordnung. Eine ausdrückliche Verknüpfung der Freigabenachricht mit genau dieser Datei ließ sich nicht belegen. [Technische Zwischenreferenz 737654e](https://github.com/nxskingshot-ops/kingdom-1885/commit/737654e4ea2616cbfae3c00f7e99bc2b564e6c80).
 
 ## Geräteabnahme
 
