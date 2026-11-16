@@ -1,0 +1,55 @@
+#phx-r8-war .phx-live-account h2 {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+}
+#phx-r8-war .phx-live-account p {
+  font: 0.85rem/1.4 system-ui, sans-serif;
+}
+#phx-r8-war .phx-live-account label {
+  display: block;
+  margin: 8px 0;
+  font: 0.85rem/1.4 system-ui, sans-serif;
+}
+#phx-r8-war .phx-live-account input {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 42px;
+  margin-top: 4px;
+  padding: 7px;
+  border: 1px solid #86552a;
+  border-radius: 4px;
+  background: #171614;
+  color: #ffedcf;
+  font-size: 16px;
+}
+#phx-r8-war .phx-live-account dl div {
+  display: grid;
+  grid-template-columns: 6em 1fr;
+  gap: 5px;
+  margin: 4px 0;
+  font: 0.85rem/1.4 system-ui, sans-serif;
+}
+#phx-r8-war .phx-live-account dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+#phx-r8-war .phx-live-verified [data-w2-power] {
+  position: absolute;
+  left: 60%;
+  top: 75%;
+  width: 34%;
+  background: #28190d;
+  color: #ffdc8c;
+  font: 700 clamp(11px, 3.4cqi, 18px)/1.3 Georgia, serif;
+  text-align: center;
+}
+#phx-r8-war .phx-live-verified > .phx-w2-visually-hidden:has([data-w2-power]) {
+  inset: 0;
+  width: auto;
+  height: auto;
+  margin: 0;
+  clip-path: none;
+  color: transparent;
+  pointer-events: none;
+}

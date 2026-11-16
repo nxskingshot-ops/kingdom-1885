@@ -36,6 +36,59 @@ async function run() {
     const hero = page.locator('.phx-queen-experimental');
     const home = async () => page.goto(url + '/#phalanx-home', { waitUntil: 'load' });
 
+    if (process.env.PHX_TEST_LIVE_PROFILE === '1') {
+      await check('Live-Profil im War Room: Anmeldung, Aktualisieren und Abmelden', async () => {
+        const origin = 'https://yuyvmbdybwpwpqsipfjt.supabase.co';
+        let freshness = 'fresh';
+        let signOutObserved = false;
+        const account = page.getByRole('region', { name: 'Live profile' });
+        const sourceDate = '2026-11-16T06:32:25.503Z';
+        const endpoint = origin + '/functions/v1/phx-war-room-own-profile';
+        await page.route(origin + '/auth/v1/token?grant_type=password', async request => {
+          assert.deepEqual(request.request().postDataJSON(), {
+            email: 'warroom@example.invalid', password: 'mock-only-password'
+          });
+          await request.fulfill({ json: { access_token: 'mock-live-token' } });
+        });
+        await page.route(origin + '/auth/v1/logout?scope=local', async request => {
+          assert.equal(request.request().headers().authorization, 'Bearer mock-live-token');
+          signOutObserved = true;
+          await request.fulfill({ status: 204 });
+        });
+        await page.route(endpoint, async request => {
+          assert.equal(request.request().headers().authorization, 'Bearer mock-live-token');
+          await request.fulfill({ json: {
+            playerId: '291410048', freshness, capturedAt: sourceDate,
+            checkedAt: '2026-11-16T06:32:25.629Z',
+            player: freshness === 'fresh' ? { name: 'FaQu', kingdom: 1885, alliance: 'NXS', power: '190778224' } : null
+          } });
+        });
+        await home();
+        await id('phx-r8-war-entry').tap();
+        await account.getByLabel('Test account email').fill('warroom@example.invalid');
+        await account.getByLabel('Password').fill('mock-only-password');
+        await account.getByRole('button', { name: 'Sign in' }).click();
+        await expect(account.getByRole('status')).toHaveText('Verified profile · MightPulse');
+        await expect(account.locator('[data-live-id]')).toHaveText('291410048');
+        await expect(account.locator('[data-live-power]')).toHaveText(/190[,. ]778[,. ]224/);
+        await expect(page.locator('[data-w2-power]')).toBeVisible();
+        await expect(account.locator('[data-live-captured]')).toHaveAttribute('datetime', sourceDate);
+        assert.equal(await page.evaluate(() => Object.values(localStorage).some(v => v.includes('mock-live-token'))), false);
+        await account.screenshot({ path: evidence + '/war-room-live-fixture-393.png' });
+        freshness = 'unknown_or_stale';
+        await account.getByRole('button', { name: 'Refresh profile' }).click();
+        await expect(account.locator('[data-live-power]')).toHaveText('Unavailable');
+        await expect(page.locator('[data-w2-power]')).toHaveText('Data pending');
+        await account.getByRole('button', { name: 'Sign out' }).click();
+        await expect(account.getByRole('status')).toHaveText('Signed out.');
+        await expect(account.locator('[data-live-values]')).toBeHidden();
+        await expect(account.getByLabel('Password')).toHaveValue('');
+        await expect.poll(() => signOutObserved).toBe(true);
+        await id('phx-r8-war-back').click();
+        await route('phalanx-home');
+      });
+    }
+
     await check('HOME und Plaketten bei 393 px', async () => {
       await home();
       await expect(id('phx-r10-name')).toHaveText('FaQu');

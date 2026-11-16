@@ -1,0 +1,166 @@
+(() => {
+  'use strict';
+
+  const war = document.getElementById('phx-r8-war');
+  const profile = war?.querySelector('.phx-w2-profile');
+  if (!profile) return;
+
+  const project = 'https://yuyvmbdybwpwpqsipfjt.supabase.co';
+  const apiKey = 'sb_publishable_Zhtb-Gqaqe3Axf5XvuaSeQ_aGENmNQ4'; // Supabase publishable key for the isolated project.
+  const account = document.createElement('section');
+  account.className = 'phx-w2-editor phx-live-account';
+  account.setAttribute('aria-label', 'Live profile');
+  account.innerHTML = `
+    <h2>Live profile</h2>
+    <p data-live-status role="status">Sign in with your approved PHALANX test account.</p>
+    <form data-live-login>
+      <label>Test account email <input name="email" type="email" autocomplete="username" required></label>
+      <label>Password <input name="password" type="password" autocomplete="current-password" required></label>
+      <button type="submit">Sign in</button>
+    </form>
+    <dl data-live-values hidden>
+      <div><dt>Name</dt><dd data-live-name></dd></div>
+      <div><dt>Kingdom</dt><dd data-live-kingdom></dd></div>
+      <div><dt>Alliance</dt><dd data-live-alliance></dd></div>
+      <div><dt>Player ID</dt><dd data-live-id></dd></div>
+      <div><dt>Power</dt><dd data-live-power></dd></div>
+      <div><dt>Captured</dt><dd><time data-live-captured></time></dd></div>
+      <div><dt>Checked</dt><dd><time data-live-checked></time></dd></div>
+    </dl>
+    <div data-live-actions hidden>
+      <button type="button" data-live-refresh>Refresh profile</button>
+      <button type="button" data-live-logout>Sign out</button>
+    </div>`;
+  profile.after(account);
+  const el = name => account.querySelector('[data-live-' + name + ']');
+  const form = el('login');
+  const status = el('status');
+  const actions = el('actions');
+  const values = el('values');
+  const refresh = el('refresh');
+  const power = profile.querySelector('[data-w2-power]');
+  let session = null;
+  let operation = 0;
+
+  async function request(path, { method = 'GET', body, token, timeout = 12000 } = {}) {
+    const headers = { apikey: apiKey };
+    if (token) headers.Authorization = 'Bearer ' + token;
+    if (body) headers['Content-Type'] = 'application/json';
+    const res = await fetch(project + path, {
+      method, headers, body: body && JSON.stringify(body), cache: 'no-store',
+      redirect: 'error', signal: AbortSignal.timeout(timeout)
+    });
+    return { status: res.status, data: await res.json().catch(() => null) };
+  }
+
+  function clearProfile() {
+    values.hidden = true;
+    for (const field of values.querySelectorAll('dd:not(:has(time)), time')) {
+      field.textContent = '';
+      field.removeAttribute('datetime');
+    }
+    power.textContent = 'Data pending';
+    profile.classList.remove('phx-live-verified');
+  }
+
+  function showSignedOut(message) {
+    session = null;
+    clearProfile();
+    actions.hidden = true;
+    form.hidden = false;
+    status.textContent = message;
+  }
+
+  const timeFormat = new Intl.DateTimeFormat(undefined, {
+    dateStyle: 'medium', timeStyle: 'medium', timeZone: 'UTC'
+  });
+
+  function setTime(field, value) {
+    const time = new Date(value);
+    const node = el(field);
+    if (!value || !Number.isFinite(time.valueOf())) {
+      node.removeAttribute('datetime');
+      node.textContent = 'Unavailable';
+      return;
+    }
+    node.dateTime = time.toISOString();
+    node.textContent = timeFormat.format(time) + ' UTC';
+  }
+
+  async function loadProfile() {
+    if (!session) return;
+    const current = ++operation;
+    clearProfile();
+    status.textContent = 'Loading own profile…';
+    refresh.disabled = true;
+    try {
+      const result = await request('/functions/v1/phx-war-room-own-profile', { token: session, timeout: 45000 });
+      if (current !== operation) return;
+      if (result.status === 401) return showSignedOut('Session expired. Sign in again.');
+      const data = result.data;
+      if (result.status !== 200 || !/^[1-9][0-9]{0,15}$/.test(data?.playerId ?? '')) {
+        status.textContent = result.status === 403 ? 'This account has no verified player access.'
+          : result.status === 429 ? 'Request limit reached. Try again later.'
+          : 'Live profile is temporarily unavailable.';
+        return;
+      }
+
+      const player = data.freshness === 'fresh' ? data.player : null;
+      const amount = typeof player?.power === 'string' && /^\d{1,24}$/.test(player.power)
+        ? new Intl.NumberFormat().format(BigInt(player.power)) : null;
+      el('name').textContent = player?.name || '—';
+      el('kingdom').textContent = player?.kingdom ? '#' + player.kingdom : '—';
+      el('alliance').textContent = player?.alliance || '—';
+      el('id').textContent = data.playerId;
+      el('power').textContent = amount ?? 'Unavailable';
+      setTime('captured', data.capturedAt);
+      setTime('checked', data.checkedAt);
+      status.textContent = player ? 'Verified profile · MightPulse'
+        : 'Current values are unavailable. Refresh to check again.';
+      values.hidden = false;
+      if (player) {
+        power.textContent = amount ?? 'Unavailable';
+        profile.classList.add('phx-live-verified');
+      }
+    } catch {
+      if (current === operation) status.textContent = 'Could not load the live profile. Try again.';
+    } finally {
+      if (current === operation) refresh.disabled = false;
+    }
+  }
+
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    const current = ++operation;
+    const submit = form.querySelector('button');
+    submit.disabled = true;
+    status.textContent = 'Signing in…';
+    try {
+      const password = form.elements.password.value;
+      form.elements.password.value = '';
+      const { status: code, data } = await request('/auth/v1/token?grant_type=password', {
+        method: 'POST', body: { email: form.elements.email.value.trim(), password }
+      });
+      if (current !== operation) return;
+      if (code !== 200 || typeof data?.access_token !== 'string') {
+        status.textContent = 'Could not sign in with that test account.';
+        return;
+      }
+      session = data.access_token;
+      form.hidden = true;
+      actions.hidden = false;
+      await loadProfile();
+    } catch {
+      if (current === operation) status.textContent = 'Sign-in service is unavailable. Try again.';
+    } finally {
+      submit.disabled = false;
+    }
+  });
+  refresh.addEventListener('click', loadProfile);
+  el('logout').addEventListener('click', () => {
+    ++operation;
+    const token = session;
+    showSignedOut('Signed out.');
+    if (token) void request('/auth/v1/logout?scope=local', { method: 'POST', token }).catch(() => {});
+  });
+})();
