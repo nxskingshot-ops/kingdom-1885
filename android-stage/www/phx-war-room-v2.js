@@ -79,6 +79,20 @@
     const select = card.querySelector('select');
     const button = card.querySelector('button');
     button.classList.add('phx-w2-shortcut');
+    button.addEventListener('click', event => {
+      if (select.value !== 'pylon') return;
+      // Use the module's opener so the dialog records the current history entry.
+      event.stopImmediatePropagation();
+      const previousUrl = location.href;
+      byId('phx-pylon-open').click();
+      // The opener uses pushState. Notify the existing view listeners.
+      if (location.href !== previousUrl) {
+        window.dispatchEvent(new HashChangeEvent('hashchange', {
+          oldURL: previousUrl,
+          newURL: location.href
+        }));
+      }
+    }, { capture: true });
     const label = document.createElement('span');
     button.replaceChildren(label);
     command.append(button);

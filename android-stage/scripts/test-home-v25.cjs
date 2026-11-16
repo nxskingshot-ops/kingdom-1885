@@ -67,6 +67,21 @@ async function run() {
       });
       assert.deepEqual(artwork, [969, 1536]);
       await page.screenshot({ path: evidence + '/war-room-design-393.png' });
+      const pylonShortcut = page.getByRole('region', { name: 'Command Access' })
+        .getByRole('button', { name: 'PYLON IX' });
+      for (const dismiss of [
+        () => id('phx-pylon-close').click(),
+        () => page.keyboard.press('Escape'),
+        () => page.goBack()
+      ]) {
+        await pylonShortcut.click();
+        await route('pylon');
+        await expect(id('phx-pylon-modal')).toBeVisible();
+        await dismiss();
+        await route('war-room');
+        await expect(id('phx-pylon-modal')).toBeHidden();
+        await expect(id('phx-r8-war')).toBeVisible();
+      }
       for (const title of ['ACCOUNT INTELLIGENCE', 'ALLIANCE POSITION', 'PLAYER DEVELOPMENT']) {
         const section = page.locator('.phx-w2-tile').filter({ hasText: title });
         await section.locator('summary').click();
