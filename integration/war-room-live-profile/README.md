@@ -32,3 +32,9 @@ Die autorisierte Spielerquelle im isolierten Projekt anbinden und anschließend 
 - Testprojekt `phalanx-security-isolated-test` (`yuyvmbdybwpwpqsipfjt`), Migration `phx_war_room_current_player_link`, Edge Function `phx-war-room-own-profile`, Version 1, JWT-Prüfung aktiv.
 - PostgreSQL-Verifikation nach der Migration ergab Ausführungsrecht für `authenticated`, kein Ausführungsrecht für `anon` und `service_role`.
 - Nach der Prüfung wurden beide temporären Testkonten und ihre Datensätze entfernt. Die Nachkontrolle ergab jeweils null verbleibende Konten, Mitgliedschaften, Zuordnungen und Sitzungen. Der Profil-Resolver blieb bereitgestellt.
+
+## MightPulse-Anbindung im isolierten Testprojekt
+
+Der War-Room-Endpunkt verwendet für die bestätigte eigene Spieler-ID den MightPulse-Basisabruf (Name, Königreich, Allianz und Power). Die bisherige Transfer-Bridge ist davon unabhängig. Der API-Schlüssel gehört als `MIGHTPULSE_API_KEY` in die Edge-Function-Secrets des Testprojekts. Die bestehende Kontoprüfung und ein separates Limit von 20 Aufrufen pro Konto und UTC-Stunde liegen vor dem Anbieterabruf. Der Anbieter erhält nur die ermittelte Spieler-ID und seinen API-Schlüssel.
+
+Neun Handler-Tests mit simulierten Antworten bestanden. Der PostgreSQL-Test bestätigte die Ablehnung eines unverknüpften Kontos, 20 erlaubte Aufrufe und die Ablehnung des nächsten Aufrufs. Die SQL-Testtransaktion wurde vollständig zurückgerollt. Der Abruf mit einem echten MightPulse-Testschlüssel und die Android-Anzeige stehen aus.

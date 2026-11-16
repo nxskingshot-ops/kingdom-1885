@@ -1,5 +1,5 @@
-/** Read the current account's profile using an approved link and the existing lookup bridge. */
-export function createWarRoomProfileHandler({ projectUrl, publishableKey, androidOrigin, request = fetch }) {
+/** Read the current account's profile using an approved link and the MightPulse API. */
+export function createWarRoomProfileHandler({ projectUrl, publishableKey, androidOrigin, mightPulseKey, request = fetch }) {
   const project = new URL(projectUrl);
   if (project.protocol !== 'https:' || project.pathname !== '/' || project.search || project.hash ||
       project.username || project.password || !project.hostname.endsWith('.supabase.co')) {
@@ -8,7 +8,7 @@ export function createWarRoomProfileHandler({ projectUrl, publishableKey, androi
   if (!publishableKey) throw new Error('Missing Supabase publishable key');
 
   const linkUrl = new URL('/rest/v1/rpc/phx_war_room_current_player_id', project);
-  const bridgeUrl = new URL('/functions/v1/phalanx-transfer-id-snapshot-fallback-stage-20261031', project);
+  const quotaUrl = new URL('/rest/v1/rpc/phx_take_war_room_source_quota', project);
 
   return async function handle(incoming) {
     const headers = new Headers({ 'Cache-Control': 'no-store', Vary: 'Origin' });
@@ -46,36 +46,51 @@ export function createWarRoomProfileHandler({ projectUrl, publishableKey, androi
         return reply({ error: 'identity_service_unavailable' }, 503);
       }
 
-      const target = new URL(bridgeUrl);
-      target.searchParams.set('governorId', playerId);
-      const source = await request(target, {
-        headers: authHeaders,
+      if (!mightPulseKey) return reply({ error: 'profile_source_not_configured' }, 503);
+      const quota = await request(quotaUrl, {
+        method: 'POST',
+        headers: { ...authHeaders, 'Content-Type': 'application/json' },
+        body: '{}',
         redirect: 'error',
-        signal: AbortSignal.timeout(95000)
+        signal: AbortSignal.timeout(8000)
       });
-      if (source.status === 401 || source.status === 403) {
-        return reply({ error: 'profile_source_access_denied' }, 403);
-      }
+      if (!quota.ok) return reply({ error: 'profile_quota_unavailable' }, 503);
+      if (await quota.json() !== true) return reply({ error: 'profile_quota_exceeded' }, 429);
+
+      const target = new URL('https://api.mightpulse.com/v1/players/' + playerId);
+      target.searchParams.set('include', 'base');
+      target.searchParams.set('wait', '20');
+      const source = await request(target, {
+        headers: { 'X-Api-Key': mightPulseKey },
+        redirect: 'error',
+        signal: AbortSignal.timeout(24000)
+      });
+      if (source.status === 202) return reply({ playerId, freshness: 'pending', capturedAt: null, checkedAt: new Date().toISOString(), player: null });
+      if (source.status === 404) return reply({ error: 'player_not_found' }, 404);
+      if (source.status === 429) return reply({ error: 'profile_source_rate_limited' }, 429);
       if (!source.ok) return reply({ error: 'profile_source_unavailable' }, 503);
       const payload = await source.json();
-      if (payload?.ok !== true || payload.governorId !== playerId) {
+      const player = payload?.player;
+      if (payload?.ok !== true || String(payload.governor_id) !== playerId ||
+          String(player?.governor_id ?? player?.fid) !== playerId || payload.uid == null ||
+          String(payload.uid) !== String(player?.uid) ||
+          !Number.isSafeInteger(player?.kid) || player.kid < 1) {
         return reply({ error: 'source_identity_mismatch' }, 502);
       }
 
-      const capturedAt = utcDate(payload.source?.cachedAt);
-      const checkedAt = utcDate(payload.checkedAtUtc);
-      const isFresh = payload.source?.fresh === true && capturedAt && checkedAt &&
+      const capturedAt = utcDate(payload.cached_at);
+      const checkedAt = new Date().toISOString();
+      const isFresh = payload.fresh === true && capturedAt && checkedAt &&
         Date.parse(capturedAt) <= Date.parse(checkedAt);
-      const player = payload.player;
       return reply({
         playerId,
         freshness: isFresh ? 'fresh' : 'unknown_or_stale',
         capturedAt,
         checkedAt,
         player: isFresh && player ? {
-          name: typeof player.name === 'string' ? player.name : null,
-          kingdom: Number.isSafeInteger(player.kingdom) && player.kingdom > 0 ? player.kingdom : null,
-          alliance: typeof player.alliance === 'string' ? player.alliance : null,
+          name: typeof player.nick_name === 'string' ? player.nick_name : null,
+          kingdom: player.kid,
+          alliance: typeof player.alliance?.abbr === 'string' ? player.alliance.abbr : null,
           power: normalizePower(player.power)
         } : null
       });
