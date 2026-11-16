@@ -10,7 +10,8 @@ html = index.read_bytes()
 heading = escape('<h3>Outpost-Liste</h3>').encode()
 controls = escape(
     '<p><button type="button" id="export-json" disabled>JSON exportieren</button> '
-    '<button type="button" id="export-csv" disabled>CSV exportieren</button></p>'
+    '<button type="button" id="export-csv" disabled>CSV exportieren</button> '
+    '<span id="export-status" role="status"></span></p>'
 ).encode()
 data_loaded = b'data=rows;'
 exports = escape("""
@@ -25,9 +26,25 @@ function csvCell(value) {
   if (typeof value === 'string' && /^[=+@\\-\\t\\r\\n]/.test(text)) text = "'" + text;
   return '"' + text.replaceAll('"', '""') + '"';
 }
-function download(format, content, mimeType) {
-  // Downloads use the host document; the map iframe keeps its existing sandbox.
+async function download(format, content, mimeType) {
+  // The map iframe keeps its sandbox. The Android host opens the system file picker.
   const host = window.parent;
+  if (host.Capacitor?.isPluginAvailable('OutpostExport')) {
+    const jsonButton = $('export-json');
+    const csvButton = $('export-csv');
+    const status = $('export-status');
+    jsonButton.disabled = csvButton.disabled = true;
+    status.textContent = '';
+    try {
+      const result = await host.Capacitor.Plugins.OutpostExport.save({ format, content });
+      status.textContent = result.saved ? 'Export gespeichert.' : 'Export abgebrochen.';
+    } catch {
+      status.textContent = 'Export konnte nicht gespeichert werden.';
+    } finally {
+      jsonButton.disabled = csvButton.disabled = false;
+    }
+    return;
+  }
   const link = host.document.createElement('a');
   link.href = host.URL.createObjectURL(new Blob([content], { type: mimeType }));
   link.download = 'PHALANX-Outposts-1885.' + format;

@@ -1,15 +1,17 @@
 'use strict';
 
-const { chromium, expect } = require('@playwright/test');
+const { execFileSync } = require('node:child_process');
+const { _android, expect } = require('@playwright/test');
 
 const evidence = '/tmp/phx-home-final-android';
 
 async function run() {
-  const browser = await chromium.connectOverCDP('http://127.0.0.1:9222');
+  const [device] = await _android.devices();
+  if (!device) throw new Error('Android emulator not found');
   try {
-    const [context] = browser.contexts();
-    const page = context.pages().find(tab => tab.url().startsWith('https://localhost/'));
-    if (!page) throw new Error('Capacitor webview not found');
+    const webView = await device.webView({ pkg: 'app.nexusphalanx.stage.homefinal' }, { timeout: 30000 });
+    const page = await webView.page();
+    await expect(page).toHaveURL(/^https:\/\/localhost\//);
     page.setDefaultTimeout(10000);
     const failures = [];
     page.on('pageerror', error => failures.push(error.message));
@@ -35,6 +37,21 @@ async function run() {
     await expect(map.locator('#rows > *')).toHaveCount(74, { timeout: 20000 });
     await expect(map.locator('#export-json')).toBeEnabled();
     await expect(map.locator('#export-csv')).toBeEnabled();
+    expect(await page.evaluate(() => window.Capacitor.isPluginAvailable('OutpostExport'))).toBe(true);
+    for (const format of ['json', 'csv']) {
+      await map.locator('#export-' + format).click();
+      await expect.poll(() => {
+        execFileSync('adb', ['shell', 'uiautomator', 'dump', '/sdcard/phx-export.xml']);
+        const xml = execFileSync('adb', ['shell', 'cat', '/sdcard/phx-export.xml'], { encoding: 'utf8' });
+        const button = xml.match(/<node\b[^>]*(?:text="Save"|resource-id="[^"]+:id\/action_menu_save")[^>]*bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"/i);
+        if (button) {
+          const [, left, top, right, bottom] = button.map(Number);
+          execFileSync('adb', ['shell', 'input', 'tap', String((left + right) >> 1), String((top + bottom) >> 1)]);
+        }
+        return Boolean(button);
+      }, { timeout: 18000 }).toBe(true);
+      await expect(map.locator('#export-status')).toHaveText('Export gespeichert.');
+    }
     await page.locator('#phx-r3-nav [data-phx-r3-target=home]').click();
     await expect(page).toHaveURL(/#home$/);
     await page.getByRole('link', { name: 'Zurück zu HOME' }).click();
@@ -50,7 +67,7 @@ async function run() {
     expect(failures).toEqual([]);
     console.log('BESTANDEN: API 35 APK-Installation, HOME, War Room, Navigation und 74 Live-Outposts im WebView');
   } finally {
-    await browser.close();
+    await device.close();
   }
 }
 

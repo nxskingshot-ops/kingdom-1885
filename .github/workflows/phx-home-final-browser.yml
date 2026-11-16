@@ -98,9 +98,11 @@ jobs:
           needle='public class MainActivity extends BridgeActivity {'
           assert code.count(needle)==1,'Unexpected MainActivity structure; stop'
           assert 'WindowCompat.setDecorFitsSystemWindows' not in code,'Fix already applied; stop'
+          main.with_name('OutpostExportPlugin.java').write_bytes(Path('native/OutpostExportPlugin.java').read_bytes())
           code=code.replace(needle,needle+'''
             @Override
             public void onCreate(android.os.Bundle savedInstanceState) {
+              registerPlugin(OutpostExportPlugin.class);
               super.onCreate(savedInstanceState);
               android.webkit.WebView.setWebContentsDebuggingEnabled(true);
               androidx.core.view.WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
