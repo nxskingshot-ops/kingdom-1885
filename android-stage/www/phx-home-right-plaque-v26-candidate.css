@@ -1,0 +1,11 @@
+/* PHALANX HOME V2.6 candidate — isolated, NOT ACTIVE until integrated and tested.
+   Source: V2.5 original index.html; right plaque already exists in approved Queen-An art.
+   This layer removes only the redundant dynamic frame; preserves live kingdom/alliance text. */
+#phx-r6-home .phx-queen-experimental #phx-r11-affiliation {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  outline: 0;
+}
+/* No HOME scene, Territory Control, War Room, routing, or storage changes. */
