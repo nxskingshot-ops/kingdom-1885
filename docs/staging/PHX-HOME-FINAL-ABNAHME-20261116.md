@@ -58,3 +58,9 @@ Status: **Isolierter Integrationsstand. Produktions- und Gerätefreigabe offen.*
 [Aktuelle Browserergebnisse und Screenshots](https://github.com/nxskingshot-ops/kingdom-1885/actions/runs/43906522924/artifacts/14244524045)
 
 [Android-Screenshot und Systemprotokoll](https://github.com/nxskingshot-ops/kingdom-1885/actions/runs/43906522924/artifacts/14246850326)
+
+## Gerätetest am 17.11.2026 vorbereitet
+
+- Isoliertes Debug-Paket `app.nexusphalanx.stage.homefinal` aus dem exakten Quellcommit `05000c444d98c64e9a9d98587d16a485abe50cb4`. [APK-Build und Signaturprüfung](https://github.com/nxskingshot-ops/kingdom-1885/actions/runs/44018184263).
+- **BESTANDEN:** Build, APK-Signaturprüfung, Paketkennung, Queen-An-PNG und Vergleich des gepackten HTML mit dem erzeugten Android-HTML. Archiv und APK anhand der SHA-256-Prüfsummen geprüft. APK SHA-256 `20052da6d74f7ddabe3d77e34e771ed3f538bed8174de211a4bb67f847922c82`.
+- **NICHT GETESTET:** Anmeldung und Live-Profil im neuen Paket auf dem physischen Gerät, HOME-Darstellung nach der Anmeldung, tatsächliches Speichern beider Android-Exporte. Die APK ist für diese Prüfungen vorgesehen. Die Geräte- und Produktionsabnahme bleiben offen.
