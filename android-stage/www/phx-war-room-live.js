@@ -40,6 +40,18 @@
   openProfile.className = 'phx-live-open';
   openProfile.textContent = 'Live profile';
   toolbar.append(openProfile);
+  // HOME entry uses the existing verified War Room authentication form.
+  // Do not duplicate credentials, session handling, or identity sources.
+  const homeLogin = document.createElement('button');
+  homeLogin.type = 'button';
+  homeLogin.className = 'phx-home-live-login';
+  homeLogin.textContent = 'Sign in / Live profile';
+  homeLogin.setAttribute('aria-label', 'Sign in to PHALANX live profile');
+  home?.querySelector('.phx-home-nav')?.after(homeLogin);
+  homeLogin.addEventListener('click', () => {
+    location.hash = '#war-room';
+    openProfile.click();
+  });
   accountPanel.id = 'phx-war-room-account';
   openProfile.setAttribute('aria-controls', accountPanel.id);
   openProfile.setAttribute('aria-expanded', 'false');
@@ -136,6 +148,7 @@
   }
 
   function showSignedOut(message) {
+    homeLogin.textContent = 'Sign in / Live profile';
     session = null;
     clearProfile();
     sourceBadge.textContent = 'Sign in for live data';
@@ -244,6 +257,7 @@
         return;
       }
       session = data.access_token;
+      homeLogin.textContent = 'Live profile';
       form.hidden = true;
       actions.hidden = false;
       await loadProfile();
