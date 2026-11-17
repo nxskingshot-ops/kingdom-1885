@@ -49,7 +49,10 @@ async function run() {
         let member = false;
         let freshProfile = true;
         let townCenterBoardSource = 'provider_kingdom';
+        let rankingsAvailable = true;
+        let rankingRequests = 0;
         const fixtureId = '301999999';
+        const capturedAt = '2026-11-17T06:00:00.000Z';
         const mockClient = `export const createClient = () => ({
           auth: {
             getUser: async () => ({data:{user:{id:'phx-fixture',email:'fixture@example.invalid'}}}),
@@ -80,11 +83,25 @@ async function run() {
             assert.equal(endpoint.searchParams.get('governorId'), fixtureId);
             assert.equal(request.request().headers().authorization, 'Bearer mock-transfer-token');
             return request.fulfill({json:{
-              ok:true,governorId:fixtureId,source:{cachedAt:'2026-11-17T06:00:00.000Z',fresh:freshProfile},
-              player:{name:'Fixture Scout',kingdom:1901,alliance:'ALT'},
+              ok:true,governorId:fixtureId,source:{cachedAt:capturedAt,fresh:freshProfile},
+              player:{name:'Fixture Scout',kingdom:1901,alliance:'ALT',power:120_000_000},
               ranks:{status:'available',values:freshProfile
                 ? {town_center_level:29,player_captured_at:'2026-11-17T06:00:00.000Z'}
                 : {leaderboards:[{name:'town_center',value:30,captured_at:'2026-11-17T06:00:00.000Z',source:townCenterBoardSource}]}}
+            }});
+          }
+          if (endpoint.pathname.endsWith('phalanx-transfer-intelligence-stage-20261031')) {
+            assert.equal(request.request().method(), 'GET');
+            assert.equal(request.request().headers().authorization, 'Bearer mock-transfer-token');
+            rankingRequests++;
+            if (!rankingsAvailable) return request.fulfill({status:503});
+            return request.fulfill({json:{
+              source_mode:'provider_request',
+              snapshot_date:capturedAt,
+              observations:[{
+                uid:'100001',governor_id:'301999998',player_name:'Fixture NXS Peer',alliance_tag:'NXS',
+                rankings:{personal_power:{value:150_000_000,captured_at:capturedAt,source:'provider_kingdom'}}
+              }]
             }});
           }
           return request.fulfill({status:503});
@@ -99,6 +116,7 @@ async function run() {
         const transfer = page.frameLocator('iframe[title="Transfer Scouting"]');
         await expect(transfer.locator('#message')).toContainText('no approved NXS membership');
         await expect(transfer.locator('#private')).toBeHidden();
+        assert.equal(rankingRequests, 0);
         await transfer.locator('#email').fill('fixture@example.invalid');
         await transfer.locator('#password').fill('mock-only-password');
         await transfer.locator('#authForm button[type="submit"]').click();
@@ -110,6 +128,12 @@ async function run() {
         await expect(intelligence.getByRole('status')).toContainText(fixtureId);
         await expect(intelligence.locator('dd')).toHaveText(['TC 29 · 2026-11-17T06:00:00.000Z', ...Array(4).fill('UNKNOWN')]);
         await expect(transfer.locator('#phxAdoptCandidate')).toBeHidden();
+        const nxsPlacement = transfer.locator('#phxIdResult [data-alliance="NXS"]');
+        await expect(nxsPlacement).toContainText('#2 in sample');
+        await nxsPlacement.getByText('Ranking details', {exact:true}).click();
+        await expect(nxsPlacement).toContainText('Provider ranking capture');
+        await expect(nxsPlacement).toContainText('Fixture NXS Peer');
+        assert.equal(rankingRequests, 1);
         freshProfile = false;
         await transfer.getByRole('button', {name:'New Search'}).click();
         await transfer.getByRole('button', {name:'Load Player Data'}).click();
@@ -117,9 +141,11 @@ async function run() {
           'Player ID ' + fixtureId + ' confirmed. Current player profile data could not be verified.');
         await expect(intelligence.locator('dd')).toHaveText(['TC 30 · 2026-11-17T06:00:00.000Z', ...Array(4).fill('UNKNOWN')]);
         townCenterBoardSource = 'saved_snapshot';
+        rankingsAvailable = false;
         await transfer.getByRole('button', {name:'New Search'}).click();
         await transfer.getByRole('button', {name:'Load Player Data'}).click();
         await expect(intelligence.locator('dd')).toHaveText(Array(5).fill('UNKNOWN'));
+        await expect(nxsPlacement).toContainText('Ranking data unavailable');
         await page.getByRole('button',{name:'← PYLON IX'}).click();
         await route('pylon');
         await modules.getByRole('button', {name:'Transfer Scouting'}).click();
