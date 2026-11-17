@@ -21,7 +21,9 @@ jobs:
           ref: work/phx-home-final-audit-20261116
           persist-credentials: false
       - name: Confirm isolated audit branch
-        run: test "$(git branch --show-current)" = work/phx-home-final-audit-20261116
+        run: |
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          echo "Verified exact triggering commit: $GITHUB_SHA"
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -97,7 +99,7 @@ jobs:
           p=Path('android/app/src/main/assets/public/index.html')
           s=p.read_text()
           assert s.count('</body>') == 1
-          s=s.replace('</body>', '<script src="./phx-android-layout-probe.js"></script>\\n</body>')
+          s=s.replace('</body>', '<script src="./phx-android-layout-probe.js"></script>\n</body>')
           p.write_text(s)
           PY
       - name: Build independent debug APK
@@ -119,9 +121,11 @@ jobs:
           sha256sum PHALANX_HOME_FINAL_GERAETETEST.apk | tee SHA256SUMS
           cp /tmp/phx-signature.txt SIGNATURE.txt
           git rev-parse HEAD > /tmp/phx-device-test/SOURCE_COMMIT.txt
+          unzip -l "$APK" | grep -q 'assets/public/phx-android-layout-probe.js'
+          unzip -p "$APK" assets/public/index.html | grep -q 'phx-android-layout-probe.js'
       - uses: actions/upload-artifact@v4
         with:
           name: phalanx-home-final-physical-device-candidate
           path: /tmp/phx-device-test/
           if-no-files-found: error
-          retention-days: 1
+          retention-days: 7
