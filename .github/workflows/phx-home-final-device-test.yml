@@ -121,8 +121,8 @@ jobs:
           sha256sum PHALANX_HOME_FINAL_GERAETETEST.apk | tee SHA256SUMS
           cp /tmp/phx-signature.txt SIGNATURE.txt
           git rev-parse HEAD > /tmp/phx-device-test/SOURCE_COMMIT.txt
-          unzip -l "$APK" | grep -q 'assets/public/phx-android-layout-probe.js'
-          unzip -p "$APK" assets/public/index.html | grep -q 'phx-android-layout-probe.js'
+          unzip -l PHALANX_HOME_FINAL_GERAETETEST.apk | grep -q 'assets/public/phx-android-layout-probe.js'
+          unzip -p PHALANX_HOME_FINAL_GERAETETEST.apk assets/public/index.html | grep -q 'phx-android-layout-probe.js'
       - uses: actions/upload-artifact@v4
         with:
           name: phalanx-home-final-physical-device-candidate
