@@ -53,3 +53,10 @@ Keine Freigabe, kein FERTIG.
 - War Room: show building progress, War Academy, T11 branches, next milestone only when grounded. Transfer: compact same facts; unknown excluded from negative score.
 - Dependencies: HOME Android installation and layout regression still open. No live API integration, production changes, or completed Android tests claimed.
 - Gates: isolated unit tests, source field mapping, permissions/RLS, export, mobile navigation, regression, release approval.
+
+## PYLON IX integration wiring gate · 17.11.2026
+- User requirement: wire PYLON IX correctly during War Academy / Transfer Scouting integration, not as a later cosmetic fix.
+- Verified source: `android-stage/www/phx-war-room-v2.js` PYLON shortcut delegates to existing `#phx-pylon-open` and dispatches hashchange after navigation; preserve this mechanism and avoid a second router.
+- Required route: HOME -> PYLON IX -> Transfer Scouting -> Back -> PYLON IX -> HOME; War Room -> Player Development -> Back -> War Room -> HOME.
+- Shared intelligence core must be imported by both existing modules, not duplicated; protect PYLON IX emblem/design FREEZE and Transfer module permissions.
+- Acceptance gates: navigation/history, mobile Android back button, authorized player ID binding, roles, data provenance, existing Outpost Atlas, HOME and Territory Control regressions. All integration gates currently NOT TESTED.
