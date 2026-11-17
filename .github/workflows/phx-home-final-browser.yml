@@ -7,6 +7,7 @@ on:
       - '.github/workflows/phx-home-final-browser.yml'
       - 'android-stage/**'
       - 'integration/war-room-live-profile/**'
+      - 'deploy/phalanx-kvk-test/pylon-ix/transfer-*/**'
 permissions:
   contents: read
 jobs:
@@ -32,12 +33,14 @@ jobs:
           python3 android-stage/scripts/integrate-home-v25.py /tmp/phx-home-final-www
           python3 android-stage/scripts/integrate-war-room-live-v28.py /tmp/phx-home-final-www
           python3 android-stage/scripts/integrate-outpost-exports.py /tmp/phx-home-final-www
+          node android-stage/scripts/phx-war-academy-core-v01.test.cjs
+          python3 android-stage/scripts/integrate-war-academy.py /tmp/phx-home-final-www
           python3 -m http.server 8765 --bind 127.0.0.1 --directory /tmp/phx-home-final-www &
           for attempt in {1..10}; do
             if curl -fsS -o /dev/null http://127.0.0.1:8765/; then break; fi
             sleep 1
           done
-          PHX_TEST_LIVE_PROFILE=1 PHX_EVIDENCE=/tmp/phx-home-final-evidence \
+          PHX_TEST_LIVE_PROFILE=1 PHX_TEST_WAR_ACADEMY=1 PHX_EVIDENCE=/tmp/phx-home-final-evidence \
             NODE_PATH=/tmp/phx-browser/node_modules node android-stage/scripts/test-home-v25.cjs
       - uses: actions/upload-artifact@v4
         if: always()
@@ -63,7 +66,7 @@ jobs:
           java-version: '21'
       - uses: android-actions/setup-android@v3
         with:
-          packages: 'platform-tools platforms;android-35 build-tools;35.0.0'
+          packages: 'platform-tools platforms;android-35 build-tools;34.0.0 build-tools;35.0.0'
       - name: Verify frozen app and War Room layer
         run: |
           node scripts/verify.cjs
@@ -108,6 +111,23 @@ jobs:
               androidx.core.view.WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
               getWindow().setStatusBarColor(android.graphics.Color.rgb(8, 15, 28));
               getWindow().setNavigationBarColor(android.graphics.Color.rgb(8, 15, 28));
+              getOnBackPressedDispatcher().addCallback(this, new androidx.activity.OnBackPressedCallback(true) {
+                @Override
+                public void handleOnBackPressed() {
+                  android.webkit.WebView webView = getBridge().getWebView();
+                  String route = android.net.Uri.parse(webView.getUrl() == null ? "" : webView.getUrl()).getFragment();
+                  if (("transfer".equals(route) || "pylon".equals(route)) && webView.canGoBack()) {
+                    webView.goBack();
+                    return;
+                  }
+                  setEnabled(false);
+                  try {
+                    getOnBackPressedDispatcher().onBackPressed();
+                  } finally {
+                    setEnabled(true);
+                  }
+                }
+              });
             }
           ''')
           main.write_text(code)
@@ -120,6 +140,7 @@ jobs:
           python3 scripts/integrate-home-v25.py android/app/src/main/assets/public
           python3 scripts/integrate-war-room-live-v28.py android/app/src/main/assets/public
           python3 scripts/integrate-outpost-exports.py android/app/src/main/assets/public
+          python3 scripts/integrate-war-academy.py android/app/src/main/assets/public
       - name: Build independent debug APK
         run: cd android && chmod +x gradlew && ./gradlew assembleDebug --no-daemon
       - name: Prepare Android emulator checks

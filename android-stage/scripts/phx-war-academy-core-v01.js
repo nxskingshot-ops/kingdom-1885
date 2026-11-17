@@ -12,6 +12,26 @@
   const asString = value => typeof value === 'string' ? value.trim() : '';
   const validId = value => /^[1-9][0-9]{0,15}$/.test(String(value ?? ''));
   const safeLevel = value => typeof value === 'string' && /^(?:[1-9][0-9]?|TG(?:[1-9]|10)(?:-[1-5])?)$/.test(value) ? value : null;
+  function capturedAt(value) {
+    return typeof value === 'string' && /^\d{4}-\d\d-\d\dT/.test(value)
+      && Number.isFinite(Date.parse(value)) ? new Date(value).toISOString() : null;
+  }
+  function normalizeTransferProfile(response, expectedId) {
+    if (response?.ok !== true || String(response.governorId) !== expectedId ||
+        response.source?.fresh === false) return null;
+    const p = response.player;
+    const time = capturedAt(response.source?.cachedAt);
+    if (!time) return null;
+    const level = p?.townCenterLevel ?? p?.town_center_level ?? p?.castleLevel ?? p?.castle_level;
+    return normalizeProfile({
+      playerId: expectedId,
+      freshness: 'fresh',
+      capturedAt: time,
+      checkedAt: response.checkedAtUtc,
+      player: p && { ...p, town_center_level: level == null ? null : String(level) }
+    });
+  }
+
   function normalizeProfile(response) {
     if (!response || !validId(response.playerId) || response.freshness !== 'fresh') return null;
     const p = response.player;
@@ -24,6 +44,7 @@
       power: typeof p.power === 'string' && /^\d{1,24}$/.test(p.power) ? p.power : null,
       townCenter: safeLevel(p.town_center_level ?? p.townCenterLevel),
       source: 'mightpulse-via-authorized-backend',
+      capturedAt: capturedAt(response.capturedAt),
       checkedAt: typeof response.checkedAt === 'string' ? response.checkedAt : null
     });
   }
@@ -56,5 +77,5 @@
       resourceEstimate: null // Requires validated, versioned technology-level reference data.
     });
   }
-  return Object.freeze({BRANCHES, STATUS, validId, safeLevel, normalizeProfile, normalizeResearch, assess});
+  return Object.freeze({BRANCHES, STATUS, validId, safeLevel, normalizeProfile, normalizeTransferProfile, normalizeResearch, assess});
 });

@@ -114,6 +114,7 @@
   }
 
   function clearProfile() {
+    document.dispatchEvent(new Event('phx:own-profile-cleared'));
     renderIdentity(null);
     values.hidden = true;
     for (const field of values.querySelectorAll('dd:not(:has(time)), time')) {
@@ -178,6 +179,7 @@
       const amount = typeof player?.power === 'string' && /^\d{1,24}$/.test(player.power)
         ? new Intl.NumberFormat().format(BigInt(player.power)) : null;
       renderIdentity(player);
+      document.dispatchEvent(new CustomEvent('phx:own-profile-verified', { detail: data }));
       el('name').textContent = player?.name || '—';
       el('kingdom').textContent = player?.kingdom ? '#' + player.kingdom : '—';
       el('alliance').textContent = player?.alliance || '—';

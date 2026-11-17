@@ -54,6 +54,11 @@ async function run() {
     await expect(page).toHaveURL(/#phalanx-home$/);
     await nav('pylon').click();
     await expect(id('phx-pylon-modal')).toBeVisible();
+    await page.getByRole('button', { name: 'Transfer Scouting', exact: true }).click();
+    await expect(page).toHaveURL(/#transfer$/);
+    await expect(page.frameLocator('iframe[title="Transfer Scouting"]').locator('#login')).toBeVisible();
+    execFileSync('adb', ['shell', 'input', 'keyevent', '4']);
+    await expect(page).toHaveURL(/#pylon$/);
     await id('phx-pylon-close').click();
     await expect(page).toHaveURL(/#phalanx-home$/);
     console.log('BESTANDEN: API 35 HOME, War Room, Territory Control, Reports und PYLON IX.');

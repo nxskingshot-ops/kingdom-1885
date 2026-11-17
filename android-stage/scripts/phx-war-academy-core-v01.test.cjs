@@ -20,3 +20,15 @@ assert.equal(a.t11.cavalry.verification,'unknown');
 assert.equal(core.assess(null,null,null).knownBranches,0);
 assert.equal(core.assess(null,{infantry:'bogus'},'TG999').warAcademy,null);
 console.log('PASS: 14 assertions covering identity, freshness, levels, T11 provenance, unknowns and no invented score.');
+
+const transfer = {
+  ok: true, governorId: '301999999',
+  source: { cachedAt: '2026-11-17T08:00:00Z' },
+  player: { name: 'Other Kingdom', kingdom: 1901, townCenterLevel: 29 }
+};
+assert.equal(core.normalizeTransferProfile(transfer, '301999999').townCenter, '29');
+assert.equal(core.normalizeTransferProfile(transfer, '291688449'), null);
+assert.equal(core.normalizeTransferProfile({ ...transfer, source: { fresh: false } }, '301999999'), null);
+assert.equal(core.normalizeTransferProfile({ ...transfer, source: {} }, '301999999'), null);
+assert.equal(core.assess(core.normalizeTransferProfile(transfer, '301999999')).warAcademy, null);
+console.log('PASS: Transfer uses its exact requested ID and leaves unsupported fields unknown.');

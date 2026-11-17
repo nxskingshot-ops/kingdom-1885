@@ -9,6 +9,11 @@ on:
       - 'android-stage/scripts/phx-war-academy-core-v01.js'
       - 'android-stage/scripts/phx-war-academy-core-v01.test.cjs'
       - 'android-stage/scripts/phx-war-academy-war-room-bridge-v01.js'
+      - 'android-stage/scripts/phx-war-academy-view.js'
+      - 'android-stage/scripts/phx-pylon-transfer.js'
+      - 'android-stage/scripts/integrate-war-academy.py'
+      - 'android-stage/www/phx-war-room-live.js'
+      - 'deploy/phalanx-kvk-test/pylon-ix/transfer-*/**'
 permissions:
   contents: read
 jobs:
@@ -21,7 +26,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: work/phx-home-final-audit-20261116
           persist-credentials: false
       - name: Confirm isolated audit branch
         run: |
@@ -36,7 +40,7 @@ jobs:
           java-version: '21'
       - uses: android-actions/setup-android@v3
         with:
-          packages: 'platform-tools platforms;android-35 build-tools;35.0.0'
+          packages: 'platform-tools platforms;android-35 build-tools;34.0.0 build-tools;35.0.0'
       - name: Verify frozen app and War Room layer
         run: |
           node scripts/verify.cjs
@@ -81,6 +85,23 @@ jobs:
               androidx.core.view.WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
               getWindow().setStatusBarColor(android.graphics.Color.rgb(8, 15, 28));
               getWindow().setNavigationBarColor(android.graphics.Color.rgb(8, 15, 28));
+              getOnBackPressedDispatcher().addCallback(this, new androidx.activity.OnBackPressedCallback(true) {
+                @Override
+                public void handleOnBackPressed() {
+                  android.webkit.WebView webView = getBridge().getWebView();
+                  String route = android.net.Uri.parse(webView.getUrl() == null ? "" : webView.getUrl()).getFragment();
+                  if (("transfer".equals(route) || "pylon".equals(route)) && webView.canGoBack()) {
+                    webView.goBack();
+                    return;
+                  }
+                  setEnabled(false);
+                  try {
+                    getOnBackPressedDispatcher().onBackPressed();
+                  } finally {
+                    setEnabled(true);
+                  }
+                }
+              });
             }
           ''')
           main.write_text(code)
@@ -93,6 +114,8 @@ jobs:
           python3 scripts/integrate-home-v25.py android/app/src/main/assets/public
           python3 scripts/integrate-war-room-live-v28.py android/app/src/main/assets/public
           python3 scripts/integrate-outpost-exports.py android/app/src/main/assets/public
+          node scripts/phx-war-academy-core-v01.test.cjs
+          python3 scripts/integrate-war-academy.py android/app/src/main/assets/public
       - name: Inject read-only WebView geometry probe into generated test assets
         run: |
           node --check scripts/phx-android-layout-probe.js
@@ -104,35 +127,6 @@ jobs:
           assert s.count('</body>') == 1
           s=s.replace('</body>', '<script src="./phx-android-layout-probe.js"></script>\n</body>')
           p.write_text(s)
-          PY
-      - name: Inject isolated War Academy bridge into generated Android assets
-        run: |
-          node --check scripts/phx-war-academy-core-v01.js
-          node --check scripts/phx-war-academy-war-room-bridge-v01.js
-          node scripts/phx-war-academy-core-v01.test.cjs
-          cp scripts/phx-war-academy-core-v01.js android/app/src/main/assets/public/phx-war-academy-core-v01.js
-          cp scripts/phx-war-academy-war-room-bridge-v01.js android/app/src/main/assets/public/phx-war-academy-war-room-bridge-v01.js
-          python3 - <<'PY'
-          from pathlib import Path
-          root=Path('android/app/src/main/assets/public')
-          live=root/'phx-war-room-live.js'
-          source=live.read_text()
-          marker="      renderIdentity(player);"
-          assert source.count(marker)==1, 'Live profile anchor changed; stop'
-          source=source.replace(marker, """      renderIdentity(player);
-      document.dispatchEvent(new CustomEvent('phx:own-profile-verified', { detail: data }));""")
-          marker_clear="  function clearProfile() {"
-          assert source.count(marker_clear)==1, 'Profile-clear anchor changed; stop'
-          source=source.replace(marker_clear, """  function clearProfile() {
-    document.dispatchEvent(new Event('phx:own-profile-cleared'));""")
-          live.write_text(source)
-          index=root/'index.html'
-          html=index.read_text()
-          assert html.count('</body>')==1, 'Index closing body changed; stop'
-          html=html.replace('</body>', '<script src="./phx-war-academy-core-v01.js"></script>\n<script src="./phx-war-academy-war-room-bridge-v01.js"></script>\n</body>')
-          index.write_text(html)
-          assert 'phx-war-academy-war-room-bridge-v01.js' in index.read_text()
-          print('PASS: isolated read-only War Academy bridge wired to authenticated profile events')
           PY
       - name: Build independent debug APK
         run: cd android && chmod +x gradlew && ./gradlew assembleDebug --no-daemon

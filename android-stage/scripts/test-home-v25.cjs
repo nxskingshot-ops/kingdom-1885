@@ -36,7 +36,91 @@ async function run() {
     const hero = page.locator('.phx-queen-experimental');
     const home = async () => page.goto(url + '/#phalanx-home', { waitUntil: 'load' });
 
+    const outpostCapture = process.env.PHX_TEST_OUTPOST_CAPTURE;
+    if (outpostCapture) {
+      const data = await fs.readFile(outpostCapture, 'utf8');
+      await page.route('**/rest/v1/public_outposts_verified_20261002?*', request =>
+        request.fulfill({contentType:'application/json', body:data}));
+    }
     const live = process.env.PHX_TEST_LIVE_PROFILE === '1';
+
+    if (process.env.PHX_TEST_WAR_ACADEMY === '1') {
+      await check('PYLON IX, geschützter Transfer und History-Rückwege', async () => {
+        let member = false;
+        const fixtureId = '301999999';
+        const mockClient = `export const createClient = () => ({
+          auth: {
+            getUser: async () => ({data:{user:{id:'phx-fixture',email:'fixture@example.invalid'}}}),
+            getSession: async () => ({data:{session:{access_token:'mock-transfer-token'}}}),
+            signInWithPassword: async () => { await fetch('/mock-transfer-login'); return {}; }
+          },
+          from: table => {
+            const query = {
+              select: () => query, eq: () => query, order: () => query,
+              maybeSingle: async () => ({data:await (await fetch('/mock-membership')).json()}),
+              limit: async () => ({data:[]})
+            };
+            return query;
+          },
+          rpc: async () => ({data:{scouting_role:'observer',allowed:false}})
+        });`;
+        await page.route('https://esm.sh/@supabase/supabase-js@2', request =>
+          request.fulfill({contentType: 'application/javascript', headers: {'Access-Control-Allow-Origin': '*'}, body: mockClient}));
+        await page.route('**/mock-transfer-login', request => {
+          member = true;
+          return request.fulfill({body:'OK'});
+        });
+        await page.route('**/mock-membership', request =>
+          request.fulfill({json: member ? {active:true,role:'member'} : null}));
+        await page.route('https://hcjrdofkdkasznywvcxo.supabase.co/functions/v1/*', request => {
+          const endpoint = new URL(request.request().url());
+          if (endpoint.pathname.endsWith('phalanx-transfer-id-snapshot-fallback-stage-20261031')) {
+            assert.equal(endpoint.searchParams.get('governorId'), fixtureId);
+            assert.equal(request.request().headers().authorization, 'Bearer mock-transfer-token');
+            return request.fulfill({json:{
+              ok:true,governorId:fixtureId,source:{cachedAt:'2026-11-17T06:00:00.000Z'},
+              player:{name:'Fixture Scout',kingdom:1901,alliance:'ALT',townCenterLevel:29}
+            }});
+          }
+          return request.fulfill({status:503});
+        });
+        await home();
+        await nav('pylon').click();
+        await route('pylon');
+        const modules = page.getByRole('navigation', {name:'PYLON IX modules'});
+        await expect(modules.getByRole('button').first()).toHaveText('Outpost Atlas');
+        await modules.getByRole('button', {name:'Transfer Scouting'}).click();
+        await route('transfer');
+        const transfer = page.frameLocator('iframe[title="Transfer Scouting"]');
+        await expect(transfer.locator('#message')).toContainText('no approved NXS membership');
+        await expect(transfer.locator('#private')).toBeHidden();
+        await transfer.locator('#email').fill('fixture@example.invalid');
+        await transfer.locator('#password').fill('mock-only-password');
+        await transfer.locator('#authForm button[type="submit"]').click();
+        await expect(transfer.locator('#private')).toBeVisible();
+        await expect(transfer.locator('#phxIdentityMeta')).toHaveText('OBSERVER · ACTIVE');
+        await transfer.locator('#phxGovernorId').fill(fixtureId);
+        await transfer.getByRole('button', {name:'Load Player Data'}).click();
+        const intelligence = transfer.getByRole('region', {name:'War Academy Intelligence'});
+        await expect(intelligence.getByRole('status')).toContainText(fixtureId);
+        await expect(intelligence.locator('dd')).toHaveText(['29', ...Array(4).fill('UNKNOWN')]);
+        await expect(transfer.locator('#phxAdoptCandidate')).toBeHidden();
+        await page.getByRole('button',{name:'← PYLON IX'}).click();
+        await route('pylon');
+        await modules.getByRole('button', {name:'Transfer Scouting'}).click();
+        await route('transfer');
+        await page.goBack();
+        await route('pylon');
+        await id('phx-pylon-close').click();
+        await route('phalanx-home');
+        await nav('pylon').click();
+        await modules.getByRole('button', {name:'Outpost Atlas'}).click();
+        await route('map');
+        await expect(id('map-frame')).toBeVisible();
+        await page.goBack();
+        await route('phalanx-home');
+      });
+    }
     if (live) {
       await check('Live-Profil in HOME und War Room: Anmeldung, Aktualisieren und Abmelden', async () => {
         const origin = 'https://yuyvmbdybwpwpqsipfjt.supabase.co';
@@ -87,6 +171,14 @@ async function run() {
         await expect(account.getByRole('status')).toHaveText('Verified profile · MightPulse');
         await expect(page.locator('.phx-live-source-badge')).toHaveText('Verified live data');
         await expect(account.locator('[data-live-id]')).toHaveText('291410048');
+        if (process.env.PHX_TEST_WAR_ACADEMY === '1') {
+          const development = page.locator('#phx-r8-war details[data-panel="development"]');
+          await development.locator('summary').click();
+          const intelligence = development.getByRole('region', { name: 'War Academy Intelligence' });
+          await expect(intelligence.getByRole('status')).toContainText('Player ID 291410048');
+          await expect(intelligence.locator('dd')).toHaveText(Array(5).fill('UNKNOWN'));
+          await development.locator('summary').click();
+        }
         await expect(page.locator('[data-w2-name]')).toHaveText('Scout Étoile');
         await expect(page.locator('[data-w2-alliance]')).toHaveText('ALT');
         await expect(page.locator('[data-w2-kingdom]')).toHaveText('#1901');
@@ -188,7 +280,7 @@ async function run() {
       for (const title of ['ACCOUNT INTELLIGENCE', 'ALLIANCE POSITION', 'PLAYER DEVELOPMENT']) {
         const section = page.locator('.phx-w2-tile').filter({ hasText: title });
         await section.locator('summary').click();
-        await expect(section.locator('p')).toBeVisible();
+        await expect(section.locator(':scope > p')).toBeVisible();
       }
       assert.doesNotMatch(await id('phx-r8-war').innerText(), /master power|pet power|hero power/i);
       await page.locator('.phx-w2-editor summary').filter({ hasText: 'Profile settings' }).click();
@@ -297,7 +389,8 @@ async function run() {
     await nav('territory').click();
     await id('open-map').click();
     const map = page.frameLocator('#map-frame');
-    const loaded = await check('74 verifizierte Outposts über den bestehenden Lese-Endpunkt', async () => {
+    const loaded = await check(outpostCapture ? '74 verifizierte Outposts · Originalantwort erneut abgespielt'
+      : '74 verifizierte Outposts über den bestehenden Lese-Endpunkt', async () => {
       await expect(map.locator('#status')).toContainText('74 verifizierte Outposts', { timeout: 15000 });
       await expect(map.locator('#rows > *')).toHaveCount(74);
     });
