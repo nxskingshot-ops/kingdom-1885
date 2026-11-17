@@ -1,0 +1,27 @@
+name: PHALANX War Academy isolated core checks
+on:
+  push:
+    branches:
+      - work/phx-home-final-audit-20261116
+    paths:
+      - 'android-stage/scripts/phx-war-academy-core-v01.js'
+      - 'android-stage/scripts/phx-war-academy-core-v01.test.cjs'
+      - '.github/workflows/phx-war-academy-core-checks.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate-core:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check syntax
+        run: node --check android-stage/scripts/phx-war-academy-core-v01.js
+      - name: Run isolated War Academy regression checks
+        run: node android-stage/scripts/phx-war-academy-core-v01.test.cjs
