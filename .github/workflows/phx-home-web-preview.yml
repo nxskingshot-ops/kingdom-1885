@@ -1,0 +1,49 @@
+name: PHALANX HOME fixed web design preview
+on:
+  push:
+    branches:
+      - test/home-plaque-visual-20261117
+    paths:
+      - '.github/workflows/phx-home-web-preview.yml'
+      - 'android-stage/www/**'
+      - 'android-stage/scripts/phx-home-name-autofit.js'
+      - 'android-stage/scripts/integrate-home-v25.py'
+      - 'android-stage/scripts/integrate-war-room-live-v28.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: phx-home-design-preview
+  cancel-in-progress: false
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify frozen assets and create separate preview directory
+        run: |
+          cd android-stage
+          node scripts/verify.cjs
+          node --check scripts/phx-home-name-autofit.js
+          mkdir -p ../.phx-home-web-preview
+          cp -a www/. ../.phx-home-web-preview/
+          python3 scripts/integrate-home-v25.py ../.phx-home-web-preview
+          python3 scripts/integrate-war-room-live-v28.py ../.phx-home-web-preview
+          cp scripts/phx-home-name-autofit.js ../.phx-home-web-preview/phx-home-name-autofit.js
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('../.phx-home-web-preview/index.html')
+          s=p.read_text()
+          assert s.count('</body>')==1
+          p.write_text(s.replace('</body>','<script src="./phx-home-name-autofit.js"></script>\n</body>'))
+          PY
+          test -s ../.phx-home-web-preview/index.html
+          test -s ../.phx-home-web-preview/PHX_HOME_QUEEN_AN_APPROVED.png
+      - name: Publish isolated Cloudflare branch preview only
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy .phx-home-web-preview --project-name=nexus-phalanx-kvk-test --branch=home-plaque-visual-20261117
