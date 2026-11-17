@@ -60,3 +60,7 @@ Keine Freigabe, kein FERTIG.
 - Required route: HOME -> PYLON IX -> Transfer Scouting -> Back -> PYLON IX -> HOME; War Room -> Player Development -> Back -> War Room -> HOME.
 - Shared intelligence core must be imported by both existing modules, not duplicated; protect PYLON IX emblem/design FREEZE and Transfer module permissions.
 - Acceptance gates: navigation/history, mobile Android back button, authorized player ID binding, roles, data provenance, existing Outpost Atlas, HOME and Territory Control regressions. All integration gates currently NOT TESTED.
+
+## Integrationsstand und Fortsetzung
+
+Die isolierte Integration, das Prüfprotokoll, die verbleibende Transfer-Origin-Sperre und der Rückweg sind in der [War-Academy-Projektübergabe](PHX-WAR-ACADEMY-UEBERGABE-20261117.md) dokumentiert.
