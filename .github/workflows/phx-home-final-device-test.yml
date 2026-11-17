@@ -5,6 +5,7 @@ on:
       - work/phx-home-final-audit-20261116
     paths:
       - '.github/workflows/phx-home-final-device-test.yml'
+      - 'android-stage/scripts/phx-android-layout-probe.js'
 permissions:
   contents: read
 jobs:
@@ -17,10 +18,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 05000c444d98c64e9a9d98587d16a485abe50cb4
+          ref: work/phx-home-final-audit-20261116
           persist-credentials: false
-      - name: Confirm exact source already verified in browser run 43906522924
-        run: test "$(git rev-parse HEAD)" = 05000c444d98c64e9a9d98587d16a485abe50cb4
+      - name: Confirm isolated audit branch
+        run: test "$(git branch --show-current)" = work/phx-home-final-audit-20261116
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -87,6 +88,18 @@ jobs:
           python3 scripts/integrate-home-v25.py android/app/src/main/assets/public
           python3 scripts/integrate-war-room-live-v28.py android/app/src/main/assets/public
           python3 scripts/integrate-outpost-exports.py android/app/src/main/assets/public
+      - name: Inject read-only WebView geometry probe into generated test assets
+        run: |
+          node --check scripts/phx-android-layout-probe.js
+          cp scripts/phx-android-layout-probe.js android/app/src/main/assets/public/phx-android-layout-probe.js
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('android/app/src/main/assets/public/index.html')
+          s=p.read_text()
+          assert s.count('</body>') == 1
+          s=s.replace('</body>', '<script src="./phx-android-layout-probe.js"></script>\\n</body>')
+          p.write_text(s)
+          PY
       - name: Build independent debug APK
         run: cd android && chmod +x gradlew && ./gradlew assembleDebug --no-daemon
       - name: Verify signature, package identity and packaged original art
@@ -105,7 +118,7 @@ jobs:
           cd /tmp/phx-device-test
           sha256sum PHALANX_HOME_FINAL_GERAETETEST.apk | tee SHA256SUMS
           cp /tmp/phx-signature.txt SIGNATURE.txt
-          printf '%s\n' '05000c444d98c64e9a9d98587d16a485abe50cb4' > SOURCE_COMMIT.txt
+          git rev-parse HEAD > /tmp/phx-device-test/SOURCE_COMMIT.txt
       - uses: actions/upload-artifact@v4
         with:
           name: phalanx-home-final-physical-device-candidate
