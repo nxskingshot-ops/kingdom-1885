@@ -47,10 +47,14 @@
   homeLogin.className = 'phx-home-live-login';
   homeLogin.textContent = 'Sign in / Live profile';
   homeLogin.setAttribute('aria-label', 'Sign in to PHALANX live profile');
-  document.getElementById('phx-r6-home')?.querySelector('.phx-home-nav')?.after(homeLogin);
+  const homeSection = document.getElementById('phx-r6-home');
+  const homeNavigation = homeSection?.querySelector('.phx-home-nav');
+  if (homeNavigation) homeNavigation.after(homeLogin);
   homeLogin.addEventListener('click', () => {
-    location.hash = '#war-room';
-    openProfile.click();
+    // One form, one session controller: present it on HOME without navigating.
+    homeLogin.after(account);
+    account.hidden = false;
+    (form.hidden ? refresh : form.elements.email).focus({ preventScroll: true });
   });
   accountPanel.id = 'phx-war-room-account';
   openProfile.setAttribute('aria-controls', accountPanel.id);
@@ -60,6 +64,8 @@
   });
   openProfile.addEventListener('click', () => {
     accountPanel.open = true;
+    accountPanel.append(account);
+    account.hidden = false;
     account.scrollIntoView({ block: 'start' });
     (form.hidden ? refresh : form.elements.email).focus({ preventScroll: true });
   });
