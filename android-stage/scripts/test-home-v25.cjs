@@ -47,6 +47,8 @@ async function run() {
     if (process.env.PHX_TEST_WAR_ACADEMY === '1') {
       await check('PYLON IX, geschützter Transfer und History-Rückwege', async () => {
         let member = false;
+        let freshProfile = true;
+        let townCenterBoardSource = 'provider_kingdom';
         const fixtureId = '301999999';
         const mockClient = `export const createClient = () => ({
           auth: {
@@ -78,9 +80,11 @@ async function run() {
             assert.equal(endpoint.searchParams.get('governorId'), fixtureId);
             assert.equal(request.request().headers().authorization, 'Bearer mock-transfer-token');
             return request.fulfill({json:{
-              ok:true,governorId:fixtureId,source:{cachedAt:'2026-11-17T06:00:00.000Z',fresh:true},
+              ok:true,governorId:fixtureId,source:{cachedAt:'2026-11-17T06:00:00.000Z',fresh:freshProfile},
               player:{name:'Fixture Scout',kingdom:1901,alliance:'ALT'},
-              ranks:{status:'available',values:{town_center_level:29,player_captured_at:'2026-11-17T06:00:00.000Z'}}
+              ranks:{status:'available',values:freshProfile
+                ? {town_center_level:29,player_captured_at:'2026-11-17T06:00:00.000Z'}
+                : {leaderboards:[{name:'town_center',value:30,captured_at:'2026-11-17T06:00:00.000Z',source:townCenterBoardSource}]}}
             }});
           }
           return request.fulfill({status:503});
@@ -106,6 +110,16 @@ async function run() {
         await expect(intelligence.getByRole('status')).toContainText(fixtureId);
         await expect(intelligence.locator('dd')).toHaveText(['TC 29 · 2026-11-17T06:00:00.000Z', ...Array(4).fill('UNKNOWN')]);
         await expect(transfer.locator('#phxAdoptCandidate')).toBeHidden();
+        freshProfile = false;
+        await transfer.getByRole('button', {name:'New Search'}).click();
+        await transfer.getByRole('button', {name:'Load Player Data'}).click();
+        await expect(intelligence.getByRole('status')).toHaveText(
+          'Player ID ' + fixtureId + ' confirmed. Current player profile data could not be verified.');
+        await expect(intelligence.locator('dd')).toHaveText(['TC 30 · 2026-11-17T06:00:00.000Z', ...Array(4).fill('UNKNOWN')]);
+        townCenterBoardSource = 'saved_snapshot';
+        await transfer.getByRole('button', {name:'New Search'}).click();
+        await transfer.getByRole('button', {name:'Load Player Data'}).click();
+        await expect(intelligence.locator('dd')).toHaveText(Array(5).fill('UNKNOWN'));
         await page.getByRole('button',{name:'← PYLON IX'}).click();
         await route('pylon');
         await modules.getByRole('button', {name:'Transfer Scouting'}).click();

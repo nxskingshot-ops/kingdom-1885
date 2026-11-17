@@ -37,9 +37,17 @@
       const profile = core.normalizeTransferProfile(payload, id);
       // Existing Transfer normalization applies the verified Castle/Truegold mapping.
       const rankCapture = core.normalizeCaptureTime(castle?.captured_at);
-      const rankedTownCenter = profile && rankCapture && castle.value != null && castle.source !== 'saved_snapshot'
+      const identityMatched = core.hasTransferIdentity(payload, id);
+      const rankSourceVerified = castle?.source === 'provider_kingdom' ||
+        (castle?.source === 'provider_player' && Boolean(profile));
+      const rankedTownCenter = identityMatched && rankSourceVerified && rankCapture &&
+        Number.isSafeInteger(castle.value) && castle.value > 0
         ? castle.text + ' · ' + rankCapture : null;
-      return render(document.createElement('section'), profile, 'Verified player data unavailable.', rankedTownCenter);
+      let status = 'Player identity could not be verified.';
+      if (identityMatched) {
+        status = 'Player ID ' + id + ' confirmed. Current player profile data could not be verified.';
+      }
+      return render(document.createElement('section'), profile, status, rankedTownCenter);
     }
   });
 })();

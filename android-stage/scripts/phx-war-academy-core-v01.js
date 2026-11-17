@@ -23,9 +23,13 @@
     }
     return Number.isFinite(time) ? new Date(time).toISOString() : null;
   }
+  function hasTransferIdentity(response, expectedId) {
+    const kingdom = response?.player?.kingdom;
+    return response?.ok === true && validId(expectedId) &&
+      String(response.governorId) === expectedId && Number.isSafeInteger(kingdom) && kingdom > 0;
+  }
   function normalizeTransferProfile(response, expectedId) {
-    if (response?.ok !== true || String(response.governorId) !== expectedId ||
-        response.source?.fresh !== true) return null;
+    if (!hasTransferIdentity(response, expectedId) || response.source?.fresh !== true) return null;
     const p = response.player;
     const time = normalizeCaptureTime(response.source?.cachedAt);
     if (!time) return null;
@@ -84,5 +88,5 @@
       resourceEstimate: null // Requires validated, versioned technology-level reference data.
     });
   }
-  return Object.freeze({BRANCHES, STATUS, validId, safeLevel, normalizeCaptureTime, normalizeProfile, normalizeTransferProfile, normalizeResearch, assess});
+  return Object.freeze({BRANCHES, STATUS, validId, safeLevel, normalizeCaptureTime, normalizeProfile, hasTransferIdentity, normalizeTransferProfile, normalizeResearch, assess});
 });
