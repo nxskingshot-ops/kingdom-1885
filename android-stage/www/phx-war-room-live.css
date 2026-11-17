@@ -2,7 +2,11 @@
   margin: 0 0 8px;
   font-size: 1.1rem;
 }
-#phx-r8-war .phx-live-account p {
+#phx-r8-war .phx-w2-tile .phx-live-account p {
+  margin: 0 0 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
   font: 0.85rem/1.4 system-ui, sans-serif;
 }
 #phx-r8-war .phx-live-account label {
@@ -61,12 +65,6 @@
 }
 #phx-r8-war .phx-live-open {
   font: 700 14px Georgia, serif;
-}
-#phx-r8-war .phx-live-build {
-  margin-left: auto;
-  color: #ffe0a0;
-  font: 700 11px system-ui, sans-serif;
-  white-space: nowrap;
 }
 #phx-r8-war .phx-live-source-badge {
   position: absolute;

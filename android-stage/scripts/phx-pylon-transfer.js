@@ -60,10 +60,44 @@
   transfer.addEventListener('click', () => {
     navigate('#transfer', { phxTransfer: true });
   });
-  function goBack() {
-    if (history.state?.phxTransfer) history.back();
-    else navigate('#pylon', null, true);
+  const homeCard = document.querySelector('#phx-r6-home [data-home-card="transfer"]');
+  const homePylon = document.querySelector('#phx-r6-home [data-home-action="pylon"]');
+  if (homeCard && homePylon) {
+    const shortcut = document.createElement('button');
+    shortcut.type = 'button';
+    shortcut.className = homeCard.className;
+    shortcut.dataset.homeCard = homeCard.dataset.homeCard;
+    shortcut.append(...homeCard.childNodes);
+    const subtitle = shortcut.querySelector('[data-home-text="pending"]');
+    subtitle.removeAttribute('data-home-text');
+    subtitle.textContent = 'PYLON IX';
+    const arrow = document.createElement('span');
+    arrow.className = 'phx-home-card-arrow';
+    arrow.setAttribute('aria-hidden', 'true');
+    arrow.textContent = '›';
+    shortcut.append(arrow);
+    shortcut.addEventListener('click', () => {
+      homePylon.click();
+      if (location.hash === '#pylon') transfer.click();
+    });
+    homeCard.replaceWith(shortcut);
   }
+  function goBack() {
+    if (location.hash !== '#transfer') return;
+    if (!history.state?.phxTransfer) {
+      navigate('#pylon', null, true);
+      return;
+    }
+    const appHistory = window.navigation;
+    const previous = appHistory?.entries()[appHistory.currentEntry?.index - 1];
+    if (previous && new URL(previous.url).hash === '#pylon') {
+      // Traverse the outer app entry even if the Transfer iframe has its own history.
+      void appHistory.traverseTo(previous.key).committed.catch(() => history.back());
+    } else {
+      history.back();
+    }
+  }
+  window.phxBackFromTransfer = goBack;
   back.addEventListener('click', goBack);
   dialog.addEventListener('cancel', event => {
     if (location.hash !== '#transfer') return;

@@ -31,18 +31,23 @@
       <button type="button" data-live-refresh>Refresh profile</button>
       <button type="button" data-live-logout>Sign out</button>
     </div>`;
-  profile.after(account);
+  const accountPanel = war.querySelector('[data-panel="account"]');
+  if (!accountPanel) return;
+  accountPanel.append(account);
   const toolbar = war.querySelector('.phx-w2-toolbar');
   const openProfile = document.createElement('button');
   openProfile.type = 'button';
   openProfile.className = 'phx-live-open';
   openProfile.textContent = 'Live profile';
   toolbar.append(openProfile);
-  const version = document.createElement('span');
-  version.className = 'phx-live-build';
-  version.textContent = 'HOME FINAL TEST';
-  toolbar.append(version);
+  accountPanel.id = 'phx-war-room-account';
+  openProfile.setAttribute('aria-controls', accountPanel.id);
+  openProfile.setAttribute('aria-expanded', 'false');
+  accountPanel.addEventListener('toggle', () => {
+    openProfile.setAttribute('aria-expanded', String(accountPanel.open));
+  });
   openProfile.addEventListener('click', () => {
+    accountPanel.open = true;
     account.scrollIntoView({ block: 'start' });
     (form.hidden ? refresh : form.elements.email).focus({ preventScroll: true });
   });
@@ -57,6 +62,8 @@
   const values = el('values');
   const refresh = el('refresh');
   const power = profile.querySelector('[data-w2-power]');
+  const profileId = profile.querySelector('[data-w2-player-id]');
+  const profileUpdated = profile.querySelector('[data-w2-updated]');
   const home = document.getElementById('phx-r6-home');
   const statusBar = window.Capacitor?.isPluginAvailable('StatusBar') && window.Capacitor.Plugins.StatusBar;
   if (statusBar) {
@@ -122,6 +129,9 @@
       field.removeAttribute('datetime');
     }
     power.textContent = 'Data pending';
+    profileId.textContent = '—';
+    profileId.removeAttribute('title');
+    setTime(profileUpdated, null, '—');
     profile.classList.remove('phx-live-verified');
   }
 
@@ -138,16 +148,19 @@
     dateStyle: 'medium', timeStyle: 'medium', timeZone: 'UTC'
   });
 
-  function setTime(field, value) {
+  const dossierTimeFormat = new Intl.DateTimeFormat(undefined, {
+    dateStyle: 'short', timeZone: 'UTC'
+  });
+
+  function setTime(node, value, empty = 'Unavailable', format = timeFormat) {
     const time = new Date(value);
-    const node = el(field);
     if (!value || !Number.isFinite(time.valueOf())) {
       node.removeAttribute('datetime');
-      node.textContent = 'Unavailable';
+      node.textContent = empty;
       return;
     }
     node.dateTime = time.toISOString();
-    node.textContent = timeFormat.format(time) + ' UTC';
+    node.textContent = format.format(time) + ' UTC';
   }
 
   async function loadProfile() {
@@ -185,8 +198,11 @@
       el('alliance').textContent = player?.alliance || '—';
       el('id').textContent = data.playerId;
       el('power').textContent = amount ?? 'Unavailable';
-      setTime('captured', data.capturedAt);
-      setTime('checked', data.checkedAt);
+      setTime(el('captured'), data.capturedAt);
+      setTime(el('checked'), data.checkedAt);
+      profileId.textContent = data.playerId;
+      profileId.title = data.playerId;
+      setTime(profileUpdated, player ? data.capturedAt : null, '—', dossierTimeFormat);
       status.textContent = player ? 'Verified profile · MightPulse'
         : 'Current values are unavailable. Refresh to check again.';
       values.hidden = false;

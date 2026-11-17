@@ -89,6 +89,15 @@
 #phx-r8-war .phx-w2-level { left: 36.6%; width: 10.4%; }
 #phx-r8-war .phx-w2-alliance { left: 57.2%; width: 13.6%; }
 #phx-r8-war .phx-w2-kingdom { left: 79%; width: 15.9%; }
+#phx-r8-war .phx-w2-player-id,
+#phx-r8-war .phx-w2-updated {
+  top: 57%;
+  height: 12%;
+  padding: 0 0.4%;
+  font-size: clamp(10px, 2.7cqi, 14px);
+}
+#phx-r8-war .phx-w2-player-id { left: 36.6%; width: 16%; }
+#phx-r8-war .phx-w2-updated { left: 63%; width: 32%; }
 
 #phx-r8-war .phx-w2-tile summary {
   list-style: none;

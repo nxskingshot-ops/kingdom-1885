@@ -34,6 +34,8 @@ async function run() {
     await expect(page).toHaveURL(/#war-room$/);
     await expect(page.getByRole('button', { name: 'Live profile' })).toBeVisible();
     await expect(page.locator('.phx-live-source-badge')).toHaveText('Sign in for live data');
+    await expect(page.getByRole('region', { name: 'Live profile' })).toBeHidden();
+    await expect(page.getByText('HOME FINAL TEST')).toHaveCount(0);
     await page.screenshot({ path: evidence + '/android-war-room.png' });
     await id('phx-r8-war-back').click();
     await expect(page).toHaveURL(/#phalanx-home$/);
@@ -59,6 +61,12 @@ async function run() {
     await expect(page).toHaveURL(/#transfer$/);
     await expect(page.frameLocator('iframe[title="Transfer Scouting"]').locator('#login')).toBeVisible();
     execFileSync('adb', ['shell', 'input', 'keyevent', '4']);
+    await expect(page).toHaveURL(/#pylon$/);
+    await id('phx-pylon-close').click();
+    await expect(page).toHaveURL(/#phalanx-home$/);
+    await page.getByRole('button', { name: 'Transfer Scouting PYLON IX' }).click();
+    await expect(page).toHaveURL(/#transfer$/);
+    await page.getByRole('button', { name: '← PYLON IX' }).click();
     await expect(page).toHaveURL(/#pylon$/);
     await id('phx-pylon-close').click();
     await expect(page).toHaveURL(/#phalanx-home$/);

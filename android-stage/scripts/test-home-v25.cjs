@@ -154,6 +154,13 @@ async function run() {
         await route('pylon');
         await id('phx-pylon-close').click();
         await route('phalanx-home');
+        await page.getByRole('button', {name:'Transfer Scouting PYLON IX'}).click();
+        await route('transfer');
+        await transfer.locator('body').evaluate(() => history.pushState(null, '', '#inner-transfer-view'));
+        await page.getByRole('button', {name:'← PYLON IX'}).click();
+        await route('pylon');
+        await id('phx-pylon-close').click();
+        await route('phalanx-home');
         await nav('pylon').click();
         await modules.getByRole('button', {name:'Outpost Atlas'}).click();
         await route('map');
@@ -203,7 +210,8 @@ async function run() {
         await expect(id('phx-r10-name')).toHaveText('Profil');
         await expect(id('phx-r11-kingdom')).toHaveText('—');
         await id('phx-r8-war-entry').tap();
-        await expect(page.getByText('HOME FINAL TEST')).toBeVisible();
+        await expect(account).toBeHidden();
+        await expect(page.getByText('HOME FINAL TEST')).toHaveCount(0);
         await page.getByRole('button', { name: 'Live profile' }).click();
         await expect(account.getByLabel('Test account email')).toBeFocused();
         await account.getByLabel('Test account email').fill('warroom@example.invalid');
@@ -212,6 +220,8 @@ async function run() {
         await expect(account.getByRole('status')).toHaveText('Verified profile · MightPulse');
         await expect(page.locator('.phx-live-source-badge')).toHaveText('Verified live data');
         await expect(account.locator('[data-live-id]')).toHaveText('291410048');
+        await expect(page.locator('[data-w2-player-id]')).toHaveText('291410048');
+        await expect(page.locator('[data-w2-updated]')).toHaveAttribute('datetime', sourceDate);
         if (process.env.PHX_TEST_WAR_ACADEMY === '1') {
           const development = page.locator('#phx-r8-war details[data-panel="development"]');
           await development.locator('summary').click();
@@ -261,6 +271,8 @@ async function run() {
         await expect(account.locator('[data-live-values]')).toBeHidden();
         await expect(account.getByLabel('Password')).toHaveValue('');
         await expect.poll(() => signOutObserved).toBe(true);
+        await page.locator('#phx-war-room-account > summary').click();
+        await expect(account).toBeHidden();
         await id('phx-r8-war-back').click();
         await route('phalanx-home');
       });

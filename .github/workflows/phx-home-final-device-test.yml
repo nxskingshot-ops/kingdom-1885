@@ -90,7 +90,11 @@ jobs:
                 public void handleOnBackPressed() {
                   android.webkit.WebView webView = getBridge().getWebView();
                   String route = android.net.Uri.parse(webView.getUrl() == null ? "" : webView.getUrl()).getFragment();
-                  if (("transfer".equals(route) || "pylon".equals(route)) && webView.canGoBack()) {
+                  if ("transfer".equals(route)) {
+                    webView.evaluateJavascript("window.phxBackFromTransfer()", null);
+                    return;
+                  }
+                  if ("pylon".equals(route) && webView.canGoBack()) {
                     webView.goBack();
                     return;
                   }

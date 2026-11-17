@@ -33,6 +33,8 @@
     <span class="phx-w2-value phx-w2-level"><span class="phx-w2-visually-hidden">Level </span><span data-w2-level></span></span>
     <span class="phx-w2-value phx-w2-alliance"><span class="phx-w2-visually-hidden">Alliance </span><span data-w2-alliance></span></span>
     <span class="phx-w2-value phx-w2-kingdom"><span class="phx-w2-visually-hidden">Kingdom </span><span data-w2-kingdom></span></span>
+    <span class="phx-w2-value phx-w2-player-id"><span class="phx-w2-visually-hidden">Player ID </span><span data-w2-player-id>—</span></span>
+    <span class="phx-w2-value phx-w2-updated"><span class="phx-w2-visually-hidden">Last updated </span><time data-w2-updated>—</time></span>
     <span class="phx-w2-visually-hidden">Power: <span data-w2-power>Data pending</span></span>
   `;
   head.after(profile);
