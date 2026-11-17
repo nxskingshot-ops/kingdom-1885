@@ -1,6 +1,6 @@
 # PHALANX · War Academy Intelligence / Transfer Scouting
 
-Stand 17.11.2026 · **Isolierte Integration technisch geprüft. Live-Transfer und Geräteabnahme offen.**
+Stand 17.11.2026 · **Isolierte Integration technisch geprüft. Android-Origin freigegeben. Authentifizierter Live-Transfer und Geräteabnahme offen.**
 
 ## Quelle, Sicherung und Rückweg
 
@@ -33,7 +33,8 @@ Stand 17.11.2026 · **Isolierte Integration technisch geprüft. Live-Transfer un
 | Android-APK | **BESTANDEN** | `assembleDebug`, APK-Signatur, Paket `app.nexusphalanx.stage.homefinal`, ZIP-Integrität und Vergleich gepackter Assets mit Build-Eingaben. Lokaler APK-SHA-256 `4a6b89704dbc5990db6d688501724fdc59ab0d76daf146f02437bbd8f1ce4429`. Debug-Signatur des lokalen Builds. [Erfolgreicher isolierter APK-Lauf mit Artefakt](https://github.com/nxskingshot-ops/kingdom-1885/actions/runs/44040056529/artifacts/14308852646) |
 | Android-Emulator, erster Lauf | **FEHLGESCHLAGEN** | APK installiert und Kaltstart ausgeführt. WebView-Auswahl brach vor der ersten UI-Prüfung ab. Playwright verarbeitet in der verwendeten Version `pkg` und `socketName`, der Test übergab versehentlich nur `pid`. [Android-Testprotokoll](https://github.com/nxskingshot-ops/kingdom-1885/actions/runs/44039783154/job/133891610070) |
 | Android-Emulator API 35, korrigierter Lauf | **BESTANDEN** | APK installiert und gestartet. HOME, War Room, Territory Control, Reports, PYLON IX und Transfer-Loginseite geöffnet. Native System-Zurücktaste führte von Transfer zu PYLON IX. Zurück zu HOME und Speichern beider Outpost-Exporte über den nativen Dateidialog bestanden. [Jobprotokoll](https://github.com/nxskingshot-ops/kingdom-1885/actions/runs/44040551324/job/133894067566) · [Emulatornachweise](https://github.com/nxskingshot-ops/kingdom-1885/actions/runs/44040551324/artifacts/14309237837) |
-| Android Transfer · echte MightPulse-Antwort | **FEHLGESCHLAGEN** | Der ID-Lookup liefert für `Origin: https://localhost` HTTP 403 `origin_forbidden`. Rankings liefern HTTP 204 mit einer anderen Allow-Origin-Antwort, die Android ebenfalls blockiert. Beide unterstützen den bestehenden Cloudflare-Test-Origin. Der War-Room-Endpunkt antwortet für Android mit HTTP 204 und passender Allow-Origin-Antwort. |
+| Android Transfer · Preflight vor der Origin-Freigabe | **FEHLGESCHLAGEN** | Lookup v21 lieferte für `https://localhost` HTTP 403 `origin_forbidden`. Rankings v9 lieferte eine fremde Allow-Origin-Antwort. |
+| Android Transfer · Preflight nach der Origin-Freigabe | **BESTANDEN** | Lookup v22 und Rankings v10 liefern HTTP 204 mit exakt `Access-Control-Allow-Origin: https://localhost`. Die authentifizierte Live-Datenprüfung ist **NICHT GETESTET**. |
 | Rollen und RLS im isolierten PostgreSQL- und Browsertest | **BESTANDEN** | Vorhandene Access-V2-Regressionen mit Freigaben, Observer/Operator/Administrator, direkten RLS-Prüfungen, Sitzungsentzug, Audits und Rollback. Chromium bei 390/1280 px. |
 | Live-Login, Rollen/RLS, Speicherung und Passwort-Reset im neuen Build | **NICHT GETESTET** | Live-Konten und echte Kandidaten waren von der Prüfung ausgenommen. |
 | PYLON IX Wissensspeicher, Synchronisierung und Schreibaktionen | **NICHT GETESTET** | Die Integration nutzt den bestehenden PYLON-Dialog. In der geprüften App ist kein autorisierter persistenter Wissensdienst verdrahtet. |
@@ -43,8 +44,18 @@ Browserprotokoll SHA-256 `4b6983e19719bd9924b60dbe83501948555fd2dffa7ddf6f1c841f
 
 ## Fortsetzung
 
-1. Eine autorisierte Test-Origin-Verbindung für **beide** Transfer-Funktionen herstellen. Bestehendes Cloudflare-Staging ist in beiden Allowlisten vorhanden. Für eine APK vom lokalen Origin eine Änderung nur in der dafür freigegebenen isolierten Backend-Umgebung vorbereiten. Beide Funktionen verlangen JWT und Mitgliedschaft. Den Android-Origin bei Rankings an dieselbe Prüfung für nicht anonyme Mitglieder wie Cloudflare-Staging binden. Aktuelle Funktionsversionen v21/v9 vor jeder Änderung sichern und Rückweg testen. Identität und Rollen per echten genehmigten Testkonten verifizieren.
+1. In der Android-Test-App mit einem genehmigten Transfer-Konto anmelden. Unter PYLON IX → Transfer Scouting → Find a Player eine bekannte Kingshot-Spieler-ID laden, Spieleridentität und Quellzeit abgleichen und die Live-Rankings öffnen. Die CORS-Freigabe ist bereits aktiv.
 2. Mit den vorgeschriebenen Android- und Rollenprüfungen fortsetzen. Passwort-Reset-Originalimplementierung ermitteln. Den älteren HOME-Randfehler separat im freigegebenen Testpaket messen.
 3. Wenn die Quelle War Academy oder T11 ergänzen kann, die autorisierte Antwortstruktur und Feldherkunft vor der Anbindung bestätigen. Bis dahin bleibt die Anzeige UNKNOWN.
 
 Datenbank, RLS, Rollen, GOD MODE und produktive Bereitstellungen wurden bei dieser Integration nicht geändert.
+
+
+## Freigegebene Android-Origin-Änderung · 17.11.2026
+
+- Ausschließlich die zwei bestehenden Transfer-Testfunktionen wurden geändert. `phalanx-transfer-id-snapshot-fallback-stage-20261031` v21 → **v22** und `phalanx-transfer-intelligence-stage-20261031` v9 → **v10**. Beide aktiven Quellbundles wurden vom Dienst zurückgelesen und mit dem freigegebenen Änderungssatz verglichen. `verify_jwt=true` ist für beide Versionen aktiv.
+- Bei Rankings unterliegt der Android-Origin derselben Mitgliedschaftsprüfung wie das bestehende Cloudflare-Staging. Die Prüfungen verlangen einen aktiven, nicht anonymen, zur Transfer-Nutzung berechtigten Account. Der Lookup prüft weiterhin Mitgliedschaft, Quote und Spieler-ID.
+- **BESTANDEN** · 14 HTTP-Prüfungen an beiden bereitgestellten Endpunkten. Android und Cloudflare erhalten beim Preflight jeweils HTTP 204 und ihre exakte Origin im Header. Eine fremde Origin erhält keine passende CORS-Freigabe. GET ohne Token oder mit ungültigem Token erhält HTTP 401.
+- **BESTANDEN** · Isolierter Quelltest mit simulierten Auth-, Mitgliedschafts- und MightPulse-Antworten. Anerkannte Mitgliedschaft lieferte die angefragte ID, Town Center und Rankings. Fehlende, anonyme, inaktive, abgelaufene und nicht qualifizierte Mitglieder erreichten die Datenquelle nicht.
+- **BACKUP ERSTELLT, INTEGRITÄT GEPRÜFT** · Originalquellen, Funktionsversionen und JWT-Konfiguration vor der Änderung gesichert. Backup-SHA-256 `bf30a22fb429a062e521f5540a83d05ffa8bbaf3d151cbbeff3dfe918adf5be0`. **WIEDERHERSTELLUNG LOKAL GETESTET** · Beide Funktionsquellen aus der Sicherung im isolierten Test ausgeführt. Rückweg bei Bedarf: jeweilige Originalquelle mit `verify_jwt=true` auf dieselbe Testfunktion einspielen und den Origin-/Auth-Prüfsatz wiederholen. Die aktive Bereitstellung wurde nicht zu Testzwecken zurückgesetzt.
+- **NICHT GETESTET** · Erfolgreicher authentifizierter Abruf mit echter Android-Transfer-Sitzung. Die bereitgestellten Endpunkte wurden ohne Zugriff auf ein angemeldetes Testkonto geprüft.
