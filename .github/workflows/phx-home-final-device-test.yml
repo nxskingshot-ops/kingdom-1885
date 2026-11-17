@@ -1,0 +1,114 @@
+name: PHALANX HOME FINAL physical-device candidate
+on:
+  push:
+    branches:
+      - work/phx-home-final-audit-20261116
+    paths:
+      - '.github/workflows/phx-home-final-device-test.yml'
+permissions:
+  contents: read
+jobs:
+  device-test-apk:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: android-stage
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 05000c444d98c64e9a9d98587d16a485abe50cb4
+          persist-credentials: false
+      - name: Confirm exact source already verified in browser run 43906522924
+        run: test "$(git rev-parse HEAD)" = 05000c444d98c64e9a9d98587d16a485abe50cb4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-35 build-tools;35.0.0'
+      - name: Verify frozen app and War Room layer
+        run: |
+          node scripts/verify.cjs
+          node --check www/phx-war-room-v2.js
+          node --check www/phx-war-room-live.js
+          echo "184d4632637057086989360e21b0663a7e47ac4bb2e186b16ff29f08a6991630  www/phx-war-room-reference.jpg" | sha256sum -c
+      - name: Generate isolated Android project
+        run: |
+          npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+          npm ci --no-audit --no-fund
+          node - <<'JS'
+          const fs = require('node:fs');
+          const file = 'capacitor.config.json';
+          const config = JSON.parse(fs.readFileSync(file, 'utf8'));
+          config.appId = 'app.nexusphalanx.stage.homefinal';
+          config.appName = 'NEXUS PHALANX HOME FINAL TEST';
+          fs.writeFileSync(file, JSON.stringify(config, null, 2) + '\n');
+          JS
+          npx cap add android
+          npx cap sync android
+      - name: Fix Android system status bar overlap in generated native project
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          styles=Path('android/app/src/main/res/values/styles.xml')
+          source=styles.read_text()
+          if 'android:windowOptOutEdgeToEdgeEnforcement' not in source:
+              source=source.replace('</style>','<item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>\n    </style>')
+          styles.write_text(source)
+          main=next(Path('android/app/src/main/java').rglob('MainActivity.java'))
+          code=main.read_text()
+          needle='public class MainActivity extends BridgeActivity {'
+          assert code.count(needle)==1,'Unexpected MainActivity structure; stop'
+          assert 'WindowCompat.setDecorFitsSystemWindows' not in code,'Fix already applied; stop'
+          main.with_name('OutpostExportPlugin.java').write_bytes(Path('native/OutpostExportPlugin.java').read_bytes())
+          code=code.replace(needle,needle+'''
+            @Override
+            public void onCreate(android.os.Bundle savedInstanceState) {
+              registerPlugin(OutpostExportPlugin.class);
+              super.onCreate(savedInstanceState);
+              android.webkit.WebView.setWebContentsDebuggingEnabled(true);
+              androidx.core.view.WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+              getWindow().setStatusBarColor(android.graphics.Color.rgb(8, 15, 28));
+              getWindow().setNavigationBarColor(android.graphics.Color.rgb(8, 15, 28));
+            }
+          ''')
+          main.write_text(code)
+          assert 'WindowCompat.setDecorFitsSystemWindows(getWindow(), true)' in main.read_text()
+          assert 'android:windowOptOutEdgeToEdgeEnforcement' in styles.read_text()
+          print('PASS: Android status/navigation bar inset patch applied to generated native test app')
+          PY
+      - name: Adapt original HOME plaque in generated Android assets
+        run: |
+          python3 scripts/integrate-home-v25.py android/app/src/main/assets/public
+          python3 scripts/integrate-war-room-live-v28.py android/app/src/main/assets/public
+          python3 scripts/integrate-outpost-exports.py android/app/src/main/assets/public
+      - name: Build independent debug APK
+        run: cd android && chmod +x gradlew && ./gradlew assembleDebug --no-daemon
+      - name: Verify signature, package identity and packaged original art
+        run: |
+          APK=android/app/build/outputs/apk/debug/app-debug.apk
+          BUILD_TOOLS="$ANDROID_HOME/build-tools/35.0.0"
+          "$BUILD_TOOLS/aapt" dump badging "$APK" > /tmp/phx-badging.txt
+          grep -q "package: name='app.nexusphalanx.stage.homefinal'" /tmp/phx-badging.txt
+          "$BUILD_TOOLS/apksigner" verify --print-certs "$APK" | tee /tmp/phx-signature.txt
+          grep -q 'certificate SHA-256 digest' /tmp/phx-signature.txt
+          unzip -p "$APK" assets/public/PHX_HOME_QUEEN_AN_APPROVED.png | sha256sum | grep -q '^44af7b03d8fc1e68ac950b663aef8605bb1c9406e471eec4d10634b2083a9ada '
+          unzip -p "$APK" assets/public/index.html > /tmp/phx-packaged-index.html
+          cmp /tmp/phx-packaged-index.html android/app/src/main/assets/public/index.html
+          mkdir -p /tmp/phx-device-test
+          cp "$APK" /tmp/phx-device-test/PHALANX_HOME_FINAL_GERAETETEST.apk
+          cd /tmp/phx-device-test
+          sha256sum PHALANX_HOME_FINAL_GERAETETEST.apk | tee SHA256SUMS
+          cp /tmp/phx-signature.txt SIGNATURE.txt
+          printf '%s\n' '05000c444d98c64e9a9d98587d16a485abe50cb4' > SOURCE_COMMIT.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: phalanx-home-final-physical-device-candidate
+          path: /tmp/phx-device-test/
+          if-no-files-found: error
+          retention-days: 1
