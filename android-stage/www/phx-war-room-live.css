@@ -84,3 +84,23 @@
 #phx-r8-war .phx-r10-fields label[hidden] {
   display: none;
 }
+
+/* Compact HOME login entry, outside the approved Queen An artwork. */
+#phx-r6-home .phx-home-live-login {
+  display: block;
+  margin: 10px auto 16px;
+  padding: 9px 20px;
+  max-width: calc(100% - 24px);
+  min-height: 44px;
+  border: 1px solid #b88945;
+  border-radius: 8px;
+  background: linear-gradient(#392416, #161718);
+  color: #ffdf9b;
+  font: 700 15px Georgia, serif;
+  text-align: center;
+  cursor: pointer;
+}
+#phx-r6-home .phx-home-live-login:focus-visible {
+  outline: 3px solid #83bbff;
+  outline-offset: 2px;
+}
