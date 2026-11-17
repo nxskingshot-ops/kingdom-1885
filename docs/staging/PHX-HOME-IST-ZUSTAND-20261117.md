@@ -50,3 +50,12 @@ Alle Aussagen beziehen sich auf die geprüften Quellen und die dort dokumentiert
 - Neuer physischer Android-Test: NICHT GETESTET
 - Backup in dieser Runde erstellt: NEIN
 - Produktivänderung: KEINE
+
+## Physischer HOME-Screenshot 50388.png · Sichtprüfung
+- Sichtbar: großer grauer Leerbereich oberhalb der Queen-An-Szene; keine Systemstatussymbole in diesem Bereich. Ursache ohne WindowInsets-/DOM-Messung ungeklärt.
+- Sichtbar: obere Plaketten `FaQu` und `#1885 · NXS`, War-Room-Einstieg links; keine HOME-Levelzeile. Die Datenfrische/Spieler-ID-Bindung ist allein aus dem Bild nicht beweisbar.
+- Sichtbar: Queen-An-Motiv, PHALANX-Logo, sechsfeldrige Navigation (Home, War Room, Command Center, Territory Control, Reports, PYLON IX) und DE-Auswahl. PYLON-Eintrag zeigt ein schlichtes Lambda; Abgleich mit freigegebenem PYLON-IX-Emblem erforderlich.
+- Sichtbar: vier Command-Center-Banner (KvK Vorbereitung, Territory Control, Transfer Scouting, Allianzvergleich). Drei tragen `Anbindung folgt`; daraus ist keine tatsächliche Modulabwesenheit abzuleiten. Territory-Control-Banner trägt `Outposts & Reports`.
+- Sichtbar: sehr großer ungenutzter unterer Bildschirmbereich sowie hohe Navigationsfläche; Gestaltungsentscheidung noch offen.
+- BELEGT: Die bereits installierte Android-App kann HOME darstellen. NICHT BELEGT: Aktualität der APK, Modulnavigation, Live-Profil, Rücktaste, Exporte und persistente Speicherung.
+- Schutz: Keine Änderungen an Originalgrafik oder FREEZEs vor gezielter Ursachenmessung. Screenshot ist vom Nutzer bereitgestellt und wird nicht als Repo-Bilddatei kopiert.
