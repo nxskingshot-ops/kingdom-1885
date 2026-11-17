@@ -47,7 +47,7 @@
   homeLogin.className = 'phx-home-live-login';
   homeLogin.textContent = 'Sign in / Live profile';
   homeLogin.setAttribute('aria-label', 'Sign in to PHALANX live profile');
-  home?.querySelector('.phx-home-nav')?.after(homeLogin);
+  document.getElementById('phx-r6-home')?.querySelector('.phx-home-nav')?.after(homeLogin);
   homeLogin.addEventListener('click', () => {
     location.hash = '#war-room';
     openProfile.click();
