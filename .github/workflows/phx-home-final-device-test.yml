@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/phx-home-final-device-test.yml'
       - 'android-stage/www/phx-home-plaque-v25.css'
+      - 'android-stage/scripts/phx-home-name-autofit.js'
       - 'android-stage/scripts/phx-android-layout-probe.js'
       - 'android-stage/scripts/phx-war-academy-core-v01.js'
       - 'android-stage/scripts/phx-war-academy-core-v01.test.cjs'
@@ -122,6 +123,15 @@ jobs:
       - name: Adapt original HOME plaque in generated Android assets
         run: |
           python3 scripts/integrate-home-v25.py android/app/src/main/assets/public
+          node --check scripts/phx-home-name-autofit.js
+          cp scripts/phx-home-name-autofit.js android/app/src/main/assets/public/phx-home-name-autofit.js
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('android/app/src/main/assets/public/index.html')
+          html=p.read_text()
+          assert html.count('</body>')==1
+          p.write_text(html.replace('</body>', '<script src="./phx-home-name-autofit.js"></script>\n</body>'))
+          PY
           python3 scripts/integrate-war-room-live-v28.py android/app/src/main/assets/public
           python3 scripts/integrate-outpost-exports.py android/app/src/main/assets/public
           node scripts/phx-war-academy-core-v01.test.cjs
