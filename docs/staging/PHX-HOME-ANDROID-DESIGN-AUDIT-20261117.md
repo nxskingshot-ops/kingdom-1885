@@ -41,3 +41,15 @@ Status: OFFEN · Analyse dokumentiert, keine visuelle Abnahme, keine Produktions
 - Produktionsänderung: KEINE.
 
 Keine Freigabe, kein FERTIG.
+
+
+## War Academy / T11 Integration Gate · 17.11.2026
+- User decision: NO standalone main module. Shared intelligence adapter for existing War Room > Player Development and Transfer Scouting > Account Assessment.
+- Existing `android-stage/www/phx-war-room-v2.js` has a `development` details panel with an unverified placeholder; preserve the panel and HOME freeze.
+- Existing `android-stage/www/phx-war-room-live.js` obtains the authenticated player's verified profile via `/functions/v1/phx-war-room-own-profile`; do NOT bypass account ownership or expose credentials.
+- First build a read-only adapter isolated from production. Normalize each value with `{value,source,observedAt,verification}`; `unknown` must never become zero or `not unlocked`.
+- Player-ID-specific: use only authorized backend response. MightPulse documented player identity/power and town-center field require field-by-field verification; do not invent individual War Academy/T11 values.
+- Reference data: validate license, schema, version and source checksum before import. No blind writes to Supabase or automatic overwrites of manual confirmations.
+- War Room: show building progress, War Academy, T11 branches, next milestone only when grounded. Transfer: compact same facts; unknown excluded from negative score.
+- Dependencies: HOME Android installation and layout regression still open. No live API integration, production changes, or completed Android tests claimed.
+- Gates: isolated unit tests, source field mapping, permissions/RLS, export, mobile navigation, regression, release approval.
