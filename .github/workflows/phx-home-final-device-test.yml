@@ -76,7 +76,12 @@ jobs:
           needle='public class MainActivity extends BridgeActivity {'
           assert code.count(needle)==1,'Unexpected MainActivity structure; stop'
           assert 'WindowCompat.setDecorFitsSystemWindows' not in code,'Fix already applied; stop'
-          main.with_name('OutpostExportPlugin.java').write_bytes(Path('native/OutpostExportPlugin.java').read_bytes())
+          plugin_source=Path('native/OutpostExportPlugin.java').read_text()
+          native_package='app.nexusphalanx.stage.plaquevisual'
+          assert plugin_source.count('package app.nexusphalanx.stage.homefinal;') == 1
+          plugin_source=plugin_source.replace('package app.nexusphalanx.stage.homefinal;', f'package {native_package};', 1)
+          main.with_name('OutpostExportPlugin.java').write_text(plugin_source)
+          assert f'package {native_package};' in main.with_name('OutpostExportPlugin.java').read_text()
           code=code.replace(needle,needle+'''
             @Override
             public void onCreate(android.os.Bundle savedInstanceState) {
