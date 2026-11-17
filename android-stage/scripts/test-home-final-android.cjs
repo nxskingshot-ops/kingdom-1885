@@ -13,7 +13,8 @@ async function run() {
       encoding: 'utf8'
     }).trim());
     if (!Number.isSafeInteger(pid) || pid < 1) throw new Error('App process not found');
-    const webView = await device.webView({ pid }, { timeout: 30000 });
+    const socketName = 'webview_devtools_remote_' + pid;
+    const webView = await device.webView({ socketName }, { timeout: 30000 });
     const page = await webView.page();
     await expect(page).toHaveURL(/^https:\/\/localhost\//);
     page.setDefaultTimeout(10000);
@@ -61,7 +62,7 @@ async function run() {
     await expect(page).toHaveURL(/#pylon$/);
     await id('phx-pylon-close').click();
     await expect(page).toHaveURL(/#phalanx-home$/);
-    console.log('BESTANDEN: API 35 HOME, War Room, Territory Control, Reports und PYLON IX.');
+    console.log('BESTANDEN: API 35 HOME, War Room, Territory Control, Reports PYLON IX, Transfer Scouting und Android-Zurücktaste.');
     await nav('territory').click();
     await id('open-map').click();
     await expect(map.locator('#rows > *')).toHaveCount(74, { timeout: 20000 });
