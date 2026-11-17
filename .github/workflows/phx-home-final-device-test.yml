@@ -129,7 +129,7 @@ jobs:
           index=root/'index.html'
           html=index.read_text()
           assert html.count('</body>')==1, 'Index closing body changed; stop'
-          html=html.replace('</body>', '<script src="./phx-war-academy-core-v01.js"></script>\\n<script src="./phx-war-academy-war-room-bridge-v01.js"></script>\\n</body>')
+          html=html.replace('</body>', '<script src="./phx-war-academy-core-v01.js"></script>\n<script src="./phx-war-academy-war-room-bridge-v01.js"></script>\n</body>')
           index.write_text(html)
           assert 'phx-war-academy-war-room-bridge-v01.js' in index.read_text()
           print('PASS: isolated read-only War Academy bridge wired to authenticated profile events')
