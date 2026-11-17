@@ -2,9 +2,10 @@ name: PHALANX HOME FINAL physical-device candidate
 on:
   push:
     branches:
-      - work/phx-home-final-audit-20261116
+      - test/home-plaque-visual-20261117
     paths:
       - '.github/workflows/phx-home-final-device-test.yml'
+      - 'android-stage/www/phx-home-plaque-v25.css'
       - 'android-stage/scripts/phx-android-layout-probe.js'
       - 'android-stage/scripts/phx-war-academy-core-v01.js'
       - 'android-stage/scripts/phx-war-academy-core-v01.test.cjs'
@@ -55,8 +56,8 @@ jobs:
           const fs = require('node:fs');
           const file = 'capacitor.config.json';
           const config = JSON.parse(fs.readFileSync(file, 'utf8'));
-          config.appId = 'app.nexusphalanx.stage.homefinal';
-          config.appName = 'NEXUS PHALANX HOME FINAL TEST';
+          config.appId = 'app.nexusphalanx.stage.plaquevisual';
+          config.appName = 'PHALANX PLAQUE VISUAL TEST';
           fs.writeFileSync(file, JSON.stringify(config, null, 2) + '\n');
           JS
           npx cap add android
@@ -139,23 +140,23 @@ jobs:
           APK=android/app/build/outputs/apk/debug/app-debug.apk
           BUILD_TOOLS="$ANDROID_HOME/build-tools/35.0.0"
           "$BUILD_TOOLS/aapt" dump badging "$APK" > /tmp/phx-badging.txt
-          grep -q "package: name='app.nexusphalanx.stage.homefinal'" /tmp/phx-badging.txt
+          grep -q "package: name='app.nexusphalanx.stage.plaquevisual'" /tmp/phx-badging.txt
           "$BUILD_TOOLS/apksigner" verify --print-certs "$APK" | tee /tmp/phx-signature.txt
           grep -q 'certificate SHA-256 digest' /tmp/phx-signature.txt
           unzip -p "$APK" assets/public/PHX_HOME_QUEEN_AN_APPROVED.png | sha256sum | grep -q '^44af7b03d8fc1e68ac950b663aef8605bb1c9406e471eec4d10634b2083a9ada '
           unzip -p "$APK" assets/public/index.html > /tmp/phx-packaged-index.html
           cmp /tmp/phx-packaged-index.html android/app/src/main/assets/public/index.html
           mkdir -p /tmp/phx-device-test
-          cp "$APK" /tmp/phx-device-test/PHALANX_HOME_FINAL_GERAETETEST.apk
+          cp "$APK" /tmp/phx-device-test/PHALANX_HOME_PLAQUE_VISUAL_TEST.apk
           cd /tmp/phx-device-test
-          sha256sum PHALANX_HOME_FINAL_GERAETETEST.apk | tee SHA256SUMS
+          sha256sum PHALANX_HOME_PLAQUE_VISUAL_TEST.apk | tee SHA256SUMS
           cp /tmp/phx-signature.txt SIGNATURE.txt
           printf '%s\n' "$GITHUB_SHA" > SOURCE_COMMIT.txt
-          unzip -l PHALANX_HOME_FINAL_GERAETETEST.apk | grep -q 'assets/public/phx-android-layout-probe.js'
-          unzip -p PHALANX_HOME_FINAL_GERAETETEST.apk assets/public/index.html | grep -q 'phx-android-layout-probe.js'
+          unzip -l PHALANX_HOME_PLAQUE_VISUAL_TEST.apk | grep -q 'assets/public/phx-android-layout-probe.js'
+          unzip -p PHALANX_HOME_PLAQUE_VISUAL_TEST.apk assets/public/index.html | grep -q 'phx-android-layout-probe.js'
       - uses: actions/upload-artifact@v4
         with:
-          name: phalanx-home-final-physical-device-candidate
+          name: phalanx-home-plaque-visual-side-by-side
           path: /tmp/phx-device-test/
           if-no-files-found: error
           retention-days: 7
