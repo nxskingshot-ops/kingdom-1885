@@ -73,3 +73,12 @@ Status: **Isolierter Integrationsstand. Produktions- und Gerätefreigabe offen.*
 | HOME vor Anmeldung | BESTANDEN | Links steht „Profil“, rechts ein einzelner Strich. Keine Levelzeile und keine doppelte Allianzbeschriftung sichtbar. |
 | Oberer Rand auf HOME | FEHLGESCHLAGEN | Über der Queen-An-Grafik bleibt ein grauer Streifen. Die Systemstatussymbole sind auf HOME ausgeblendet. Die Ursache für den verbleibenden Rand ist offen. |
 | Live-Login, Profilplaketten nach dem Login, Rückweg und native Exporte | NICHT GETESTET | Die UI wurde vor der Anmeldung fotografiert. Die zwei Screenshots belegen weder einen abgeschlossenen Rückweg noch gespeicherte Exportdateien. |
+
+## Live-Profil auf physischem Android bestätigt · 17.11.2026
+
+| Prüfung | Ergebnis | Nachweis |
+|---|---|---|
+| Anmeldung und MightPulse-Profil im War Room | BESTANDEN | Gerätedokumentation 50335.png zeigt „Verified live data“ und „Verified profile · MightPulse“, FaQu, #1885, NXS und Power 194.223.133. Quellzeit 05:30:37 UTC, geprüft um 05:30:47 UTC. |
+| Rückkehr zu HOME und Profilplaketten nach Anmeldung | BESTANDEN | Im vereinbarten Testablauf zeigt 50336.png die wieder geöffnete HOME-Ansicht mit „FaQu“ links und einer einzelnen Beschriftung „#1885 · NXS“ rechts. Keine Levelzeile. |
+| Oberer Rand auf HOME | FEHLGESCHLAGEN | Der graue Streifen über der Grafik bleibt nach der Rückkehr sichtbar. |
+| Native JSON- und CSV-Exporte auf physischem Android | NICHT GETESTET | Ein Speichern beider Dateien wurde noch nicht bestätigt. |
