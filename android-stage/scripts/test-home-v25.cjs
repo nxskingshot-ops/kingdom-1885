@@ -78,8 +78,9 @@ async function run() {
             assert.equal(endpoint.searchParams.get('governorId'), fixtureId);
             assert.equal(request.request().headers().authorization, 'Bearer mock-transfer-token');
             return request.fulfill({json:{
-              ok:true,governorId:fixtureId,source:{cachedAt:'2026-11-17T06:00:00.000Z'},
-              player:{name:'Fixture Scout',kingdom:1901,alliance:'ALT',townCenterLevel:29}
+              ok:true,governorId:fixtureId,source:{cachedAt:'2026-11-17T06:00:00.000Z',fresh:true},
+              player:{name:'Fixture Scout',kingdom:1901,alliance:'ALT'},
+              ranks:{status:'available',values:{town_center_level:29,player_captured_at:'2026-11-17T06:00:00.000Z'}}
             }});
           }
           return request.fulfill({status:503});
@@ -103,7 +104,7 @@ async function run() {
         await transfer.getByRole('button', {name:'Load Player Data'}).click();
         const intelligence = transfer.getByRole('region', {name:'War Academy Intelligence'});
         await expect(intelligence.getByRole('status')).toContainText(fixtureId);
-        await expect(intelligence.locator('dd')).toHaveText(['29', ...Array(4).fill('UNKNOWN')]);
+        await expect(intelligence.locator('dd')).toHaveText(['TC 29 · 2026-11-17T06:00:00.000Z', ...Array(4).fill('UNKNOWN')]);
         await expect(transfer.locator('#phxAdoptCandidate')).toBeHidden();
         await page.getByRole('button',{name:'← PYLON IX'}).click();
         await route('pylon');

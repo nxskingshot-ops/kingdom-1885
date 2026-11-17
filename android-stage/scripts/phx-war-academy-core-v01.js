@@ -12,15 +12,22 @@
   const asString = value => typeof value === 'string' ? value.trim() : '';
   const validId = value => /^[1-9][0-9]{0,15}$/.test(String(value ?? ''));
   const safeLevel = value => typeof value === 'string' && /^(?:[1-9][0-9]?|TG(?:[1-9]|10)(?:-[1-5])?)$/.test(value) ? value : null;
-  function capturedAt(value) {
-    return typeof value === 'string' && /^\d{4}-\d\d-\d\dT/.test(value)
-      && Number.isFinite(Date.parse(value)) ? new Date(value).toISOString() : null;
+  function normalizeCaptureTime(value) {
+    let time;
+    if (typeof value === 'number' || (typeof value === 'string' && /^\d+(?:\.\d+)?$/.test(value))) {
+      const epoch = Number(value);
+      if (!Number.isFinite(epoch) || epoch <= 0) return null;
+      time = new Date(epoch >= 1e12 ? epoch : epoch * 1000).getTime();
+    } else if (typeof value === 'string' && /^\d{4}-\d\d-\d\dT.*(?:Z|[+-]\d\d:\d\d)$/.test(value)) {
+      time = Date.parse(value);
+    }
+    return Number.isFinite(time) ? new Date(time).toISOString() : null;
   }
   function normalizeTransferProfile(response, expectedId) {
     if (response?.ok !== true || String(response.governorId) !== expectedId ||
-        response.source?.fresh === false) return null;
+        response.source?.fresh !== true) return null;
     const p = response.player;
-    const time = capturedAt(response.source?.cachedAt);
+    const time = normalizeCaptureTime(response.source?.cachedAt);
     if (!time) return null;
     const level = p?.townCenterLevel ?? p?.town_center_level ?? p?.castleLevel ?? p?.castle_level;
     return normalizeProfile({
@@ -44,7 +51,7 @@
       power: typeof p.power === 'string' && /^\d{1,24}$/.test(p.power) ? p.power : null,
       townCenter: safeLevel(p.town_center_level ?? p.townCenterLevel),
       source: 'mightpulse-via-authorized-backend',
-      capturedAt: capturedAt(response.capturedAt),
+      capturedAt: normalizeCaptureTime(response.capturedAt),
       checkedAt: typeof response.checkedAt === 'string' ? response.checkedAt : null
     });
   }
@@ -77,5 +84,5 @@
       resourceEstimate: null // Requires validated, versioned technology-level reference data.
     });
   }
-  return Object.freeze({BRANCHES, STATUS, validId, safeLevel, normalizeProfile, normalizeTransferProfile, normalizeResearch, assess});
+  return Object.freeze({BRANCHES, STATUS, validId, safeLevel, normalizeCaptureTime, normalizeProfile, normalizeTransferProfile, normalizeResearch, assess});
 });
