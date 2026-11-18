@@ -1,6 +1,6 @@
 # PHALANX HOME FINAL · Profil-Origin-Freigabe · 18.11.2026
 
-Status: VORBEREITET / LOKAL TECHNISCH GETESTET. NICHT BEREITGESTELLT. Keine App-Abnahme.
+Status: ORIGIN-KORREKTUR FREIGEGEBEN UND IM ISOLIERTEN TESTPROJEKT BEREITGESTELLT. ECHTER LIVE-PROFILWEG IM BROWSER BESTANDEN. Keine vollständige App-/Android-Abnahme. Die Vorbereitung ist historisch erhalten; aktuelle Ergebnisse im Ausführungsabschnitt unten.
 Arbeitsbranch: `work/phx-home-profile-origin-20261118`.
 Verbindlich: Übergabe des Projektverantwortlichen vom 18.11.2026; neuere Freigaben vor historischen Projektdateien.
 
@@ -99,3 +99,73 @@ War Academy/T11 zurückgestellt: keine weitere Recherche/Integration ohne neuen 
 
 Der Projektverantwortliche hat am 18.11.2026 ausdrücklich nur Vorbereitung und Prüfung erlaubt. Die bestehende Supabase-Originregel wurde NICHT geändert. Der Änderungsvorschlag ist reviewbar, das Deployment bleibt bis zur gezielten Zustimmung gesperrt.
 Keine Aussage FERTIG; vollständiger Profil-, Geräte-, Design- und Integrationsnachweis steht aus.
+
+## Ausführung nach gezielter Freigabe · 18.11.2026
+
+Der Projektverantwortliche hat mit „Freigabe erteilt“ die Bereitstellung dieses exakten Origin-Zusatzes genehmigt. Die vorstehenden Abschnitte beschreiben die Vorbereitung; die nachfolgende Ausführung ersetzt deren Freigabesperre für genau diese Änderung.
+
+- Vor Ausführung aktive Version 3 erneut abgerufen: JWT aktiv, exakt zwei Quelldateien; beide byteidentisch zum gesicherten v3-Stand. Kein Drift.
+- Bereitgestellt aus Commit `96d9b4353268cd6408952ab1e6c9bf90d489227f`, ausschließlich bestehende Funktion `phx-war-room-own-profile` im isolierten Projekt `yuyvmbdybwpwpqsipfjt`.
+- Aktive neue Version **4**, JWT weiterhin aktiv, Bundle-SHA `ed3fc767a22de648eaa483680e265393761cbdecc0b3d955c8f436e5339fb64a`.
+- Nach Deployment beide Quelldateien erneut heruntergeladen: byteidentisch zum genehmigten Änderungssatz.
+- Kein Frontend-Deploy, APK-Build, SQL-, Auth-, RLS-, Rollen- oder Secrets-Änderung. Das Hauptprojekt wurde nicht geändert. Reguläre Anmelde-/Abmelde- und Profilabrufvorgänge können die bestehenden Sitzungs-/Quota-/Provider-Zustände wie vorgesehen aktualisieren; keine fachlichen Bestandsdaten wurden durch Testdaten ersetzt.
+
+### Echte HTTP-Sicherheitsprüfung nach Bereitstellung
+
+| Test | Ergebnis |
+|---|---|
+| Android-Origin OPTIONS | BESTANDEN · 204, exakter Allow-Origin |
+| Feste HOME-Origin OPTIONS | BESTANDEN · 204, exakter Allow-Origin |
+| Fremde Origin OPTIONS | BESTANDEN · 403, kein Allow-Origin |
+| Ähnlich aussehender fremder Host OPTIONS | BESTANDEN · 403, kein Allow-Origin |
+| Andere Pages-Vorschau OPTIONS | BESTANDEN · 403, kein Allow-Origin |
+| HOME GET ohne Token | BESTANDEN · 401, sign_in_required |
+| HOME GET mit ungültigem Token | BESTANDEN · 401, Invalid JWT |
+| Android GET ohne Token | BESTANDEN · 401, sign_in_required |
+
+Beim ungültigen JWT antwortet das vorhandene Supabase-Gateway selbst mit `Access-Control-Allow-Origin: *` und 401. Das ist keine Wildcard der Profilfunktion und gewährt keinen Profilzugriff. Die Funktionsantworten und erlaubten Preflights verwenden ausschließlich exakte Origins. Gateway-Konfiguration unverändert.
+
+Rohbelege: `docs/staging/evidence/phx-home-origin-20261118/hosted-origin-jwt-results.json` und `deployed-function-v4.json`.
+
+### Verifizierter Browser-Datenweg
+
+BESTANDEN im Cloud-Chrome-Browser, kein Android-Gerätetest:
+1. Feste HOME-Adresse geöffnet, erwarteter anonymer Zustand „Profil“ / „—“.
+2. Bestehendes HOME-Anmeldeformular geöffnet. Anmeldung über sichere Browser-Eingabe; keine Zugangsdaten gelesen, protokolliert oder in Projektdateien gespeichert.
+3. Echter Profilabruf liefert die eigene Spieler-ID **291410048**, **FaQu**, Königreich **1885**, Allianz **NXS**, Power **194887139**. Status „Verified profile · MightPulse“.
+4. Quelle erfasst **18.11.2026 04:50:34 UTC**, zuerst geprüft **04:50:34 UTC**. Nur diese konkrete Beobachtung dokumentiert, keine konstanten Benutzerwerte eingebaut.
+5. Profilbild öffnet War Room. Commander Profile zeigt denselben Namen, dieselbe Allianz, dasselbe Königreich, Spieler-ID, Erfassungsdatum und verifizierte Power. Fehlendes Level bleibt unbekannt.
+6. Echter Refresh im War Room erfolgreich, Checked-Zeit auf **04:51:13 UTC** aktualisiert; Quellzeit unverändert **04:50:34 UTC**. Kein neues Quellereignis erfunden.
+7. Zurück zu HOME erhält die verifizierte Identität.
+8. Sign out auf HOME erfolgreich: HOME setzt Profil/—; War Room entfernt Name/Allianz/Königreich/ID/Power und zeigt „Sign in for live data“. Abschließend Rückkehr nach HOME, abgemeldet.
+
+Passende Supabase-Logs: OPTIONS 204 um **04:50:31.712 UTC**, GET 200 um **04:50:34.655 UTC**; Refresh OPTIONS 204 um **04:51:12.944 UTC**, GET 200 um **04:51:13.937 UTC**.
+Die serverseitige eigene Spieler-ID-Bindung und Quota-Logik wurden unverändert übernommen. Eine zweite echte fremde/unverknüpfte Sitzung und ein echtes Ausschöpfen der Quota wurden in dieser Runde NICHT GETESTET; lokale negative Handlerfälle sind bestanden.
+Eine absichtlich fehlgeschlagene Passwortanmeldung wurde NICHT GETESTET; ungültige JWTs sind ein anderer Testfall.
+
+### Browser-Regressionsprobe und Grenzen
+
+| Bereich | Ergebnis / Grenze |
+|---|---|
+| HOME → War Room → HOME | BESTANDEN, mit echten Profildaten und nach Logout |
+| HOME → Territory → Map → Territory → Reports → Territory → HOME | BESTANDEN |
+| Live-Karte | BESTANDEN: 74 / 74 sichtbar, 74 Markierungen im AX-Baum |
+| Allianzfilter | BESTANDEN: NXS 11 / 74, Zurücksetzen 74 / 74 |
+| Vollbild | BESTANDEN: „Karte im Vollbild öffnen“ → „Vollbild schließen“, danach geschlossen |
+| Zoom | NICHT VOLLSTÄNDIG GETESTET: +-Knopf betätigt, keine belastbare Messung der Zoomtransformation; unverändertes viewBox allein beweist keinen Defekt |
+| Reports | BESTANDEN: 74 Datensätze aus Karte, 12 Allianzen, Rückweg |
+| HOME → PYLON → HOME | BESTANDEN; Zurück-Beschriftung nennt Territory, tatsächlicher Rückweg ging nach HOME |
+| Transfer aus PYLON | FEHLGESCHLAGEN für Integrationsziel dieser Webfassung: in der geöffneten PYLON-Ansicht nur Originalgrafik und Zurückbutton, kein Transfer-Einstieg sichtbar. Vorhandenes Transfer-Modul wurde nicht verändert oder als fehlend eingestuft. Aktuelle Webfassung nicht mit späterem Auditbranch gleichsetzen. |
+| Map JSON/CSV | FEHLGESCHLAGEN für vollständiges Integrationsziel der Webfassung: keine JSON-/CSV-Bedienelemente im vollständigen Map-AX-/DOM-Baum; tatsächlicher Export NICHT GETESTET. Fester Webworkflow integriert derzeit die vorhandene Export-Schicht nicht. Bestehenden nativen Exportcode erhalten und später in Test-Webpaket integrieren. |
+| Reports-CSV | NICHT GETESTET; Matrix-CSV-Schaltfläche vorhanden |
+| Grafische Quellen | Keine Originalgrafik oder geschützte Territory-Gestaltung geändert |
+| HOME-Layout | NICHT ABGENOMMEN: vollständiger Seitenscreenshot zeigt unter HOME Teile der Territory-Szene; Root-/Overflow-Ursache noch zu messen. Live-Profil auf HOME wirkt weiterhin gestalterisch unvollständig. |
+| Android / Namensmatrix | NICHT GETESTET: Cloud-Desktop-Browser ersetzt keinen Android-/WebView-Nachweis |
+| War Room Gesamtfunktion | NICHT ABGENOMMEN: Account Assessment unavailable; Alliance Position/Development bleiben offene vorhandene Punkte |
+
+Interne Browser-Screenshots erfasst (HOME-Plaketten, HOME-Liveprofil, War-Room-Liveprofil). Keine Zugangsdaten oder Auth-Tokens enthalten. Kein neuer Android-Screenshot behauptet.
+Der lokale Chromium-Start für mobile Automation scheiterte an einer Socket-Beschränkung der Laufzeit. Stattdessen wurde der verfügbare Cloud-Chrome-Browser für die oben ausdrücklich bezeichneten Desktopprüfungen verwendet; keine mobile Emulation behauptet.
+
+### Aktualisierter nächster Schritt
+
+Origin-Blocker behoben und Live-Datenweg für das eigene genehmigte Konto nachgewiesen. Nächster Arbeitsblock bleibt HOME: dynamische Namensmatrix und Android-Darstellung, oberer Abstand/Root-Überlauf messen, dann die bereits erfassten HOME-Designentscheidungen mit dem Projektverantwortlichen abstimmen. Danach bestehenden War Room und bestehende Module integrieren. Keine neue Produktiv-, FREEZE- oder Berechtigungsfreigabe aus dieser Origin-Zustimmung ableiten.

@@ -1,0 +1,13 @@
+{
+  "id": "18b1b056-d14c-42e5-868f-d17268b3b85a",
+  "slug": "phx-war-room-own-profile",
+  "name": "phx-war-room-own-profile",
+  "status": "ACTIVE",
+  "version": 4,
+  "created_at": 1794810147616,
+  "updated_at": 1794977286265,
+  "verify_jwt": true,
+  "import_map": false,
+  "entrypoint_path": "/tmp/user_fn_yuyvmbdybwpwpqsipfjt_18b1b056-d14c-42e5-868f-d17268b3b85a_4/source/index.ts",
+  "ezbr_sha256": "ed3fc767a22de648eaa483680e265393761cbdecc0b3d955c8f436e5339fb64a"
+}

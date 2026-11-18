@@ -1,0 +1,66 @@
+[
+  {
+    "case": "android-preflight",
+    "method": "OPTIONS",
+    "origin": "https://localhost",
+    "status": 204,
+    "allowOrigin": "https://localhost",
+    "body": ""
+  },
+  {
+    "case": "home-preflight",
+    "method": "OPTIONS",
+    "origin": "https://home-plaque-visual-20261117.nexus-phalanx-kvk-test.pages.dev",
+    "status": 204,
+    "allowOrigin": "https://home-plaque-visual-20261117.nexus-phalanx-kvk-test.pages.dev",
+    "body": ""
+  },
+  {
+    "case": "foreign-preflight",
+    "method": "OPTIONS",
+    "origin": "https://foreign.example",
+    "status": 403,
+    "allowOrigin": null,
+    "body": "{\"error\":\"origin_forbidden\"}"
+  },
+  {
+    "case": "lookalike-preflight",
+    "method": "OPTIONS",
+    "origin": "https://home-plaque-visual-20261117.nexus-phalanx-kvk-test.pages.dev.evil.example",
+    "status": 403,
+    "allowOrigin": null,
+    "body": "{\"error\":\"origin_forbidden\"}"
+  },
+  {
+    "case": "other-preview-preflight",
+    "method": "OPTIONS",
+    "origin": "https://other-preview.nexus-phalanx-kvk-test.pages.dev",
+    "status": 403,
+    "allowOrigin": null,
+    "body": "{\"error\":\"origin_forbidden\"}"
+  },
+  {
+    "case": "home-no-token",
+    "method": "GET",
+    "origin": "https://home-plaque-visual-20261117.nexus-phalanx-kvk-test.pages.dev",
+    "status": 401,
+    "allowOrigin": "https://home-plaque-visual-20261117.nexus-phalanx-kvk-test.pages.dev",
+    "body": "{\"error\":\"sign_in_required\"}"
+  },
+  {
+    "case": "home-invalid-token",
+    "method": "GET",
+    "origin": "https://home-plaque-visual-20261117.nexus-phalanx-kvk-test.pages.dev",
+    "status": 401,
+    "allowOrigin": "*",
+    "body": "{\"code\":\"UNAUTHORIZED_INVALID_JWT_FORMAT\",\"message\":\"Invalid JWT\"}"
+  },
+  {
+    "case": "android-no-token",
+    "method": "GET",
+    "origin": "https://localhost",
+    "status": 401,
+    "allowOrigin": "https://localhost",
+    "body": "{\"error\":\"sign_in_required\"}"
+  }
+]

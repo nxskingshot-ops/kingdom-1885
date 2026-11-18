@@ -63,3 +63,7 @@ Alle Aussagen beziehen sich auf die geprüften Quellen und die dort dokumentiert
 ## Fortsetzung · 18.11.2026 · HOME-Profil-Origin
 
 Aktueller Abgleich, Sicherung, eng begrenzter Korrekturvorschlag, Tests und vollständiger offener Aufgabenstand: [Profil-Origin-Freigabe](PHX-HOME-PROFILE-ORIGIN-FREIGABE-20261118.md). Die aktive Funktion liegt im isolierten Projekt `yuyvmbdybwpwpqsipfjt`, nicht im Hauptprojekt. HOME ist live weiterhin mit OPTIONS 403 blockiert. 14 lokale Handler-Tests bestanden; Deployment erfordert noch die gezielte Zustimmung. Keine Design-, Daten- oder Zugriffsregeländerung bereitgestellt.
+
+### Ausgeführt nach Freigabe · 18.11.2026
+
+Origin-Ergänzung als Profilfunktion v4 im isolierten Projekt bereitgestellt. Echte HOME-Anmeldung, MightPulse-Profil für Spieler-ID 291410048, HOME-/War-Room-Anzeige, Refresh, Rückweg und Logout bestanden. Acht gehostete Origin-/JWT-Prüfungen bestanden. Android, Namensmatrix und vollständige Integration weiter offen. Die feste Webfassung zeigt in PYLON noch keinen Transfer-Einstieg und in der Karte keine JSON-/CSV-Bedienelemente; vorhandene Module/Exportschicht schützen und später integrieren. Aktuelle Details und Logs im oben verlinkten Freigabeprotokoll.
