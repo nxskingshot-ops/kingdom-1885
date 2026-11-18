@@ -103,7 +103,11 @@
   for (const field of ['phx-r10-input-name', 'phx-r10-input-level', 'phx-r11-input-kingdom', 'phx-r11-input-alliance']) {
     document.getElementById(field).closest('label').hidden = true;
   }
-  let session = null;
+  let tabStorage;
+  try { tabStorage = window.sessionStorage; } catch {}
+  const session = window.PhxWarRoomSession.create({
+    request, storage: tabStorage, key: 'phx-war-room-session-yuyvmbdybwpwpqsipfjt-v1'
+  });
   let operation = 0;
 
   async function request(path, { method = 'GET', body, token, timeout = 12000 } = {}) {
@@ -155,7 +159,7 @@
 
   function showSignedOut(message) {
     homeLogin.textContent = 'Sign in / Live profile';
-    session = null;
+    session.clear();
     clearProfile();
     sourceBadge.textContent = 'Sign in for live data';
     actions.hidden = true;
@@ -183,14 +187,24 @@
   }
 
   async function loadProfile() {
-    if (!session) return;
+    if (!session.currentToken()) return;
     const current = ++operation;
     clearProfile();
     status.textContent = 'Loading own profile…';
     sourceBadge.textContent = 'Checking live data';
     refresh.disabled = true;
     try {
-      const result = await request('/functions/v1/phx-war-room-own-profile', { token: session, timeout: 45000 });
+      let token = await session.token();
+      if (current !== operation) return;
+      if (!token) return showSignedOut('Session expired. Sign in again.');
+      let result = await request('/functions/v1/phx-war-room-own-profile', { token, timeout: 45000 });
+      if (current !== operation) return;
+      if (result.status === 401) {
+        token = await session.token(true);
+        if (current !== operation) return;
+        if (!token) return showSignedOut('Session expired. Sign in again.');
+        result = await request('/functions/v1/phx-war-room-own-profile', { token, timeout: 45000 });
+      }
       if (current !== operation) return;
       if (result.status === 401) return showSignedOut('Session expired. Sign in again.');
       const data = result.data;
@@ -258,11 +272,10 @@
         method: 'POST', body: { email: form.elements.email.value.trim(), password }
       });
       if (current !== operation) return;
-      if (code !== 200 || typeof data?.access_token !== 'string') {
+      if (code !== 200 || !session.set(data)) {
         status.textContent = 'Could not sign in with that test account.';
         return;
       }
-      session = data.access_token;
       homeLogin.textContent = 'Live profile';
       form.hidden = true;
       actions.hidden = false;
@@ -276,8 +289,15 @@
   refresh.addEventListener('click', loadProfile);
   el('logout').addEventListener('click', () => {
     ++operation;
-    const token = session;
+    const token = session.currentToken();
     showSignedOut('Signed out.');
     if (token) void request('/auth/v1/logout?scope=local', { method: 'POST', token }).catch(() => {});
   });
+  // Restore only this tab's session; fetch verified identity again from the server.
+  if (session.restore()) {
+    homeLogin.textContent = 'Live profile';
+    form.hidden = true;
+    actions.hidden = false;
+    void loadProfile();
+  }
 })();

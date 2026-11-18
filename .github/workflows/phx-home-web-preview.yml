@@ -41,6 +41,19 @@ jobs:
           PY
           test -s ../.phx-home-web-preview/index.html
           test -s ../.phx-home-web-preview/PHX_HOME_QUEEN_AN_APPROVED.png
+      - name: Verify tab session, compact mobile form and reload before publishing
+        run: |
+          node --test android-stage/scripts/test-war-room-session.cjs
+          npm install --no-save --prefix /tmp/phx-browser @playwright/test@1.58.2
+          /tmp/phx-browser/node_modules/.bin/playwright install --with-deps chromium
+          python3 -m http.server 8765 --bind 127.0.0.1 --directory .phx-home-web-preview &
+          NODE_PATH=/tmp/phx-browser/node_modules node android-stage/scripts/test-home-session-browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: phx-home-session-mobile-evidence
+          path: /tmp/phx-home-session-evidence
+          retention-days: 7
       - name: Publish isolated Cloudflare branch preview only
         uses: cloudflare/wrangler-action@v3
         with:
