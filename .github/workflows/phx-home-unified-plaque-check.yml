@@ -1,0 +1,41 @@
+name: PHALANX HOME unified plaque isolated validation
+on:
+  push:
+    branches:
+      - work/phx-home-unified-plaque-20261118
+    paths:
+      - 'android-stage/www/phx-war-room-live.js'
+      - 'android-stage/www/phx-war-room-live.css'
+      - '.github/workflows/phx-home-unified-plaque-check.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  isolated-check:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify frozen baseline and JS syntax
+        run: |
+          cd android-stage
+          node scripts/verify.cjs
+          node --check www/phx-war-room-live.js
+          node --check www/phx-war-room-session.js
+      - name: Stage original HOME and check unified plaque bindings
+        run: |
+          mkdir -p .phx-unified-check
+          cp -a android-stage/www/. .phx-unified-check/
+          python3 android-stage/scripts/integrate-home-v25.py .phx-unified-check
+          python3 android-stage/scripts/integrate-war-room-live-v28.py .phx-unified-check
+          python3 - <<'PY'
+          from pathlib import Path
+          s=Path('.phx-unified-check/phx-war-room-live.js').read_text()
+          assert s.count("const home = document.getElementById('phx-r6-home')") == 1
+          assert s.index("const home = document.getElementById('phx-r6-home')") < s.index("const statusBar =")
+          assert "info.append(identity, affiliationNode)" in s
+          assert "queenHero.before(plaque)" in s
+          assert "renderIdentity(player)" in s
+          assert "phx-home-unified-avatar" in s
+          assert Path('.phx-unified-check/PHX_HOME_QUEEN_AN_APPROVED.png').read_bytes() == Path('android-stage/www/PHX_HOME_QUEEN_AN_APPROVED.png').read_bytes()
+          print('PASS: staging integration and structural checks')
+          PY
