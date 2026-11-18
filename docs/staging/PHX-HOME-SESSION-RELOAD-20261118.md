@@ -49,3 +49,9 @@ Status: FEHLERKORREKTUR AUF FESTER TESTADRESSE BEREITGESTELLT. MOBILE BROWSERMAT
 
 ## Erster CI-Lauf
 Lauf 44245702031: FEHLGESCHLAGEN vor Browserstart, weil ubuntu-latest inzwischen Ubuntu 26.04 auswählte und der vorhandene fixierte Playwright-Stand 1.58.2 diese Plattform nicht unterstützt. Veröffentlichung wurde korrekt übersprungen; feste Webadresse unverändert. Runner wie in den bestehenden PHALANX-Browsertests auf ubuntu-24.04 fixiert, danach erneute Prüfung.
+
+## Physische Android-Bestätigung · 18.11.2026
+
+BESTANDEN gemäß ausdrücklicher Nutzerrückmeldung „Funktioniert“ nach Aufforderung zum Reload-Test. Screenshot 50501.png (Gerätezeit 06:48) zeigt angemeldeten HOME-Zustand, FaQu, #1885 · NXS sowie den korrekt formatierten Live-Profilbereich. ID 291410048, Power 194876881, Quellzeit 05:15:42 UTC, Checked 05:48:52 UTC. Die erfolgreiche Sitzungserhaltung nach Neuladen ist durch die Nutzerrückmeldung bestätigt; die Bilddatei allein belegt nicht die Bedienfolge.
+
+Die vorige offene physische Android-Nachprüfung ist damit für Login/Reload und den dargestellten Profilbereich abgeschlossen. Kein Nachweis für native App-Neustarts, lange Namen, sämtliche Navigationen, Rollen oder vollständige HOME-/Modul-Abnahme daraus abgeleitet. HOME-Gestaltungsabstimmung bleibt der nächste Arbeitsblock; keine neue Designfreigabe aus „Funktioniert“ ableiten.
