@@ -32,3 +32,6 @@ Status: IMPLEMENTIERT, LOKAL GETESTET; Web-/Browser-Ergebnisse werden nach Ausf�
 - Neue Dateien: android-stage/www/phx-war-room-session.js; android-stage/scripts/test-war-room-session.cjs; android-stage/scripts/test-home-session-browser.cjs.
 - Geänderte Dateien: vorhandener Livecontroller/CSS, Integrationsskript, bestehender Webvorschau-Workflow.
 - HOME-Gesamtstand, lange Namen, Gestaltung, War-Room-Restfunktionen und Modulintegration bleiben offen. Kein FERTIG.
+
+## Erster CI-Lauf
+Lauf 44245702031: FEHLGESCHLAGEN vor Browserstart, weil ubuntu-latest inzwischen Ubuntu 26.04 auswählte und der vorhandene fixierte Playwright-Stand 1.58.2 diese Plattform nicht unterstützt. Veröffentlichung wurde korrekt übersprungen; feste Webadresse unverändert. Runner wie in den bestehenden PHALANX-Browsertests auf ubuntu-24.04 fixiert, danach erneute Prüfung.
