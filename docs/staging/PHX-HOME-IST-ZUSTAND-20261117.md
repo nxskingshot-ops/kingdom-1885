@@ -70,3 +70,6 @@ Origin-Ergänzung als Profilfunktion v4 im isolierten Projekt bereitgestellt. Ec
 
 ### Android-Rückmeldung / Sitzungsfehler · 18.11.2026
 Android-Screenshot 50500.png bestätigt Live-Profilwerte und sichtbare dynamische HOME-Plaketten. Anschließender Bericht: Reload verliert Anmeldung. Behoben mit tabbezogener Sitzungswiederaufnahme und Refresh sowie kompaktem HOME-Profil-CSS. [Prüfbericht](PHX-HOME-SESSION-RELOAD-20261118.md): 10 Sitzungstests, 14 Handler-Tests, simulierte mobile Browsermatrix 320/393/430px und echter Cloud-Browser-Login/Reload bestanden. Gleiche feste Webadresse; neue physische Android-Nachprüfung offen.
+
+### Freigegebene kompakte HOME-Gestaltung · 18.11.2026
+Nutzer-Go umgesetzt: Kontoformular nur im bestehenden War Room, schmale HOME-Zeile Sprache/Account, sechs kompakte Navigationsziele, PYLON-IX-Badge aus vorhandener Originalgrafik. Queen-An und vier Banner erhalten. Mobile Browsermatrix 320/393/430px sowie echte Sitzung/Reload/Kontozugang/Rückweg bestanden. [Design-Prüfbericht](PHX-HOME-COMPACT-DESIGN-20261118.md). Neue physische Android-Sichtprüfung und weitere offene Aufgaben bleiben bestehen.
