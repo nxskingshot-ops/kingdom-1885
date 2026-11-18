@@ -67,3 +67,6 @@ Aktueller Abgleich, Sicherung, eng begrenzter Korrekturvorschlag, Tests und voll
 ### Ausgeführt nach Freigabe · 18.11.2026
 
 Origin-Ergänzung als Profilfunktion v4 im isolierten Projekt bereitgestellt. Echte HOME-Anmeldung, MightPulse-Profil für Spieler-ID 291410048, HOME-/War-Room-Anzeige, Refresh, Rückweg und Logout bestanden. Acht gehostete Origin-/JWT-Prüfungen bestanden. Android, Namensmatrix und vollständige Integration weiter offen. Die feste Webfassung zeigt in PYLON noch keinen Transfer-Einstieg und in der Karte keine JSON-/CSV-Bedienelemente; vorhandene Module/Exportschicht schützen und später integrieren. Aktuelle Details und Logs im oben verlinkten Freigabeprotokoll.
+
+### Android-Rückmeldung / Sitzungsfehler · 18.11.2026
+Android-Screenshot 50500.png bestätigt Live-Profilwerte und sichtbare dynamische HOME-Plaketten. Anschließender Bericht: Reload verliert Anmeldung. Behoben mit tabbezogener Sitzungswiederaufnahme und Refresh sowie kompaktem HOME-Profil-CSS. [Prüfbericht](PHX-HOME-SESSION-RELOAD-20261118.md): 10 Sitzungstests, 14 Handler-Tests, simulierte mobile Browsermatrix 320/393/430px und echter Cloud-Browser-Login/Reload bestanden. Gleiche feste Webadresse; neue physische Android-Nachprüfung offen.

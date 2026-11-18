@@ -183,7 +183,7 @@ async function run() {
           assert.deepEqual(request.request().postDataJSON(), {
             email: 'warroom@example.invalid', password: 'mock-only-password'
           });
-          await request.fulfill({ json: { access_token: 'mock-live-token' } });
+          await request.fulfill({ json: { access_token: 'mock-live-token', refresh_token: 'mock-live-refresh', expires_at: Date.now() / 1000 + 3600 } });
         });
         await page.route(origin + '/auth/v1/logout?scope=local', async request => {
           assert.equal(request.request().headers().authorization, 'Bearer mock-live-token');

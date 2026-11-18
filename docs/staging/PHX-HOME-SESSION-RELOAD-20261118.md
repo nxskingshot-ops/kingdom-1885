@@ -1,6 +1,20 @@
 # HOME · Anmeldung nach Neuladen und kompakter Profilbereich · 18.11.2026
 
-Status: IMPLEMENTIERT, LOKAL GETESTET; Web-/Browser-Ergebnisse werden nach Ausführung ergänzt.
+Status: FEHLERKORREKTUR AUF FESTER TESTADRESSE BEREITGESTELLT. MOBILE BROWSERMATRIX UND ECHTER LOGIN/RELOAD IM CLOUD-BROWSER BESTANDEN. Physische Android-Nachprüfung offen.
+
+## Abschluss dieser Fehlerkorrektur
+
+- Veröffentlicht aus Commit **583fa3fb0e0a6379aac278af29c6c9777ecf5c44**.
+- [Webworkflow 44245851814](https://github.com/nxskingshot-ops/kingdom-1885/actions/runs/44245851814) BESTANDEN; Job 134604498809. Veröffentlicht am 18.11.2026 um 05:42:59 UTC, Cloudflare-Deployment 5e2ed72d, unveränderter fester Alias.
+- BESTANDEN: Browserprüfungen mit simulierten HTTP-Antworten bei **320, 393 und 430px**, jeweils Login, kompakte Darstellung ohne Feldüberlauf, Reload ohne neue Passwortanfrage, abgelaufener Sitzungstoken/Erneuerung, War Room/Rückweg, Logout/Reload, fehlgeschlagene Anmeldung. Screenshots im Workflow-Artefakt phx-home-session-mobile-evidence.
+- BESTANDEN: echter Cloud-Chrome-Test auf der festen Webadresse. Sichere Passwortanmeldung, verifiziertes Profil für ID **291410048**, FaQu, #1885, NXS, Power **194876881**. Quellzeit **05:15:42 UTC**, erste Checked-Zeit **05:44:15 UTC**.
+- Danach echte Browser-Neuladung desselben Tabs. Zunächst leerer Ladezustand, anschließend **ohne erneute Anmeldung** identische autorisierte Identität und neue Checked-Zeit **05:44:58 UTC**. Sitzung erhalten, Profil frisch geprüft; unveränderte Quellzeit korrekt beibehalten. Keine Token-/Passwortwerte über Browserwerkzeuge gelesen.
+- BESTANDEN: live DOM-Messung Profilüberschrift **18px**, Datensätze als **grid**, Profilbox Höhe rund **322px** bei rund **708px** Inhaltsbreite auf Desktop. Kein Android-Nachweis aus dieser Desktopmessung abgeleitet.
+- Bestehendes Browsertest-Fixture in test-home-v25.cjs an die vollständige Supabase-Sessionantwort angepasst (synthetischer Refresh-Token/Ablaufzeit). Vollständige alte Browser-Suite in dieser Runde NICHT GETESTET; fokussierte neue Browsermatrix und bestehende 14 Handler-Tests bestanden.
+- BACKUP-Ref im GitHub erstellt: backup/phx-home-before-session-fix-20261118 bei 169de99792aed44d2a5de52e11fcaaef87059e55. Historische Quellen und Daten erhalten.
+- Versuch eines zusätzlichen bytegenauen HTTP-Abgleichs der Webdateien aus der Shell wurde durch HTTP 403 blockiert: NICHT GETESTET. Browserzugriff und realer Reload funktionierten; kein neuer App-/CORS-Fehler daraus abgeleitet.
+- NICHT GETESTET: neue physische Android-Bestätigung nach dieser Korrektur, echter Ablauf eines Live-Refresh-Tokens über längere Zeit, Schließen/Wiederöffnen des Tabs oder nativer App-Neustart. Letztere sind nicht Ziel der tabbezogenen Sitzung.
+- Keine neue Backend-/Origin-/Rechteänderung, kein Produktivdeploy. Weitere HOME-/War-Room-/Modulaufgaben bleiben bestehen. Kein Gesamt-FERTIG.
 
 ## Nutzerbelege und Ursache
 - Android-Screenshot 50500.png: FaQu, #1885 · NXS, ID 291410048, Verified profile · MightPulse, Power 194876881, Quellzeit 05:15:42 UTC sichtbar. Bestätigt eigenen Live-Abruf auf Nutzergerät, keine vollständige App-Abnahme.
