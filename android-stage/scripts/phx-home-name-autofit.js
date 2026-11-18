@@ -12,6 +12,12 @@
     try {
       const value = (name.textContent || '').trim();
       if (!value || !parent.clientWidth) return;
+      // The unified plaque grows with wrapped names; the legacy fixed-height
+      // artwork fitter would otherwise shrink its name to 8px after relocation.
+      if (parent.closest('.phx-home-unified-plaque')) {
+        for (const property of ['white-space', 'overflow-wrap', 'font-size', 'line-height']) name.style.removeProperty(property);
+        return;
+      }
       const maxWidth = Math.max(0, parent.clientWidth - 4);
       const maxHeight = Math.max(0, parent.clientHeight - 2);
       name.style.whiteSpace = 'nowrap';

@@ -1,0 +1,74 @@
+name: PHALANX HOME unified plaque isolated validation
+on:
+  push:
+    branches:
+      - work/phx-home-unified-plaque-20261118
+    paths:
+      - 'android-stage/www/phx-war-room-live.js'
+      - 'android-stage/www/phx-war-room-live.css'
+      - 'android-stage/scripts/phx-home-name-autofit.js'
+      - 'android-stage/scripts/test-home-session-browser.cjs'
+      - '.github/workflows/phx-home-unified-plaque-check.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  isolated-check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify frozen baseline and JS syntax
+        run: |
+          cd android-stage
+          node scripts/verify.cjs
+          node --check www/phx-war-room-live.js
+          node --check www/phx-war-room-session.js
+      - name: Stage original HOME and check unified plaque bindings
+        run: |
+          mkdir -p .phx-unified-check
+          cp -a android-stage/www/. .phx-unified-check/
+          python3 android-stage/scripts/integrate-home-v25.py .phx-unified-check
+          python3 android-stage/scripts/integrate-war-room-live-v28.py .phx-unified-check
+          cp android-stage/scripts/phx-home-name-autofit.js .phx-unified-check/
+          python3 - <<'PY'
+          from pathlib import Path
+          index=Path('.phx-unified-check/index.html')
+          html=index.read_text()
+          assert html.count('</body>') == 1
+          index.write_text(html.replace('</body>','<script src="./phx-home-name-autofit.js"></script></body>'))
+          s=Path('.phx-unified-check/phx-war-room-live.js').read_text()
+          assert s.count("const home = document.getElementById('phx-r6-home')") == 1
+          assert s.index("const home = document.getElementById('phx-r6-home')") < s.index("const statusBar =")
+          assert "info.append(identity, affiliationNode)" in s
+          assert "queenHero.before(plaque)" in s
+          assert "renderIdentity(player)" in s
+          assert "phx-home-unified-avatar" in s
+          assert Path('.phx-unified-check/PHX_HOME_QUEEN_AN_APPROVED.png').read_bytes() == Path('android-stage/www/PHX_HOME_QUEEN_AN_APPROVED.png').read_bytes()
+          print('PASS: staging integration and structural checks')
+          PY
+
+      - name: Verify mobile plaque, existing routes and session in Chromium
+        run: |
+          node --test android-stage/scripts/test-war-room-session.cjs
+          node --test integration/war-room-live-profile/handler.test.mjs
+          npm install --no-save --prefix /tmp/phx-browser @playwright/test@1.58.2
+          /tmp/phx-browser/node_modules/.bin/playwright install --with-deps chromium
+          python3 -m http.server 8765 --bind 127.0.0.1 --directory .phx-unified-check &
+          for attempt in {1..10}; do
+            if curl -fsS -o /dev/null http://127.0.0.1:8765/; then break; fi
+            sleep 1
+          done
+          NODE_PATH=/tmp/phx-browser/node_modules node android-stage/scripts/test-home-session-browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: phx-unified-plaque-mobile-evidence
+          path: /tmp/phx-home-session-evidence
+          retention-days: 7
+      - name: Publish existing isolated HOME preview after passed checks
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy .phx-unified-check --project-name=nexus-phalanx-kvk-test --branch=home-plaque-visual-20261117

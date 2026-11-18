@@ -115,6 +115,45 @@
     new MutationObserver(syncStatusBar).observe(home, { attributes: true, attributeFilter: ['inert'] });
     syncStatusBar();
   }
+  // Approved HOME-only unified plaque. Existing identity nodes are MOVED, not cloned:
+  // renderIdentity() continues to update the same authorized live-data elements.
+  const queenHero = home?.querySelector('.phx-queen-experimental');
+  if (queenHero && !home.querySelector('.phx-home-unified-plaque')) {
+    const plaque = document.createElement('section');
+    plaque.className = 'phx-home-unified-plaque';
+    plaque.setAttribute('aria-label', 'Commander identity');
+    // Reuse the original entry, its router listener and the uploaded-photo node.
+    // The default portrait is a viewport onto the approved Queen-An asset,
+    // exactly as the existing PYLON badge reuses its approved source image.
+    const avatar = document.getElementById('phx-r8-war-entry');
+    const info = document.createElement('div');
+    info.className = 'phx-home-unified-info';
+    const identity = document.getElementById('phx-r10-identity');
+    const affiliationNode = document.getElementById('phx-r11-affiliation');
+    if (avatar && identity && affiliationNode) {
+      avatar.classList.add('phx-home-unified-avatar');
+      const portrait = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      portrait.setAttribute('viewBox', '25 0 160 160');
+      portrait.setAttribute('aria-hidden', 'true');
+      portrait.setAttribute('focusable', 'false');
+      portrait.classList.add('phx-home-approved-portrait');
+      const image = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+      image.setAttribute('href', queenHero.querySelector('.phx-queen-scene').getAttribute('src'));
+      image.setAttribute('width', '1670');
+      image.setAttribute('height', '941');
+      portrait.append(image);
+      avatar.prepend(portrait);
+      const arrow = document.createElement('span');
+      arrow.className = 'phx-home-unified-arrow';
+      arrow.setAttribute('aria-hidden', 'true');
+      arrow.textContent = '❯';
+      avatar.append(arrow);
+      info.append(identity, affiliationNode);
+      plaque.append(avatar, info);
+      queenHero.before(plaque);
+      home.classList.add('phx-home-unified-active');
+    }
+  }
   const homeName = document.getElementById('phx-r10-name');
   const homeLevel = document.getElementById('phx-r10-sub');
   const homeKingdom = document.getElementById('phx-r11-kingdom');
