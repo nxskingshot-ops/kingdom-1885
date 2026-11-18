@@ -1,6 +1,6 @@
 # PHALANX HOME — Unified Profile Plaque · 18.11.2026
 
-Status: USER DESIGN APPROVED; IMPLEMENTATION PENDING. This is a scoped design handoff, not a deployment or functional test.
+Status: USER DESIGN APPROVED; INITIAL HOME-ONLY CODE INTEGRATION PRESENT ON ISOLATED BRANCH. NOT DEPLOYED OR ACCEPTED.
 
 ## Approved visual reference
 User-approved generated mockup from the conversation dated 2026-11-18: a single full-width black/bronze/gold ornate plaque ABOVE the existing PHALANX artwork. Two-line responsive arrangement:
@@ -33,7 +33,14 @@ Only HOME header/plaque CSS and minimal markup/event integration. Preserve dynam
 
 ## Current evidence
 Design approval: YES.
-Code change: NOT YET IMPLEMENTED.
-Build/deployment: NOT TESTED.
+Code change: INITIAL IMPLEMENTATION committed (JS DOM relocation and HOME CSS); runtime initialization defect corrected in commit 728d0235. Current avatar is a chess-rook glyph placeholder and DOES NOT match the approved Spartan helmet.
+Build/deployment: NOT TESTED. Existing fixed Cloudflare preview workflow targets a different branch and has NOT deployed these changes.
 New Android visual acceptance: NOT TESTED.
 Production: UNCHANGED.
+
+## Review / unresolved before release
+- Initial code commits: 778cc6c, cf94f522. Found and corrected temporal-dead-zone bug (`home` referenced before declaration): 728d0235.
+- Draft PR #50: https://github.com/nxskingshot-ops/kingdom-1885/pull/50
+- Critical visual difference: placeholder rook is NOT approved Spartan helmet. Must reuse actual existing approved avatar source; do not invent new asset.
+- Validate runtime DOM relocation of existing identity and affiliation nodes, artwork position, long names, avatar click, Android widths. No verified live preview yet.
+- No production merge, no Supabase change, no new backup claim. Prior backup ref still exists.
