@@ -1,0 +1,20 @@
+[
+  {
+    "origin": "https://localhost",
+    "status": 204,
+    "allowOrigin": "https://localhost",
+    "body": ""
+  },
+  {
+    "origin": "https://home-plaque-visual-20261117.nexus-phalanx-kvk-test.pages.dev",
+    "status": 403,
+    "allowOrigin": null,
+    "body": "{\"error\":\"origin_forbidden\"}"
+  },
+  {
+    "origin": "https://foreign.example",
+    "status": 403,
+    "allowOrigin": null,
+    "body": "{\"error\":\"origin_forbidden\"}"
+  }
+]

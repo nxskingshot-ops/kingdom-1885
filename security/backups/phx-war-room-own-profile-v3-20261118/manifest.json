@@ -1,0 +1,12 @@
+{
+  "project_id": "yuyvmbdybwpwpqsipfjt",
+  "function": "phx-war-room-own-profile",
+  "version": 3,
+  "verify_jwt": true,
+  "ezbr_sha256": "3c5060fadda2ae43ff7c5e79c6e59e850070ea535ad0b8d96536188576254acc",
+  "source_commit": "169de99792aed44d2a5de52e11fcaaef87059e55",
+  "files": {
+    "handler.mjs": "6c448d5c75345f5f137ab0e31b2e64394142d523105065fdb47844c95c7e07b3",
+    "index.ts": "2394abcf815db3b9d2529966e545ceef7ada04d44c4f66caa1962d33e730cf08"
+  }
+}

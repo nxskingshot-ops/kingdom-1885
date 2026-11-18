@@ -1,5 +1,5 @@
 /** Read the current account's profile using an approved link and the MightPulse API. */
-export function createWarRoomProfileHandler({ projectUrl, publishableKey, androidOrigin, mightPulseKey, request = fetch }) {
+export function createWarRoomProfileHandler({ projectUrl, publishableKey, androidOrigin, homePreviewOrigin, mightPulseKey, request = fetch }) {
   const project = new URL(projectUrl);
   if (project.protocol !== 'https:' || project.pathname !== '/' || project.search || project.hash ||
       project.username || project.password || !project.hostname.endsWith('.supabase.co')) {
@@ -14,7 +14,7 @@ export function createWarRoomProfileHandler({ projectUrl, publishableKey, androi
     const headers = new Headers({ 'Cache-Control': 'no-store', Vary: 'Origin' });
     const origin = incoming.headers.get('Origin');
     const reply = (body, status = 200) => Response.json(body, { status, headers });
-    if (origin && origin !== androidOrigin) return reply({ error: 'origin_forbidden' }, 403);
+    if (origin && origin !== androidOrigin && origin !== homePreviewOrigin) return reply({ error: 'origin_forbidden' }, 403);
     if (origin) {
       headers.set('Access-Control-Allow-Origin', origin);
       headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');

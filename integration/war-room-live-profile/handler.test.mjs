@@ -4,6 +4,7 @@ import { createWarRoomProfileHandler } from './handler.mjs';
 
 const projectUrl = 'https://fixture.supabase.co';
 const androidOrigin = 'https://localhost';
+const homePreviewOrigin = 'https://home-plaque-visual-20261117.nexus-phalanx-kvk-test.pages.dev';
 const token = 'Bearer fixture-token';
 const playerId = '123456789';
 const capturedAt = '2026-11-16T06:00:00.000Z';
@@ -15,13 +16,112 @@ const sourceResponse = (overrides = {}) => Response.json({
   ok: true, governor_id: playerId, uid: rawPlayer.uid, player: rawPlayer,
   fresh: true, cached_at: capturedAt, ...overrides
 });
+
+test('configured HOME and Android preflights allow exactly their own origin without source calls', async () => {
+  for (const origin of [androidOrigin, homePreviewOrigin]) {
+    const { handle, calls } = setup({ webOrigin: homePreviewOrigin });
+    const response = await handle(new Request(projectUrl + '/profile', {
+      method: 'OPTIONS',
+      headers: { Origin: origin, 'Access-Control-Request-Method': 'GET',
+        'Access-Control-Request-Headers': 'authorization,apikey,content-type,x-client-info' }
+    }));
+    assert.equal(response.status, 204);
+    assert.equal(response.headers.get('access-control-allow-origin'), origin);
+    assert.equal(response.headers.get('vary'), 'Origin');
+    assert.equal(response.headers.get('cache-control'), 'no-store');
+    assert.equal(response.headers.get('access-control-allow-methods'), 'GET, OPTIONS');
+    assert.equal(calls.length, 0);
+  }
+});
+
+test('HOME is denied by default and lookalike origins remain forbidden after configuration', async () => {
+  const baseline = setup();
+  assert.equal((await baseline.handle(new Request(projectUrl + '/profile', {
+    method: 'OPTIONS', headers: { Origin: homePreviewOrigin }
+  }))).status, 403);
+  const { handle, calls } = setup({ webOrigin: homePreviewOrigin });
+  for (const origin of [
+    'https://foreign.example', 'null', 'http://localhost', 'https://localhost:444',
+    homePreviewOrigin.replace('https:', 'http:'), homePreviewOrigin + ':444',
+    homePreviewOrigin + '.evil.example', homePreviewOrigin + '/',
+    homePreviewOrigin.replace('home-plaque-visual-20261117', 'other-preview'),
+    'https://nexus-phalanx-kvk-test.pages.dev'
+  ]) {
+    for (const method of ['OPTIONS', 'GET']) {
+      const response = await handle(new Request(projectUrl + '/profile', {
+        method, headers: { Origin: origin, Authorization: token }
+      }));
+      assert.equal(response.status, 403, method + ' ' + origin);
+      assert.equal(response.headers.get('access-control-allow-origin'), null);
+    }
+  }
+  assert.equal(calls.length, 0);
+});
+
+test('HOME CORS permission never grants authentication, identity override, or write access', async () => {
+  const { handle, calls } = setup({ webOrigin: homePreviewOrigin });
+  for (const authorization of [null, '', 'Basic fixture', 'Bearer']) {
+    const headers = { Origin: homePreviewOrigin };
+    if (authorization !== null) headers.Authorization = authorization;
+    const response = await handle(new Request(projectUrl + '/profile', { headers }));
+    assert.equal(response.status, 401);
+    assert.equal(response.headers.get('access-control-allow-origin'), homePreviewOrigin);
+  }
+  assert.equal((await handle(new Request(projectUrl + '/profile?playerId=678901234', {
+    headers: { Origin: homePreviewOrigin, Authorization: token }
+  }))).status, 400);
+  assert.equal((await handle(new Request(projectUrl + '/profile', {
+    method: 'POST', headers: { Origin: homePreviewOrigin, Authorization: token }
+  }))).status, 405);
+  assert.equal(calls.length, 0);
+});
+
+test('HOME retains server-side session/link checks and stops before quota and source', async () => {
+  for (const [link, status] of [
+    [new Response(null, { status: 401 }), 401],
+    [new Response(null, { status: 403 }), 401],
+    [Response.json(null), 403]
+  ]) {
+    const { handle, calls } = setup({ webOrigin: homePreviewOrigin, link });
+    const response = await handle(new Request(projectUrl + '/profile', {
+      headers: { Origin: homePreviewOrigin, Authorization: token }
+    }));
+    assert.equal(response.status, status);
+    assert.equal(response.headers.get('access-control-allow-origin'), homePreviewOrigin);
+    assert.equal(calls.length, 1);
+  }
+});
+
+test('HOME preserves approved identity, quota, source matching and freshness checks', async () => {
+  for (const [overrides, status, count, expectedPlayer] of [
+    [{}, 200, 3, player],
+    [{quota: Response.json(false)}, 429, 2, undefined],
+    [{source: sourceResponse({governor_id: '987654321'})}, 502, 3, undefined],
+    [{source: sourceResponse({fresh: false})}, 200, 3, null]
+  ]) {
+    const { handle, calls } = setup({ webOrigin: homePreviewOrigin, ...overrides });
+    const response = await handle(new Request(projectUrl + '/profile', {
+      headers: { Origin: homePreviewOrigin, Authorization: token }
+    }));
+    assert.equal(response.status, status);
+    assert.equal(response.headers.get('access-control-allow-origin'), homePreviewOrigin);
+    assert.equal(calls.length, count);
+    const body = await response.json();
+    assert.deepEqual(body.player, expectedPlayer);
+    if (count === 3) {
+      assert.equal(calls[2][0].pathname, '/v1/players/' + playerId);
+      assert.deepEqual(calls[2][1].headers, { 'X-Api-Key': 'fixture-mp-key' });
+    }
+    assert.ok(!JSON.stringify(body).includes('fixture-mp-key'));
+  }
+});
 const player = { name: 'Fixture', alliance: 'FIX', kingdom: 1885, power: '155000000000000005' };
 
-function setup({ link = Response.json(playerId), source, quota = Response.json(true), mightPulseKey = "fixture-mp-key" } = {}) {
+function setup({ link = Response.json(playerId), source, quota = Response.json(true), mightPulseKey = "fixture-mp-key", webOrigin } = {}) {
   source ??= sourceResponse();
   const calls = [];
   const handle = createWarRoomProfileHandler({
-    projectUrl, androidOrigin, mightPulseKey, publishableKey: 'fixture-key',
+    projectUrl, androidOrigin, homePreviewOrigin: webOrigin, mightPulseKey, publishableKey: 'fixture-key',
     request(url, options) {
       calls.push([url, options]);
       return Promise.resolve([link, quota, source][calls.length - 1]);

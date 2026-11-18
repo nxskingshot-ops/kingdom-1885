@@ -5,4 +5,5 @@ Deno.serve(createWarRoomProfileHandler({
   publishableKey: Deno.env.get('SUPABASE_ANON_KEY'),
   mightPulseKey: Deno.env.get('MIGHTPULSE_API_KEY'),
   androidOrigin: 'https://localhost',
+  homePreviewOrigin: 'https://home-plaque-visual-20261117.nexus-phalanx-kvk-test.pages.dev',
 }));

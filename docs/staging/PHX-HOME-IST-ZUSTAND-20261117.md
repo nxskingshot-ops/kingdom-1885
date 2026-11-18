@@ -59,3 +59,7 @@ Alle Aussagen beziehen sich auf die geprüften Quellen und die dort dokumentiert
 - Sichtbar: sehr großer ungenutzter unterer Bildschirmbereich sowie hohe Navigationsfläche; Gestaltungsentscheidung noch offen.
 - BELEGT: Die bereits installierte Android-App kann HOME darstellen. NICHT BELEGT: Aktualität der APK, Modulnavigation, Live-Profil, Rücktaste, Exporte und persistente Speicherung.
 - Schutz: Keine Änderungen an Originalgrafik oder FREEZEs vor gezielter Ursachenmessung. Screenshot ist vom Nutzer bereitgestellt und wird nicht als Repo-Bilddatei kopiert.
+
+## Fortsetzung · 18.11.2026 · HOME-Profil-Origin
+
+Aktueller Abgleich, Sicherung, eng begrenzter Korrekturvorschlag, Tests und vollständiger offener Aufgabenstand: [Profil-Origin-Freigabe](PHX-HOME-PROFILE-ORIGIN-FREIGABE-20261118.md). Die aktive Funktion liegt im isolierten Projekt `yuyvmbdybwpwpqsipfjt`, nicht im Hauptprojekt. HOME ist live weiterhin mit OPTIONS 403 blockiert. 14 lokale Handler-Tests bestanden; Deployment erfordert noch die gezielte Zustimmung. Keine Design-, Daten- oder Zugriffsregeländerung bereitgestellt.
