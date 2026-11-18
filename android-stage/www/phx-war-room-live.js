@@ -45,16 +45,37 @@
   const homeLogin = document.createElement('button');
   homeLogin.type = 'button';
   homeLogin.className = 'phx-home-live-login';
-  homeLogin.textContent = 'Sign in / Live profile';
-  homeLogin.setAttribute('aria-label', 'Sign in to PHALANX live profile');
+  homeLogin.textContent = 'Sign in';
+  homeLogin.setAttribute('aria-label', 'Open account in War Room');
   const homeSection = document.getElementById('phx-r6-home');
   const homeNavigation = homeSection?.querySelector('.phx-home-nav');
-  if (homeNavigation) homeNavigation.after(homeLogin);
+  if (homeNavigation) {
+    const accountBar = document.createElement('div');
+    accountBar.className = 'phx-home-accountbar';
+    const language = homeNavigation.querySelector('#phx-r11-language');
+    if (language) accountBar.append(language);
+    accountBar.append(homeLogin);
+    homeNavigation.after(accountBar);
+    // Use the existing approved image, showing its original top-right IX badge.
+    const original = document.querySelector('#phx-pylon-modal img');
+    const emblemTarget = homeNavigation.querySelector('[data-home-action="pylon"] span');
+    if (original && emblemTarget) {
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('viewBox', '882 34 132 132');
+      svg.setAttribute('aria-hidden', 'true');
+      svg.classList.add('phx-home-pylon-icon');
+      const image = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+      image.setAttribute('href', original.getAttribute('src'));
+      image.setAttribute('width', '1024');
+      image.setAttribute('height', '1536');
+      svg.append(image);
+      emblemTarget.replaceWith(svg);
+    }
+  }
   homeLogin.addEventListener('click', () => {
-    // One form, one session controller: present it on HOME without navigating.
-    homeLogin.after(account);
-    account.hidden = false;
-    (form.hidden ? refresh : form.elements.email).focus({ preventScroll: true });
+    // Keep one account form inside the existing War Room and its router.
+    document.getElementById('phx-r8-war-entry').click();
+    openProfile.click();
   });
   accountPanel.id = 'phx-war-room-account';
   openProfile.setAttribute('aria-controls', accountPanel.id);
@@ -158,7 +179,7 @@
   }
 
   function showSignedOut(message) {
-    homeLogin.textContent = 'Sign in / Live profile';
+    homeLogin.textContent = 'Sign in';
     session.clear();
     clearProfile();
     sourceBadge.textContent = 'Sign in for live data';
@@ -276,7 +297,7 @@
         status.textContent = 'Could not sign in with that test account.';
         return;
       }
-      homeLogin.textContent = 'Live profile';
+      homeLogin.textContent = 'Account';
       form.hidden = true;
       actions.hidden = false;
       await loadProfile();
@@ -295,7 +316,7 @@
   });
   // Restore only this tab's session; fetch verified identity again from the server.
   if (session.restore()) {
-    homeLogin.textContent = 'Live profile';
+    homeLogin.textContent = 'Account';
     form.hidden = true;
     actions.hidden = false;
     void loadProfile();
