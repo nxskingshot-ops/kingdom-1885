@@ -115,6 +115,30 @@
     new MutationObserver(syncStatusBar).observe(home, { attributes: true, attributeFilter: ['inert'] });
     syncStatusBar();
   }
+  // Approved HOME-only unified plaque. Existing identity nodes are MOVED, not cloned:
+  // renderIdentity() continues to update the same authorized live-data elements.
+  const queenHero = home?.querySelector('.phx-queen-experimental');
+  if (queenHero && !home.querySelector('.phx-home-unified-plaque')) {
+    const plaque = document.createElement('section');
+    plaque.className = 'phx-home-unified-plaque';
+    plaque.setAttribute('aria-label', 'Commander identity');
+    const avatar = document.createElement('button');
+    avatar.type = 'button';
+    avatar.className = 'phx-home-unified-avatar';
+    avatar.setAttribute('aria-label', 'Open War Room');
+    avatar.innerHTML = '<span aria-hidden="true">♜</span><span class="phx-home-unified-arrow" aria-hidden="true">❯</span>';
+    avatar.addEventListener('click', () => document.getElementById('phx-r8-war-entry')?.click());
+    const info = document.createElement('div');
+    info.className = 'phx-home-unified-info';
+    const identity = document.getElementById('phx-r10-identity');
+    const affiliationNode = document.getElementById('phx-r11-affiliation');
+    if (identity && affiliationNode) {
+      info.append(identity, affiliationNode);
+      plaque.append(avatar, info);
+      queenHero.before(plaque);
+      home.classList.add('phx-home-unified-active');
+    }
+  }
   const homeName = document.getElementById('phx-r10-name');
   const homeLevel = document.getElementById('phx-r10-sub');
   const homeKingdom = document.getElementById('phx-r11-kingdom');
