@@ -103,7 +103,6 @@
   const power = profile.querySelector('[data-w2-power]');
   const profileId = profile.querySelector('[data-w2-player-id]');
   const profileUpdated = profile.querySelector('[data-w2-updated]');
-  const home = document.getElementById('phx-r6-home');
   const statusBar = window.Capacitor?.isPluginAvailable('StatusBar') && window.Capacitor.Plugins.StatusBar;
   if (statusBar) {
     const syncStatusBar = () => {
@@ -115,6 +114,7 @@
     new MutationObserver(syncStatusBar).observe(home, { attributes: true, attributeFilter: ['inert'] });
     syncStatusBar();
   }
+  const home = document.getElementById('phx-r6-home');
   // Approved HOME-only unified plaque. Existing identity nodes are MOVED, not cloned:
   // renderIdentity() continues to update the same authorized live-data elements.
   const queenHero = home?.querySelector('.phx-queen-experimental');
