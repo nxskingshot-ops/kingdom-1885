@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - work/phx-home-unified-plaque-20261118
+      - work/phx-home-android-visual-fix-20261119
     paths:
       - 'android-stage/www/phx-war-room-live.js'
       - 'android-stage/www/phx-war-room-live.css'
@@ -71,4 +72,4 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy .phx-unified-check --project-name=nexus-phalanx-kvk-test --branch=home-plaque-visual-20261117
+          command: pages deploy .phx-unified-check --project-name=nexus-phalanx-kvk-test --branch=home-android-visual-fix-20261119
