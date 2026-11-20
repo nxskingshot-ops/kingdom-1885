@@ -123,7 +123,7 @@
     plaque.className = 'phx-home-unified-plaque';
     plaque.setAttribute('aria-label', 'Commander identity');
     // Reuse the original entry, its router listener and the uploaded-photo node.
-    // The default portrait is a viewport onto the approved Queen-An asset,
+    // The default Spartan helmet is cropped from the approved Queen-An asset,
     // exactly as the existing PYLON badge reuses its approved source image.
     const avatar = document.getElementById('phx-r8-war-entry');
     const info = document.createElement('div');
@@ -133,7 +133,7 @@
     if (avatar && identity && affiliationNode) {
       avatar.classList.add('phx-home-unified-avatar');
       const portrait = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      portrait.setAttribute('viewBox', '25 0 160 160');
+      portrait.setAttribute('viewBox', '649 0 220 220');
       portrait.setAttribute('aria-hidden', 'true');
       portrait.setAttribute('focusable', 'false');
       portrait.classList.add('phx-home-approved-portrait');

@@ -189,13 +189,14 @@
 }
 #phx-r6-home .phx-home-unified-info #phx-r10-name {
   width:100%;font:700 clamp(18px,4.2vw,28px)/1.1 Georgia,serif;
-  text-align:center;overflow-wrap:anywhere;white-space:normal;
+  text-align:center;text-wrap:balance;overflow-wrap:anywhere;white-space:normal;
   color:#ffe1a2;text-shadow:0 2px 3px #000;
 }
 #phx-r6-home .phx-home-unified-info #phx-r10-name.phx-long-name {font-size:clamp(15px,3.4vw,22px);}
 #phx-r6-home .phx-home-unified-info #phx-r10-sub {display:none!important;}
 #phx-r6-home .phx-home-unified-info #phx-r11-affiliation {
-  gap:6px!important;padding:3px 0 0!important;border-top:1px solid #795024!important;flex-wrap:wrap;
+  gap:6px!important;padding:3px 0 0!important;border-top:1px solid #795024!important;
+  border-radius:0;flex-wrap:wrap;
   font:700 clamp(11px,2.7vw,16px)/1.2 Georgia,serif!important;color:#ffdc94;
 }
 #phx-r6-home.phx-home-unified-active .phx-queen-experimental .phx-home-war-tab {

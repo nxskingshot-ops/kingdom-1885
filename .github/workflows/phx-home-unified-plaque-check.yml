@@ -4,6 +4,7 @@ on:
     branches:
       - work/phx-home-unified-plaque-20261118
       - work/phx-home-android-visual-fix-20261119
+      - work/phx-home-plaque-validation-20261120
     paths:
       - 'android-stage/www/phx-war-room-live.js'
       - 'android-stage/www/phx-war-room-live.css'
@@ -68,6 +69,7 @@ jobs:
           path: /tmp/phx-home-session-evidence
           retention-days: 7
       - name: Publish existing isolated HOME preview after passed checks
+        if: github.ref == 'refs/heads/work/phx-home-android-visual-fix-20261119'
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
