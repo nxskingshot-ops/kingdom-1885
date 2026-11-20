@@ -30,6 +30,18 @@ async function run() {
     await expect(id('phx-r10-name')).toHaveText('Profil');
     await expect(id('phx-r10-sub')).toBeHidden();
     await expect(id('phx-r11-kingdom')).toHaveText('—');
+
+    if (process.env.PHX_UNIFIED_PLAQUE === 'true') {
+      const plaque = page.locator('.phx-home-unified-plaque');
+      await expect(plaque).toBeVisible();
+      await expect(plaque.locator('.phx-home-approved-portrait')).toHaveAttribute('viewBox', '649 0 220 220');
+      await expect(plaque.locator('#phx-r11-affiliation')).toHaveCSS('border-top-left-radius', '0px');
+      const plaqueBox = await plaque.boundingBox();
+      const artworkBox = await page.locator('.phx-queen-scene').boundingBox();
+      expect(plaqueBox.y + plaqueBox.height).toBeLessThanOrEqual(artworkBox.y);
+      await page.screenshot({ path: evidence + '/android-home-unified-plaque.png' });
+      console.log('BESTANDEN: API 35 consolidated HOME plaque above unchanged artwork.');
+    }
     await id('phx-r8-war-entry').click();
     await expect(page).toHaveURL(/#war-room$/);
     await expect(page.getByRole('button', { name: 'Live profile' })).toBeVisible();

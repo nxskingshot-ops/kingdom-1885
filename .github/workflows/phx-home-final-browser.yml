@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - work/phx-home-final-audit-20261116
+      - work/phx-home-plaque-validation-20261120
     paths:
       - '.github/workflows/phx-home-final-browser.yml'
       - 'android-stage/**'
@@ -12,6 +13,7 @@ permissions:
   contents: read
 jobs:
   browser:
+    if: github.ref == 'refs/heads/work/phx-home-final-audit-20261116'
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -50,6 +52,7 @@ jobs:
           retention-days: 7
   android-emulator:
     needs: browser
+    if: ${{ !cancelled() && (needs.browser.result == 'success' || needs.browser.result == 'skipped') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     defaults:
@@ -161,7 +164,7 @@ jobs:
           profile: pixel_6
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: bash android-stage/scripts/test-home-final-android.sh
+          script: PHX_UNIFIED_PLAQUE='${{ github.ref == 'refs/heads/work/phx-home-plaque-validation-20261120' }}' bash android-stage/scripts/test-home-final-android.sh
       - uses: actions/upload-artifact@v4
         if: always()
         with:
