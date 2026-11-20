@@ -2,7 +2,7 @@
 const {chromium,expect}=require('@playwright/test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs/promises');
-const target='http://127.0.0.1:8765';
+const target=process.env.PHX_TEST_URL || 'http://127.0.0.1:8765';
 const key='phx-war-room-session-yuyvmbdybwpwpqsipfjt-v1';
 (async()=>{
   const browser=await chromium.launch();
@@ -28,6 +28,19 @@ const key='phx-war-room-session-yuyvmbdybwpwpqsipfjt-v1';
         return route.fulfill({status:404});
       });
       await page.goto(target);
+      const plaque=page.locator('.phx-home-unified-plaque');
+      const avatar=plaque.locator('#phx-r8-war-entry');
+      await expect(avatar).toBeVisible();
+      assert.equal(await page.locator('#phx-r8-war-entry').count(),1);
+      assert.equal(await plaque.locator('#phx-r10-identity').count(),1);
+      assert.equal(await plaque.locator('#phx-r11-affiliation').count(),1);
+      assert.equal(await avatar.locator('.phx-home-approved-portrait image').getAttribute('href'),
+        await page.locator('.phx-queen-scene').getAttribute('src'));
+      await expect(page.locator('#phx-r10-sub')).toBeHidden();
+      await avatar.click();
+      await expect(page).toHaveURL(target+'/#war-room');
+      await page.locator('#phx-r8-war-back').click();
+      await expect(page).toHaveURL(target+'/#phalanx-home');
       const nav=page.getByRole('navigation',{name:'HOME-Navigation'});
       const navBox=await nav.boundingBox();
       assert.ok(navBox.height<=100, 'Compact navigation exceeds two 44px rows');
@@ -59,6 +72,30 @@ const key='phx-war-room-session-yuyvmbdybwpwpqsipfjt-v1';
       await expect(page.locator('#phx-r6-home .phx-live-account')).toHaveCount(0);
       await fs.mkdir('/tmp/phx-home-session-evidence',{recursive:true});
       await page.screenshot({path:'/tmp/phx-home-session-evidence/home-compact-'+width+'.png',fullPage:false});
+      await expect(plaque.locator('#phx-r11-kingdom')).toHaveText('#1901');
+      await expect(plaque.locator('#phx-r11-alliance')).toHaveText('ALT');
+      const geometryPlaque=await plaque.evaluate(el=>{
+        const r=el.getBoundingClientRect(),hero=document.querySelector('.phx-queen-scene').getBoundingClientRect();
+        const children=[...el.querySelectorAll('#phx-r8-war-entry,#phx-r10-name,#phx-r11-affiliation')];
+        return {x:r.x,right:r.right,bottom:r.bottom,heroTop:hero.top,
+          overflow:children.some(e=>{const c=e.getBoundingClientRect();return c.x<r.x||c.right>r.right||c.bottom>r.bottom;}),
+          scrollWidth:el.scrollWidth,width:el.clientWidth};
+      });
+      assert.ok(geometryPlaque.x>=0 && geometryPlaque.right<=width && geometryPlaque.bottom<=geometryPlaque.heroTop && !geometryPlaque.overflow,JSON.stringify(geometryPlaque));
+      // Stress only the isolated browser DOM; never write profile fixtures to backend.
+      for (const name of ['An Mórrígan','Commander WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW']) {
+        await page.locator('#phx-r10-name').evaluate((el,name)=>{el.textContent=name},name);
+        await page.waitForTimeout(100);
+        assert.ok(await page.locator('#phx-r10-name').evaluate(el=>el.scrollWidth<=el.clientWidth+1),'Long name clips');
+        assert.ok(await page.locator('#phx-r10-name').evaluate(el=>parseFloat(getComputedStyle(el).fontSize)>=14),'Unreadable name');
+      }
+      await page.screenshot({path:'/tmp/phx-home-session-evidence/home-long-name-'+width+'.png'});
+      await page.reload();
+      await expect(page.locator('#phx-r10-name')).toHaveText('Fixture Étoile');
+      await page.screenshot({path:'/tmp/phx-home-session-evidence/home-unified-'+width+'.png'});
+      await avatar.press('Enter');
+      await expect(page).toHaveURL(target+'/#war-room');
+      await page.locator('#phx-r8-war-back').click();
       // Preserve every existing route while changing only HOME controls.
       await nav.getByRole('button',{name:'War Room',exact:true}).click();
       await expect(page).toHaveURL(target+'/#war-room');
