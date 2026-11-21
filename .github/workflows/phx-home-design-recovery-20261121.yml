@@ -1,0 +1,67 @@
+name: PHALANX HOME isolated design recovery validation
+on:
+  push:
+    branches:
+      - work/phx-home-design-recovery-20261121
+    paths:
+      - '.github/workflows/phx-home-design-recovery-20261121.yml'
+      - 'android-stage/www/phx-war-room-live.js'
+      - 'android-stage/www/phx-war-room-live.css'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  recovery-check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify protected source and syntax
+        run: |
+          node android-stage/scripts/verify.cjs
+          node --check android-stage/www/phx-war-room-live.js
+          node --check android-stage/www/phx-war-room-session.js
+          echo "44af7b03d8fc1e68ac950b663aef8605bb1c9406e471eec4d10634b2083a9ada  android-stage/www/PHX_HOME_QUEEN_AN_APPROVED.png" | sha256sum -c
+      - name: Build isolated HOME staging without unified plaque
+        run: |
+          mkdir -p .phx-home-recovery
+          cp -a android-stage/www/. .phx-home-recovery/
+          python3 android-stage/scripts/integrate-home-v25.py .phx-home-recovery
+          python3 android-stage/scripts/integrate-war-room-live-v28.py .phx-home-recovery
+          cp android-stage/scripts/phx-home-name-autofit.js .phx-home-recovery/
+          python3 - <<'PY'
+          from pathlib import Path
+          index=Path('.phx-home-recovery/index.html')
+          html=index.read_text()
+          assert html.count('</body>')==1
+          index.write_text(html.replace('</body>','<script src="./phx-home-name-autofit.js"></script></body>'))
+          js=Path('.phx-home-recovery/phx-war-room-live.js').read_text()
+          assert 'phx-home-unified-plaque' not in js, 'Unexpected later unified plaque; stop'
+          assert Path('.phx-home-recovery/PHX_HOME_QUEEN_AN_APPROVED.png').read_bytes()==Path('android-stage/www/PHX_HOME_QUEEN_AN_APPROVED.png').read_bytes()
+          PY
+      - name: Test browser sessions and existing navigation
+        run: |
+          node --test android-stage/scripts/test-war-room-session.cjs
+          node --test integration/war-room-live-profile/handler.test.mjs
+          npm install --no-save --prefix /tmp/phx-browser @playwright/test@1.58.2
+          /tmp/phx-browser/node_modules/.bin/playwright install --with-deps chromium
+          python3 -m http.server 8765 --bind 127.0.0.1 --directory .phx-home-recovery &
+          for attempt in {1..10}; do
+            if curl -fsS -o /dev/null http://127.0.0.1:8765/; then break; fi
+            sleep 1
+          done
+          NODE_PATH=/tmp/phx-browser/node_modules node android-stage/scripts/test-home-session-browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: phx-home-recovery-android-width-evidence
+          path: /tmp/phx-home-session-evidence
+          retention-days: 7
+      - name: Deploy separate isolated recovery preview only after tests pass
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy .phx-home-recovery --project-name=nexus-phalanx-kvk-test --branch=home-design-recovery-20261121
