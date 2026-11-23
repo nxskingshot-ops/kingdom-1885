@@ -12,6 +12,9 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+concurrency:
+  group: phx-home-design-preview
+  cancel-in-progress: false
 jobs:
   home-original:
     runs-on: ubuntu-24.04
@@ -62,9 +65,9 @@ jobs:
           name: phx-home-original-mobile-evidence
           path: /tmp/phx-home-session-evidence
           retention-days: 7
-      - name: Deploy separate isolated HOME preview only after tests pass
+      - name: Deploy to the existing live-profile HOME test origin
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy .phx-home-original --project-name=nexus-phalanx-kvk-test --branch=home-original-20261123
+          command: pages deploy .phx-home-original --project-name=nexus-phalanx-kvk-test --branch=home-plaque-visual-20261117

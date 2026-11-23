@@ -24,3 +24,9 @@ Die Originalgrafik und das eingefrorene Quell-HTML sind bytegleich zur Recovery-
 ## Rückweg
 
 INTEGRITÄT GEPRÜFT · Quellbasis und PNG anhand von Commit und SHA-256 identifiziert. Der neue Teststand übernimmt die unveränderte Original-PNG. Das dauerhafte Original wurde bereits in Phase 1 als einzelne Datei gesichert. WIEDERHERSTELLUNG GETESTET · NICHT GETESTET für Hosting, Backend und Sitzungen in diesem Durchgang.
+
+## Korrektur der Testadresse für Live-Profile
+
+Der Test auf Android zeigte eine bestehende Anmeldung und leere Plaketten. Für den isolierten Profilabruf antwortet die neue Branch-Origin `home-original-20261123.nexus-phalanx-kvk-test.pages.dev` auf den GET-Preflight mit HTTP 403. Die bereits explizit zugelassene feste HOME-Origin `home-plaque-visual-20261117.nexus-phalanx-kvk-test.pages.dev` antwortet mit HTTP 204 samt exaktem Allow-Origin.
+
+Der Workflow veröffentlicht denselben Prüfstand künftig über diese bestehende feste HOME-Testadresse. Authentifizierung, Rollen, Daten und die serverseitige Originliste werden dabei nicht geändert. [Frühere Fassung der festen Adresse](https://34109c0c.nexus-phalanx-kvk-test.pages.dev/) · Die sechs zentralen Auslieferungsdateien einschließlich index.html, Grafik und Profilskript wurden vor der Umstellung bytegleich zur alten festen Adresse verifiziert. [Erstes Deployment des Originalstands](https://8dd221b1.nexus-phalanx-kvk-test.pages.dev/) bleibt für Vergleichszwecke adressierbar.
