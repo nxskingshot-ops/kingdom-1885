@@ -22,18 +22,18 @@
 
 #phx-r6-home .phx-queen-experimental #phx-r10-name {
   width: 100%;
-  font-size: 18px;
+  font-size: clamp(7px, 2.35vw, 40px);
   line-height: 1;
   text-align: center;
   overflow: visible;
-  white-space: normal;
-  overflow-wrap: anywhere;
-  word-break: normal;
+  white-space: nowrap;
+  text-overflow: clip;
   text-shadow: 0 1px 2px #000;
 }
 
-#phx-r6-home .phx-queen-experimental #phx-r10-name.phx-long-name {
-  font-size: 18px;
+#phx-r6-home .phx-queen-experimental #phx-r10-name[data-wrap] {
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 #phx-r6-home .phx-queen-experimental #phx-r10-sub {
@@ -87,20 +87,17 @@ body.phx-r6-at-home #phx-r6-home .phx-home-nav {
   background: transparent;
   box-shadow: none;
   gap: 0.24em;
-  font: 700 clamp(8px, 2.5cqi, 18px)/1 Georgia, serif;
+  font: 700 clamp(7px, 2.35vw, 40px)/1 Georgia, serif;
   color: #ffe0a0;
   text-shadow: 0 1px 2px #000;
   overflow: hidden;
   pointer-events: none;
 }
 
-#phx-r6-home .phx-queen-experimental #phx-r11-alliance {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
+#phx-r6-home .phx-queen-experimental #phx-r11-affiliation > span {
+  flex: none;
 }
 
-#phx-r6-home .phx-queen-experimental #phx-r11-sep[hidden],
-#phx-r6-home .phx-queen-experimental #phx-r11-alliance[hidden] {
+#phx-r6-home .phx-queen-experimental #phx-r11-affiliation > [hidden] {
   display: none;
 }

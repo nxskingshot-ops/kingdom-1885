@@ -151,14 +151,14 @@
   function renderIdentity(player) {
     const name = player?.name ?? '';
     homeName.dataset.profileName = name;
-    homeName.textContent = name || (home.lang === 'en' ? 'Profile' : 'Profil');
-    homeName.classList.toggle('phx-long-name', Array.from(name).length > 8);
+    homeName.textContent = name;
     homeName.title = name;
     homeLevel.textContent = '';
-    homeKingdom.textContent = player ? '#' + player.kingdom : '—';
+    homeKingdom.textContent = player ? '#' + player.kingdom : '';
+    homeKingdom.hidden = !player;
     homeAlliance.textContent = player?.alliance ?? '';
     homeAlliance.hidden = !player?.alliance;
-    homeDivider.hidden = homeAlliance.hidden;
+    homeDivider.hidden = homeKingdom.hidden || homeAlliance.hidden;
     affiliation.title = player ? [homeKingdom.textContent, player.alliance].filter(Boolean).join(' · ') : '';
     document.dispatchEvent(new Event('phx:profile-rendered'));
   }
@@ -276,9 +276,6 @@
   }
 
   renderIdentity(null);
-  document.getElementById('phx-r11-language-select').addEventListener('change', () => {
-    if (!homeName.dataset.profileName && !profile.classList.contains('phx-live-verified')) renderIdentity(null);
-  });
 
   form.addEventListener('submit', async event => {
     event.preventDefault();

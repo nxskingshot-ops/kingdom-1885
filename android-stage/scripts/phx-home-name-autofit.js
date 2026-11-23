@@ -1,50 +1,62 @@
-/* HOME name: measure actual rendered glyph widths, not character counts. */
+/* Fit live identity text inside the two fixed frames in the original artwork. */
 (() => {
   'use strict';
-  const name = document.getElementById('phx-r10-name');
-  if (!name) return;
-  const parent = document.getElementById('phx-r10-identity');
-  if (!parent) return;
-  let fitting = false;
-  function fit() {
-    if (fitting) return;
-    fitting = true;
-    try {
-      const value = (name.textContent || '').trim();
-      if (!value || !parent.clientWidth) return;
-      const maxWidth = Math.max(0, parent.clientWidth - 4);
-      const maxHeight = Math.max(0, parent.clientHeight - 2);
-      name.style.whiteSpace = 'nowrap';
-      name.style.overflowWrap = 'normal';
-      name.style.fontSize = '22px';
-      name.style.lineHeight = '1.05';
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-      const computed = getComputedStyle(name);
-      const family = computed.fontFamily;
-      const weight = computed.fontWeight;
-      let size = 22;
-      function widthAt(px) {
-        ctx.font = weight + ' ' + px + 'px ' + family;
-        return ctx.measureText(value).width;
-      }
-      while (size > 8 && widthAt(size) > maxWidth) size -= 0.5;
-      if (widthAt(size) <= maxWidth && size * 1.05 <= maxHeight) {
-        name.style.fontSize = size + 'px';
-      } else {
-        // Two lines for long names; never replace player identity with ellipses.
-        name.style.whiteSpace = 'normal';
-        name.style.overflowWrap = 'anywhere';
-        name.style.fontSize = Math.max(8, Math.min(13, maxHeight / 2.2)) + 'px';
-        name.style.lineHeight = '1.05';
-      }
-    } finally { fitting = false; }
+  const scene = document.querySelector('#phx-r6-home .phx-queen-experimental');
+  const name = scene?.querySelector('#phx-r10-name');
+  const nameFrame = scene?.querySelector('#phx-r10-identity');
+  const affiliation = scene?.querySelector('#phx-r11-affiliation');
+  if (!name || !nameFrame || !affiliation) return;
+
+  const textRange = document.createRange();
+
+  function fits(text, frame) {
+    const bounds = frame.getBoundingClientRect();
+    textRange.selectNodeContents(text);
+    return Array.from(textRange.getClientRects()).every(rect =>
+      rect.width === 0 || (
+        rect.left >= bounds.left + 0.5 && rect.right <= bounds.right - 0.5 &&
+        rect.top >= bounds.top - 0.5 && rect.bottom <= bounds.bottom + 0.5
+      )
+    );
   }
-  const observer = new MutationObserver(fit);
-  observer.observe(name, {childList: true, characterData: true, subtree: true});
-  const resize = new ResizeObserver(fit);
-  resize.observe(parent);
+
+  function fit() {
+    if (!scene.getBoundingClientRect().width) return;
+
+    const nameHeight = nameFrame.getBoundingClientRect().height;
+    const nameMax = Math.min(44, Math.floor(nameHeight * 0.8));
+    name.removeAttribute('data-wrap');
+    name.style.fontSize = nameMax + 'px';
+    if (!fits(name, nameFrame)) {
+      // A single line may use most of the height. For a long name, reserve two lines.
+      const singleLineMinimum = Math.min(8, nameMax);
+      let size = nameMax;
+      while (size > singleLineMinimum && !fits(name, nameFrame)) {
+        size -= 0.5;
+        name.style.fontSize = size + 'px';
+      }
+      if (!fits(name, nameFrame)) {
+        name.setAttribute('data-wrap', '');
+        size = Math.floor(nameHeight * 0.46 * 2) / 2;
+        name.style.fontSize = size + 'px';
+        while (size > 3 && !fits(name, nameFrame)) {
+          size -= 0.5;
+          name.style.fontSize = size + 'px';
+        }
+      }
+    }
+
+    let affiliationSize = Math.min(44, Math.floor(affiliation.getBoundingClientRect().height * 0.9));
+    affiliation.style.fontSize = affiliationSize + 'px';
+    while (affiliationSize > 3 && !fits(affiliation, affiliation)) {
+      affiliationSize -= 0.5;
+      affiliation.style.fontSize = affiliationSize + 'px';
+    }
+  }
+
+  const observer = new ResizeObserver(fit);
+  observer.observe(scene);
+  document.addEventListener('phx:profile-rendered', fit);
   document.fonts?.ready.then(fit);
   fit();
 })();
